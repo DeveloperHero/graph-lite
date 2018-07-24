@@ -22,7 +22,7 @@
  * @link       http://orchestra.ltd
  * @since      1.0.0
  *
- * @package    Graph_Light
+ * @package    Graph_Lite
  */
 
 // If uninstall not called from WordPress, then exit.

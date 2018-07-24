@@ -6,8 +6,8 @@
  * @link       http://orchestra.ltd
  * @since      1.0.0
  *
- * @package    Graph_Light
- * @subpackage Graph_Light/admin
+ * @package    Graph_Lite
+ * @subpackage Graph_Lite/admin
  */
 
 /**
@@ -16,11 +16,11 @@
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
- * @package    Graph_Light
- * @subpackage Graph_Light/admin
+ * @package    Graph_Lite
+ * @subpackage Graph_Lite/admin
  * @author     Orchestra Technologies <ask@orchestra.ltd>
  */
-class Graph_Light_Admin {
+class Graph_Lite_Admin {
 
 	/**
 	 * The ID of this plugin.
@@ -67,15 +67,15 @@ class Graph_Light_Admin {
 		 * This function is provided for demonstration purposes only.
 		 *
 		 * An instance of this class should be passed to the run() function
-		 * defined in Graph_Light_Loader as all of the hooks are defined
+		 * defined in Graph_Lite_Loader as all of the hooks are defined
 		 * in that particular class.
 		 *
-		 * The Graph_Light_Loader will then create the relationship
+		 * The Graph_Lite_Loader will then create the relationship
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/graph-light-admin.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/graph-lite-admin.css', array(), $this->version, 'all' );
 
 	}
 
@@ -90,10 +90,10 @@ class Graph_Light_Admin {
 		 * This function is provided for demonstration purposes only.
 		 *
 		 * An instance of this class should be passed to the run() function
-		 * defined in Graph_Light_Loader as all of the hooks are defined
+		 * defined in Graph_Lite_Loader as all of the hooks are defined
 		 * in that particular class.
 		 *
-		 * The Graph_Light_Loader will then create the relationship
+		 * The Graph_Lite_Loader will then create the relationship
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
@@ -102,13 +102,13 @@ class Graph_Light_Admin {
 
 		wp_enqueue_script( 'Chartjs', 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js', array( 'jquery' ), $this->version, true );
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/graph-light-admin.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/graph-lite-admin.js', array( 'jquery' ), $this->version, true );
 
 	}
 
 	public function setting_page() {
 
-		add_options_page('Graph Light', 'Graph Light', 'manage_options', 'gl-admin-dashboard', array( $this, 'admin_dashboard' ));
+		add_options_page('Graph Lite', 'Graph Lite', 'manage_options', 'gl-admin-dashboard', array( $this, 'admin_dashboard' ));
 
 
 	}

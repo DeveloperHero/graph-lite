@@ -1,1 +1,1 @@
-# Graph-Light
+# Graph-Lite
