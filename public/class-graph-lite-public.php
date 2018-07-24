@@ -6,8 +6,8 @@
  * @link       http://orchestra.ltd
  * @since      1.0.0
  *
- * @package    Graph_Light
- * @subpackage Graph_Light/public
+ * @package    Graph_Lite
+ * @subpackage Graph_Lite/public
  */
 
 /**
@@ -16,11 +16,11 @@
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the public-facing stylesheet and JavaScript.
  *
- * @package    Graph_Light
- * @subpackage Graph_Light/public
+ * @package    Graph_Lite
+ * @subpackage Graph_Lite/public
  * @author     Orchestra Technologies <ask@orchestra.ltd>
  */
-class Graph_Light_Public {
+class Graph_Lite_Public {
 
 	/**
 	 * The ID of this plugin.
@@ -65,15 +65,15 @@ class Graph_Light_Public {
 		 * This function is provided for demonstration purposes only.
 		 *
 		 * An instance of this class should be passed to the run() function
-		 * defined in Graph_Light_Loader as all of the hooks are defined
+		 * defined in Graph_Lite_Loader as all of the hooks are defined
 		 * in that particular class.
 		 *
-		 * The Graph_Light_Loader will then create the relationship
+		 * The Graph_Lite_Loader will then create the relationship
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/graph-light-public.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/graph-lite-public.css', array(), $this->version, 'all' );
 
 	}
 
@@ -88,15 +88,15 @@ class Graph_Light_Public {
 		 * This function is provided for demonstration purposes only.
 		 *
 		 * An instance of this class should be passed to the run() function
-		 * defined in Graph_Light_Loader as all of the hooks are defined
+		 * defined in Graph_Lite_Loader as all of the hooks are defined
 		 * in that particular class.
 		 *
-		 * The Graph_Light_Loader will then create the relationship
+		 * The Graph_Lite_Loader will then create the relationship
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/graph-light-public.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/graph-lite-public.js', array( 'jquery' ), $this->version, false );
 
 	}
 

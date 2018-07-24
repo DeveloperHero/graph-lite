@@ -10,18 +10,18 @@
  *
  * @link              http://orchestra.ltd
  * @since             1.0.0
- * @package           Graph_Light
+ * @package           Graph_Lite
  *
  * @wordpress-plugin
- * Plugin Name:       Graph Light
- * Plugin URI:        http://wordpress.org/plugins/graph-light
+ * Plugin Name:       Graph Lite
+ * Plugin URI:        http://wordpress.org/plugins/graph-lite
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
  * Version:           1.0.0
  * Author:            Orchestra Technologies
  * Author URI:        http://orchestra.ltd
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       graph-light
+ * Text Domain:       graph-lite
  * Domain Path:       /languages
  */
 
@@ -39,30 +39,30 @@ define( 'PLUGIN_NAME_VERSION', '1.0.0' );
 
 /**
  * The code that runs during plugin activation.
- * This action is documented in includes/class-graph-light-activator.php
+ * This action is documented in includes/class-graph-lite-activator.php
  */
-function activate_graph_light() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-graph-light-activator.php';
-	Graph_Light_Activator::activate();
+function activate_graph_lite() {
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-graph-lite-activator.php';
+	Graph_Lite_Activator::activate();
 }
 
 /**
  * The code that runs during plugin deactivation.
- * This action is documented in includes/class-graph-light-deactivator.php
+ * This action is documented in includes/class-graph-lite-deactivator.php
  */
-function deactivate_graph_light() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-graph-light-deactivator.php';
-	Graph_Light_Deactivator::deactivate();
+function deactivate_graph_lite() {
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-graph-lite-deactivator.php';
+	Graph_Lite_Deactivator::deactivate();
 }
 
-register_activation_hook( __FILE__, 'activate_graph_light' );
-register_deactivation_hook( __FILE__, 'deactivate_graph_light' );
+register_activation_hook( __FILE__, 'activate_graph_lite' );
+register_deactivation_hook( __FILE__, 'deactivate_graph_lite' );
 
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require plugin_dir_path( __FILE__ ) . 'includes/class-graph-light.php';
+require plugin_dir_path( __FILE__ ) . 'includes/class-graph-lite.php';
 
 /**
  * Begins execution of the plugin.
@@ -73,10 +73,10 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-graph-light.php';
  *
  * @since    1.0.0
  */
-function run_graph_light() {
+function run_graph_lite() {
 
-	$plugin = new Graph_Light();
+	$plugin = new Graph_Lite();
 	$plugin->run();
 
 }
-run_graph_light();
+run_graph_lite();
