@@ -52,6 +52,8 @@ class Graph_Light_Admin {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 
+		add_action('admin_menu', array( $this, 'setting_page' ));
+
 	}
 
 	/**
@@ -96,7 +98,22 @@ class Graph_Light_Admin {
 		 * class.
 		 */
 
+		wp_enqueue_script( $this->plugin_name, 'https://cdn.jsdelivr.net/npm/vue/dist/vue.js', array( 'jquery' ), $this->version, false );
+
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/graph-light-admin.js', array( 'jquery' ), $this->version, false );
+
+	}
+
+	public function setting_page() {
+
+		add_options_page('Graph Light', 'Graph Light', 'manage_options', 'gl-admin-dashboard', array( $this, 'admin_dashboard' ));
+
+
+	}
+
+	public function admin_dashboard() {
+
+		include 'gl_admindashboard.php';
 
 	}
 
