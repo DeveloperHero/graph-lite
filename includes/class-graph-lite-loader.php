@@ -6,8 +6,8 @@
  * @link       http://orchestra.ltd
  * @since      1.0.0
  *
- * @package    Graph_Light
- * @subpackage Graph_Light/includes
+ * @package    Graph_Lite
+ * @subpackage Graph_Lite/includes
  */
 
 /**
@@ -17,11 +17,11 @@
  * the plugin, and register them with the WordPress API. Call the
  * run function to execute the list of actions and filters.
  *
- * @package    Graph_Light
- * @subpackage Graph_Light/includes
+ * @package    Graph_Lite
+ * @subpackage Graph_Lite/includes
  * @author     Orchestra Technologies <ask@orchestra.ltd>
  */
-class Graph_Light_Loader {
+class Graph_Lite_Loader {
 
 	/**
 	 * The array of actions registered with WordPress.

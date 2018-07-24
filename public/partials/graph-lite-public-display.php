@@ -8,8 +8,8 @@
  * @link       http://orchestra.ltd
  * @since      1.0.0
  *
- * @package    Graph_Light
- * @subpackage Graph_Light/public/partials
+ * @package    Graph_Lite
+ * @subpackage Graph_Lite/public/partials
  */
 ?>
 

@@ -6,8 +6,8 @@
  * @link       http://orchestra.ltd
  * @since      1.0.0
  *
- * @package    Graph_Light
- * @subpackage Graph_Light/includes
+ * @package    Graph_Lite
+ * @subpackage Graph_Lite/includes
  */
 
 /**
@@ -16,11 +16,11 @@
  * This class defines all code necessary to run during the plugin's activation.
  *
  * @since      1.0.0
- * @package    Graph_Light
- * @subpackage Graph_Light/includes
+ * @package    Graph_Lite
+ * @subpackage Graph_Lite/includes
  * @author     Orchestra Technologies <ask@orchestra.ltd>
  */
-class Graph_Light_Activator {
+class Graph_Lite_Activator {
 
 	/**
 	 * Short Description. (use period)
