@@ -6,8 +6,8 @@
  * @link       http://orchestra.ltd
  * @since      1.0.0
  *
- * @package    Graph_Lite
- * @subpackage Graph_Lite/admin
+ * @package    Graphs_Lite
+ * @subpackage Graphs_Lite/admin
  */
 
 /**
@@ -16,8 +16,8 @@
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
- * @package    Graph_Lite
- * @subpackage Graph_Lite/admin
+ * @package    Graphs_Lite
+ * @subpackage Graphs_Lite/admin
  * @author     Orchestra Technologies <ask@orchestra.ltd>
  */
 class Graph_Lite_Admin {
@@ -53,14 +53,7 @@ class Graph_Lite_Admin {
 		$this->version = $version;
 
 		add_action('admin_menu', array( $this, 'setting_page' ));
-
-		// Checking condition for post type page
-    	// if ((isset($_GET['post_type']) && $_GET['post_type'] == 'page') || (isset( $_GET['post'] ) && get_post_type( $_GET['post'] ) == 'page')) :
-
-			add_action( 'admin_head', array( $this, 'mce_button' ) );
-
-		// endif;
-
+		add_action( 'admin_head', array( $this, 'mce_button' ) );
 	}
 
 	/**
@@ -121,7 +114,7 @@ class Graph_Lite_Admin {
 	}
 
 	/**
-	 * Register New button in TinnyMCE
+	 * Register new button in TinyMCE
 	 *
 	 * @return array
 	 */
@@ -133,7 +126,7 @@ class Graph_Lite_Admin {
 	}
 
 	/**
-	 * Adding button to TinnyMCE
+	 * Adding button to TinyMCE
 	 *
 	 * @return void
 	 */
@@ -160,7 +153,7 @@ class Graph_Lite_Admin {
 	 */
 	public function button_for_tinymce_plugin( $plugin_array ) {
 
-		$plugin_array['graphs_lite_mce_btn'] = plugins_url( '/js/tinnyMCE_button.js', __FILE__ );
+		$plugin_array['graphs_lite_mce_btn'] = plugins_url( '/js/tinyMCE_hooks.js', __FILE__ );
 
 		return $plugin_array;
 	}
