@@ -11,28 +11,15 @@
 			<table class="form-table">
 				<tr>
 					<th scope="row"><label for="labels">Labels</label></th>
-					<td><input class="regular-text" type="text" id="labels" v-model="chartlabelsString" @keyup="addLabels"></td>
+					<td><input class="regular-text" type="text" id="labels" v-model="chartlabelString" @keyup="addLabels"></td>
 				</tr>
-				<template v-for="(data, index) in datasets">
-					<tr>
-						<th scope="row"><label for="label">Label</label></th>
-						<td><input class="regular-text" type="text" id="label" v-model="data.label" @keyup="addDatasetLabel(index)"></td>
-					</tr>
-					<tr>
-						<th scope="row"><label for="datasets">Data</label></th>
-						<td><input class="regular-text" type="text" id="datasets" v-model="data.chartDatasetDataString" @keyup="addDatasetData(index)"></td>
-					</tr>
-					<tr>
-						<th scope="row"><label for="colors">Color</label></th>
-						<td><input class="regular-text" type="text" id="colors" v-model="data.chartDatasetBgColor" @keyup="addDatasetBgColor(index)"></td>
-					</tr>
-				</template>
 				<tr>
-					<th scope="row"><label></label></th>
-					<td>
-						<input type="button" id="add_dataset" class="button button-primary" value="Add Dataset" @click="addDataset">
-						<!-- <input type="button" id="delete_dataset" class="button button-danger" value="Delete Dataset" @click="deleteDataset"> -->
-					</td>
+					<th scope="row"><label for="datasets">Datasets</label></th>
+					<td><input class="regular-text" type="text" id="datasets" v-model="chartDatasetDataString" @keyup="addDatasetData"></td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="colors">Color</label></th>
+					<td><input class="regular-text" type="text" id="colors" v-model="chartDatasetBgColorString" @keyup="addDatasetBgColor"></td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="title">Show Chart Title</label></th>

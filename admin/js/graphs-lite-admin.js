@@ -1,32 +1,56 @@
 new Vue({
 	el: '#app',
 	data: {
-		chartType: 'pie',
-		chartlabelString: '',
-		chartDatasetDataString: '',
-		chartDatasetBgColorString: '',
+		chartType: 'bar',
+		chartlabelsString: '',
 		titleText: '',
 		legendPosition: 'top',
 		labels: [],
-		DatasetData: [],
-		DatasetBgColor: [],
 		showTitle: false,
-		showLegend: true
+		showLegend: true,
+		datasets: [
+			{
+				label: '',
+				chartDatasetDataString: '',
+				chartDatasetBgColor: '',
+				data: [],
+				backgroundColor: ''
+			}
+		]
 	},
 	methods: {
+		addDataset() {
+			this.datasets.push({
+				label: '',
+				chartDatasetDataString: '',
+				chartDatasetBgColor: '',
+				data: [],
+				backgroundColor: []
+			});
+			this.theChart.data.datasets.push({
+				label: '',
+				data: [],
+				backgroundColor: []
+			});
+			this.theChart.update();
+		},
 		addLabels() {
-			let separatingLabels = this.labels = this.chartlabelString.split(',');
+			let separatingLabels = this.labels = this.chartlabelsString.split(',');
 			this.theChart.data.labels = separatingLabels;
 			this.theChart.update();
 		},
-		addDatasetData() {
-			let separatingDatasetData = this.DatasetData = this.chartDatasetDataString.split(',');
-			this.theChart.data.datasets[0].data = separatingDatasetData;
+		addDatasetLabel(index) {
+			this.theChart.data.datasets[index].label = this.datasets[index].label;
 			this.theChart.update();
 		},
-		addDatasetBgColor() {
-			let separatingDatasetColor = this.DatasetBgColor = this.chartDatasetBgColorString.split(',');
-			this.theChart.data.datasets[0].backgroundColor = separatingDatasetColor;
+		addDatasetData(index) {
+			let separatingDatasetData = this.datasets[index].data = this.datasets[index].chartDatasetDataString.split(',');
+			this.theChart.data.datasets[index].data = separatingDatasetData;
+			this.theChart.update();
+		},
+		addDatasetBgColor(index) {
+			// let separatingDatasetColor = this.datasets[index].backgroundColor = this.datasets[index].chartDatasetBgColor.split(',');
+			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].chartDatasetBgColor;
 			this.theChart.update();
 		},
 		showingGraphTitle() {
@@ -45,6 +69,9 @@ new Vue({
 			this.theChart.options.legend.position = this.legendPosition;
 			this.theChart.update();
 		},
+		deleteDataset() {
+
+		},
 		onLoad() {
 			var ctx = document.getElementById("barChart");
 			this.theChart = new Chart(ctx, {
@@ -53,8 +80,9 @@ new Vue({
 					labels: [],
 					datasets: [
 						{
+							label: '',
 							data: [],
-							backgroundColor: []
+							backgroundColor: ''
 						}
 					]
 				},
