@@ -1,26 +1,26 @@
 <?php
 
 /**
- * The public-facing functionality of the plugin.
+ * The admin-specific functionality of the plugin.
  *
  * @link       http://orchestra.ltd
  * @since      1.0.0
  *
  * @package    Graph_Lite
- * @subpackage Graph_Lite/public
+ * @subpackage Graph_Lite/admin
  */
 
 /**
- * The public-facing functionality of the plugin.
+ * The admin-specific functionality of the plugin.
  *
  * Defines the plugin name, version, and two examples hooks for how to
- * enqueue the public-facing stylesheet and JavaScript.
+ * enqueue the admin-specific stylesheet and JavaScript.
  *
  * @package    Graph_Lite
- * @subpackage Graph_Lite/public
+ * @subpackage Graph_Lite/admin
  * @author     Orchestra Technologies <ask@orchestra.ltd>
  */
-class Graph_Lite_Public {
+class Graph_Lite_Admin {
 
 	/**
 	 * The ID of this plugin.
@@ -44,7 +44,7 @@ class Graph_Lite_Public {
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
-	 * @param      string    $plugin_name       The name of the plugin.
+	 * @param      string    $plugin_name       The name of this plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
 	public function __construct( $plugin_name, $version ) {
@@ -52,10 +52,12 @@ class Graph_Lite_Public {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 
+		add_action('admin_menu', array( $this, 'setting_page' ));
+
 	}
 
 	/**
-	 * Register the stylesheets for the public-facing side of the site.
+	 * Register the stylesheets for the admin area.
 	 *
 	 * @since    1.0.0
 	 */
@@ -73,12 +75,12 @@ class Graph_Lite_Public {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/graph-lite-public.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/graphs-lite-admin.css', array(), $this->version, 'all' );
 
 	}
 
 	/**
-	 * Register the JavaScript for the public-facing side of the site.
+	 * Register the JavaScript for the admin area.
 	 *
 	 * @since    1.0.0
 	 */
@@ -96,7 +98,24 @@ class Graph_Lite_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/graph-lite-public.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( 'Vuejs', 'https://cdn.jsdelivr.net/npm/vue/dist/vue.js', array( 'jquery' ), $this->version, true );
+
+		wp_enqueue_script( 'Chartjs', 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js', array( 'jquery' ), $this->version, true );
+
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/graphs-lite-admin.js', array( 'jquery' ), $this->version, true );
+
+	}
+
+	public function setting_page() {
+
+		add_options_page('Graph Lite', 'Graph Lite', 'manage_options', 'gl-admin-dashboard', array( $this, 'admin_dashboard' ));
+
+
+	}
+
+	public function admin_dashboard() {
+
+		include 'gl_admindashboard.php';
 
 	}
 

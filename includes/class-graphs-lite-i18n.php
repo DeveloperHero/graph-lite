@@ -35,7 +35,7 @@ class Graph_Lite_i18n {
 	public function load_plugin_textdomain() {
 
 		load_plugin_textdomain(
-			'graph-lite',
+			'graphs-lite',
 			false,
 			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
 		);
