@@ -6,8 +6,8 @@
 </head>
 <body>
 	<h1>Bingo</h1>
-	<div class="graphProject" id="app">
-		<div class="graphOptions">
+	<div class="graphsProject" id="app">
+		<div class="graphsOptions">
 			<table class="form-table">
 				<tr>
 					<th scope="row"><label for="labels">Labels</label></th>
@@ -41,7 +41,7 @@
 				</tr>
 			</table>
 		</div>
-		<div class="graphDiv">
+		<div class="graphsDiv">
 			<canvas id="barChart"></canvas>
 		</div>
 	</div>

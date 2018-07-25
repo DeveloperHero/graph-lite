@@ -14,14 +14,14 @@
  *
  * @wordpress-plugin
  * Plugin Name:       Graph Lite
- * Plugin URI:        http://wordpress.org/plugins/graph-lite
+ * Plugin URI:        http://wordpress.org/plugins/graphs-lite
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
  * Version:           1.0.0
  * Author:            Orchestra Technologies
  * Author URI:        http://orchestra.ltd
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       graph-lite
+ * Text Domain:       graphs-lite
  * Domain Path:       /languages
  */
 
@@ -39,30 +39,30 @@ define( 'PLUGIN_NAME_VERSION', '1.0.0' );
 
 /**
  * The code that runs during plugin activation.
- * This action is documented in includes/class-graph-lite-activator.php
+ * This action is documented in includes/class-graphs-lite-activator.php
  */
-function activate_graph_lite() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-graph-lite-activator.php';
+function activate_graphs_lite() {
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-graphs-lite-activator.php';
 	Graph_Lite_Activator::activate();
 }
 
 /**
  * The code that runs during plugin deactivation.
- * This action is documented in includes/class-graph-lite-deactivator.php
+ * This action is documented in includes/class-graphs-lite-deactivator.php
  */
-function deactivate_graph_lite() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-graph-lite-deactivator.php';
+function deactivate_graphs_lite() {
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-graphs-lite-deactivator.php';
 	Graph_Lite_Deactivator::deactivate();
 }
 
-register_activation_hook( __FILE__, 'activate_graph_lite' );
-register_deactivation_hook( __FILE__, 'deactivate_graph_lite' );
+register_activation_hook( __FILE__, 'activate_graphs_lite' );
+register_deactivation_hook( __FILE__, 'deactivate_graphs_lite' );
 
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require plugin_dir_path( __FILE__ ) . 'includes/class-graph-lite.php';
+require plugin_dir_path( __FILE__ ) . 'includes/class-graphs-lite.php';
 
 /**
  * Begins execution of the plugin.
@@ -73,10 +73,10 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-graph-lite.php';
  *
  * @since    1.0.0
  */
-function run_graph_lite() {
+function run_graphs_lite() {
 
 	$plugin = new Graph_Lite();
 	$plugin->run();
 
 }
-run_graph_lite();
+run_graphs_lite();

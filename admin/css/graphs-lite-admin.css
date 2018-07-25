@@ -5,16 +5,16 @@
  html, body {
  	height: 100%;
  }
- .graphProject {
+ .graphsProject {
  	width: 100%;
  	height: 100%;
  	display: flex;
  	flex-direction: row;
  }
- .graphOptions {
+ .graphsOptions {
  	width: 50%;
  	padding-top: 20px;
  }
- .graphDiv {
+ .graphsDiv {
  	width: 50%;
  }
