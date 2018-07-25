@@ -55,11 +55,11 @@ class Graph_Lite_Admin {
 		add_action('admin_menu', array( $this, 'setting_page' ));
 
 		// Checking condition for post type page
-    	if ((isset($_GET['post_type']) && $_GET['post_type'] == 'page') || (isset( $_GET['post'] ) && get_post_type( $_GET['post'] ) == 'page')) :
+    	// if ((isset($_GET['post_type']) && $_GET['post_type'] == 'page') || (isset( $_GET['post'] ) && get_post_type( $_GET['post'] ) == 'page')) :
 
 			add_action( 'admin_head', array( $this, 'mce_button' ) );
 
-		endif;
+		// endif;
 
 	}
 
@@ -150,6 +150,19 @@ class Graph_Lite_Admin {
 			add_filter( 'mce_buttons', array( $this, 'register_mce_button' ) );
 		}
 
+	}
+
+	/**
+	 * Declareing script for new button
+	 *
+	 * @return array
+	 *
+	 */
+	public function button_for_tinymce_plugin( $plugin_array ) {
+
+		$plugin_array['graphs_lite_mce_btn'] = plugins_url( '/js/tinnyMCE_button.js', __FILE__ );
+
+		return $plugin_array;
 	}
 
 	public function admin_dashboard() {
