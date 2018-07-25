@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The plugin bootstrap file
+ * Minimalist, user friendly graph and charting plugin for Wordpress 
  *
  * This file is read by WordPress to generate the plugin information in the plugin
  * admin area. This file also includes all of the dependencies used by the plugin,
@@ -10,10 +10,10 @@
  *
  * @link              http://orchestra.ltd
  * @since             1.0.0
- * @package           Graph_Lite
+ * @package           Graphs_Lite
  *
  * @wordpress-plugin
- * Plugin Name:       Graph Lite
+ * Plugin Name:       Graphs Lite
  * Plugin URI:        http://wordpress.org/plugins/graph-lite
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
  * Version:           1.0.0
@@ -21,7 +21,7 @@
  * Author URI:        http://orchestra.ltd
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       graph-lite
+ * Text Domain:       graphs-lite
  * Domain Path:       /languages
  */
 
