@@ -54,6 +54,13 @@ class Graph_Lite_Admin {
 
 		add_action('admin_menu', array( $this, 'setting_page' ));
 
+		// Checking condition for post type page
+    	if ((isset($_GET['post_type']) && $_GET['post_type'] == 'page') || (isset( $_GET['post'] ) && get_post_type( $_GET['post'] ) == 'page')) :
+
+			add_action( 'admin_head', array( $this, 'mce_button' ) );
+
+		endif;
+
 	}
 
 	/**
@@ -110,6 +117,38 @@ class Graph_Lite_Admin {
 
 		add_options_page('Graph Lite', 'Graph Lite', 'manage_options', 'gl-admin-dashboard', array( $this, 'admin_dashboard' ));
 
+
+	}
+
+	/**
+	 * Register New button in TinnyMCE
+	 *
+	 * @return array
+	 */
+	public function register_mce_button( $buttons ) {
+
+		array_push( $buttons, 'graphs_lite_mce_btn' );
+
+		return $buttons;
+	}
+
+	/**
+	 * Adding button to TinnyMCE
+	 *
+	 * @return void
+	 */
+	public function mce_button() {
+
+		// check user permissions
+		if ( !current_user_can( 'edit_posts' ) && !current_user_can( 'edit_pages' ) ) {
+			return;
+		}
+
+		// check if WYSIWYG is enabled
+		if ( 'true' == get_user_option( 'rich_editing' ) ) {
+			add_filter( 'mce_external_plugins', array( $this, 'button_for_tinymce_plugin' ) );
+			add_filter( 'mce_buttons', array( $this, 'register_mce_button' ) );
+		}
 
 	}
 
