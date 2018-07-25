@@ -23,20 +23,25 @@
 				</tr>
 				<tr>
 					<th scope="row"><label for="title">Show Chart Title</label></th>
-					<td>
-						<input type="checkbox" id="title" v-model="showTitle" @change="showingGraphTitle">
-					</td>
+					<td><input type="checkbox" id="title" v-model="showTitle" @change="showingGraphTitle"></td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="titleText">Title Text</label></th>
-					<td>
-						<input type="text" id="titleText" v-model="titleText" @keyup="addTitleText">
-					</td>
+					<td><input class="regular-text" type="text" id="titleText" v-model="titleText" @keyup="addTitleText"></td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="legend">Show Legend</label></th>
+					<td><input type="checkbox" id="legend" v-model="showLegend" @change="showingGraphLegend"></td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="legend">Legend Position</label></th>
 					<td>
-						<input type="checkbox" id="legend" v-model="showLegend" @change="showingGraphLegend">
+						<select id="legend_position" v-model="legendPosition" @change="changeLegendPosition">
+							<option selected="selected" value="top">Top</option>
+							<option value="bottom">Bottom</option>
+							<option value="left">Left</option>
+							<option value="right">Right</option>
+						</select>
 					</td>
 				</tr>
 			</table>

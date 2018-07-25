@@ -6,11 +6,12 @@ new Vue({
 		chartDatasetDataString: '',
 		chartDatasetBgColorString: '',
 		titleText: '',
+		legendPosition: 'top',
 		labels: [],
 		DatasetData: [],
 		DatasetBgColor: [],
 		showTitle: false,
-		showLegend: false
+		showLegend: true
 	},
 	methods: {
 		addLabels() {
@@ -37,7 +38,12 @@ new Vue({
 			this.theChart.update();
 		},
 		showingGraphLegend() {
-
+			this.theChart.options.legend.display = this.showLegend;
+			this.theChart.update();
+		},
+		changeLegendPosition() {
+			this.theChart.options.legend.position = this.legendPosition;
+			this.theChart.update();
 		},
 		onLoad() {
 			var ctx = document.getElementById("barChart");
@@ -56,6 +62,10 @@ new Vue({
 					title: {
 						display: false,
 						text: ''
+					},
+					legend: {
+						display: true,
+						position: 'top'
 					}
 				}
 			});
