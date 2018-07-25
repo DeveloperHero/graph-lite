@@ -52,8 +52,9 @@ class Graph_Lite_Admin {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 
-		add_action('admin_menu', array( $this, 'setting_page' ));
+		// add_action('admin_menu', array( $this, 'setting_page' ));
 		add_action( 'admin_head', array( $this, 'mce_button' ) );
+		add_action( 'add_meta_boxes', [ $this, 'adding_custom_meta_boxes' ], 10, 2 );
 	}
 
 	/**
@@ -106,12 +107,11 @@ class Graph_Lite_Admin {
 
 	}
 
-	public function setting_page() {
+	// public function setting_page() {
 
-		add_options_page('Graph Lite', 'Graph Lite', 'manage_options', 'gl-admin-dashboard', array( $this, 'admin_dashboard' ));
+	// 	add_options_page('Graph Lite', 'Graph Lite', 'manage_options', 'gl-admin-dashboard', array( $this, 'admin_dashboard' ));
 
-
-	}
+	// }
 
 	/**
 	 * Register new button in TinyMCE
@@ -158,10 +158,27 @@ class Graph_Lite_Admin {
 		return $plugin_array;
 	}
 
-	public function admin_dashboard() {
 
-		include 'gl_admindashboard.php';
-
+	public function adding_custom_meta_boxes( $post_type, $post ) {
+	    add_meta_box(
+	        'gl-admin-meta-box',
+	        __( 'Graph Light' ),
+	        [$this, 'render_graph_light_admin_metabox'],
+	        array('post','page'),
+	        'normal',
+	        'default'
+	    );
 	}
+
+
+	public function render_graph_light_admin_metabox(){
+		include plugin_dir_path( __FILE__ ) . '/partials/graphs-lite-admin-display.php';
+	}
+
+	// public function admin_dashboard() {
+
+	// 	include 'gl_admindashboard.php';
+
+	// }
 
 }
