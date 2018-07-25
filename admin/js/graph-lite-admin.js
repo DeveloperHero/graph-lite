@@ -5,9 +5,12 @@ new Vue({
 		chartlabelString: '',
 		chartDatasetDataString: '',
 		chartDatasetBgColorString: '',
+		titleText: '',
 		labels: [],
 		DatasetData: [],
-		DatasetBgColor: []
+		DatasetBgColor: [],
+		showTitle: false,
+		showLegend: false
 	},
 	methods: {
 		addLabels() {
@@ -25,6 +28,17 @@ new Vue({
 			this.theChart.data.datasets[0].backgroundColor = separatingDatasetColor;
 			this.theChart.update();
 		},
+		showingGraphTitle() {
+			this.theChart.options.title.display = this.showTitle;
+			this.theChart.update();
+		},
+		addTitleText() {
+			this.theChart.options.title.text = this.titleText;
+			this.theChart.update();
+		},
+		showingGraphLegend() {
+
+		},
 		onLoad() {
 			var ctx = document.getElementById("barChart");
 			this.theChart = new Chart(ctx, {
@@ -38,7 +52,12 @@ new Vue({
 						}
 					]
 				},
-				options: {}
+				options: {
+					title: {
+						display: false,
+						text: ''
+					}
+				}
 			});
 		}
 	},
