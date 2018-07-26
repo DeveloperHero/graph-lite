@@ -19,6 +19,8 @@ class Graph_Lite_Shortcode
 			'id'	=> '',
 		), $atts ));
 
+		$chart_data = unserialize(get_post_meta( $id, 'graphs_light_data', true ));
+
 		include plugin_dir_path( __FILE__ ) . '../public/partials/graphs-lite-public-display.php';
 
 		return ob_get_clean();
