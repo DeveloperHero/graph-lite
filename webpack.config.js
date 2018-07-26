@@ -2,7 +2,7 @@ var path = require('path')
 var webpack = require('webpack')
 
 module.exports = {
-  entry: './admin/assets/js/graphs-lite-admin.js',
+  entry: './admin/assets/main.js',
   output: {
     path: path.resolve(__dirname, 'admin/js'),
     publicPath: '/js/',
