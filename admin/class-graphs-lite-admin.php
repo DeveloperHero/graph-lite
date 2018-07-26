@@ -53,16 +53,17 @@ class Graph_Lite_Admin {
 		$this->version = $version;
 
 		// add_action('admin_menu', array( $this, 'setting_page' ));
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets') );
 		add_action( 'admin_head', array( $this, 'mce_button' ) );
 		add_action( 'add_meta_boxes', [ $this, 'adding_custom_meta_boxes' ], 10, 2 );
 	}
 
 	/**
-	 * Register the stylesheets for the admin area.
+	 * Register the JavaScript for the admin area.
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_styles() {
+	public function enqueue_assets() {
 
 		/**
 		 * This function is provided for demonstration purposes only.
@@ -78,34 +79,13 @@ class Graph_Lite_Admin {
 
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/graphs-lite-admin.css', array(), $this->version, 'all' );
 
-	}
-
-	/**
-	 * Register the JavaScript for the admin area.
-	 *
-	 * @since    1.0.0
-	 */
-	public function enqueue_scripts() {
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Graph_Lite_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Graph_Lite_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
 		wp_enqueue_script( 'Vuejs', 'https://cdn.jsdelivr.net/npm/vue/dist/vue.js', array( 'jquery' ), $this->version, true );
 
 		wp_enqueue_script( 'Chartjs', 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js', array( 'jquery' ), $this->version, true );
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/graphs-lite-admin.js', array( 'jquery' ), $this->version, true );
 
-		wp_enqueue_script( 'graphs-light-response', plugin_dir_url( __FILE__ ) . 'assets/js/graphs-lite-admin-response.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( 'graphs-light-response', plugin_dir_url( __FILE__ ) . 'assets/graphs-lite-admin-response.js', array( 'jquery' ), $this->version, true );
 
 		// wp_enqueue_style( 'graphs-light-npm-style', plugin_dir_url( __FILE__ ) . 'css/style.css' );
 
@@ -168,7 +148,7 @@ class Graph_Lite_Admin {
 	public function adding_custom_meta_boxes( $post_type, $post ) {
 	    add_meta_box(
 	        'gl-admin-meta-box',
-	        __( 'Graph Light' ),
+	        __( 'Graph Light', 'graphs-light' ),
 	        [$this, 'render_graph_light_admin_metabox'],
 	        array('post','page'),
 	        'normal',
@@ -178,7 +158,9 @@ class Graph_Lite_Admin {
 
 
 	public function render_graph_light_admin_metabox(){
+
 		include plugin_dir_path( __FILE__ ) . '/partials/graphs-lite-admin-display.php';
+
 	}
 
 }
