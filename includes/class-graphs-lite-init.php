@@ -53,4 +53,12 @@ class Graph_Lite_Init
 
         ] );
 	}
+
+	public static function activate() {
+
+	}
+
+	public static function deactivate() {
+
+	}
 }

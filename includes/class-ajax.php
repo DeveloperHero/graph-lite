@@ -39,16 +39,16 @@ class Graph_Lite_Ajax
 
 	public function save_chart() {
 
-		$post_id = wp_insert_post( [
+		$data = $_POST['graph_data'];
 
+		$post_id = wp_insert_post( [
 			'post_type'      => 'graphs_light',
-			'post_title'     => $_POST['data'],
+			'post_title'     => $data['title_text'],
 			'post_status'    => 'publish',
 			'comment_status' => 'closed'
-
 		] );
 
-		update_post_meta( $post_id, 'graphs_light_data', serialize($_POST['data']) );
+		update_post_meta( $post_id, 'graphs_light_data', serialize($data) );
 
 		wp_send_json( $post_id );
 

@@ -3,15 +3,15 @@
 /**
  *
  */
-class Graph_Light_Shortcode
+class Graph_Lite_Shortcode
 {
 
 	public function __construct()
 	{
-		add_shortcode( 'graph_light', [$this, 'graph_light_shortcode'] );
+		add_shortcode( 'graph_lite', [$this, 'graph_lite_shortcode'] );
 	}
 
-	public function graph_light_shortcode($atts)
+	public function graph_lite_shortcode($atts)
 	{
 		ob_start();
 

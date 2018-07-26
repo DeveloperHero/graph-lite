@@ -35,15 +35,21 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'PLUGIN_NAME_VERSION', '1.0.0' );
+define( 'GRAPHS_LITE_VERSION', '1.0.0' );
+define( 'GRAPHS_LITE_NAME', 'Graph Light' );
+
+/**
+ * Initial Class of the plugin
+ * should run first
+ */
+require plugin_dir_path( __FILE__ ) . 'includes/class-graphs-lite-init.php';
 
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-graphs-lite-activator.php
  */
 function activate_graphs_lite() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-graphs-lite-activator.php';
-	Graph_Lite_Activator::activate();
+	Graph_Lite_Init::activate();
 }
 
 /**
@@ -51,8 +57,7 @@ function activate_graphs_lite() {
  * This action is documented in includes/class-graphs-lite-deactivator.php
  */
 function deactivate_graphs_lite() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-graphs-lite-deactivator.php';
-	Graph_Light_Init::deactivate();
+	Graph_Lite_Init::deactivate();
 }
 
 register_activation_hook( __FILE__, 'activate_graphs_lite' );
@@ -62,7 +67,6 @@ register_deactivation_hook( __FILE__, 'deactivate_graphs_lite' );
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require plugin_dir_path( __FILE__ ) . 'includes/class-graphs-lite-init.php';
 require plugin_dir_path( __FILE__ ) . 'includes/class-ajax.php';
 require plugin_dir_path( __FILE__ ) . 'includes/class-shortcode.php';
 require plugin_dir_path( __FILE__ ) . 'admin/class-graphs-lite-admin.php';
@@ -81,9 +85,9 @@ require plugin_dir_path( __FILE__ ) . 'public/class-graphs-lite-public.php';
 function graph_light_run() {
 	new Graph_Lite_Init;
 	new Graph_Lite_Ajax;
-	new Graph_Light_Shortcode;
-	new Graph_Lite_Admin( 'Graph Lite', PLUGIN_NAME_VERSION );
-	new Graph_Lite_Public( 'Graph Lite', PLUGIN_NAME_VERSION );
+	new Graph_Lite_Shortcode;
+	new Graph_Lite_Admin( GRAPHS_LITE_NAME, GRAPHS_LITE_VERSION );
+	new Graph_Lite_Public( GRAPHS_LITE_NAME, GRAPHS_LITE_VERSION );
 }
 
 graph_light_run();

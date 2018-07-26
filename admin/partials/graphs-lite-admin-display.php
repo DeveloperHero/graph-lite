@@ -15,7 +15,7 @@
 
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
 
-<button type="submit" class="close_graph_modal">Close</button>
+<button type="submit" class="close_graph_modal">X</button>
 
 <div class="graphsProject" id="app">
 	<div class="graphsOptions">

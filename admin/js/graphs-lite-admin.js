@@ -12577,12 +12577,34 @@ window.router = router;
 			this.theChart.update();
 		},
 		saveGraphData() {
-			var chartDatas = { 'type': this.chartType, 'labels': this.labels, 'data': this.DatasetData, 'backgroundColor': this.DatasetBgColor, 'title_show': this.showTitle, 'title_text': this.titleText, 'legend_show': this.showLegend, 'legend_position': this.legendPosition };
-			var test = JSON.stringify(chartDatas);
-			var route = gl.save_ajax_url;
-			__WEBPACK_IMPORTED_MODULE_0_axios___default.a.post(route, test).then(response => {
-				var content = '[graph_lite id="' + response.data + '"]';tinymce.activeEditor.execCommand('mceInsertContent', false, content);$('#gl-admin-meta-box').fadeOut();
+			var chartDatas = {
+				'type': this.chartType, 'labels': this.labels, 'data': this.DatasetData, 'backgroundColor': this.DatasetBgColor, 'title_show': this.showTitle, 'title_text': this.titleText, 'legend_show': this.showLegend, 'legend_position': this.legendPosition
+			};
+
+			$.ajax({
+				url: gl.ajax_url,
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					action: 'save_chart',
+					graph_data: chartDatas
+				},
+				success: function (response) {
+					var content = '[graph_lite id="' + response + '"]';
+					tinymce.activeEditor.execCommand('mceInsertContent', false, content);
+					$('#gl-admin-meta-box').fadeOut();
+				},
+				error: function (error) {
+					alert('Something went wront please try again');
+				}
 			});
+
+			// var chart_data = JSON.stringify(chartDatas);
+			// var route = gl.save_ajax_url;
+			// axios.post(route, {chart_data})
+			// .then((response) => {
+			// 	var content = '[graph_lite id="'+response.data+'"]';	tinymce.activeEditor.execCommand('mceInsertContent', false, content);	$('#gl-admin-meta-box').fadeOut();
+			// });
 		},
 		onLoad() {
 			var ctx = document.getElementById("pieChart");
@@ -13412,7 +13434,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__ = __webpack_require__(11);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_28e46b38_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(57);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_a2451ffc_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(57);
 function injectStyle (ssrContext) {
   __webpack_require__(33)
 }
@@ -13432,7 +13454,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_28e46b38_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_a2451ffc_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -13453,7 +13475,7 @@ var content = __webpack_require__(34);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(3)("7afdbc96", content, true, {});
+var update = __webpack_require__(3)("2e929950", content, true, {});
 
 /***/ }),
 /* 34 */

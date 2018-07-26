@@ -102,13 +102,35 @@
 				this.theChart.update();
 			},
 			saveGraphData() {
-				var chartDatas = {'type':this.chartType, 'labels': this.labels, 'data': this.DatasetData, 'backgroundColor': this.DatasetBgColor, 'title_show': this.showTitle, 'title_text': this.titleText, 'legend_show': this.showLegend, 'legend_position': this.legendPosition}
-				var test = JSON.stringify(chartDatas);
-				var route = gl.save_ajax_url;
-				axios.post(route, test)
-				.then((response) => {
-					var content = '[graph_lite id="'+response.data+'"]';	tinymce.activeEditor.execCommand('mceInsertContent', false, content);	$('#gl-admin-meta-box').fadeOut();
+				var chartDatas = {
+					'type':this.chartType, 'labels': this.labels, 'data': this.DatasetData, 'backgroundColor': this.DatasetBgColor, 'title_show': this.showTitle, 'title_text': this.titleText, 'legend_show': this.showLegend, 'legend_position': this.legendPosition
+				};
+
+				$.ajax({
+					url: gl.ajax_url,
+					type: 'POST',
+					dataType: 'json',
+					data: {
+						action: 'save_chart',
+						graph_data: chartDatas,
+					},
+					success: function( response ) {
+						var content = '[graph_lite id="'+response+'"]';
+						tinymce.activeEditor.execCommand('mceInsertContent', false, content);
+						$('#gl-admin-meta-box').fadeOut();
+					},
+					error: function( error ) {
+						alert('Something went wront please try again');
+					}
 				});
+
+
+				// var chart_data = JSON.stringify(chartDatas);
+				// var route = gl.save_ajax_url;
+				// axios.post(route, {chart_data})
+				// .then((response) => {
+				// 	var content = '[graph_lite id="'+response.data+'"]';	tinymce.activeEditor.execCommand('mceInsertContent', false, content);	$('#gl-admin-meta-box').fadeOut();
+				// });
 			},
 			onLoad() {
 				var ctx = document.getElementById("pieChart");
@@ -160,6 +182,6 @@
 		display: block;
 	}
 	.saveGraphData {
-		float: right;		
+		float: right;
 	}
 </style>

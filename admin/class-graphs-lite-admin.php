@@ -86,6 +86,7 @@ class Graph_Lite_Admin {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/graphs-lite-admin.js', array( 'jquery' ), $this->version, true );
 
 		wp_localize_script( $this->plugin_name, 'gl', [
+			'ajax_url'        =>	admin_url( 'admin-ajax.php' ),
 			'save_ajax_url'   =>	admin_url( 'admin-ajax.php?action=save_chart' ),
 			'update_ajax_url' =>	admin_url( 'admin-ajax.php?action=update_chart' ),
 			'delete_ajax_url' =>	admin_url( 'admin-ajax.php?action=delete_chart' ),
