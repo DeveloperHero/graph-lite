@@ -52,7 +52,7 @@ function activate_graphs_lite() {
  */
 function deactivate_graphs_lite() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-graphs-lite-deactivator.php';
-	Graph_Lite_Deactivator::deactivate();
+	Graph_Light_Init::deactivate();
 }
 
 register_activation_hook( __FILE__, 'activate_graphs_lite' );
@@ -62,7 +62,9 @@ register_deactivation_hook( __FILE__, 'deactivate_graphs_lite' );
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require plugin_dir_path( __FILE__ ) . 'includes/class-graphs-lite.php';
+require plugin_dir_path( __FILE__ ) . 'includes/class-graphs-lite-init.php';
+require plugin_dir_path( __FILE__ ) . 'admin/class-graphs-lite-admin.php';
+require plugin_dir_path( __FILE__ ) . 'public/class-graphs-lite-public.php';
 
 /**
  * Begins execution of the plugin.
@@ -73,10 +75,11 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-graphs-lite.php';
  *
  * @since    1.0.0
  */
-function run_graphs_lite() {
 
-	$plugin = new Graph_Lite();
-	$plugin->run();
-
+function graph_light_run() {
+	new Graph_Lite_Init;
+	new Graph_Lite_Admin( 'Graph Lite', PLUGIN_NAME_VERSION );
+	new Graph_Lite_Public( 'Graph Lite', PLUGIN_NAME_VERSION );
 }
-run_graphs_lite();
+
+graph_light_run();
