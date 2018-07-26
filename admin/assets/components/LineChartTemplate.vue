@@ -139,13 +139,33 @@
 			},
 			saveGraphData() {
 				var chartDatas = {'type':this.chartType, 'labels': this.labels, 'datasets': this.datasets, 'title_show': this.showTitle, 'title_text': this.titleText, 'legend_show': this.showLegend, 'legend_position': this.legendPosition};
-				var chart_data = JSON.stringify(chartDatas);
-				var route = gl.save_ajax_url;
 
-				axios.post(route, chart_data)
-				.then((response) => {
-					var content = '[graph_lite id="'+response.data+'"]';	tinymce.activeEditor.execCommand('mceInsertContent', false, content);	$('#gl-admin-meta-box').fadeOut();
-				});
+					$.ajax({
+						url: gl.ajax_url,
+						type: 'POST',
+						dataType: 'json',
+						data: {
+							action: 'save_chart',
+							graph_data: chartDatas,
+						},
+						success: function( response ) {
+							var content = '[graph_lite id="'+response+'"]';
+							tinymce.activeEditor.execCommand('mceInsertContent', false, content);
+							$('#gl-admin-meta-box').fadeOut();
+							$('div#gl-admin-meta-box').find('input:text').val('');
+						},
+						error: function( error ) {
+							alert('Something went wront please try again');
+						}
+					});
+
+				// var chart_data = JSON.stringify(chartDatas);
+				// var route = gl.save_ajax_url;
+
+				// axios.post(route, chart_data)
+				// .then((response) => {
+				// 	var content = '[graph_lite id="'+response.data+'"]';	tinymce.activeEditor.execCommand('mceInsertContent', false, content);	$('#gl-admin-meta-box').fadeOut();
+				// });
 			},
 			onLoad() {
 				var ctx = document.getElementById("lineChart");
@@ -195,6 +215,6 @@
 		width: 50%;
 	}
 	.saveGraphData {
-		float: right;		
+		float: right;
 	}
 </style>
