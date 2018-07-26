@@ -118,6 +118,7 @@
 						var content = '[graph_lite id="'+response+'"]';
 						tinymce.activeEditor.execCommand('mceInsertContent', false, content);
 						$('#gl-admin-meta-box').fadeOut();
+						$('div#gl-admin-meta-box').find('input:text').val('');
 					},
 					error: function( error ) {
 						alert('Something went wront please try again');
