@@ -64,6 +64,7 @@ register_deactivation_hook( __FILE__, 'deactivate_graphs_lite' );
  */
 require plugin_dir_path( __FILE__ ) . 'includes/class-graphs-lite-init.php';
 require plugin_dir_path( __FILE__ ) . 'includes/class-ajax.php';
+require plugin_dir_path( __FILE__ ) . 'includes/class-shortcode.php';
 require plugin_dir_path( __FILE__ ) . 'admin/class-graphs-lite-admin.php';
 require plugin_dir_path( __FILE__ ) . 'public/class-graphs-lite-public.php';
 
@@ -80,6 +81,7 @@ require plugin_dir_path( __FILE__ ) . 'public/class-graphs-lite-public.php';
 function graph_light_run() {
 	new Graph_Lite_Init;
 	new Graph_Lite_Ajax;
+	new Graph_Light_Shortcode;
 	new Graph_Lite_Admin( 'Graph Lite', PLUGIN_NAME_VERSION );
 	new Graph_Lite_Public( 'Graph Lite', PLUGIN_NAME_VERSION );
 }

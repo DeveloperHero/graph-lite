@@ -85,6 +85,12 @@ class Graph_Lite_Admin {
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/graphs-lite-admin.js', array( 'jquery' ), $this->version, true );
 
+		wp_localize_script( $this->plugin_name, 'gl', [
+			'save_ajax_url'   =>	admin_url( 'admin-ajax.php?action=save_chart' ),
+			'update_ajax_url' =>	admin_url( 'admin-ajax.php?action=update_chart' ),
+			'delete_ajax_url' =>	admin_url( 'admin-ajax.php?action=delete_chart' ),
+		] );
+
 		wp_enqueue_script( 'graphs-light-response', plugin_dir_url( __FILE__ ) . 'assets/graphs-lite-admin-response.js', array( 'jquery' ), $this->version, true );
 
 		// wp_enqueue_style( 'graphs-light-npm-style', plugin_dir_url( __FILE__ ) . 'css/style.css' );
