@@ -37,6 +37,10 @@
 						</select>
 					</td>
 				</tr>
+				<tr>
+					<th scope="row"><label></label></th>
+					<td><button type="button" class="saveGraphData" @click="saveGraphData">Save</button></td>
+				</tr>
 			</table>
 		</div>
 		<div class="graphDiv">
@@ -46,6 +50,9 @@
 </template>
 
 <script type="text/javascript">
+	import axios from 'axios';
+	import querystring from 'querystring';
+
 	export default {
 		data() {
 			return {
@@ -94,6 +101,36 @@
 				this.theChart.options.legend.position = this.legendPosition;
 				this.theChart.update();
 			},
+			saveGraphData() {
+				var chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: [
+							{
+								data: this.DatasetData,
+								backgroundColor: this.DatasetBgColor
+							}
+						]
+					},
+					options: {
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				}
+
+				var route = gl.save_ajax_url;
+				axios.post(route, querystring.stringify(chartDatas))
+				.then((response) => {
+					var content = '[graph_lite id="'+response.data+'"]';	tinymce.activeEditor.execCommand('mceInsertContent', false, content);	$('#gl-admin-meta-box').fadeOut();
+				});
+			},
 			onLoad() {
 				var ctx = document.getElementById("pieChart");
 				this.theChart = new Chart(ctx, {
@@ -139,5 +176,11 @@
 	}
 	.graphDiv {
 		width: 50%;
+	}
+	.saveGraphDataButton {
+		display: block;
+	}
+	.saveGraphData {
+		float: right;		
 	}
 </style>

@@ -3,9 +3,9 @@
         <div class="dropdown">
             <button class="dropbtn">{{currentRoute}}</button>
             <div class="dropdown-content">
-                <a href="javascript:void(0)" @click="loadBarGraphTemplate">Bar</a>
-                <a href="javascript:void(0)" @click="loadLineGraphTemplate">Line</a>
-                <a href="javascript:void(0)" @click="loadPieGraphTemplate">Pie</a>
+                <a href="javascript:void(0)" @click="loadBarGraphTemplate" ref="barMneu">Bar</a>
+                <a href="javascript:void(0)" @click="loadLineGraphTemplate" ref="lineMneu">Line</a>
+                <a href="javascript:void(0)" @click="loadPieGraphTemplate" ref="pieMneu">Pie</a>
             </div>
         </div>
         <router-view></router-view>
@@ -30,15 +30,15 @@
   Vue.use(VueRouter);
 
   const routes = [
-    { path: '/barChart', name: 'barChart', component: barChart, props: true },
-    { path: '/lineChart', name: 'lineChart', component: lineChart, props: true },
-    { path: '/pieChart', name: 'pieChart', component: pieChart, props: true },
-    { path: '/doughnutChart', name: 'doughnutChart', component: doughnutChart, props: true },
-    { path: '/radarChart', name: 'radarChart', component: radarChart, props: true },
-    { path: '/polarAreaChart', name: 'polarAreaChart', component: polarAreaChart, props: true},
-    { path: '/bubbleChart', name: 'bubbleChart', component: bubbleChart, props: true},
-    { path: '/areaChart', name: 'areaChart', component: areaChart, props: true},
-    { path: '/scatterChart', name: 'scatterChart', component: scatterChart, props: true},
+    { path: '/barChart', name: 'barChart', component: barChart },
+    { path: '/lineChart', name: 'lineChart', component: lineChart },
+    { path: '/pieChart', name: 'pieChart', component: pieChart },
+    { path: '/doughnutChart', name: 'doughnutChart', component: doughnutChart },
+    { path: '/radarChart', name: 'radarChart', component: radarChart },
+    { path: '/polarAreaChart', name: 'polarAreaChart', component: polarAreaChart },
+    { path: '/bubbleChart', name: 'bubbleChart', component: bubbleChart },
+    { path: '/areaChart', name: 'areaChart', component: areaChart },
+    { path: '/scatterChart', name: 'scatterChart', component: scatterChart },
   ];
 
   const router = new VueRouter({
@@ -56,6 +56,7 @@
     },
     methods: {
         loadBarGraphTemplate() {
+            // console.log(this.$refs)
             router.push({ name: 'barChart' });
         },
         loadLineGraphTemplate() {
