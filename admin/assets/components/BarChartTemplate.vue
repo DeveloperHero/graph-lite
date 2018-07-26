@@ -24,6 +24,7 @@
 					<th scope="row"><label></label></th>
 					<td>
 						<input type="button" id="add_dataset" class="button button-primary" value="Add Dataset" @click="addDataset">
+						<!-- <input type="button" id="delete_dataset" class="button button-danger" value="Delete Dataset" @click="deleteDataset"> -->
 					</td>
 				</tr>
 				<tr>
@@ -61,17 +62,22 @@
 	export default {
 		data() {
 			return {
-				chartType: 'pie',
-				chartlabelString: '',
-				chartDatasetDataString: '',
-				chartDatasetBgColorString: '',
+				chartType: 'bar',
+				chartlabelsString: '',
 				titleText: '',
 				legendPosition: 'top',
 				labels: [],
-				DatasetData: [],
-				DatasetBgColor: [],
 				showTitle: false,
-				showLegend: true
+				showLegend: true,
+				datasets: [
+					{
+						label: '',
+						chartDatasetDataString: '',
+						chartDatasetBgColor: '',
+						data: [],
+						backgroundColor: ''
+					}
+				]
 			};
 		},
 		methods: {
