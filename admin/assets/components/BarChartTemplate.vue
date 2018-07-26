@@ -50,6 +50,10 @@
 						</select>
 					</td>
 				</tr>
+				<tr>
+					<th scope="row"><label></label></th>
+					<td><button type="button" class="saveGraphData" @click="saveGraphData">Save</button></td>
+				</tr>
 			</table>
 		</div>
 		<div class="graphDiv">
@@ -133,6 +137,16 @@
 			deleteDataset() {
 
 			},
+			saveGraphData() {
+				var chartDatas = {'type':this.chartType, 'labels': this.labels, 'datasets': this.datasets, 'title_show': this.showTitle, 'title_text': this.titleText, 'legend_show': this.showLegend, 'legend_position': this.legendPosition};
+				var chart_data = JSON.stringify(chartDatas);
+				var route = gl.save_ajax_url;
+
+				axios.post(route, chart_data)
+				.then((response) => {
+					var content = '[graph_lite id="'+response.data+'"]';	tinymce.activeEditor.execCommand('mceInsertContent', false, content);	$('#gl-admin-meta-box').fadeOut();
+				});
+			},
 			onLoad() {
 				var ctx = document.getElementById("barChart");
 				this.theChart = new Chart(ctx, {
@@ -179,5 +193,8 @@
 	}
 	.graphDiv {
 		width: 50%;
+	}
+	.saveGraphData {
+		float: right;		
 	}
 </style>
