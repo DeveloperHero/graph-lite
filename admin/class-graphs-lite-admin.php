@@ -105,9 +105,9 @@ class Graph_Lite_Admin {
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/graphs-lite-admin.js', array( 'jquery' ), $this->version, true );
 
-		wp_enqueue_style( 'graphs-light-npm-style', plugin_dir_url( __FILE__ ) . 'css/style.css' );
+		// wp_enqueue_style( 'graphs-light-npm-style', plugin_dir_url( __FILE__ ) . 'css/style.css' );
 
-		wp_enqueue_script( 'graphs-light-npm-js', plugin_dir_url( __FILE__ ) . 'js/scripts.js', array(), false, true );
+		// wp_enqueue_script( 'graphs-light-npm-js', plugin_dir_url( __FILE__ ) . 'js/scripts.js', array(), false, true );
 
 	}
 
