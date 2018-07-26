@@ -6,8 +6,8 @@
  * @link       http://orchestra.ltd
  * @since      1.0.0
  *
- * @package    Graph_Lite
- * @subpackage Graph_Lite/admin
+ * @package    Graphs_Lite
+ * @subpackage Graphs_Lite/admin
  */
 
 /**
@@ -16,8 +16,8 @@
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
- * @package    Graph_Lite
- * @subpackage Graph_Lite/admin
+ * @package    Graphs_Lite
+ * @subpackage Graphs_Lite/admin
  * @author     Orchestra Technologies <ask@orchestra.ltd>
  */
 class Graph_Lite_Admin {
@@ -52,8 +52,9 @@ class Graph_Lite_Admin {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 
-		add_action('admin_menu', array( $this, 'setting_page' ));
-
+		// add_action('admin_menu', array( $this, 'setting_page' ));
+		add_action( 'admin_head', array( $this, 'mce_button' ) );
+		add_action( 'add_meta_boxes', [ $this, 'adding_custom_meta_boxes' ], 10, 2 );
 	}
 
 	/**
@@ -106,17 +107,78 @@ class Graph_Lite_Admin {
 
 	}
 
-	public function setting_page() {
+	// public function setting_page() {
 
-		add_options_page('Graph Lite', 'Graph Lite', 'manage_options', 'gl-admin-dashboard', array( $this, 'admin_dashboard' ));
+	// 	add_options_page('Graph Lite', 'Graph Lite', 'manage_options', 'gl-admin-dashboard', array( $this, 'admin_dashboard' ));
 
+	// }
+
+	/**
+	 * Register new button in TinyMCE
+	 *
+	 * @return array
+	 */
+	public function register_mce_button( $buttons ) {
+
+		array_push( $buttons, 'graphs_lite_mce_btn' );
+
+		return $buttons;
+	}
+
+	/**
+	 * Adding button to TinyMCE
+	 *
+	 * @return void
+	 */
+	public function mce_button() {
+
+		// check user permissions
+		if ( !current_user_can( 'edit_posts' ) && !current_user_can( 'edit_pages' ) ) {
+			return;
+		}
+
+		// check if WYSIWYG is enabled
+		if ( 'true' == get_user_option( 'rich_editing' ) ) {
+			add_filter( 'mce_external_plugins', array( $this, 'button_for_tinymce_plugin' ) );
+			add_filter( 'mce_buttons', array( $this, 'register_mce_button' ) );
+		}
 
 	}
 
-	public function admin_dashboard() {
+	/**
+	 * Declareing script for new button
+	 *
+	 * @return array
+	 *
+	 */
+	public function button_for_tinymce_plugin( $plugin_array ) {
 
-		include 'gl_admindashboard.php';
+		$plugin_array['graphs_lite_mce_btn'] = plugins_url( '/js/tinyMCE_hooks.js', __FILE__ );
 
+		return $plugin_array;
 	}
+
+
+	public function adding_custom_meta_boxes( $post_type, $post ) {
+	    add_meta_box(
+	        'gl-admin-meta-box',
+	        __( 'Graph Light' ),
+	        [$this, 'render_graph_light_admin_metabox'],
+	        array('post','page'),
+	        'normal',
+	        'default'
+	    );
+	}
+
+
+	public function render_graph_light_admin_metabox(){
+		include plugin_dir_path( __FILE__ ) . '/partials/graphs-lite-admin-display.php';
+	}
+
+	// public function admin_dashboard() {
+
+	// 	include 'gl_admindashboard.php';
+
+	// }
 
 }
