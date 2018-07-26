@@ -1,6 +1,6 @@
 <template>
-	<div class="pieChart" id="app">
-		<div class="graphsOptions">
+	<div class="pieChart" id="pie">
+		<div class="graphOptions">
 			<table class="form-table">
 				<tr>
 					<th scope="row"><label for="labels">Labels</label></th>
@@ -39,8 +39,8 @@
 				</tr>
 			</table>
 		</div>
-		<div class="graphsDiv">
-			<canvas id="barChart"></canvas>
+		<div class="graphDiv">
+			<canvas id="pieChart"></canvas>
 		</div>
 	</div>
 </template>
@@ -95,7 +95,7 @@
 				this.theChart.update();
 			},
 			onLoad() {
-				var ctx = document.getElementById("barChart");
+				var ctx = document.getElementById("pieChart");
 				this.theChart = new Chart(ctx, {
 					type: this.chartType,
 					data: {
@@ -127,5 +127,17 @@
 </script>
 
 <style type="text/css">
-
+	.pieChart {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: row;
+	}
+	.graphOptions {
+		width: 50%;
+		padding-top: 20px;
+	}
+	.graphDiv {
+		width: 50%;
+	}
 </style>
