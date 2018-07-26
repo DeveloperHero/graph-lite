@@ -102,31 +102,31 @@
 				this.theChart.update();
 			},
 			saveGraphData() {
-				var chartDatas = {
-					type: this.chartType,
-					data: {
-						labels: this.labels,
-						datasets: [
-							{
-								data: this.DatasetData,
-								backgroundColor: this.DatasetBgColor
-							}
-						]
-					},
-					options: {
-						title: {
-							display: this.showTitle,
-							text: this.titleText
-						},
-						legend: {
-							display: this.showLegend,
-							position: this.legendPosition
-						}
-					}
-				}
+				// var chartDatas = {
+				// 	type: this.chartType,
+				// 	data: {
+				// 		labels: this.labels,
+				// 		datasets: [
+				// 			{
+				// 				data: this.DatasetData,
+				// 				backgroundColor: this.DatasetBgColor
+				// 			}
+				// 		]
+				// 	},
+				// 	options: {
+				// 		title: {
+				// 			display: this.showTitle,
+				// 			text: this.titleText
+				// 		},
+				// 		legend: {
+				// 			display: this.showLegend,
+				// 			position: this.legendPosition
+				// 		}
+				// 	}
+				// }
 
 				var route = gl.save_ajax_url;
-				axios.post(route, querystring.stringify(chartDatas))
+				axios.post(route, querystring.stringify({'type':this.chartType, 'labels': this.labels, 'data': this.DatasetData, 'backgroundColor': this.DatasetBgColor, 'title_show': this.showTitle, 'title_text': this.titleText, 'legend_show': this.showLegend, 'legend_position': this.legendPosition}))
 				.then((response) => {
 					var content = '[graph_lite id="'+response.data+'"]';	tinymce.activeEditor.execCommand('mceInsertContent', false, content);	$('#gl-admin-meta-box').fadeOut();
 				});

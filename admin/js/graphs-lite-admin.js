@@ -12110,15 +12110,16 @@ window.router = router;
   router,
   data() {
     return {
-      currentRoute: 'bar'
+      currentRoute: 'Pie'
     };
   },
   methods: {
     loadBarGraphTemplate() {
-      // console.log(this.$refs)
+      this.currentRoute = this.$refs.barMenu.text;
       router.push({ name: 'barChart' });
     },
     loadLineGraphTemplate() {
+      this.currentRoute = this.$refs.barMenu.text;
       router.push({ name: 'lineChart' });
     },
     loadPieGraphTemplate() {
@@ -12422,29 +12423,31 @@ window.router = router;
 			this.theChart.update();
 		},
 		saveGraphData() {
-			var chartDatas = {
-				type: this.chartType,
-				data: {
-					labels: this.labels,
-					datasets: [{
-						data: this.DatasetData,
-						backgroundColor: this.DatasetBgColor
-					}]
-				},
-				options: {
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
+			// var chartDatas = {
+			// 	type: this.chartType,
+			// 	data: {
+			// 		labels: this.labels,
+			// 		datasets: [
+			// 			{
+			// 				data: this.DatasetData,
+			// 				backgroundColor: this.DatasetBgColor
+			// 			}
+			// 		]
+			// 	},
+			// 	options: {
+			// 		title: {
+			// 			display: this.showTitle,
+			// 			text: this.titleText
+			// 		},
+			// 		legend: {
+			// 			display: this.showLegend,
+			// 			position: this.legendPosition
+			// 		}
+			// 	}
+			// }
 
 			var route = gl.save_ajax_url;
-			__WEBPACK_IMPORTED_MODULE_0_axios___default.a.post(route, __WEBPACK_IMPORTED_MODULE_1_querystring___default.a.stringify(chartDatas)).then(response => {
+			__WEBPACK_IMPORTED_MODULE_0_axios___default.a.post(route, __WEBPACK_IMPORTED_MODULE_1_querystring___default.a.stringify({ 'type': this.chartType, 'labels': this.labels, 'data': this.DatasetData, 'backgroundColor': this.backgroundColor, 'title_show': this.showTitle, 'title_text': this.title_text, 'legend_show': this.showLegend, 'legend_position': this.legend_position })).then(response => {
 				var content = '[graph_lite id="' + response.data + '"]';tinymce.activeEditor.execCommand('mceInsertContent', false, content);$('#gl-admin-meta-box').fadeOut();
 			});
 		},
@@ -13031,7 +13034,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(8);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_37d5994c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7d53f9a3_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(65);
 function injectStyle (ssrContext) {
   __webpack_require__(21)
 }
@@ -13051,7 +13054,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_37d5994c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7d53f9a3_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -13072,7 +13075,7 @@ var content = __webpack_require__(22);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(3)("2ea19640", content, true, {});
+var update = __webpack_require__(3)("2e5bf614", content, true, {});
 
 /***/ }),
 /* 22 */
@@ -13276,7 +13279,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__ = __webpack_require__(11);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_b539488a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(57);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_dea14f38_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(57);
 function injectStyle (ssrContext) {
   __webpack_require__(33)
 }
@@ -13296,7 +13299,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_b539488a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_dea14f38_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -13317,7 +13320,7 @@ var content = __webpack_require__(34);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(3)("14340fb6", content, true, {});
+var update = __webpack_require__(3)("6d184ed8", content, true, {});
 
 /***/ }),
 /* 34 */
@@ -17240,7 +17243,7 @@ if (inBrowser && window.Vue) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"id":"app"}},[_c('div',{staticClass:"dropdown"},[_c('button',{staticClass:"dropbtn"},[_vm._v(_vm._s(_vm.currentRoute))]),_vm._v(" "),_c('div',{staticClass:"dropdown-content"},[_c('a',{ref:"barMneu",attrs:{"href":"javascript:void(0)"},on:{"click":_vm.loadBarGraphTemplate}},[_vm._v("Bar")]),_vm._v(" "),_c('a',{ref:"lineMneu",attrs:{"href":"javascript:void(0)"},on:{"click":_vm.loadLineGraphTemplate}},[_vm._v("Line")]),_vm._v(" "),_c('a',{ref:"pieMneu",attrs:{"href":"javascript:void(0)"},on:{"click":_vm.loadPieGraphTemplate}},[_vm._v("Pie")])])]),_vm._v(" "),_c('router-view')],1)}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"id":"app"}},[_c('div',{staticClass:"dropdown"},[_c('button',{staticClass:"dropbtn"},[_vm._v(_vm._s(_vm.currentRoute))]),_vm._v(" "),_c('div',{staticClass:"dropdown-content"},[_c('a',{ref:"barMenu",attrs:{"href":"javascript:void(0)"},on:{"click":_vm.loadBarGraphTemplate}},[_vm._v("Bar")]),_vm._v(" "),_c('a',{ref:"lineMenu",attrs:{"href":"javascript:void(0)"},on:{"click":_vm.loadLineGraphTemplate}},[_vm._v("Line")]),_vm._v(" "),_c('a',{ref:"pieMenu",attrs:{"href":"javascript:void(0)"},on:{"click":_vm.loadPieGraphTemplate}},[_vm._v("Pie")])])]),_vm._v(" "),_c('router-view')],1)}
 var staticRenderFns = []
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);

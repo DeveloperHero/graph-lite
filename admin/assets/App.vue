@@ -3,9 +3,9 @@
         <div class="dropdown">
             <button class="dropbtn">{{currentRoute}}</button>
             <div class="dropdown-content">
-                <a href="javascript:void(0)" @click="loadBarGraphTemplate" ref="barMneu">Bar</a>
-                <a href="javascript:void(0)" @click="loadLineGraphTemplate" ref="lineMneu">Line</a>
-                <a href="javascript:void(0)" @click="loadPieGraphTemplate" ref="pieMneu">Pie</a>
+                <a href="javascript:void(0)" @click="loadBarGraphTemplate" ref="barMenu">Bar</a>
+                <a href="javascript:void(0)" @click="loadLineGraphTemplate" ref="lineMenu">Line</a>
+                <a href="javascript:void(0)" @click="loadPieGraphTemplate" ref="pieMenu">Pie</a>
             </div>
         </div>
         <router-view></router-view>
@@ -51,18 +51,20 @@
     router,
     data () {
       return {
-        currentRoute: 'bar'
+        currentRoute: 'Pie'
       }
     },
     methods: {
         loadBarGraphTemplate() {
-            // console.log(this.$refs)
+          	this.currentRoute = this.$refs.barMenu.text;
             router.push({ name: 'barChart' });
         },
         loadLineGraphTemplate() {
+        	this.currentRoute = this.$refs.lineMenu.text;
             router.push({ name: 'lineChart' });
         },
         loadPieGraphTemplate() {
+        	this.currentRoute = this.$refs.pieMenu.text;
             router.push({ name: 'pieChart' });
         }
     },
