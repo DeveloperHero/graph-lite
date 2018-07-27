@@ -3,10 +3,15 @@
         <div class="dropdown">
             <button class="dropbtn">{{currentRoute}}</button>
             <div class="dropdown-content">
-                <a href="javascript:void(0)" @click="loadPieGraphTemplate" ref="pieMenu">Pie Chart</a>
-                <a href="javascript:void(0)" @click="loadBarGraphTemplate" ref="barMenu">Bar Chart</a>
-                <a href="javascript:void(0)" @click="loadLineGraphTemplate" ref="lineMenu">Line Chart</a>
-                <a href="javascript:void(0)" @click="loadRadarGraphTemplate" ref="radarMenu">Radar Chart</a>
+                <a href="javascript:void(0)" @click="loadGraphTemplates('pie')">Pie Chart</a>
+                <a href="javascript:void(0)" @click="loadGraphTemplates('doughnut')">Doughnut Chart</a>
+                <a href="javascript:void(0)" @click="loadGraphTemplates('polarArea')">Polar Area Chart</a>
+                <a href="javascript:void(0)" @click="loadGraphTemplates('bar')">Bar Chart</a>
+                <a href="javascript:void(0)" @click="loadGraphTemplates('line')">Line Chart</a>
+                <a href="javascript:void(0)" @click="loadGraphTemplates('radar')">Radar Chart</a>
+                <a href="javascript:void(0)" @click="loadGraphTemplates('bubble')">Bubble Chart</a>
+                <a href="javascript:void(0)" @click="loadGraphTemplates('scatter')">Scatter Chart</a>
+                <a href="javascript:void(0)" @click="loadGraphTemplates('area')">Area Chart</a>
             </div>
         </div>
         <router-view></router-view>
@@ -24,7 +29,6 @@
   import areaChart from './components/AreaChartTemplate';
   import scatterChart from './components/ScatterChartTemplate';
 
-
   import Vue from 'vue';
   import VueRouter from 'vue-router';
 
@@ -39,7 +43,7 @@
     { path: '/polarAreaChart', name: 'polarAreaChart', component: polarAreaChart },
     { path: '/bubbleChart', name: 'bubbleChart', component: bubbleChart },
     { path: '/areaChart', name: 'areaChart', component: areaChart },
-    { path: '/scatterChart', name: 'scatterChart', component: scatterChart },
+    { path: '/scatterChart', name: 'scatterChart', component: scatterChart }
   ];
 
   const router = new VueRouter({
@@ -56,21 +60,9 @@
         }
     },
     methods: {
-        loadBarGraphTemplate() {
-        	this.currentRoute = this.$refs.barMenu.text;
-            router.push({ name: 'barChart' });
-        },
-        loadLineGraphTemplate() {
-        	this.currentRoute = this.$refs.lineMenu.text;
-            router.push({ name: 'lineChart' });
-        },
-        loadPieGraphTemplate() {
-        	this.currentRoute = this.$refs.pieMenu.text;
-            router.push({ name: 'pieChart' });
-        },
-        loadRadarGraphTemplate() {
-            this.currentRoute = this.$refs.radarMenu.text;
-            router.push({ name: 'radarChart' });
+        loadGraphTemplates(chartName) {
+        	this.currentRoute = chartName[0].toUpperCase() + chartName.substr(1) + " Chart";
+            router.push({ name: chartName + 'Chart' });
         }
     },
     mounted() {

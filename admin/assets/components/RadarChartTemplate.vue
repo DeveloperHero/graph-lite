@@ -16,15 +16,18 @@
 						<td><input class="regular-text" type="text" id="datasets" v-model="data.chartDatasetDataString" @keyup="addDatasetData(index)"></td>
 					</tr>
 					<tr>
-						<th scope="row"><label for="colors">Color</label></th>
-						<td><input class="regular-text" type="text" id="colors" v-model="data.chartDatasetBgColor" @keyup="addDatasetBgColor(index)"></td>
+						<th scope="row"><label for="colors">Background Color</label></th>
+						<td><input class="regular-text" type="text" id="colors" v-model="data.backgroundColor" @keyup="addDatasetBgColor(index)"></td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="line_color">Line Color</label></th>
+						<td><input class="regular-text" type="text" id="line_color" v-model="data.borderColor" @keyup="addDatasetborderColor(index)"></td>
 					</tr>
 				</template>
 				<tr>
 					<th scope="row"><label></label></th>
 					<td>
 						<input type="button" id="add_dataset" class="button button-primary" value="Add Dataset" @click="addDataset">
-						<!-- <input type="button" id="delete_dataset" class="button button-danger" value="Delete Dataset" @click="deleteDataset"> -->
 					</td>
 				</tr>
 				<tr>
@@ -77,9 +80,9 @@
 					{
 						label: '',
 						chartDatasetDataString: '',
-						chartDatasetBgColor: '',
 						data: [],
-						backgroundColor: ''
+						backgroundColor: '',
+						borderColor: ''
 					}
 				]
 			};
@@ -89,14 +92,15 @@
 				this.datasets.push({
 					label: '',
 					chartDatasetDataString: '',
-					chartDatasetBgColor: '',
 					data: [],
-					backgroundColor: []
+					backgroundColor: '',
+					borderColor: ''
 				});
 				this.theChart.data.datasets.push({
 					label: '',
 					data: [],
-					backgroundColor: []
+					backgroundColor: '',
+					borderColor: ''
 				});
 				this.theChart.update();
 			},
@@ -115,7 +119,11 @@
 				this.theChart.update();
 			},
 			addDatasetBgColor(index) {
-				this.theChart.data.datasets[index].backgroundColor = this.datasets[index].chartDatasetBgColor;
+				this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
+				this.theChart.update();
+			},
+			addDatasetborderColor(index) {
+				this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
 				this.theChart.update();
 			},
 			showingGraphTitle() {
