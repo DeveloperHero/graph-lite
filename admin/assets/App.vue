@@ -3,9 +3,10 @@
         <div class="dropdown">
             <button class="dropbtn">{{currentRoute}}</button>
             <div class="dropdown-content">
-                <a href="javascript:void(0)" @click="loadBarGraphTemplate" ref="barMenu">Bar</a>
-                <a href="javascript:void(0)" @click="loadLineGraphTemplate" ref="lineMenu">Line</a>
-                <a href="javascript:void(0)" @click="loadPieGraphTemplate" ref="pieMenu">Pie</a>
+                <a href="javascript:void(0)" @click="loadPieGraphTemplate" ref="pieMenu">Pie Chart</a>
+                <a href="javascript:void(0)" @click="loadBarGraphTemplate" ref="barMenu">Bar Chart</a>
+                <a href="javascript:void(0)" @click="loadLineGraphTemplate" ref="lineMenu">Line Chart</a>
+                <a href="javascript:void(0)" @click="loadRadarGraphTemplate" ref="radarMenu">Radar Chart</a>
             </div>
         </div>
         <router-view></router-view>
@@ -50,13 +51,13 @@
     name: 'app',
     router,
     data () {
-      return {
-        currentRoute: 'Pie'
-      }
+        return {
+            currentRoute: 'Pie'
+        }
     },
     methods: {
         loadBarGraphTemplate() {
-          	this.currentRoute = this.$refs.barMenu.text;
+        	this.currentRoute = this.$refs.barMenu.text;
             router.push({ name: 'barChart' });
         },
         loadLineGraphTemplate() {
@@ -66,6 +67,10 @@
         loadPieGraphTemplate() {
         	this.currentRoute = this.$refs.pieMenu.text;
             router.push({ name: 'pieChart' });
+        },
+        loadRadarGraphTemplate() {
+            this.currentRoute = this.$refs.radarMenu.text;
+            router.push({ name: 'radarChart' });
         }
     },
     mounted() {

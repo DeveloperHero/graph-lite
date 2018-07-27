@@ -16,15 +16,26 @@
 						<td><input class="regular-text" type="text" id="datasets" v-model="data.chartDatasetDataString" @keyup="addDatasetData(index)"></td>
 					</tr>
 					<tr>
-						<th scope="row"><label for="colors">Color</label></th>
-						<td><input class="regular-text" type="text" id="colors" v-model="data.chartDatasetBgColor" @keyup="addDatasetBgColor(index)"></td>
+						<th scope="row"><label for="colors">Background Color</label></th>
+						<td><input class="regular-text" type="text" id="colors" v-model="data.backgroundColor" @keyup="addDatasetBgColor(index)"></td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="line_color">Line Color</label></th>
+						<td><input class="regular-text" type="text" id="line_color" v-model="data.borderColor" @keyup="addDatasetborderColor(index)"></td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="fill">Fill Color Under the line</label></th>
+						<td><input type="checkbox" id="fill" v-model="data.fill" @change="fillColor(index)"></td>
+					</tr>
+					<tr>
+						<th scope="row"><label></label></th>
+						<td><input type="button" class="button button-danger delete_dataset" value="Delete Dataset" @click="deleteDataset(index)"></td>
 					</tr>
 				</template>
 				<tr>
 					<th scope="row"><label></label></th>
 					<td>
 						<input type="button" id="add_dataset" class="button button-primary" value="Add Dataset" @click="addDataset">
-						<!-- <input type="button" id="delete_dataset" class="button button-danger" value="Delete Dataset" @click="deleteDataset"> -->
 					</td>
 				</tr>
 				<tr>
@@ -34,6 +45,10 @@
 				<tr>
 					<th scope="row"><label for="titleText">Title Text</label></th>
 					<td><input class="regular-text" type="text" id="titleText" v-model="titleText" @keyup="addTitleText"></td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="beginAtZero">yAxes Range (Begin at 0)</label></th>
+					<td><input type="checkbox" id="beginAtZero" v-model="beginAtZero" @change="yAxesRange"></td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="legend">Show Legend</label></th>
@@ -73,13 +88,15 @@
 				labels: [],
 				showTitle: false,
 				showLegend: true,
+				beginAtZero: false,
 				datasets: [
 					{
 						label: '',
 						chartDatasetDataString: '',
-						chartDatasetBgColor: '',
 						data: [],
-						backgroundColor: ''
+						backgroundColor: '',
+						borderColor: '',
+						fill: false
 					}
 				]
 			};
@@ -89,14 +106,17 @@
 				this.datasets.push({
 					label: '',
 					chartDatasetDataString: '',
-					chartDatasetBgColor: '',
 					data: [],
-					backgroundColor: []
+					backgroundColor: '',
+					borderColor: '',
+					fill: false
 				});
 				this.theChart.data.datasets.push({
 					label: '',
 					data: [],
-					backgroundColor: []
+					backgroundColor: '',
+					borderColor: '',
+					fill: false
 				});
 				this.theChart.update();
 			},
@@ -115,7 +135,15 @@
 				this.theChart.update();
 			},
 			addDatasetBgColor(index) {
-				this.theChart.data.datasets[index].backgroundColor = this.datasets[index].chartDatasetBgColor;
+				this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
+				this.theChart.update();
+			},
+			addDatasetborderColor(index) {
+				this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
+				this.theChart.update();
+			},
+			fillColor(index) {
+				this.theChart.data.datasets[index].fill = this.datasets[index].fill;
 				this.theChart.update();
 			},
 			showingGraphTitle() {
@@ -134,38 +162,36 @@
 				this.theChart.options.legend.position = this.legendPosition;
 				this.theChart.update();
 			},
-			deleteDataset() {
-
+			yAxesRange() {
+				this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero;
+				this.theChart.update();
+			},
+			deleteDataset(index) {
+				this.datasets.splice(index, 1);
+				this.theChart.data.datasets.splice(index, 1);
+				this.theChart.update();
 			},
 			saveGraphData() {
-				var chartDatas = {'type':this.chartType, 'labels': this.labels, 'datasets': this.datasets, 'title_show': this.showTitle, 'title_text': this.titleText, 'legend_show': this.showLegend, 'legend_position': this.legendPosition};
+				var chartDatas = { 'type':this.chartType, 'labels': this.labels, 'datasets': this.datasets, 'title_show': this.showTitle, 'title_text': this.titleText, 'legend_show': this.showLegend, 'legend_position': this.legendPosition, 'beginAtZero': this.beginAtZero };
 
-					$.ajax({
-						url: gl.ajax_url,
-						type: 'POST',
-						dataType: 'json',
-						data: {
-							action: 'save_chart',
-							graph_data: chartDatas,
-						},
-						success: function( response ) {
-							var content = '[graph_lite id="'+response+'"]';
-							tinymce.activeEditor.execCommand('mceInsertContent', false, content);
-							$('#gl-admin-meta-box').fadeOut();
-							$('div#gl-admin-meta-box').find('input:text').val('');
-						},
-						error: function( error ) {
-							alert('Something went wront please try again');
-						}
-					});
-
-				// var chart_data = JSON.stringify(chartDatas);
-				// var route = gl.save_ajax_url;
-
-				// axios.post(route, chart_data)
-				// .then((response) => {
-				// 	var content = '[graph_lite id="'+response.data+'"]';	tinymce.activeEditor.execCommand('mceInsertContent', false, content);	$('#gl-admin-meta-box').fadeOut();
-				// });
+				$.ajax({
+					url: gl.ajax_url,
+					type: 'POST',
+					dataType: 'json',
+					data: {
+						action: 'save_chart',
+						graph_data: chartDatas,
+					},
+					success: function( response ) {
+						var content = '[graph_lite id="'+response+'"]';
+						tinymce.activeEditor.execCommand('mceInsertContent', false, content);
+						$('#gl-admin-meta-box').fadeOut();
+						$('div#gl-admin-meta-box').find('input:text').val('');
+					},
+					error: function( error ) {
+						alert('Something went wront please try again');
+					}
+				});
 			},
 			onLoad() {
 				var ctx = document.getElementById("lineChart");
@@ -177,11 +203,20 @@
 							{
 								label: '',
 								data: [],
-								backgroundColor: ''
+								backgroundColor: '',
+								borderColor: '',
+								fill: false
 							}
 						]
 					},
 					options: {
+						scales: {
+							yAxes: [{
+								ticks: {
+									beginAtZero: false
+								}
+							}]
+						},
 						title: {
 							display: false,
 							text: ''

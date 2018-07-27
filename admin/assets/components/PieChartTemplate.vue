@@ -7,7 +7,7 @@
 					<td><input class="regular-text" type="text" id="labels" v-model="chartlabelString" @keyup="addLabels"></td>
 				</tr>
 				<tr>
-					<th scope="row"><label for="datasets">Datasets</label></th>
+					<th scope="row"><label for="datasets">Data</label></th>
 					<td><input class="regular-text" type="text" id="datasets" v-model="chartDatasetDataString" @keyup="addDatasetData"></td>
 				</tr>
 				<tr>
@@ -124,14 +124,6 @@
 						alert('Something went wront please try again');
 					}
 				});
-
-
-				// var chart_data = JSON.stringify(chartDatas);
-				// var route = gl.save_ajax_url;
-				// axios.post(route, {chart_data})
-				// .then((response) => {
-				// 	var content = '[graph_lite id="'+response.data+'"]';	tinymce.activeEditor.execCommand('mceInsertContent', false, content);	$('#gl-admin-meta-box').fadeOut();
-				// });
 			},
 			onLoad() {
 				var ctx = document.getElementById("pieChart");
