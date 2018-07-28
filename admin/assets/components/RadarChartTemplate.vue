@@ -23,6 +23,10 @@
 						<th scope="row"><label for="line_color">Line Color</label></th>
 						<td><input class="regular-text" type="text" id="line_color" v-model="data.borderColor" @keyup="addDatasetborderColor(index)"></td>
 					</tr>
+					<tr>
+						<th scope="row"><label></label></th>
+						<td><input type="button" class="button button-danger delete_dataset" value="Delete Dataset" @click="deleteDataset(index)"></td>
+					</tr>
 				</template>
 				<tr>
 					<th scope="row"><label></label></th>
@@ -142,8 +146,10 @@
 				this.theChart.options.legend.position = this.legendPosition;
 				this.theChart.update();
 			},
-			deleteDataset() {
-
+			deleteDataset(index) {
+				this.datasets.splice(index, 1);
+				this.theChart.data.datasets.splice(index, 1);
+				this.theChart.update();
 			},
 			saveGraphData() {
 				var chartDatas = {'type':this.chartType, 'labels': this.labels, 'datasets': this.datasets, 'title_show': this.showTitle, 'title_text': this.titleText, 'legend_show': this.showLegend, 'legend_position': this.legendPosition};
@@ -177,7 +183,8 @@
 							{
 								label: '',
 								data: [],
-								backgroundColor: ''
+								backgroundColor: '',
+								borderColor: ''
 							}
 						]
 					},
