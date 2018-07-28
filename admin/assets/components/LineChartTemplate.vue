@@ -24,6 +24,10 @@
 						<td><input class="regular-text" type="text" id="line_color" v-model="data.borderColor" @keyup="addDatasetborderColor(index)"></td>
 					</tr>
 					<tr>
+						<th scope="row"><label for="straight_line">Straight Line</label></th>
+						<td><input type="checkbox" id="straight_line" v-model="data.straightLine" @change="makeLineStraight(index)"></td>
+					</tr>
+					<tr>
 						<th scope="row"><label for="fill">Fill Color Under the line</label></th>
 						<td><input type="checkbox" id="fill" v-model="data.fill" @change="fillColor(index)"></td>
 					</tr>
@@ -96,7 +100,8 @@
 						data: [],
 						backgroundColor: '',
 						borderColor: '',
-						fill: false
+						fill: false,
+						straightLine: false
 					}
 				]
 			};
@@ -109,7 +114,8 @@
 					data: [],
 					backgroundColor: '',
 					borderColor: '',
-					fill: false
+					fill: false,
+					straightLine: false
 				});
 				this.theChart.data.datasets.push({
 					label: '',
@@ -165,6 +171,17 @@
 			yAxesRange() {
 				this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero;
 				this.theChart.update();
+			},
+			makeLineStraight(index) {
+				if(this.datasets[index].straightLine) {
+					this.datasets[index].lineTension = 0;
+					this.theChart.data.datasets[index].lineTension = 0;
+					this.theChart.update();
+				} else {
+					delete this.datasets[index].lineTension;
+					delete this.theChart.data.datasets[index].lineTension;
+					this.theChart.update();
+				}
 			},
 			deleteDataset(index) {
 				this.datasets.splice(index, 1);

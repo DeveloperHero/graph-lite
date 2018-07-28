@@ -24,6 +24,10 @@
 						<td><input class="regular-text" type="text" id="line_color" v-model="data.borderColor" @keyup="addDatasetborderColor(index)"></td>
 					</tr>
 					<tr>
+						<th scope="row"><label for="fill">Fill Color Under the line</label></th>
+						<td><input type="checkbox" id="fill" v-model="data.fill" @change="fillColor(index)"></td>
+					</tr>
+					<tr>
 						<th scope="row"><label></label></th>
 						<td><input type="button" class="button button-danger delete_dataset" value="Delete Dataset" @click="deleteDataset(index)"></td>
 					</tr>
@@ -86,7 +90,8 @@
 						chartDatasetDataString: '',
 						data: [],
 						backgroundColor: '',
-						borderColor: ''
+						borderColor: '',
+						fill: false
 					}
 				]
 			};
@@ -98,13 +103,15 @@
 					chartDatasetDataString: '',
 					data: [],
 					backgroundColor: '',
-					borderColor: ''
+					borderColor: '',
+					fill: false
 				});
 				this.theChart.data.datasets.push({
 					label: '',
 					data: [],
 					backgroundColor: '',
-					borderColor: ''
+					borderColor: '',
+					fill: false
 				});
 				this.theChart.update();
 			},
@@ -124,6 +131,10 @@
 			},
 			addDatasetBgColor(index) {
 				this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
+				this.theChart.update();
+			},
+			fillColor(index) {
+				this.theChart.data.datasets[index].fill = this.datasets[index].fill;
 				this.theChart.update();
 			},
 			addDatasetborderColor(index) {
@@ -184,7 +195,8 @@
 								label: '',
 								data: [],
 								backgroundColor: '',
-								borderColor: ''
+								borderColor: '',
+								fill: false
 							}
 						]
 					},
