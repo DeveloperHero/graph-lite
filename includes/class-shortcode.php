@@ -21,6 +21,11 @@ class Graph_Lite_Shortcode
 
 		$chart_data = unserialize(get_post_meta( $id, 'graphs_light_data', true ));
 
+		wp_localize_script( GRAPHS_LITE_NAME, 'gl', [
+			'chart_id'   => $id,
+			'chart_data' =>	json_encode( $chart_data ),
+		] );
+
 		include plugin_dir_path( __FILE__ ) . '../public/partials/graphs-lite-public-display.php';
 
 		return ob_get_clean();
