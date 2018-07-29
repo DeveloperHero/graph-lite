@@ -67,8 +67,8 @@ class Graph_Lite_Ajax
 
 	public function delete_chart() {
 
-		wp_delete_post( $post_id, true );
-		delete_post_meta( $post_id, 'graphs_light_data' );
+		wp_delete_post( $_POST['graph_id'], true );
+		delete_post_meta( $_POST['graph_id'], 'graphs_light_data' );
 
 	}
 }
