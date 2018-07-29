@@ -65,7 +65,9 @@ class Graph_Lite_Public {
 
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/graphs-lite-public.css', array(), $this->version, 'all' );
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/graphs-lite-public.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( 'Chartjs', 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js', array( 'jquery' ), $this->version, true );
+
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/graphs-lite-public.js', array( 'jquery' ), $this->version, true );
 
 	}
 
