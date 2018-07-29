@@ -33,8 +33,8 @@ class Graph_Lite_Ajax
 	public function __construct()
 	{
 		add_action( 'wp_ajax_save_chart', [$this, 'save_chart'] );
-		add_action( 'wp_ajax_save_chart', [$this, 'update_chart'] );
-		add_action( 'wp_ajax_save_chart', [$this, 'delete_chart'] );
+		add_action( 'wp_ajax_update_chart', [$this, 'update_chart'] );
+		add_action( 'wp_ajax_delete_chart', [$this, 'delete_chart'] );
 	}
 
 	public function save_chart() {
