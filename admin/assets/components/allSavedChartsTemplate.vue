@@ -40,23 +40,25 @@
 			deleteGraph(index) {
 				let deletedGraphId = this.allGraph[index].graph_id;
 				const outerThis = this;
-				this.allGraph.splice(index, 1);
-
-				$.ajax({
-					url: gl.ajax_url,
-					type: 'POST',
-					dataType: 'json',
-					data: {
-						action: 'delete_chart',
-						graph_id: deletedGraphId,
-					},
-					success: function( response ) {
-						outerThis.allGraph.splice(index, 1);
-					},
-					error: function( error ) {
-						alert('Something went wront please try again');
-					}
-				});
+				// this.allGraph.splice(index, 1);
+				if(confirm("Are you sure to delete this chart?")) {
+					$.ajax({
+						url: ajaxurl,
+						type: 'POST',
+						dataType: 'json',
+						data: {
+							action: 'delete_chart',
+							graph_id: deletedGraphId,
+						},
+						success: function( response ) {
+							outerThis.allGraph.splice(index, 1);
+							alert(response);
+						},
+						error: function( error ) {
+							alert('Something went wront please try again');
+						}
+					});
+				}
 			}
 		},
 		beforeMount() {
