@@ -150,7 +150,31 @@
 				this.theChart.update();
 			},
 			saveGraphData() {
-				var chartDatas = { 'type':this.chartType, 'labels': this.labels, 'datasets': this.datasets, 'title_show': this.showTitle, 'title_text': this.titleText, 'legend_show': this.showLegend, 'legend_position': this.legendPosition, 'beginAtZero': this.beginAtZero };
+				// var chartDatas = { 'type':this.chartType, 'labels': this.labels, 'datasets': this.datasets, 'title_show': this.showTitle, 'title_text': this.titleText, 'legend_show': this.showLegend, 'legend_position': this.legendPosition, 'beginAtZero': this.beginAtZero };
+				var chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: this.datasets
+					},
+					options: {
+						scales: {
+							yAxes: [{
+								ticks: {
+									beginAtZero: this.beginAtZero
+								}
+							}]
+						},
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
 
 				$.ajax({
 					url: gl.ajax_url,

@@ -161,7 +161,23 @@
 				this.theChart.update();
 			},
 			saveGraphData() {
-				var chartDatas = {'type':this.chartType, 'datasets': this.datasets, 'title_show': this.showTitle, 'title_text': this.titleText, 'legend_show': this.showLegend, 'legend_position': this.legendPosition};
+				// var chartDatas = {'type':this.chartType, 'datasets': this.datasets, 'title_show': this.showTitle, 'title_text': this.titleText, 'legend_show': this.showLegend, 'legend_position': this.legendPosition};
+				var chartDatas = {
+					type: this.chartType,
+					data: {
+						datasets: this.datasets
+					},
+					options: {
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
 
 				$.ajax({
 					url: gl.ajax_url,
