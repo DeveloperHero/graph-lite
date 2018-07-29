@@ -16,13 +16,5 @@
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
 
 <div class="chart_area">
-	<?php
-
-	echo '<pre>';
-
-	print_r($chart_data);
-
-	echo '</pre>';
-
-	?>
+	<canvas id="Chart"></canvas>
 </div>

@@ -36,7 +36,7 @@
 	      gl_findAndReplace(object[x], value, replacevalue);
 	    }
 	    if(object[x] == value){
-	      object["name"] = replacevalue;
+	      object[x] = replacevalue;
 	      // break;
 	    }
 	  }
@@ -45,4 +45,6 @@
 	gl_findAndReplace(card_data, 'true', true);
 	gl_findAndReplace(card_data, 'false', false);
 
+	var ctx = document.getElementById("Chart");
+	new Chart(ctx, card_data);
 })( jQuery );

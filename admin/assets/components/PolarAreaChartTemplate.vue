@@ -63,26 +63,30 @@
 				titleText: '',
 				legendPosition: 'top',
 				labels: [],
-				DatasetData: [],
-				DatasetBgColor: [],
+				datasets: [
+					{
+						data: [],
+						backgroundColor: []
+					}
+				],
 				showTitle: false,
 				showLegend: true
 			};
 		},
 		methods: {
 			addLabels() {
-				let separatingLabels = this.labels = this.chartlabelString.split(',');
-				this.theChart.data.labels = separatingLabels;
+				this.labels = this.chartlabelString.split(',');
+				this.theChart.data.labels = this.labels;
 				this.theChart.update();
 			},
 			addDatasetData() {
-				let separatingDatasetData = this.DatasetData = this.chartDatasetDataString.split(',');
-				this.theChart.data.datasets[0].data = separatingDatasetData;
+				this.datasets[0].data = this.chartDatasetDataString.split(',');
+				this.theChart.data.datasets[0].data = this.datasets[0].data;
 				this.theChart.update();
 			},
 			addDatasetBgColor() {
-				let separatingDatasetColor = this.DatasetBgColor = this.chartDatasetBgColorString.split(',');
-				this.theChart.data.datasets[0].backgroundColor = separatingDatasetColor;
+				this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
+				this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor;
 				this.theChart.update();
 			},
 			showingGraphTitle() {
@@ -103,7 +107,21 @@
 			},
 			saveGraphData() {
 				var chartDatas = {
-					'type':this.chartType, 'labels': this.labels, 'data': this.DatasetData, 'backgroundColor': this.DatasetBgColor, 'title_show': this.showTitle, 'title_text': this.titleText, 'legend_show': this.showLegend, 'legend_position': this.legendPosition
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: this.datasets
+					},
+					options: {
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
 				};
 
 				$.ajax({

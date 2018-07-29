@@ -11,7 +11,6 @@
                 <a href="javascript:void(0)" @click="loadGraphTemplates('radar')">Radar Chart</a>
                 <a href="javascript:void(0)" @click="loadGraphTemplates('bubble')">Bubble Chart</a>
                 <a href="javascript:void(0)" @click="loadGraphTemplates('scatter')">Scatter Chart</a>
-                <a href="javascript:void(0)" @click="loadGraphTemplates('area')">Area Chart</a>
             </div>
         </div>
         <router-view></router-view>
@@ -26,7 +25,6 @@
   import radarChart from './components/RadarChartTemplate';
   import polarAreaChart from './components/PolarAreaChartTemplate';
   import bubbleChart from './components/BubbleChartTemplate';
-  import areaChart from './components/AreaChartTemplate';
   import scatterChart from './components/ScatterChartTemplate';
 
   import Vue from 'vue';
@@ -42,7 +40,6 @@
     { path: '/radarChart', name: 'radarChart', component: radarChart },
     { path: '/polarAreaChart', name: 'polarAreaChart', component: polarAreaChart },
     { path: '/bubbleChart', name: 'bubbleChart', component: bubbleChart },
-    { path: '/areaChart', name: 'areaChart', component: areaChart },
     { path: '/scatterChart', name: 'scatterChart', component: scatterChart }
   ];
 
@@ -56,7 +53,7 @@
     router,
     data () {
         return {
-            currentRoute: 'Pie'
+            currentRoute: 'Pie Chart'
         }
     },
     methods: {

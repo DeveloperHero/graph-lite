@@ -116,8 +116,8 @@
 				this.theChart.update();
 			},
 			addLabels() {
-				let separatingLabels = this.labels = this.chartlabelsString.split(',');
-				this.theChart.data.labels = separatingLabels;
+				this.labels = this.chartlabelsString.split(',');
+				this.theChart.data.labels = this.labels;
 				this.theChart.update();
 			},
 			addDatasetLabel(index) {
@@ -125,8 +125,8 @@
 				this.theChart.update();
 			},
 			addDatasetData(index) {
-				let separatingDatasetData = this.datasets[index].data = this.datasets[index].chartDatasetDataString.split(',');
-				this.theChart.data.datasets[index].data = separatingDatasetData;
+				this.datasets[index].data = this.datasets[index].chartDatasetDataString.split(',');
+				this.theChart.data.datasets[index].data = this.datasets[index].data;
 				this.theChart.update();
 			},
 			addDatasetBgColor(index) {
@@ -163,7 +163,28 @@
 				this.theChart.update();
 			},
 			saveGraphData() {
-				var chartDatas = {'type':this.chartType, 'labels': this.labels, 'datasets': this.datasets, 'title_show': this.showTitle, 'title_text': this.titleText, 'legend_show': this.showLegend, 'legend_position': this.legendPosition};
+				var chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: this.datasets
+					},
+					options: {
+						scale: {
+							ticks: {
+								beginAtZero: true
+							}
+						},
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
 
 				$.ajax({
 					url: gl.ajax_url,

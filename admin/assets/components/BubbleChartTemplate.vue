@@ -93,7 +93,8 @@
 							{x: '', y: '', r: ''}
 						],
 						backgroundColor: '',
-						borderColor: ''
+						borderColor: '',
+						hoverRadius: 0
 					}
 				]
 			};
@@ -106,7 +107,8 @@
 						{x: '', y: '', r: ''}
 					],
 					backgroundColor: '',
-					borderColor: ''
+					borderColor: '',
+					hoverRadius: 0
 				});
 				this.theChart.data.datasets.push({
 					label: '',
@@ -114,7 +116,8 @@
 						{x: '', y: '', r: ''}
 					],
 					backgroundColor: '',
-					borderColor: ''
+					borderColor: '',
+					hoverRadius: 0
 				});
 				this.theChart.update();
 			},
@@ -161,7 +164,6 @@
 				this.theChart.update();
 			},
 			saveGraphData() {
-				// var chartDatas = {'type':this.chartType, 'datasets': this.datasets, 'title_show': this.showTitle, 'title_text': this.titleText, 'legend_show': this.showLegend, 'legend_position': this.legendPosition};
 				var chartDatas = {
 					type: this.chartType,
 					data: {
