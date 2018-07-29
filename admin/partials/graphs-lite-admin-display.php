@@ -24,4 +24,4 @@
 
 <?php include plugin_dir_path( __FILE__ ). 'graphs-lite-admin-new-chart.php'; ?>
 
-<?php include plugin_dir_path( __FILE__ ). 'graphs-lite-admin-old-chart.php'; ?>
+<?php //include plugin_dir_path( __FILE__ ). 'graphs-lite-admin-old-chart.php'; ?>

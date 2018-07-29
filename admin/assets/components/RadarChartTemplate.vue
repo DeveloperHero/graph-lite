@@ -224,8 +224,7 @@
 					options: {
 						scale: {
 							ticks: {
-								beginAtZero: true,
-								min: 0
+								beginAtZero: true
 							}
 						},
 						title: {
