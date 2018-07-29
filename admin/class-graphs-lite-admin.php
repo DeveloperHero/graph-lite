@@ -56,6 +56,7 @@ class Graph_Lite_Admin {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets') );
 		add_action( 'admin_head', array( $this, 'mce_button' ) );
 		add_action( 'add_meta_boxes', [ $this, 'adding_custom_meta_boxes' ], 10, 2 );
+		add_action( 'init', [$this, 'graphs_data_store'], 9 );
 	}
 
 	/**
@@ -163,6 +164,29 @@ class Graph_Lite_Admin {
 	    );
 	}
 
+	public function graphs_data_store() {
+
+		$args = [
+			'post_type'	=>	'graphs_light'
+		];
+
+		$graphs = get_posts( $args );
+
+		$graphs_data = [];
+
+		foreach ($graphs as $key => $graph) {
+
+			$get_graph_meta = unserialize( get_post_meta( $graph->ID, 'graphs_light_data', true ) );
+
+			$get_graph_meta['graph_id'] = $graph->ID;
+
+			array_push($graphs_data, $get_graph_meta);
+
+		}
+
+		update_option( 'graphs_light_all_data', $graphs_data );
+
+	}
 
 	public function render_graph_light_admin_metabox(){
 
