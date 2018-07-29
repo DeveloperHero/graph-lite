@@ -17,10 +17,10 @@
 
 <button type="submit" class="close_graph_modal">X</button>
 
-<div class="gl_nav">
+<!-- <div class="gl_nav">
 	<nav id="gl_new_chart">Add New Chart</nav>
 	<nav id="gl_old_chart">Charts</nav>
-</div>
+</div> -->
 
 <?php include plugin_dir_path( __FILE__ ). 'graphs-lite-admin-new-chart.php'; ?>
 
