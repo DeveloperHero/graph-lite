@@ -66,3 +66,30 @@ button.saveGraphData {
     font-weight:  bold;
     cursor: pointer;
 }
+
+/** Nave menu styling */
+.gl_nav {
+    width:  100%;
+    display:  block;
+    margin-bottom: 5px;
+    text-align: center;
+    color:  #fff;
+    font-weight:  bold;
+}
+
+.gl_nav nav {
+    display: inline-block;
+    padding: 10px;
+    background: #3e8e41;
+    cursor: pointer;
+    width: 110px;
+    font-size: 105%;
+}
+
+.gl_nav nav:first-child {
+    background-color: #3473aa;
+}
+
+.gl_nav nav:hover {
+    background-color:  #3473aa;
+}
