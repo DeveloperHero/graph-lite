@@ -1,19 +1,16 @@
 <template>
     <div id="app">
         <div class="dropdown">
-            <button class="dropbtn">{{currentRoute}}</button>
+            <button class="dropbtn">{{ activeChart }}</button>
             <div class="dropdown-content">
-                <a href="javascript:void(0)" @click="loadGraphTemplates('pie')">Pie Chart</a>
-                <a href="javascript:void(0)" @click="loadGraphTemplates('doughnut')">Doughnut Chart</a>
-                <a href="javascript:void(0)" @click="loadGraphTemplates('polarArea')">Polar Area Chart</a>
-                <a href="javascript:void(0)" @click="loadGraphTemplates('bar')">Bar Chart</a>
-                <a href="javascript:void(0)" @click="loadGraphTemplates('line')">Line Chart</a>
-                <a href="javascript:void(0)" @click="loadGraphTemplates('radar')">Radar Chart</a>
-                <a href="javascript:void(0)" @click="loadGraphTemplates('bubble')">Bubble Chart</a>
-                <a href="javascript:void(0)" @click="loadGraphTemplates('scatter')">Scatter Chart</a>
+                <a href="javascript:void(0)"
+                   v-for="(chartTab, index) in chartTabs"
+                   v-bind:key="chartTab.tabFileName"
+                   @click="changeTabChart(index)">{{ chartTab.tabName }}</a>
             </div>
         </div>
-        <router-view></router-view>
+        
+        <component v-bind:is="currentChartTabComponent"></component>
     </div>
 </template>
 
@@ -27,43 +24,37 @@
   import bubbleChart from './components/BubbleChartTemplate';
   import scatterChart from './components/ScatterChartTemplate';
 
-  import Vue from 'vue';
-  import VueRouter from 'vue-router';
-
-  Vue.use(VueRouter);
-
-  const routes = [
-    { path: '/barChart', name: 'barChart', component: barChart },
-    { path: '/lineChart', name: 'lineChart', component: lineChart },
-    { path: '/pieChart', name: 'pieChart', component: pieChart },
-    { path: '/doughnutChart', name: 'doughnutChart', component: doughnutChart },
-    { path: '/radarChart', name: 'radarChart', component: radarChart },
-    { path: '/polarAreaChart', name: 'polarAreaChart', component: polarAreaChart },
-    { path: '/bubbleChart', name: 'bubbleChart', component: bubbleChart },
-    { path: '/scatterChart', name: 'scatterChart', component: scatterChart }
-  ];
-
-  const router = new VueRouter({
-    routes
-  });
-  window.router = router;
-
   export default {
     name: 'app',
-    router,
     data () {
         return {
-            currentRoute: 'Pie Chart'
+            activeChart: 'Pie Chart',
+            currentChartTab: 'pieChart',
+            chartTabs: [
+                { tabFileName: 'pieChart', tabName: 'Pie Chart' },
+                { tabFileName: 'doughnutChart', tabName: 'Doughnut Chart' },
+                { tabFileName: 'polarAreaChart', tabName: 'Polar Area Chart' },
+                { tabFileName: 'barChart', tabName: 'Bar Chart' },
+                { tabFileName: 'lineChart', tabName: 'Line Chart' },
+                { tabFileName: 'radarChart', tabName: 'Radar Chart' },
+                { tabFileName: 'bubbleChart', tabName: 'Bubble Chart' },
+                { tabFileName: 'scatterChart', tabName: 'Scatter Chart' }
+            ]
+        }
+    },
+    components: {
+        pieChart, doughnutChart, polarAreaChart, barChart, lineChart, radarChart, bubbleChart, scatterChart
+    },
+    computed: {
+        currentChartTabComponent: function () {
+            return this.currentChartTab;
         }
     },
     methods: {
-        loadGraphTemplates(chartName) {
-        	this.currentRoute = chartName[0].toUpperCase() + chartName.substr(1) + " Chart";
-            router.push({ name: chartName + 'Chart' });
+        changeTabChart(index) {
+            this.activeChart = this.chartTabs[index].tabName;
+            this.currentChartTab = this.chartTabs[index].tabFileName;
         }
-    },
-    mounted() {
-        router.push({ name: 'pieChart' });
     }
   }
 </script>

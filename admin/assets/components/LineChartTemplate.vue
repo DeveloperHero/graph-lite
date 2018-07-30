@@ -214,6 +214,8 @@
 					}
 				};
 
+				this.$eventHub.$emit('ChartDataPassed', chartDatas);
+
 				$.ajax({
 					url: gl.ajax_url,
 					type: 'POST',

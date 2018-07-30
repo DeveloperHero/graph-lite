@@ -1,17 +1,17 @@
 <template>
 	<div>
 		<h1>All Charts</h1>
-		<div v-for="(graph, index) in allGraph" :key="graph.graph_id">
+		<template v-for="(graph, index) in allGraph" :key="graph.graph_id">
 			<div class="gl_single_graph">
 				<div class="gl_graph_box">
 					<canvas :id="index"></canvas>
 				</div>
 				<div class="gl_control_area">
-					<button type="button">Edit</button>
+					<button type="button" @click="editGraphDetails(index, graph.graph_id)">Edit</button>
 					<button type="button" @click="deleteGraph(index)">Delete</button>
 				</div>
 			</div>
-		</div>
+		</template>
 	</div>
 </template>
 
@@ -25,7 +25,12 @@
 		methods: {
 			beforeLoad() {
 				this.allGraph = gl.all_graphs;
-				console.log(this.allGraph);
+			},
+			whenCalled() {
+				let outerThis = this;
+				this.$eventHub.$on('ChartDataPassed', data => {
+					outerThis.allGraph.push(data);
+				});
 			},
 			onLoad() {
 				this.allGraph.forEach(function(value, key) {
@@ -37,10 +42,19 @@
 					});
 				});
 			},
+			editGraphDetails(index, id) {
+				let chartType = this.allGraph[index].type+"Chart";
+				let editedGraphData = this.allGraph[index];
+				console.log(chartType);
+				console.log(index);
+				console.log(id);
+				console.log(router);
+				router.push({ name: chartType, params: { graph_data: editedGraphData }});
+			},
 			deleteGraph(index) {
 				let deletedGraphId = this.allGraph[index].graph_id;
 				const outerThis = this;
-				// this.allGraph.splice(index, 1);
+
 				if(confirm("Are you sure to delete this chart?")) {
 					$.ajax({
 						url: ajaxurl,
@@ -63,6 +77,7 @@
 		},
 		beforeMount() {
 			this.beforeLoad();
+			this.whenCalled();
 		},
 		mounted() {
 			this.onLoad();

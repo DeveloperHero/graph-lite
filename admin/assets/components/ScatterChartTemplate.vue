@@ -16,7 +16,6 @@
 										<input class="bubblePoints" type="number" id="xPoint" v-model="dataset.data[PIndex].x" @keyup="addDatasetDataPoints(index, PIndex, 'x')">
 										<label for="xPoint">y-point</label>
 										<input class="bubblePoints" type="number" id="yPoint" v-model="dataset.data[PIndex].y" @keyup="addDatasetDataPoints(index, PIndex, 'y')">
-										<label for="radius">Bubble Radius</label>
 									</div>
 								</template>
 								<button type="button" @click="addBubblePoint(index)">Add Bubble Point</button>
@@ -182,6 +181,8 @@
 						}
 					}
 				};
+
+				this.$eventHub.$emit('ChartDataPassed', chartDatas);
 
 				$.ajax({
 					url: gl.ajax_url,

@@ -54,6 +54,7 @@
 	import querystring from 'querystring';
 
 	export default {
+		props: ['graph_data'],
 		data() {
 			return {
 				chartType: 'pie',
@@ -106,7 +107,7 @@
 				this.theChart.update();
 			},
 			saveGraphData() {
-				var chartDatas = {
+				let chartDatas = {
 					type: this.chartType,
 					data: {
 						labels: this.labels,
@@ -123,6 +124,8 @@
 						}
 					}
 				};
+
+				this.$eventHub.$emit('ChartDataPassed', chartDatas);
 
 				$.ajax({
 					url: gl.ajax_url,
@@ -171,7 +174,11 @@
 		},
 		mounted() {
 			this.onLoad();
-		}
+			console.log(this.graph_data);
+		},
+		beforeDestroy(){
+            this.$eventHub.$off('ChartDataPassed');
+        }
 	}
 </script>
 
