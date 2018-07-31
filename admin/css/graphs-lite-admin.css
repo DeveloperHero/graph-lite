@@ -93,3 +93,52 @@ button.saveGraphData {
 .gl_nav nav:hover {
     background-color:  #3473aa;
 }
+
+.gl_single_graph {
+    display:  inline-block;
+    width: 24%;
+    text-align:  center;
+    border:  1px solid #333;
+    margin: 5px 5px;
+    overflow:  hidden;
+}
+
+.gl_single_graph .gl_graph_box canvas {
+    text-align:  center;
+    margin:  auto;
+    display:  block;
+    width: auto !important;
+}
+
+.gl_single_graph .gl_control_area {
+    display:  block;
+    width:  100%;
+    overflow:  hidden;
+    margin: 10px 0;
+    text-align:  center;
+}
+
+.gl_single_graph .gl_control_area button {
+    border:  0;
+    color:  #fff;
+    padding:  5px 10px;
+    width:  68px;
+    text-align:  center;
+    font-weight:  bold;
+    cursor: pointer;
+    outline: none;
+    background: #3472aa;
+}
+
+
+.gl_single_graph .gl_control_area button:first-child {
+    background: #3e8e41;
+}
+
+.gl_single_graph .gl_control_area button:last-child {
+    background: #e74c3c;
+}
+
+.gl_single_graph .gl_graph_box {
+    min-height: 290px;
+}
