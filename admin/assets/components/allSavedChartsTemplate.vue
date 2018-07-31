@@ -7,6 +7,7 @@
 					<canvas :id="index"></canvas>
 				</div>
 				<div class="gl_control_area">
+					<button type="button" @click="useGraph(graph.graph_id)">Use</button>
 					<button type="button" @click="editGraphDetails(index, graph.graph_id)">Edit</button>
 					<button type="button" @click="deleteGraph(index)">Delete</button>
 				</div>
@@ -42,6 +43,12 @@
 					});
 				});
 			},
+			// @mishuk
+			useGraph(id){
+				var content = '[graph_lite id="'+id+'"]';
+				tinymce.activeEditor.execCommand('mceInsertContent', false, content);
+				$('#gl-admin-meta-box').fadeOut();
+			},
 			editGraphDetails(index, id) {
 				let chartType = this.allGraph[index].type+"Chart";
 				let editedGraphData = this.allGraph[index];
@@ -66,7 +73,6 @@
 						},
 						success: function( response ) {
 							outerThis.allGraph.splice(index, 1);
-							alert(response);
 						},
 						error: function( error ) {
 							alert('Something went wront please try again');
@@ -86,5 +92,5 @@
 </script>
 
 <style>
-	
+
 </style>
