@@ -1,8 +1,9 @@
 <template>
 	<div>
-		<h1>All Charts</h1>
-		<template v-for="(graph, index) in allGraph" :key="graph.graph_id">
-			<div class="gl_single_graph">
+		<component @applied="whenGraphUpdated" v-bind:is="currentChartTabComponent" :graph-data="editedGraphData" :graph-index="editedGraphIndex"></component>
+		<div v-show="!currentComponent">
+			<h1>All Charts</h1>
+			<div class="gl_single_graph" v-for="(graph, index) in allGraph" :key="graph.graph_id">
 				<div class="gl_graph_box">
 					<canvas :id="index"></canvas>
 				</div>
@@ -12,31 +13,54 @@
 					<button type="button" @click="deleteGraph(index)">Delete</button>
 				</div>
 			</div>
-		</template>
+		</div>
 	</div>
 </template>
 
 <script>
+	import barChart from './BarChartTemplate';
+	import lineChart from './LineChartTemplate';
+	import pieChart from './PieChartTemplate';
+	import doughnutChart from './DoughnutChartTemplate';
+	import radarChart from './RadarChartTemplate';
+	import polarAreaChart from './PolarAreaChartTemplate';
+	import bubbleChart from './BubbleChartTemplate';
+	import scatterChart from './ScatterChartTemplate';
+
 	export default {
 		data() {
 			return {
-				allGraph: []
+				currentComponent: '',
+				allGraph: [],
+				editedGraphData: [],
+				editedGraphIndex: '',
+				theChart: []
 			}
 		},
+		components: {
+	        pieChart, doughnutChart, polarAreaChart, barChart, lineChart, radarChart, bubbleChart, scatterChart
+	    },
+	    computed: {
+	        currentChartTabComponent: function () {
+	            return this.currentComponent;
+	        }
+	    },
 		methods: {
 			beforeLoad() {
 				this.allGraph = gl.all_graphs;
 			},
 			whenCalled() {
 				let outerThis = this;
+
 				this.$eventHub.$on('ChartDataPassed', data => {
 					outerThis.allGraph.push(data);
 				});
 			},
 			onLoad() {
+				let outerThis = this;
 				this.allGraph.forEach(function(value, key) {
 					var ctx = document.getElementById(key);
-					new Chart(ctx, {
+					outerThis.theChart[key] = new Chart(ctx, {
 						type: value.type,
 						data: value.data,
 						options: value.options
@@ -51,12 +75,29 @@
 			},
 			editGraphDetails(index, id) {
 				let chartType = this.allGraph[index].type+"Chart";
-				let editedGraphData = this.allGraph[index];
-				console.log(chartType);
-				console.log(index);
-				console.log(id);
-				console.log(router);
-				router.push({ name: chartType, params: { graph_data: editedGraphData }});
+				this.editedGraphData = this.allGraph[index];
+				this.editedGraphIndex = index;
+				this.currentComponent = chartType;
+			},
+			whenGraphUpdated(data, index) {
+				this.currentComponent = '';
+				console.log(this.theChart[index]);
+				console.log(data);
+				this.allGraph[index].data = data.data;
+				this.allGraph[index].options = data.options;
+
+
+				this.theChart[index].data.datasets = data.data.datasets;
+				this.theChart[index].options.legend.display = data.options.legend.display;
+				this.theChart[index].options.legend.position = data.options.legend.position;
+				this.theChart[index].options.title.display = data.options.title.display;
+					this.theChart[index].options.title.text = data.options.title.text;
+
+				if(data.type="pie") {
+					this.theChart[index].data.labels = data.data.labels;
+				}
+
+				this.theChart[index].update();
 			},
 			deleteGraph(index) {
 				let deletedGraphId = this.allGraph[index].graph_id;

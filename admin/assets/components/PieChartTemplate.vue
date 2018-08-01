@@ -39,7 +39,8 @@
 				</tr>
 				<tr>
 					<th scope="row"><label></label></th>
-					<td><button type="button" class="saveGraphData" @click="saveGraphData">Save</button></td>
+					<td v-if="!graphData"><button type="button" class="saveGraphData" @click="saveGraphData">Save</button></td>
+					<td v-else><button type="button" class="saveGraphData" @click="updateGraphData">Update</button></td>
 				</tr>
 			</table>
 		</div>
@@ -54,7 +55,7 @@
 	import querystring from 'querystring';
 
 	export default {
-		props: ['graph_data'],
+		props: ['graphData', 'graphIndex'],
 		data() {
 			return {
 				chartType: 'pie',
@@ -62,6 +63,7 @@
 				chartDatasetDataString: '',
 				chartDatasetBgColorString: '',
 				titleText: '',
+				editedGraphIdNo: '',
 				legendPosition: 'top',
 				labels: [],
 				datasets: [
@@ -146,6 +148,27 @@
 					}
 				});
 			},
+			updateGraphData() {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: this.datasets
+					},
+					options: {
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.$emit("applied", chartDatas, this.graphIndex);
+			},
 			onLoad() {
 				var ctx = document.getElementById("pieChart");
 				this.theChart = new Chart(ctx, {
@@ -170,11 +193,38 @@
 						}
 					}
 				});
+			},
+			forEdit() {
+				this.chartlabelString = this.graphData.data.labels.join(", ");
+				this.labels = this.graphData.data.labels;
+
+				this.chartDatasetBgColorString = this.graphData.data.datasets[0].backgroundColor.join(", ");
+				this.datasets[0].backgroundColor = this.graphData.data.datasets[0].backgroundColor;
+				this.chartDatasetDataString = this.graphData.data.datasets[0].data.join(", ");
+				this.datasets[0].data = this.graphData.data.datasets[0].data;
+
+				this.showTitle = this.graphData.options.title.display;
+				this.titleText = this.graphData.options.title.text;
+				this.showLegend = this.graphData.options.legend.display;
+				this.legendPosition = this.graphData.options.legend.position;
+
+				this.theChart.data.labels = this.labels;
+				this.theChart.data.datasets = this.datasets;
+				this.theChart.options.title.display = this.showTitle;
+				this.theChart.options.title.text = this.titleText;
+				this.theChart.options.legend.display = this.showLegend;
+				this.theChart.options.legend.position = this.legendPosition;
+				this.theChart.update();
+
+				this.editedGraphIdNo = this.graphData.graph_id;
 			}
 		},
 		mounted() {
 			this.onLoad();
-			console.log(this.graph_data);
+			if(this.graphData) {
+				this.forEdit();
+			}
+			console.log(this.graphData);
 		},
 		beforeDestroy(){
             this.$eventHub.$off('ChartDataPassed');
