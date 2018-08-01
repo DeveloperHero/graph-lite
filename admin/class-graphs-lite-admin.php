@@ -78,11 +78,15 @@ class Graph_Lite_Admin {
 		 * class.
 		 */
 
+		wp_enqueue_style( 'sweet_modal', plugin_dir_url( __FILE__ ) . 'css/jquery.sweet-modal.min.css', array(), '1.3.3' );
+
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/graphs-lite-admin.css', array(), $this->version, 'all' );
 
 		// wp_enqueue_script( 'Vuejs', 'https://cdn.jsdelivr.net/npm/vue/dist/vue.js', array( 'jquery' ), $this->version, true );
 
 		wp_enqueue_script( 'Chartjs', 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js', array( 'jquery' ), $this->version, true );
+
+		wp_enqueue_script( 'sweet_modal', plugin_dir_url( __FILE__ ) . 'js/jquery.sweet-modal.min.js', array( 'jquery' ), '1.3.3', true );
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/graphs-lite-admin.js', array( 'jquery' ), $this->version, true );
 
