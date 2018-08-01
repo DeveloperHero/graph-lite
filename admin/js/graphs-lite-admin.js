@@ -1201,7 +1201,7 @@ process.umask = function() { return 0; };
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BarChartTemplate_vue__ = __webpack_require__(11);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_3e8fbc60_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_97e7cb5a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__ = __webpack_require__(42);
 function injectStyle (ssrContext) {
   __webpack_require__(40)
 }
@@ -1221,7 +1221,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BarChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_3e8fbc60_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_97e7cb5a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -1442,6 +1442,13 @@ var Component = normalizeComponent(
 					datasets: this.datasets
 				},
 				options: {
+					scales: {
+						yAxes: [{
+							ticks: {
+								beginAtZero: this.beginAtZero
+							}
+						}]
+					},
 					title: {
 						display: this.showTitle,
 						text: this.titleText
@@ -1487,17 +1494,19 @@ var Component = normalizeComponent(
 			});
 		},
 		forEdit() {
+			let outerThis = this;
 			this.chartlabelsString = this.graphData.data.labels.join(", ");
 			this.labels = this.graphData.data.labels;
 
 			this.graphData.data.datasets.forEach(function (value, key) {
-				console.log(value);
-				console.log(key);
+				if (key) {
+					outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor: '' });
+				}
+				// outerThis.datasets[key].label = outerThis.graphData.data.datasets[key].label;
+				// outerThis.datasets[key].chartDatasetDataString = outerThis.graphData.data.datasets[key].chartDatasetDataString;
+				// outerThis.datasets[key].data = outerThis.graphData.data.datasets[key].data;
+				// outerThis.datasets[key].backgroundColor = outerThis.graphData.data.datasets[key].backgroundColor;
 			});
-			// this.chartDatasetBgColorString = this.graphData.data.datasets[0].backgroundColor.join(", ");
-			// this.datasets[0].backgroundColor = this.graphData.data.datasets[0].backgroundColor;
-			// this.chartDatasetDataString = this.graphData.data.datasets[0].data.join(", ");
-			// this.datasets[0].data = this.graphData.data.datasets[0].data;
 
 			this.showTitle = this.graphData.options.title.display;
 			this.titleText = this.graphData.options.title.text;
@@ -1506,7 +1515,7 @@ var Component = normalizeComponent(
 			this.beginAtZero = this.graphData.options.scales.yAxes[0].ticks.beginAtZero;
 
 			this.theChart.data.labels = this.labels;
-			// this.theChart.data.datasets = this.datasets;
+			this.theChart.data.datasets = this.datasets;
 			this.theChart.options.title.display = this.showTitle;
 			this.theChart.options.title.text = this.titleText;
 			this.theChart.options.legend.display = this.showLegend;
@@ -1849,7 +1858,7 @@ var Component = normalizeComponent(
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__ = __webpack_require__(15);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_abd88d38_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_8c23a314_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(68);
 function injectStyle (ssrContext) {
   __webpack_require__(46)
 }
@@ -1869,7 +1878,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_abd88d38_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_8c23a314_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -2124,7 +2133,6 @@ var Component = normalizeComponent(
 			this.theChart.update();
 
 			this.editedGraphIdNo = this.graphData.graph_id;
-			console.log(this.editedGraphIdNo);
 		}
 	},
 	mounted() {
@@ -15258,7 +15266,7 @@ var content = __webpack_require__(41);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("fcaaa5be", content, true, {});
+var update = __webpack_require__(2)("2613c1a1", content, true, {});
 
 /***/ }),
 /* 41 */
@@ -15332,7 +15340,7 @@ var content = __webpack_require__(47);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("25b41956", content, true, {});
+var update = __webpack_require__(2)("3592ad8a", content, true, {});
 
 /***/ }),
 /* 47 */
