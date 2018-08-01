@@ -56,12 +56,18 @@ class Graph_Lite_Ajax
 
 	public function update_chart() {
 
+		$post_id  = $_POST['graph_id'];
+
+		$new_data = $_POST['updated_graph_data'];
+
 		wp_update_post( [
-			'ID'           => 37,
-			'post_title'   => '',
+			'ID'           => $post_id,
+			'post_title'   => $new_data['title_text'],
 		] );
 
-		update_post_meta( $post_id, 'graphs_light_data', serialize($_POST['data']) );
+		update_post_meta( $post_id, 'graphs_light_data', serialize($new_data) );
+
+		wp_send_json( $post_id );
 
 	}
 
