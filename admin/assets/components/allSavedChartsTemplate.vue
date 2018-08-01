@@ -93,7 +93,7 @@
 				this.theChart[index].options.title.display = data.options.title.display;
 					this.theChart[index].options.title.text = data.options.title.text;
 
-				if(data.type="pie") {
+				if( data.type == "pie" || data.type == "doughnut" || data.type == "polarArea" ) {
 					this.theChart[index].data.labels = data.data.labels;
 				}
 
