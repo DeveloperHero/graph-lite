@@ -113,7 +113,15 @@
 							graph_id: deletedGraphId,
 						},
 						success: function( response ) {
-							outerThis.allGraph.splice(index, 1);
+							$.sweetModal({
+								content: response,
+								icon: $.sweetModal.ICON_SUCCESS,
+								timeout: 1300,
+								showCloseButton: false
+							});
+							setTimeout(function(){
+								outerThis.allGraph.splice(index, 1);
+							}, 1310)
 						},
 						error: function( error ) {
 							alert('Something went wront please try again');
