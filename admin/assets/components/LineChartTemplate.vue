@@ -71,7 +71,8 @@
 				</tr>
 				<tr>
 					<th scope="row"><label></label></th>
-					<td><button type="button" class="saveGraphData" @click="saveGraphData">Save</button></td>
+					<td v-if="!graphData"><button type="button" class="saveGraphData" @click="saveGraphData">Save</button></td>
+					<td v-else><button type="button" class="saveGraphData" @click="updateGraphData">Update</button></td>
 				</tr>
 			</table>
 		</div>
@@ -83,6 +84,7 @@
 
 <script type="text/javascript">
 	export default {
+		props: ['graphData', 'graphIndex'],
 		data() {
 			return {
 				chartType: 'line',
@@ -235,6 +237,34 @@
 					}
 				});
 			},
+			updateGraphData() {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: this.datasets
+					},
+					options: {
+						scales: {
+							yAxes: [{
+								ticks: {
+									beginAtZero: this.beginAtZero
+								}
+							}]
+						},
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.$emit("applied", chartDatas, this.graphIndex);
+			},
 			onLoad() {
 				var ctx = document.getElementById("lineChart");
 				this.theChart = new Chart(ctx, {
@@ -269,10 +299,51 @@
 						}
 					}
 				});
+			},
+			forEdit() {
+				let outerThis = this;
+				this.chartlabelsString = this.graphData.data.labels.join(", ");
+				this.labels = this.graphData.data.labels;
+
+				this.graphData.data.datasets.forEach(function(value, key) {
+					if(key) {
+						outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor:'' });
+					}
+					outerThis.datasets[key].label = outerThis.graphData.data.datasets[key].label;
+					outerThis.datasets[key].chartDatasetDataString = outerThis.graphData.data.datasets[key].chartDatasetDataString;
+					outerThis.datasets[key].data = outerThis.graphData.data.datasets[key].data;
+					outerThis.datasets[key].backgroundColor = outerThis.graphData.data.datasets[key].backgroundColor;
+					outerThis.datasets[key].borderColor = outerThis.graphData.data.datasets[key].borderColor;
+					outerThis.datasets[key].fill = outerThis.graphData.data.datasets[key].fill;
+					outerThis.datasets[key].straightLine = outerThis.graphData.data.datasets[key].straightLine;
+					if(outerThis.graphData.data.datasets[key].straightLine) {
+						outerThis.datasets[key].lineTension = 0;
+					}
+				});
+
+				this.showTitle = this.graphData.options.title.display;
+				this.titleText = this.graphData.options.title.text;
+				this.showLegend = this.graphData.options.legend.display;
+				this.legendPosition = this.graphData.options.legend.position;
+				this.beginAtZero = this.graphData.options.scales.yAxes[0].ticks.beginAtZero;
+
+				this.theChart.data.labels = this.labels;
+				this.theChart.data.datasets = this.datasets;
+				this.theChart.options.title.display = this.showTitle;
+				this.theChart.options.title.text = this.titleText;
+				this.theChart.options.legend.display = this.showLegend;
+				this.theChart.options.legend.position = this.legendPosition;
+				this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero;
+				this.theChart.update();
+
+				this.editedGraphIdNo = this.graphData.graph_id;
 			}
 		},
 		mounted() {
 			this.onLoad();
+			if(this.graphData) {
+				this.forEdit();
+			}
 		}
 	}
 </script>

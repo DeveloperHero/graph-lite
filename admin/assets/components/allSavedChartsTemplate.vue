@@ -93,8 +93,14 @@
 				this.theChart[index].options.title.display = data.options.title.display;
 					this.theChart[index].options.title.text = data.options.title.text;
 
-				if( data.type == "pie" || data.type == "doughnut" || data.type == "polarArea" ) {
+				if( data.type == "pie" || data.type == "doughnut" || data.type == "polarArea" || data.type == "bar" || data.type == "line" || data.type == "radar" ) {
 					this.theChart[index].data.labels = data.data.labels;
+				}
+				if( data.type == "bar" || data.type == "line" ) {
+					this.theChart[index].options.scales.yAxes[0].ticks.beginAtZero = data.options.scales.yAxes[0].ticks.beginAtZero;
+				}
+				if( data.type == "radar") {
+					this.theChart[index].options.scale.ticks.beginAtZero = data.options.scale.ticks.beginAtZero;
 				}
 
 				this.theChart[index].update();

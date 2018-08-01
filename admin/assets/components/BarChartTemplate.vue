@@ -297,7 +297,6 @@
 			if(this.graphData) {
 				this.forEdit();
 			}
-			console.log(this.graphData);
 		}
 	}
 </script>
