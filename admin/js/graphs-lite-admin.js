@@ -1201,7 +1201,7 @@ process.umask = function() { return 0; };
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BarChartTemplate_vue__ = __webpack_require__(11);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_561d183b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_3e8fbc60_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__ = __webpack_require__(42);
 function injectStyle (ssrContext) {
   __webpack_require__(40)
 }
@@ -1221,7 +1221,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BarChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_561d183b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_3e8fbc60_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -1307,8 +1307,10 @@ var Component = normalizeComponent(
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["a"] = ({
+	props: ['graphData', 'graphIndex'],
 	data() {
 		return {
 			chartType: 'bar',
@@ -1432,6 +1434,27 @@ var Component = normalizeComponent(
 				}
 			});
 		},
+		updateGraphData() {
+			let chartDatas = {
+				type: this.chartType,
+				data: {
+					labels: this.labels,
+					datasets: this.datasets
+				},
+				options: {
+					title: {
+						display: this.showTitle,
+						text: this.titleText
+					},
+					legend: {
+						display: this.showLegend,
+						position: this.legendPosition
+					}
+				}
+			};
+
+			this.$emit("applied", chartDatas, this.graphIndex);
+		},
 		onLoad() {
 			var ctx = document.getElementById("barChart");
 			this.theChart = new Chart(ctx, {
@@ -1462,10 +1485,44 @@ var Component = normalizeComponent(
 					}
 				}
 			});
+		},
+		forEdit() {
+			this.chartlabelsString = this.graphData.data.labels.join(", ");
+			this.labels = this.graphData.data.labels;
+
+			this.graphData.data.datasets.forEach(function (value, key) {
+				console.log(value);
+				console.log(key);
+			});
+			// this.chartDatasetBgColorString = this.graphData.data.datasets[0].backgroundColor.join(", ");
+			// this.datasets[0].backgroundColor = this.graphData.data.datasets[0].backgroundColor;
+			// this.chartDatasetDataString = this.graphData.data.datasets[0].data.join(", ");
+			// this.datasets[0].data = this.graphData.data.datasets[0].data;
+
+			this.showTitle = this.graphData.options.title.display;
+			this.titleText = this.graphData.options.title.text;
+			this.showLegend = this.graphData.options.legend.display;
+			this.legendPosition = this.graphData.options.legend.position;
+			this.beginAtZero = this.graphData.options.scales.yAxes[0].ticks.beginAtZero;
+
+			this.theChart.data.labels = this.labels;
+			// this.theChart.data.datasets = this.datasets;
+			this.theChart.options.title.display = this.showTitle;
+			this.theChart.options.title.text = this.titleText;
+			this.theChart.options.legend.display = this.showLegend;
+			this.theChart.options.legend.position = this.legendPosition;
+			this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero;
+			this.theChart.update();
+
+			this.editedGraphIdNo = this.graphData.graph_id;
 		}
 	},
 	mounted() {
 		this.onLoad();
+		if (this.graphData) {
+			this.forEdit();
+		}
+		console.log(this.graphData);
 	}
 });
 
@@ -1792,7 +1849,7 @@ var Component = normalizeComponent(
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__ = __webpack_require__(15);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_ee10311c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_abd88d38_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(68);
 function injectStyle (ssrContext) {
   __webpack_require__(46)
 }
@@ -1812,7 +1869,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_ee10311c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_abd88d38_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -1980,6 +2037,7 @@ var Component = normalizeComponent(
 			});
 		},
 		updateGraphData() {
+			let outerThis = this;
 			let chartDatas = {
 				type: this.chartType,
 				data: {
@@ -1997,6 +2055,26 @@ var Component = normalizeComponent(
 					}
 				}
 			};
+
+			$.ajax({
+				url: ajaxurl,
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					action: 'update_chart',
+					graph_id: outerThis.editedGraphIdNo,
+					updated_graph_data: chartDatas
+				},
+				success: function (response) {
+					// var content = '[graph_lite id="'+response+'"]';
+					// tinymce.activeEditor.execCommand('mceInsertContent', false, content);
+					// $('#gl-admin-meta-box').fadeOut();
+					// $('div#gl-admin-meta-box').find('input:text').val('');
+				},
+				error: function (error) {
+					alert('Something went wront please try again');
+				}
+			});
 
 			this.$emit("applied", chartDatas, this.graphIndex);
 		},
@@ -2046,6 +2124,7 @@ var Component = normalizeComponent(
 			this.theChart.update();
 
 			this.editedGraphIdNo = this.graphData.graph_id;
+			console.log(this.editedGraphIdNo);
 		}
 	},
 	mounted() {
@@ -2053,7 +2132,6 @@ var Component = normalizeComponent(
 		if (this.graphData) {
 			this.forEdit();
 		}
-		console.log(this.graphData);
 	},
 	beforeDestroy() {
 		this.$eventHub.$off('ChartDataPassed');
@@ -15180,7 +15258,7 @@ var content = __webpack_require__(41);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("9aeed45c", content, true, {});
+var update = __webpack_require__(2)("fcaaa5be", content, true, {});
 
 /***/ }),
 /* 41 */
@@ -15201,7 +15279,7 @@ exports.push([module.i, ".barChart{width:100%;height:100%;display:flex;flex-dire
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"barChart",attrs:{"id":"bar"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelsString),expression:"chartlabelsString"}],staticClass:"regular-text",attrs:{"type":"text","id":"labels"},domProps:{"value":(_vm.chartlabelsString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelsString=$event.target.value}}})])]),_vm._v(" "),_vm._l((_vm.datasets),function(data,index){return [_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.label),expression:"data.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label"},domProps:{"value":(data.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.chartDatasetDataString),expression:"data.chartDatasetDataString"}],staticClass:"regular-text",attrs:{"type":"text","id":"datasets"},domProps:{"value":(data.chartDatasetDataString)},on:{"keyup":function($event){_vm.addDatasetData(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "chartDatasetDataString", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.backgroundColor),expression:"data.backgroundColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"colors"},domProps:{"value":(data.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])])]}),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showTitle),expression:"showTitle"}],attrs:{"type":"checkbox","id":"title"},domProps:{"checked":Array.isArray(_vm.showTitle)?_vm._i(_vm.showTitle,null)>-1:(_vm.showTitle)},on:{"change":[function($event){var $$a=_vm.showTitle,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showTitle=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showTitle=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showTitle=$$c}},_vm.showingGraphTitle]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.beginAtZero),expression:"beginAtZero"}],attrs:{"type":"checkbox","id":"beginAtZero"},domProps:{"checked":Array.isArray(_vm.beginAtZero)?_vm._i(_vm.beginAtZero,null)>-1:(_vm.beginAtZero)},on:{"change":[function($event){var $$a=_vm.beginAtZero,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.beginAtZero=$$a.concat([$$v]))}else{$$i>-1&&(_vm.beginAtZero=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.beginAtZero=$$c}},_vm.yAxesRange]}})])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(10),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(11),_vm._v(" "),_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])])])],2)]),_vm._v(" "),_vm._m(12)])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"barChart",attrs:{"id":"bar"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelsString),expression:"chartlabelsString"}],staticClass:"regular-text",attrs:{"type":"text","id":"labels"},domProps:{"value":(_vm.chartlabelsString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelsString=$event.target.value}}})])]),_vm._v(" "),_vm._l((_vm.datasets),function(data,index){return [_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.label),expression:"data.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label"},domProps:{"value":(data.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.chartDatasetDataString),expression:"data.chartDatasetDataString"}],staticClass:"regular-text",attrs:{"type":"text","id":"datasets"},domProps:{"value":(data.chartDatasetDataString)},on:{"keyup":function($event){_vm.addDatasetData(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "chartDatasetDataString", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.backgroundColor),expression:"data.backgroundColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"colors"},domProps:{"value":(data.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])])]}),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showTitle),expression:"showTitle"}],attrs:{"type":"checkbox","id":"title"},domProps:{"checked":Array.isArray(_vm.showTitle)?_vm._i(_vm.showTitle,null)>-1:(_vm.showTitle)},on:{"change":[function($event){var $$a=_vm.showTitle,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showTitle=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showTitle=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showTitle=$$c}},_vm.showingGraphTitle]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.beginAtZero),expression:"beginAtZero"}],attrs:{"type":"checkbox","id":"beginAtZero"},domProps:{"checked":Array.isArray(_vm.beginAtZero)?_vm._i(_vm.beginAtZero,null)>-1:(_vm.beginAtZero)},on:{"change":[function($event){var $$a=_vm.beginAtZero,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.beginAtZero=$$a.concat([$$v]))}else{$$i>-1&&(_vm.beginAtZero=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.beginAtZero=$$c}},_vm.yAxesRange]}})])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(10),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(11),_vm._v(" "),(!_vm.graphData)?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])],2)]),_vm._v(" "),_vm._m(12)])}
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("Labels")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Color")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"title"}},[_vm._v("Show Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Title Text")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"beginAtZero"}},[_vm._v("yAxes Range (Begin at 0)")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Legend")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Legend Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('canvas',{attrs:{"id":"barChart"}})])}]
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
@@ -15254,7 +15332,7 @@ var content = __webpack_require__(47);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("bfeae466", content, true, {});
+var update = __webpack_require__(2)("25b41956", content, true, {});
 
 /***/ }),
 /* 47 */

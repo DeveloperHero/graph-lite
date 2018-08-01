@@ -149,6 +149,7 @@
 				});
 			},
 			updateGraphData() {
+				let outerThis = this;
 				let chartDatas = {
 					type: this.chartType,
 					data: {
@@ -166,6 +167,26 @@
 						}
 					}
 				};
+
+				$.ajax({
+					url: ajaxurl,
+					type: 'POST',
+					dataType: 'json',
+					data: {
+						action: 'update_chart',
+						graph_id: outerThis.editedGraphIdNo,
+						updated_graph_data: chartDatas
+					},
+					success: function( response ) {
+						// var content = '[graph_lite id="'+response+'"]';
+						// tinymce.activeEditor.execCommand('mceInsertContent', false, content);
+						// $('#gl-admin-meta-box').fadeOut();
+						// $('div#gl-admin-meta-box').find('input:text').val('');
+					},
+					error: function( error ) {
+						alert('Something went wront please try again');
+					}
+				});
 
 				this.$emit("applied", chartDatas, this.graphIndex);
 			},
@@ -224,7 +245,6 @@
 			if(this.graphData) {
 				this.forEdit();
 			}
-			console.log(this.graphData);
 		},
 		beforeDestroy(){
             this.$eventHub.$off('ChartDataPassed');
