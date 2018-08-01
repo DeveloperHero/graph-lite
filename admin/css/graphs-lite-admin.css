@@ -142,3 +142,14 @@ button.saveGraphData {
 .gl_single_graph .gl_graph_box {
     min-height: 290px;
 }
+
+@media only screen and (max-width: 767px) {
+
+    .gl_single_graph .gl_graph_box {
+        min-height: 243px;
+    }
+    .gl_single_graph {
+        width: 48%;
+    }
+
+}
