@@ -6,7 +6,7 @@
 					<th scope="row"><label for="labels">Labels</label></th>
 					<td><input class="regular-text" type="text" id="labels" v-model="chartlabelsString" @keyup="addLabels"></td>
 				</tr>
-				<template v-for="(data, index) in datasets">
+				<template v-for="(data, index) in datasets" :key="data">
 					<tr>
 						<th scope="row"><label for="label">Label</label></th>
 						<td><input class="regular-text" type="text" id="label" v-model="data.label" @keyup="addDatasetLabel(index)"></td>
@@ -206,6 +206,13 @@
 						datasets: this.datasets
 					},
 					options: {
+						scales: {
+							yAxes: [{
+								ticks: {
+									beginAtZero: this.beginAtZero
+								}
+							}]
+						},
 						title: {
 							display: this.showTitle,
 							text: this.titleText
@@ -253,17 +260,19 @@
 				});
 			},
 			forEdit() {
+				let outerThis = this;
 				this.chartlabelsString = this.graphData.data.labels.join(", ");
 				this.labels = this.graphData.data.labels;
 
 				this.graphData.data.datasets.forEach(function(value, key) {
-					console.log(value);
-					console.log(key);
-				})
-				// this.chartDatasetBgColorString = this.graphData.data.datasets[0].backgroundColor.join(", ");
-				// this.datasets[0].backgroundColor = this.graphData.data.datasets[0].backgroundColor;
-				// this.chartDatasetDataString = this.graphData.data.datasets[0].data.join(", ");
-				// this.datasets[0].data = this.graphData.data.datasets[0].data;
+					if(key) {
+						outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor:'' });
+					}
+					outerThis.datasets[key].label = outerThis.graphData.data.datasets[key].label;
+					outerThis.datasets[key].chartDatasetDataString = outerThis.graphData.data.datasets[key].chartDatasetDataString;
+					outerThis.datasets[key].data = outerThis.graphData.data.datasets[key].data;
+					outerThis.datasets[key].backgroundColor = outerThis.graphData.data.datasets[key].backgroundColor;
+				});
 
 				this.showTitle = this.graphData.options.title.display;
 				this.titleText = this.graphData.options.title.text;
@@ -272,7 +281,7 @@
 				this.beginAtZero = this.graphData.options.scales.yAxes[0].ticks.beginAtZero;
 
 				this.theChart.data.labels = this.labels;
-				// this.theChart.data.datasets = this.datasets;
+				this.theChart.data.datasets = this.datasets;
 				this.theChart.options.title.display = this.showTitle;
 				this.theChart.options.title.text = this.titleText;
 				this.theChart.options.legend.display = this.showLegend;
