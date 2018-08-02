@@ -50,12 +50,9 @@
 				this.allGraph = gl.all_graphs;
 				console.log(this.allGraph);
 			},
-			whenCalled() {
-				let outerThis = this;
-
-				this.$eventHub.$on('ChartDataPassed', data => {
-					outerThis.allGraph.push(data);
-				});
+			whenCalled(data) {
+				console.log('fired');
+				this.allGraph.push(data);
 			},
 			onLoad() {
 				let outerThis = this;
@@ -135,13 +132,18 @@
 				}
 			}
 		},
+		created() {
+			this.$eventHub.$on('ChartDataPassed', this.whenCalled);
+		},
 		beforeMount() {
 			this.beforeLoad();
-			this.whenCalled();
 		},
 		mounted() {
 			this.onLoad();
-		}
+		},
+		beforeDestroy() {
+            this.$eventHub.$off('ChartDataPassed', this.whenCalled);
+        }
 	}
 </script>
 

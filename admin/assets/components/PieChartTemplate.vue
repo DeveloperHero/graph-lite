@@ -180,7 +180,7 @@
 					data: {
 						action: 'update_chart',
 						graph_id: outerThis.editedGraphIdNo,
-						updated_graph_data: 'chartDatas',
+						updated_graph_data: chartDatas,
 					},
 					success: function( response ) {
 						$.sweetModal({

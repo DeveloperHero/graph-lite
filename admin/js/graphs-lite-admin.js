@@ -1928,7 +1928,7 @@ var Component = normalizeComponent(
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__ = __webpack_require__(15);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_14163b89_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_af2ab5ee_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(68);
 function injectStyle (ssrContext) {
   __webpack_require__(46)
 }
@@ -1948,7 +1948,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_14163b89_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_af2ab5ee_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -2093,7 +2093,7 @@ var Component = normalizeComponent(
 					}
 				}
 			};
-
+			console.log(chartDatas);
 			this.$eventHub.$emit('ChartDataPassed', chartDatas);
 
 			$.ajax({
@@ -2134,8 +2134,9 @@ var Component = normalizeComponent(
 					}
 				}
 			};
+			console.log(chartDatas);
+			// this.$emit("applied", chartDatas, this.graphIndex);
 
-			this.$emit("applied", chartDatas, this.graphIndex);
 
 			// Problem is on chartDatas
 
@@ -2146,7 +2147,7 @@ var Component = normalizeComponent(
 				data: {
 					action: 'update_chart',
 					graph_id: outerThis.editedGraphIdNo,
-					updated_graph_data: 'chartDatas'
+					updated_graph_data: chartDatas
 				},
 				success: function (response) {
 					$.sweetModal({
@@ -4107,12 +4108,9 @@ var Component = normalizeComponent(
 			this.allGraph = gl.all_graphs;
 			console.log(this.allGraph);
 		},
-		whenCalled() {
-			let outerThis = this;
-
-			this.$eventHub.$on('ChartDataPassed', data => {
-				outerThis.allGraph.push(data);
-			});
+		whenCalled(data) {
+			console.log('fired');
+			this.allGraph.push(data);
 		},
 		onLoad() {
 			let outerThis = this;
@@ -4191,12 +4189,17 @@ var Component = normalizeComponent(
 			}
 		}
 	},
+	created() {
+		this.$eventHub.$on('ChartDataPassed', this.whenCalled);
+	},
 	beforeMount() {
 		this.beforeLoad();
-		this.whenCalled();
 	},
 	mounted() {
 		this.onLoad();
+	},
+	beforeDestroy() {
+		this.$eventHub.$off('ChartDataPassed', this.whenCalled);
 	}
 });
 
@@ -15615,7 +15618,7 @@ var content = __webpack_require__(47);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("08d6e584", content, true, {});
+var update = __webpack_require__(2)("211dac16", content, true, {});
 
 /***/ }),
 /* 47 */
@@ -16908,7 +16911,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(31);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_35e73c3c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(88);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_e1b7f758_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(88);
 function injectStyle (ssrContext) {
   __webpack_require__(86)
 }
@@ -16928,7 +16931,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_allSavedChartsTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_35e73c3c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_e1b7f758_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -16949,7 +16952,7 @@ var content = __webpack_require__(87);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("2f528d70", content, true, {});
+var update = __webpack_require__(2)("30c23be7", content, true, {});
 
 /***/ }),
 /* 87 */
