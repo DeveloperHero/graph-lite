@@ -30,4 +30,24 @@ jQuery(document).ready(function($) {
 		$('.gl_new_chart').hide();
 		$('.gl_old_graph').fadeIn();
 	});
+
+	// Replace string to boolean
+	var card_data = JSON.parse(gl.chart_data);
+	function gl_findAndReplace(object, value, replacevalue){
+	  for(var x in object){
+	    if(typeof object[x] == typeof {}){
+	      gl_findAndReplace(object[x], value, replacevalue);
+	    }
+	    if(object[x] == value){
+	      object[x] = replacevalue;
+	      // break;
+	    }
+	  }
+	}
+
+	gl_findAndReplace(card_data, 'true', true);
+	gl_findAndReplace(card_data, 'false', false);
+
+	var ctx = document.getElementById("Chart");
+	new Chart(ctx, card_data);
 });
