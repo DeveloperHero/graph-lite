@@ -81,6 +81,8 @@ class Graph_Lite_Ajax
 
 		delete_post_meta( $_POST['graph_id'], 'graphs_light_data' );
 
+		delete_option( 'graphs_light_all_data' )[$_POST['graph_id']];
+
 		wp_send_json( __( 'Graph '.$_POST['graph_id'].' deleted', 'graphs-lite') );
 
 	}

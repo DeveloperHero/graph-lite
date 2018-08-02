@@ -185,7 +185,7 @@ class Graph_Lite_Admin {
 
 			$get_graph_meta['graph_id'] = $graph->ID;
 
-			array_push($graphs_data, $get_graph_meta);
+			$graphs_data[$graph->ID] = $get_graph_meta;
 
 		}
 
