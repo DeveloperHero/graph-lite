@@ -48,6 +48,7 @@
 		methods: {
 			beforeLoad() {
 				this.allGraph = gl.all_graphs;
+				console.log(this.allGraph);
 			},
 			whenCalled() {
 				let outerThis = this;
@@ -81,8 +82,6 @@
 			},
 			whenGraphUpdated(data, index) {
 				this.currentComponent = '';
-				console.log(this.theChart[index]);
-				console.log(data);
 				this.allGraph[index].data = data.data;
 				this.allGraph[index].options = data.options;
 

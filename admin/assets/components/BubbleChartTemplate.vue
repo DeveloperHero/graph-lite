@@ -67,7 +67,8 @@
 				</tr>
 				<tr>
 					<th scope="row"><label></label></th>
-					<td><button type="button" class="saveGraphData" @click="saveGraphData">Save</button></td>
+					<td v-if="!graphData"><button type="button" class="saveGraphData" @click="saveGraphData">Save</button></td>
+					<td v-else><button type="button" class="saveGraphData" @click="updateGraphData">Update</button></td>
 				</tr>
 			</table>
 		</div>
@@ -79,6 +80,7 @@
 
 <script type="text/javascript">
 	export default {
+		props: ['graphData', 'graphIndex'],
 		data() {
 			return {
 				chartType: 'bubble',
@@ -202,6 +204,26 @@
 					}
 				});
 			},
+			updateGraphData() {
+				var chartDatas = {
+					type: this.chartType,
+					data: {
+						datasets: this.datasets
+					},
+					options: {
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.$emit("applied", chartDatas, this.graphIndex);
+			},
 			onLoad() {
 				var ctx = document.getElementById("bubbleChart");
 				this.theChart = new Chart(ctx, {
@@ -230,10 +252,47 @@
 						}
 					}
 				});
+			},
+			forEdit() {
+				let outerThis = this;
+				this.graphData.data.datasets.forEach(function(value, key) {
+					if(key) {
+						outerThis.datasets.push({ label: '', data: [{ x: '', y: '', r: '' }], backgroundColor:'' });
+					}
+					outerThis.datasets[key].label = value.label;
+					value.data.forEach(function(innerValue, innerKey) {
+						if(innerKey) {
+							outerThis.datasets[key].data.push({ x: '', y: '', r: '' });
+						}
+						outerThis.datasets[key].data[innerKey].x = innerValue.x;
+						outerThis.datasets[key].data[innerKey].y = innerValue.y;
+						outerThis.datasets[key].data[innerKey].r = innerValue.r;
+					});
+					outerThis.datasets[key].backgroundColor = value.backgroundColor;
+					outerThis.datasets[key].borderColor = value.borderColor;
+					outerThis.datasets[key].hoverRadius = 0;
+				});
+
+				this.showTitle = this.graphData.options.title.display;
+				this.titleText = this.graphData.options.title.text;
+				this.showLegend = this.graphData.options.legend.display;
+				this.legendPosition = this.graphData.options.legend.position;
+
+				this.theChart.data.datasets = this.datasets;
+				this.theChart.options.title.display = this.showTitle;
+				this.theChart.options.title.text = this.titleText;
+				this.theChart.options.legend.display = this.showLegend;
+				this.theChart.options.legend.position = this.legendPosition;
+				this.theChart.update();
+
+				this.editedGraphIdNo = this.graphData.graph_id;
 			}
 		},
 		mounted() {
 			this.onLoad();
+			if(this.graphData) {
+				this.forEdit();
+			}
 		}
 	}
 </script>

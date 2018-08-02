@@ -1928,7 +1928,7 @@ var Component = normalizeComponent(
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__ = __webpack_require__(15);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_8c23a314_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7f01d76a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(68);
 function injectStyle (ssrContext) {
   __webpack_require__(46)
 }
@@ -1948,7 +1948,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_8c23a314_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7f01d76a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -2134,26 +2134,6 @@ var Component = normalizeComponent(
 					}
 				}
 			};
-
-			$.ajax({
-				url: ajaxurl,
-				type: 'POST',
-				dataType: 'json',
-				data: {
-					action: 'update_chart',
-					graph_id: outerThis.editedGraphIdNo,
-					updated_graph_data: chartDatas
-				},
-				success: function (response) {
-					// var content = '[graph_lite id="'+response+'"]';
-					// tinymce.activeEditor.execCommand('mceInsertContent', false, content);
-					// $('#gl-admin-meta-box').fadeOut();
-					// $('div#gl-admin-meta-box').find('input:text').val('');
-				},
-				error: function (error) {
-					alert('Something went wront please try again');
-				}
-			});
 
 			this.$emit("applied", chartDatas, this.graphIndex);
 		},
@@ -3383,7 +3363,7 @@ var Component = normalizeComponent(
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BubbleChartTemplate_vue__ = __webpack_require__(28);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6ca6e8c8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__ = __webpack_require__(80);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_8e086530_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__ = __webpack_require__(80);
 function injectStyle (ssrContext) {
   __webpack_require__(78)
 }
@@ -3403,7 +3383,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BubbleChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6ca6e8c8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_8e086530_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -3497,8 +3477,10 @@ var Component = normalizeComponent(
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["a"] = ({
+	props: ['graphData', 'graphIndex'],
 	data() {
 		return {
 			chartType: 'bubble',
@@ -3614,6 +3596,26 @@ var Component = normalizeComponent(
 				}
 			});
 		},
+		updateGraphData() {
+			var chartDatas = {
+				type: this.chartType,
+				data: {
+					datasets: this.datasets
+				},
+				options: {
+					title: {
+						display: this.showTitle,
+						text: this.titleText
+					},
+					legend: {
+						display: this.showLegend,
+						position: this.legendPosition
+					}
+				}
+			};
+
+			this.$emit("applied", chartDatas, this.graphIndex);
+		},
 		onLoad() {
 			var ctx = document.getElementById("bubbleChart");
 			this.theChart = new Chart(ctx, {
@@ -3638,10 +3640,47 @@ var Component = normalizeComponent(
 					}
 				}
 			});
+		},
+		forEdit() {
+			let outerThis = this;
+			this.graphData.data.datasets.forEach(function (value, key) {
+				if (key) {
+					outerThis.datasets.push({ label: '', data: [{ x: '', y: '', r: '' }], backgroundColor: '' });
+				}
+				outerThis.datasets[key].label = value.label;
+				value.data.forEach(function (innerValue, innerKey) {
+					if (innerKey) {
+						outerThis.datasets[key].data.push({ x: '', y: '', r: '' });
+					}
+					outerThis.datasets[key].data[innerKey].x = innerValue.x;
+					outerThis.datasets[key].data[innerKey].y = innerValue.y;
+					outerThis.datasets[key].data[innerKey].r = innerValue.r;
+				});
+				outerThis.datasets[key].backgroundColor = value.backgroundColor;
+				outerThis.datasets[key].borderColor = value.borderColor;
+				outerThis.datasets[key].hoverRadius = 0;
+			});
+
+			this.showTitle = this.graphData.options.title.display;
+			this.titleText = this.graphData.options.title.text;
+			this.showLegend = this.graphData.options.legend.display;
+			this.legendPosition = this.graphData.options.legend.position;
+
+			this.theChart.data.datasets = this.datasets;
+			this.theChart.options.title.display = this.showTitle;
+			this.theChart.options.title.text = this.titleText;
+			this.theChart.options.legend.display = this.showLegend;
+			this.theChart.options.legend.position = this.legendPosition;
+			this.theChart.update();
+
+			this.editedGraphIdNo = this.graphData.graph_id;
 		}
 	},
 	mounted() {
 		this.onLoad();
+		if (this.graphData) {
+			this.forEdit();
+		}
 	}
 });
 
@@ -3652,7 +3691,7 @@ var Component = normalizeComponent(
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ScatterChartTemplate_vue__ = __webpack_require__(30);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6d30d368_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__ = __webpack_require__(83);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_233db6fc_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__ = __webpack_require__(83);
 function injectStyle (ssrContext) {
   __webpack_require__(81)
 }
@@ -3672,7 +3711,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ScatterChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6d30d368_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_233db6fc_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -3764,8 +3803,10 @@ var Component = normalizeComponent(
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["a"] = ({
+	props: ['graphData', 'graphIndex'],
 	data() {
 		return {
 			chartType: 'scatter',
@@ -3884,6 +3925,26 @@ var Component = normalizeComponent(
 				}
 			});
 		},
+		updateGraphData() {
+			var chartDatas = {
+				type: this.chartType,
+				data: {
+					datasets: this.datasets
+				},
+				options: {
+					title: {
+						display: this.showTitle,
+						text: this.titleText
+					},
+					legend: {
+						display: this.showLegend,
+						position: this.legendPosition
+					}
+				}
+			};
+
+			this.$emit("applied", chartDatas, this.graphIndex);
+		},
 		onLoad() {
 			var ctx = document.getElementById("scatterChart");
 			this.theChart = new Chart(ctx, {
@@ -3909,10 +3970,47 @@ var Component = normalizeComponent(
 					}
 				}
 			});
+		},
+		forEdit() {
+			let outerThis = this;
+			this.graphData.data.datasets.forEach(function (value, key) {
+				if (key) {
+					outerThis.datasets.push({ label: '', data: [{ x: '', y: '' }], backgroundColor: '', fill: false, showLine: false });
+				}
+				outerThis.datasets[key].label = value.label;
+				value.data.forEach(function (innerValue, innerKey) {
+					if (innerKey) {
+						outerThis.datasets[key].data.push({ x: '', y: '' });
+					}
+					outerThis.datasets[key].data[innerKey].x = innerValue.x;
+					outerThis.datasets[key].data[innerKey].y = innerValue.y;
+					outerThis.datasets[key].data[innerKey].r = innerValue.r;
+				});
+				outerThis.datasets[key].backgroundColor = value.backgroundColor;
+				outerThis.datasets[key].borderColor = value.borderColor;
+				outerThis.datasets[key].hoverRadius = 0;
+			});
+
+			this.showTitle = this.graphData.options.title.display;
+			this.titleText = this.graphData.options.title.text;
+			this.showLegend = this.graphData.options.legend.display;
+			this.legendPosition = this.graphData.options.legend.position;
+
+			this.theChart.data.datasets = this.datasets;
+			this.theChart.options.title.display = this.showTitle;
+			this.theChart.options.title.text = this.titleText;
+			this.theChart.options.legend.display = this.showLegend;
+			this.theChart.options.legend.position = this.legendPosition;
+			this.theChart.update();
+
+			this.editedGraphIdNo = this.graphData.graph_id;
 		}
 	},
 	mounted() {
 		this.onLoad();
+		if (this.graphData) {
+			this.forEdit();
+		}
 	}
 });
 
@@ -3979,6 +4077,7 @@ var Component = normalizeComponent(
 	methods: {
 		beforeLoad() {
 			this.allGraph = gl.all_graphs;
+			console.log(this.allGraph);
 		},
 		whenCalled() {
 			let outerThis = this;
@@ -4012,8 +4111,6 @@ var Component = normalizeComponent(
 		},
 		whenGraphUpdated(data, index) {
 			this.currentComponent = '';
-			console.log(this.theChart[index]);
-			console.log(data);
 			this.allGraph[index].data = data.data;
 			this.allGraph[index].options = data.options;
 
@@ -15490,7 +15587,7 @@ var content = __webpack_require__(47);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("3592ad8a", content, true, {});
+var update = __webpack_require__(2)("6dea82ce", content, true, {});
 
 /***/ }),
 /* 47 */
@@ -16703,7 +16800,7 @@ var content = __webpack_require__(79);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("38620e5c", content, true, {});
+var update = __webpack_require__(2)("1cae22b5", content, true, {});
 
 /***/ }),
 /* 79 */
@@ -16724,7 +16821,7 @@ exports.push([module.i, ".bubbleChart{width:100%;height:100%;display:flex;flex-d
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"bubbleChart",attrs:{"id":"bubble"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_vm._l((_vm.datasets),function(dataset,index){return [_c('tr',[_vm._m(0,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.label),expression:"dataset.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label"},domProps:{"value":(dataset.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_vm._l((dataset.data),function(data,PIndex){return [_c('div',[_c('label',{attrs:{"for":"xPoint"}},[_vm._v("x-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].x),expression:"dataset.data[PIndex].x"}],staticClass:"bubblePoints",attrs:{"type":"number","id":"xPoint"},domProps:{"value":(dataset.data[PIndex].x)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "x", $event.target.value)}}}),_vm._v(" "),_c('label',{attrs:{"for":"xPoint"}},[_vm._v("y-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].y),expression:"dataset.data[PIndex].y"}],staticClass:"bubblePoints",attrs:{"type":"number","id":"yPoint"},domProps:{"value":(dataset.data[PIndex].y)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "y", $event.target.value)}}}),_vm._v(" "),_c('label',{attrs:{"for":"radius"}},[_vm._v("Bubble Radius")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].r),expression:"dataset.data[PIndex].r"}],staticClass:"bubblePoints",attrs:{"type":"number","id":"radius"},domProps:{"value":(dataset.data[PIndex].r)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'r')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "r", $event.target.value)}}})])]}),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.addBubblePoint(index)}}},[_vm._v("Add Bubble Point")])],2)]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.backgroundColor),expression:"dataset.backgroundColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"colors"},domProps:{"value":(dataset.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.borderColor),expression:"dataset.borderColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"line_color"},domProps:{"value":(dataset.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "borderColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])])]}),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showTitle),expression:"showTitle"}],attrs:{"type":"checkbox","id":"title"},domProps:{"checked":Array.isArray(_vm.showTitle)?_vm._i(_vm.showTitle,null)>-1:(_vm.showTitle)},on:{"change":[function($event){var $$a=_vm.showTitle,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showTitle=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showTitle=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showTitle=$$c}},_vm.showingGraphTitle]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(10),_vm._v(" "),_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])])])],2)]),_vm._v(" "),_vm._m(11)])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"bubbleChart",attrs:{"id":"bubble"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_vm._l((_vm.datasets),function(dataset,index){return [_c('tr',[_vm._m(0,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.label),expression:"dataset.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label"},domProps:{"value":(dataset.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_vm._l((dataset.data),function(data,PIndex){return [_c('div',[_c('label',{attrs:{"for":"xPoint"}},[_vm._v("x-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].x),expression:"dataset.data[PIndex].x"}],staticClass:"bubblePoints",attrs:{"type":"number","id":"xPoint"},domProps:{"value":(dataset.data[PIndex].x)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "x", $event.target.value)}}}),_vm._v(" "),_c('label',{attrs:{"for":"xPoint"}},[_vm._v("y-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].y),expression:"dataset.data[PIndex].y"}],staticClass:"bubblePoints",attrs:{"type":"number","id":"yPoint"},domProps:{"value":(dataset.data[PIndex].y)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "y", $event.target.value)}}}),_vm._v(" "),_c('label',{attrs:{"for":"radius"}},[_vm._v("Bubble Radius")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].r),expression:"dataset.data[PIndex].r"}],staticClass:"bubblePoints",attrs:{"type":"number","id":"radius"},domProps:{"value":(dataset.data[PIndex].r)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'r')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "r", $event.target.value)}}})])]}),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.addBubblePoint(index)}}},[_vm._v("Add Bubble Point")])],2)]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.backgroundColor),expression:"dataset.backgroundColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"colors"},domProps:{"value":(dataset.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.borderColor),expression:"dataset.borderColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"line_color"},domProps:{"value":(dataset.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "borderColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])])]}),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showTitle),expression:"showTitle"}],attrs:{"type":"checkbox","id":"title"},domProps:{"checked":Array.isArray(_vm.showTitle)?_vm._i(_vm.showTitle,null)>-1:(_vm.showTitle)},on:{"change":[function($event){var $$a=_vm.showTitle,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showTitle=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showTitle=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showTitle=$$c}},_vm.showingGraphTitle]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(10),_vm._v(" "),(!_vm.graphData)?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])],2)]),_vm._v(" "),_vm._m(11)])}
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Circle Background Color")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"line_color"}},[_vm._v("Circle Border Color")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"title"}},[_vm._v("Show Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Title Text")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Legend")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Legend Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('canvas',{attrs:{"id":"bubbleChart"}})])}]
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
@@ -16740,7 +16837,7 @@ var content = __webpack_require__(82);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("14691f80", content, true, {});
+var update = __webpack_require__(2)("880cafce", content, true, {});
 
 /***/ }),
 /* 82 */
@@ -16761,7 +16858,7 @@ exports.push([module.i, ".scatterChart{width:100%;height:100%;display:flex;flex-
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"scatterChart",attrs:{"id":"scatter"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_vm._l((_vm.datasets),function(dataset,index){return [_c('tr',[_vm._m(0,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.label),expression:"dataset.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label"},domProps:{"value":(dataset.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_vm._l((dataset.data),function(data,PIndex){return [_c('div',[_c('label',{attrs:{"for":"xPoint"}},[_vm._v("x-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].x),expression:"dataset.data[PIndex].x"}],staticClass:"bubblePoints",attrs:{"type":"number","id":"xPoint"},domProps:{"value":(dataset.data[PIndex].x)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "x", $event.target.value)}}}),_vm._v(" "),_c('label',{attrs:{"for":"xPoint"}},[_vm._v("y-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].y),expression:"dataset.data[PIndex].y"}],staticClass:"bubblePoints",attrs:{"type":"number","id":"yPoint"},domProps:{"value":(dataset.data[PIndex].y)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "y", $event.target.value)}}})])]}),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.addBubblePoint(index)}}},[_vm._v("Add Bubble Point")])],2)]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.backgroundColor),expression:"dataset.backgroundColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"colors"},domProps:{"value":(dataset.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.borderColor),expression:"dataset.borderColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"line_color"},domProps:{"value":(dataset.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "borderColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])])]}),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showTitle),expression:"showTitle"}],attrs:{"type":"checkbox","id":"title"},domProps:{"checked":Array.isArray(_vm.showTitle)?_vm._i(_vm.showTitle,null)>-1:(_vm.showTitle)},on:{"change":[function($event){var $$a=_vm.showTitle,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showTitle=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showTitle=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showTitle=$$c}},_vm.showingGraphTitle]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(10),_vm._v(" "),_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])])])],2)]),_vm._v(" "),_vm._m(11)])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"scatterChart",attrs:{"id":"scatter"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_vm._l((_vm.datasets),function(dataset,index){return [_c('tr',[_vm._m(0,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.label),expression:"dataset.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label"},domProps:{"value":(dataset.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_vm._l((dataset.data),function(data,PIndex){return [_c('div',[_c('label',{attrs:{"for":"xPoint"}},[_vm._v("x-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].x),expression:"dataset.data[PIndex].x"}],staticClass:"bubblePoints",attrs:{"type":"number","id":"xPoint"},domProps:{"value":(dataset.data[PIndex].x)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "x", $event.target.value)}}}),_vm._v(" "),_c('label',{attrs:{"for":"xPoint"}},[_vm._v("y-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].y),expression:"dataset.data[PIndex].y"}],staticClass:"bubblePoints",attrs:{"type":"number","id":"yPoint"},domProps:{"value":(dataset.data[PIndex].y)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "y", $event.target.value)}}})])]}),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.addBubblePoint(index)}}},[_vm._v("Add Bubble Point")])],2)]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.backgroundColor),expression:"dataset.backgroundColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"colors"},domProps:{"value":(dataset.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.borderColor),expression:"dataset.borderColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"line_color"},domProps:{"value":(dataset.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "borderColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])])]}),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showTitle),expression:"showTitle"}],attrs:{"type":"checkbox","id":"title"},domProps:{"checked":Array.isArray(_vm.showTitle)?_vm._i(_vm.showTitle,null)>-1:(_vm.showTitle)},on:{"change":[function($event){var $$a=_vm.showTitle,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showTitle=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showTitle=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showTitle=$$c}},_vm.showingGraphTitle]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(10),_vm._v(" "),(!_vm.graphData)?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])],2)]),_vm._v(" "),_vm._m(11)])}
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Circle Background Color")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"line_color"}},[_vm._v("Circle Border Color")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"title"}},[_vm._v("Show Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Title Text")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Legend")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Legend Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('canvas',{attrs:{"id":"scatterChart"}})])}]
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
@@ -16783,7 +16880,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(31);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_5bdc0411_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(88);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_35e73c3c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(88);
 function injectStyle (ssrContext) {
   __webpack_require__(86)
 }
@@ -16803,7 +16900,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_allSavedChartsTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_5bdc0411_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_35e73c3c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -16824,7 +16921,7 @@ var content = __webpack_require__(87);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("7eed35e8", content, true, {});
+var update = __webpack_require__(2)("2f528d70", content, true, {});
 
 /***/ }),
 /* 87 */
