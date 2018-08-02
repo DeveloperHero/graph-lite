@@ -58,6 +58,10 @@ class Graph_Lite_Ajax
 
 		$post_id  = $_POST['graph_id'];
 
+		if (empty($post_id)) {
+			wp_send_json_error( __( 'Post id is not correct', 'graphs-lite' ) );
+		}
+
 		$new_data = $_POST['updated_graph_data'];
 
 		wp_update_post( [

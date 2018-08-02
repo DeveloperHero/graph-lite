@@ -169,6 +169,35 @@
 				};
 
 				this.$emit("applied", chartDatas, this.graphIndex);
+
+
+				// Problem is on chartDatas
+
+				$.ajax({
+					url: ajaxurl,
+					type: 'POST',
+					dataType: 'json',
+					data: {
+						action: 'update_chart',
+						graph_id: outerThis.editedGraphIdNo,
+						updated_graph_data: 'chartDatas',
+					},
+					success: function( response ) {
+						$.sweetModal({
+							content: 'Graph id '+ response + ' updated',
+							icon: $.sweetModal.ICON_SUCCESS,
+							timeout: 1300,
+							showCloseButton: false
+						});
+					},
+					error: function( error ) {
+						if (error == '') {
+							alert('Something went wrong please try again')
+						} else {
+							alert(error);
+						}
+					}
+				});
 			},
 			onLoad() {
 				var ctx = document.getElementById("pieChart");
