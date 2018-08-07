@@ -170,15 +170,14 @@
 
 				this.$emit("applied", chartDatas, this.graphIndex);
 
-
 				// Problem is on chartDatas
 
 				$.ajax({
-					url: ajaxurl,
+					url: gl.ajax_url,
 					type: 'POST',
 					dataType: 'json',
 					data: {
-						action: 'update_chart',
+						action: 'save_chart',
 						graph_id: outerThis.editedGraphIdNo,
 						updated_graph_data: chartDatas,
 					},
@@ -191,13 +190,10 @@
 						});
 					},
 					error: function( error ) {
-						if (error == '') {
-							alert('Something went wrong please try again')
-						} else {
-							alert(error);
-						}
+						alert('Something went wront please try again');
 					}
 				});
+
 			},
 			onLoad() {
 				var ctx = document.getElementById("pieChart");

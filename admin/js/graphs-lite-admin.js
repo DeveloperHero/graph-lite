@@ -1928,7 +1928,11 @@ var Component = normalizeComponent(
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__ = __webpack_require__(15);
 /* unused harmony namespace reexport */
+<<<<<<< HEAD
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2ca432e8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(69);
+=======
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4f47f7d2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(68);
+>>>>>>> ed232eb2976458bedd80aef42146224a16ea7b9c
 function injectStyle (ssrContext) {
   __webpack_require__(47)
 }
@@ -1948,7 +1952,11 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__["a" /* default */],
+<<<<<<< HEAD
   __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2ca432e8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
+=======
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4f47f7d2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
+>>>>>>> ed232eb2976458bedd80aef42146224a16ea7b9c
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -2094,6 +2102,13 @@ var Component = normalizeComponent(
 					}
 				}
 			};
+<<<<<<< HEAD
+=======
+
+			this.$eventHub.$emit('ChartDataPassed', chartDatas);
+>>>>>>> ed232eb2976458bedd80aef42146224a16ea7b9c
+
+			console.log(chartDatas);
 
 			$.ajax({
 				url: gl.ajax_url,
@@ -2140,11 +2155,11 @@ var Component = normalizeComponent(
 			// Problem is on chartDatas
 
 			$.ajax({
-				url: ajaxurl,
+				url: gl.ajax_url,
 				type: 'POST',
 				dataType: 'json',
 				data: {
-					action: 'update_chart',
+					action: 'save_chart',
 					graph_id: outerThis.editedGraphIdNo,
 					updated_graph_data: chartDatas
 				},
@@ -2157,11 +2172,7 @@ var Component = normalizeComponent(
 					});
 				},
 				error: function (error) {
-					if (error == '') {
-						alert('Something went wrong please try again');
-					} else {
-						alert(error);
-					}
+					alert('Something went wront please try again');
 				}
 			});
 		},
@@ -16550,7 +16561,11 @@ var content = __webpack_require__(48);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
+<<<<<<< HEAD
 var update = __webpack_require__(2)("aa863734", content, true, {});
+=======
+var update = __webpack_require__(2)("1374ecf0", content, true, {});
+>>>>>>> ed232eb2976458bedd80aef42146224a16ea7b9c
 
 /***/ }),
 /* 48 */
