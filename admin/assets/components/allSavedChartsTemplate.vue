@@ -26,34 +26,29 @@
 	import polarAreaChart from './PolarAreaChartTemplate';
 	import bubbleChart from './BubbleChartTemplate';
 	import scatterChart from './ScatterChartTemplate';
+	import { mapState, mapMutations } from 'vuex';
 
 	export default {
 		data() {
 			return {
 				currentComponent: '',
-				allGraph: [],
 				editedGraphData: [],
 				editedGraphIndex: '',
 				theChart: []
 			}
 		},
+		computed: {
+			allGraph() {
+				return this.$store.state.allGraph;
+			},
+			currentChartTabComponent: function () {
+                return this.currentComponent;
+            }
+		},
 		components: {
 	        pieChart, doughnutChart, polarAreaChart, barChart, lineChart, radarChart, bubbleChart, scatterChart
 	    },
-	    computed: {
-	        currentChartTabComponent: function () {
-	            return this.currentComponent;
-	        }
-	    },
 		methods: {
-			beforeLoad() {
-				this.allGraph = gl.all_graphs;
-				console.log(this.allGraph);
-			},
-			whenCalled(data) {
-				console.log('fired');
-				this.allGraph.push(data);
-			},
 			onLoad() {
 				let outerThis = this;
 				this.allGraph.forEach(function(value, key) {
@@ -132,18 +127,9 @@
 				}
 			}
 		},
-		created() {
-			this.$eventHub.$on('ChartDataPassed', this.whenCalled);
-		},
-		beforeMount() {
-			this.beforeLoad();
-		},
 		mounted() {
 			this.onLoad();
-		},
-		beforeDestroy() {
-            this.$eventHub.$off('ChartDataPassed', this.whenCalled);
-        }
+		}
 	}
 </script>
 

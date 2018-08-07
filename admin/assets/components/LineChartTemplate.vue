@@ -191,6 +191,7 @@
 				this.theChart.update();
 			},
 			saveGraphData() {
+				let outerThis = this;
 				var chartDatas = {
 					type: this.chartType,
 					data: {
@@ -216,8 +217,6 @@
 					}
 				};
 
-				this.$eventHub.$emit('ChartDataPassed', chartDatas);
-
 				$.ajax({
 					url: gl.ajax_url,
 					type: 'POST',
@@ -227,6 +226,7 @@
 						graph_data: chartDatas,
 					},
 					success: function( response ) {
+						outerThis.$store.dispatch('addNewGraph', chartDatas);
 						var content = '[graph_lite id="'+response+'"]';
 						tinymce.activeEditor.execCommand('mceInsertContent', false, content);
 						$('#gl-admin-meta-box').fadeOut();
