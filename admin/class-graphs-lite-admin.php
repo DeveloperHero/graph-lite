@@ -55,6 +55,7 @@ class Graph_Lite_Admin {
 		// add_action('admin_menu', array( $this, 'setting_page' ));
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets') );
 		add_action( 'admin_head', array( $this, 'mce_button' ) );
+		add_action( 'admin_head', array( $this, 'global_data' ) );
 		add_action( 'add_meta_boxes', [ $this, 'adding_custom_meta_boxes' ], 10, 2 );
 		add_action( 'init', [$this, 'graphs_data_store'], 9 );
 	}
@@ -185,7 +186,7 @@ class Graph_Lite_Admin {
 
 			$get_graph_meta['graph_id'] = $graph->ID;
 
-			$graphs_data[$graph->ID] = $get_graph_meta;
+			array_push($graphs_data, $get_graph_meta);
 
 		}
 
@@ -197,6 +198,28 @@ class Graph_Lite_Admin {
 
 		include plugin_dir_path( __FILE__ ) . '/partials/graphs-lite-admin-display.php';
 
+	}
+
+	public function global_data() { ?>
+		<script>
+		var global_chart_data = <?php echo json_encode( get_option('graphs_light_all_data', true) );?>;
+		function gl_findAndReplace(object, value, replacevalue){
+		  for(var x in object){
+		    if(typeof object[x] == typeof {}){
+		      gl_findAndReplace(object[x], value, replacevalue);
+		    }
+		    if(object[x] == value){
+		      object[x] = replacevalue;
+		      // break;
+		    }
+		  }
+		}
+
+		gl_findAndReplace(global_chart_data, 'true', true);
+		gl_findAndReplace(global_chart_data, 'false', false);
+
+		// var ctx = document.getElementById("Chart");
+		// new Chart(ctx, global_chart_data); </script> <?php
 	}
 
 }
