@@ -67,6 +67,7 @@ register_deactivation_hook( __FILE__, 'deactivate_graphs_lite' );
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
+require plugin_dir_path( __FILE__ ) . 'functions.php';
 require plugin_dir_path( __FILE__ ) . 'includes/class-ajax.php';
 require plugin_dir_path( __FILE__ ) . 'includes/class-shortcode.php';
 require plugin_dir_path( __FILE__ ) . 'admin/class-graphs-lite-admin.php';
