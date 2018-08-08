@@ -1,7 +1,9 @@
+import axios from 'axios';
+import querystring from 'querystring';
+
 export default {
 	state: {
-		allGraph: [
-		]
+		allGraph: []
 	},
 	getters: {
 		allGraph: state => {
@@ -10,7 +12,7 @@ export default {
 	},
 	mutations: {
 		onLoad(state) {
-			state.allGraph = gl.all_graphs;
+			state.allGraph = global_chart_data;
 		},
 		addNewGraph(state, newGraph) {
 			state.allGraph.push(newGraph);
@@ -51,7 +53,7 @@ export default {
 				}
 			});
 		},
-		editGraph: (context, editedGraphDetails) => {
+		editGraph(context, editedGraphDetails) {
 			let outerThis = this;
 			let graphIndex = editedGraphDetails.graphIndex;
 			let graphDetails = editedGraphDetails.chartDetails;
@@ -60,7 +62,7 @@ export default {
 			axios.post(gl.ajax_url, querystring.stringify({action: 'save_chart', graph_id: graphId, updated_graph_data: graphDetails}), {
 				  'content-type': 'multipart/form-data'
 			})
-			.then((response) => {
+			.then(function(response) {
 				context.commit('editGraph', editedGraphDetails);
 
 				$.sweetModal({
@@ -70,7 +72,7 @@ export default {
 					showCloseButton: false
 				});
 				setTimeout(function(){
-					outerThis.$emit("applied", graphIndex);
+					// outerThis.$emit("applied", graphIndex);
 				}, 1500);
 			}).catch(function (error) {
 				alert('Something went wront please try again');
