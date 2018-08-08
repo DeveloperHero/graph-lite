@@ -794,6 +794,23 @@ module.exports = function normalizeComponent (
 
 /***/ }),
 /* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(49);
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.decode = exports.parse = __webpack_require__(67);
+exports.encode = exports.stringify = __webpack_require__(68);
+
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports) {
 
 var g;
@@ -820,13 +837,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(49);
-
-/***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -928,17 +939,6 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 module.exports = defaults;
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.decode = exports.parse = __webpack_require__(67);
-exports.encode = exports.stringify = __webpack_require__(68);
-
 
 /***/ }),
 /* 8 */
@@ -1931,9 +1931,9 @@ var Component = normalizeComponent(
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_querystring__);
 //
 //
@@ -2455,9 +2455,9 @@ var Component = normalizeComponent(
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_querystring__);
 //
 //
@@ -3044,9 +3044,9 @@ var Component = normalizeComponent(
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_querystring__);
 //
 //
@@ -3947,6 +3947,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 	},
 	methods: {
 		onLoad() {
+			console.log(this.allGraph);
 			let outerThis = this;
 			this.allGraph.forEach(function (value, key) {
 				var ctx = document.getElementById(key);
@@ -5004,7 +5005,7 @@ new __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */]({
 			return this.currentTab;
 		}
 	},
-	beforeCreate() {
+	created() {
 		this.$store.dispatch('onLoad');
 	}
 });
@@ -15946,7 +15947,7 @@ Vue.compile = compileToFunctions;
 
 /* harmony default export */ __webpack_exports__["a"] = (Vue);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(4), __webpack_require__(35).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(6), __webpack_require__(35).setImmediate))
 
 /***/ }),
 /* 35 */
@@ -16016,7 +16017,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
                          (typeof global !== "undefined" && global.clearImmediate) ||
                          (this && this.clearImmediate);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
 /* 36 */
@@ -16209,7 +16210,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(8)))
 
 /***/ }),
 /* 37 */
@@ -16419,7 +16420,7 @@ exports.push([module.i, ".pieChart{width:100%;height:100%;display:flex;flex-dire
 var utils = __webpack_require__(0);
 var bind = __webpack_require__(16);
 var Axios = __webpack_require__(51);
-var defaults = __webpack_require__(6);
+var defaults = __webpack_require__(7);
 
 /**
  * Create an instance of Axios
@@ -16502,7 +16503,7 @@ function isSlowBuffer (obj) {
 "use strict";
 
 
-var defaults = __webpack_require__(6);
+var defaults = __webpack_require__(7);
 var utils = __webpack_require__(0);
 var InterceptorManager = __webpack_require__(60);
 var dispatchRequest = __webpack_require__(61);
@@ -17041,7 +17042,7 @@ module.exports = InterceptorManager;
 var utils = __webpack_require__(0);
 var transformData = __webpack_require__(62);
 var isCancel = __webpack_require__(19);
-var defaults = __webpack_require__(6);
+var defaults = __webpack_require__(7);
 var isAbsoluteURL = __webpack_require__(63);
 var combineURLs = __webpack_require__(64);
 
@@ -17686,7 +17687,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(31);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_327f01aa_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(89);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_71f2aa81_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(89);
 function injectStyle (ssrContext) {
   __webpack_require__(87)
 }
@@ -17706,7 +17707,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_allSavedChartsTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_327f01aa_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_71f2aa81_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -17727,7 +17728,7 @@ var content = __webpack_require__(88);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("8e401ee6", content, true, {});
+var update = __webpack_require__(2)("1231021d", content, true, {});
 
 /***/ }),
 /* 88 */
@@ -17758,7 +17759,12 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var _this = this;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_querystring__);
+
+
 
 /* harmony default export */ __webpack_exports__["a"] = ({
 	state: {
@@ -17771,7 +17777,7 @@ var _this = this;
 	},
 	mutations: {
 		onLoad(state) {
-			state.allGraph = gl.all_graphs;
+			state.allGraph = global_chart_data;
 		},
 		addNewGraph(state, newGraph) {
 			state.allGraph.push(newGraph);
@@ -17812,15 +17818,15 @@ var _this = this;
 				}
 			});
 		},
-		editGraph: (context, editedGraphDetails) => {
-			let outerThis = _this;
+		editGraph(context, editedGraphDetails) {
+			let outerThis = this;
 			let graphIndex = editedGraphDetails.graphIndex;
 			let graphDetails = editedGraphDetails.chartDetails;
 			let graphId = editedGraphDetails.chartDetails.graph_id;
 
-			axios.post(gl.ajax_url, querystring.stringify({ action: 'save_chart', graph_id: graphId, updated_graph_data: graphDetails }), {
+			__WEBPACK_IMPORTED_MODULE_0_axios___default.a.post(gl.ajax_url, __WEBPACK_IMPORTED_MODULE_1_querystring___default.a.stringify({ action: 'save_chart', graph_id: graphId, updated_graph_data: graphDetails }), {
 				'content-type': 'multipart/form-data'
-			}).then(response => {
+			}).then(function (response) {
 				context.commit('editGraph', editedGraphDetails);
 
 				$.sweetModal({
@@ -17830,7 +17836,7 @@ var _this = this;
 					showCloseButton: false
 				});
 				setTimeout(function () {
-					outerThis.$emit("applied", graphIndex);
+					// outerThis.$emit("applied", graphIndex);
 				}, 1500);
 			}).catch(function (error) {
 				alert('Something went wront please try again');

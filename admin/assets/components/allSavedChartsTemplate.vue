@@ -48,6 +48,7 @@
 	    },
 		methods: {
 			onLoad() {
+				console.log(this.allGraph);
 				let outerThis = this;
 				this.allGraph.forEach(function(value, key) {
 					var ctx = document.getElementById(key);
