@@ -1201,7 +1201,7 @@ process.umask = function() { return 0; };
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BarChartTemplate_vue__ = __webpack_require__(11);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_fa8da03c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_52f2977b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__ = __webpack_require__(43);
 function injectStyle (ssrContext) {
   __webpack_require__(41)
 }
@@ -1221,7 +1221,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BarChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_fa8da03c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_52f2977b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -1414,25 +1414,7 @@ var Component = normalizeComponent(
 				}
 			};
 
-			$.ajax({
-				url: gl.ajax_url,
-				type: 'POST',
-				dataType: 'json',
-				data: {
-					action: 'save_chart',
-					graph_data: chartDatas
-				},
-				success: function (response) {
-					outerThis.$store.dispatch('addNewGraph', chartDatas);
-					var content = '[graph_lite id="' + response + '"]';
-					tinymce.activeEditor.execCommand('mceInsertContent', false, content);
-					$('#gl-admin-meta-box').fadeOut();
-					$('div#gl-admin-meta-box').find('input:text').val('');
-				},
-				error: function (error) {
-					alert('Something went wront please try again');
-				}
-			});
+			this.$store.dispatch('addNewGraph', chartDatas);
 		},
 		updateGraphData() {
 			let chartDatas = {
@@ -1460,7 +1442,9 @@ var Component = normalizeComponent(
 				}
 			};
 
-			this.$emit("applied", chartDatas, this.graphIndex);
+			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex };
+
+			this.$store.dispatch('editGraph', payload);
 		},
 		onLoad() {
 			var ctx = document.getElementById("barChart");
@@ -1541,7 +1525,7 @@ var Component = normalizeComponent(
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_LineChartTemplate_vue__ = __webpack_require__(13);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_41c80b7e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__ = __webpack_require__(46);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_bba47670_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__ = __webpack_require__(46);
 function injectStyle (ssrContext) {
   __webpack_require__(44)
 }
@@ -1561,7 +1545,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_LineChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_41c80b7e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_bba47670_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -1793,25 +1777,7 @@ var Component = normalizeComponent(
 				}
 			};
 
-			$.ajax({
-				url: gl.ajax_url,
-				type: 'POST',
-				dataType: 'json',
-				data: {
-					action: 'save_chart',
-					graph_data: chartDatas
-				},
-				success: function (response) {
-					outerThis.$store.dispatch('addNewGraph', chartDatas);
-					var content = '[graph_lite id="' + response + '"]';
-					tinymce.activeEditor.execCommand('mceInsertContent', false, content);
-					$('#gl-admin-meta-box').fadeOut();
-					$('div#gl-admin-meta-box').find('input:text').val('');
-				},
-				error: function (error) {
-					alert('Something went wront please try again');
-				}
-			});
+			this.$store.dispatch('addNewGraph', chartDatas);
 		},
 		updateGraphData() {
 			let chartDatas = {
@@ -1839,7 +1805,9 @@ var Component = normalizeComponent(
 				}
 			};
 
-			this.$emit("applied", chartDatas, this.graphIndex);
+			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex };
+
+			this.$store.dispatch('editGraph', payload);
 		},
 		onLoad() {
 			var ctx = document.getElementById("lineChart");
@@ -1928,11 +1896,7 @@ var Component = normalizeComponent(
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__ = __webpack_require__(15);
 /* unused harmony namespace reexport */
-<<<<<<< HEAD
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2ca432e8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(69);
-=======
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4f47f7d2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(68);
->>>>>>> ed232eb2976458bedd80aef42146224a16ea7b9c
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1d0cc48c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(69);
 function injectStyle (ssrContext) {
   __webpack_require__(47)
 }
@@ -1952,11 +1916,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__["a" /* default */],
-<<<<<<< HEAD
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2ca432e8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
-=======
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4f47f7d2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
->>>>>>> ed232eb2976458bedd80aef42146224a16ea7b9c
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1d0cc48c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -2102,33 +2062,8 @@ var Component = normalizeComponent(
 					}
 				}
 			};
-<<<<<<< HEAD
-=======
 
-			this.$eventHub.$emit('ChartDataPassed', chartDatas);
->>>>>>> ed232eb2976458bedd80aef42146224a16ea7b9c
-
-			console.log(chartDatas);
-
-			$.ajax({
-				url: gl.ajax_url,
-				type: 'POST',
-				dataType: 'json',
-				data: {
-					action: 'save_chart',
-					graph_data: chartDatas
-				},
-				success: function (response) {
-					outerThis.$store.dispatch('addNewGraph', chartDatas);
-					var content = '[graph_lite id="' + response + '"]';
-					tinymce.activeEditor.execCommand('mceInsertContent', false, content);
-					$('#gl-admin-meta-box').fadeOut();
-					$('div#gl-admin-meta-box').find('input:text').val('');
-				},
-				error: function (error) {
-					alert('Something went wront please try again');
-				}
-			});
+			this.$store.dispatch('addNewGraph', chartDatas);
 		},
 		updateGraphData() {
 			let outerThis = this;
@@ -2150,31 +2085,9 @@ var Component = normalizeComponent(
 				}
 			};
 
-			this.$emit("applied", chartDatas, this.graphIndex);
+			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex };
 
-			// Problem is on chartDatas
-
-			$.ajax({
-				url: gl.ajax_url,
-				type: 'POST',
-				dataType: 'json',
-				data: {
-					action: 'save_chart',
-					graph_id: outerThis.editedGraphIdNo,
-					updated_graph_data: chartDatas
-				},
-				success: function (response) {
-					$.sweetModal({
-						content: 'Graph id ' + response + ' updated',
-						icon: $.sweetModal.ICON_SUCCESS,
-						timeout: 1300,
-						showCloseButton: false
-					});
-				},
-				error: function (error) {
-					alert('Something went wront please try again');
-				}
-			});
+			this.$store.dispatch('editGraph', payload);
 		},
 		onLoad() {
 			var ctx = document.getElementById("pieChart");
@@ -2507,7 +2420,7 @@ module.exports = Cancel;
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(22);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_44d06cfe_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(72);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7a643fd2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(72);
 function injectStyle (ssrContext) {
   __webpack_require__(70)
 }
@@ -2527,7 +2440,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DoughnutChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_44d06cfe_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7a643fd2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -2673,25 +2586,7 @@ var Component = normalizeComponent(
 				}
 			};
 
-			$.ajax({
-				url: gl.ajax_url,
-				type: 'POST',
-				dataType: 'json',
-				data: {
-					action: 'save_chart',
-					graph_data: chartDatas
-				},
-				success: function (response) {
-					outerThis.$store.dispatch('addNewGraph', chartDatas);
-					var content = '[graph_lite id="' + response + '"]';
-					tinymce.activeEditor.execCommand('mceInsertContent', false, content);
-					$('#gl-admin-meta-box').fadeOut();
-					$('div#gl-admin-meta-box').find('input:text').val('');
-				},
-				error: function (error) {
-					alert('Something went wront please try again');
-				}
-			});
+			this.$store.dispatch('addNewGraph', chartDatas);
 		},
 		updateGraphData() {
 			let chartDatas = {
@@ -2712,7 +2607,9 @@ var Component = normalizeComponent(
 				}
 			};
 
-			this.$emit("applied", chartDatas, this.graphIndex);
+			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex };
+
+			this.$store.dispatch('editGraph', payload);
 		},
 		onLoad() {
 			var ctx = document.getElementById("DoughnutChart");
@@ -2777,7 +2674,7 @@ var Component = normalizeComponent(
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_RadarChartTemplate_vue__ = __webpack_require__(24);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_5cf92808_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__ = __webpack_require__(75);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_474eb489_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__ = __webpack_require__(75);
 function injectStyle (ssrContext) {
   __webpack_require__(73)
 }
@@ -2797,7 +2694,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_RadarChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_5cf92808_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_474eb489_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -3001,25 +2898,7 @@ var Component = normalizeComponent(
 				}
 			};
 
-			$.ajax({
-				url: gl.ajax_url,
-				type: 'POST',
-				dataType: 'json',
-				data: {
-					action: 'save_chart',
-					graph_data: chartDatas
-				},
-				success: function (response) {
-					outerThis.$store.dispatch('addNewGraph', chartDatas);
-					var content = '[graph_lite id="' + response + '"]';
-					tinymce.activeEditor.execCommand('mceInsertContent', false, content);
-					$('#gl-admin-meta-box').fadeOut();
-					$('div#gl-admin-meta-box').find('input:text').val('');
-				},
-				error: function (error) {
-					alert('Something went wront please try again');
-				}
-			});
+			this.$store.dispatch('addNewGraph', chartDatas);
 		},
 		updateGraphData() {
 			var chartDatas = {
@@ -3045,7 +2924,9 @@ var Component = normalizeComponent(
 				}
 			};
 
-			this.$emit("applied", chartDatas, this.graphIndex);
+			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex };
+
+			this.$store.dispatch('editGraph', payload);
 		},
 		onLoad() {
 			var ctx = document.getElementById("radarChart");
@@ -3118,7 +2999,6 @@ var Component = normalizeComponent(
 		if (this.graphData) {
 			this.forEdit();
 		}
-		console.log(this.graphData);
 	}
 });
 
@@ -3129,7 +3009,7 @@ var Component = normalizeComponent(
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(26);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0122ec96_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_08735fce_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(78);
 function injectStyle (ssrContext) {
   __webpack_require__(76)
 }
@@ -3149,7 +3029,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PolarAreaChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0122ec96_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_08735fce_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -3295,25 +3175,7 @@ var Component = normalizeComponent(
 				}
 			};
 
-			$.ajax({
-				url: gl.ajax_url,
-				type: 'POST',
-				dataType: 'json',
-				data: {
-					action: 'save_chart',
-					graph_data: chartDatas
-				},
-				success: function (response) {
-					outerThis.$store.dispatch('addNewGraph', chartDatas);
-					var content = '[graph_lite id="' + response + '"]';
-					tinymce.activeEditor.execCommand('mceInsertContent', false, content);
-					$('#gl-admin-meta-box').fadeOut();
-					$('div#gl-admin-meta-box').find('input:text').val('');
-				},
-				error: function (error) {
-					alert('Something went wront please try again');
-				}
-			});
+			this.$store.dispatch('addNewGraph', chartDatas);
 		},
 		updateGraphData() {
 			let chartDatas = {
@@ -3334,7 +3196,9 @@ var Component = normalizeComponent(
 				}
 			};
 
-			this.$emit("applied", chartDatas, this.graphIndex);
+			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex };
+
+			this.$store.dispatch('editGraph', payload);
 		},
 		onLoad() {
 			var ctx = document.getElementById("PolarAreaChart");
@@ -3399,7 +3263,7 @@ var Component = normalizeComponent(
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BubbleChartTemplate_vue__ = __webpack_require__(28);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_d3ee2612_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__ = __webpack_require__(81);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6d405d38_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__ = __webpack_require__(81);
 function injectStyle (ssrContext) {
   __webpack_require__(79)
 }
@@ -3419,7 +3283,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BubbleChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_d3ee2612_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6d405d38_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -3612,25 +3476,7 @@ var Component = normalizeComponent(
 				}
 			};
 
-			$.ajax({
-				url: gl.ajax_url,
-				type: 'POST',
-				dataType: 'json',
-				data: {
-					action: 'save_chart',
-					graph_data: chartDatas
-				},
-				success: function (response) {
-					outerThis.$store.dispatch('addNewGraph', chartDatas);
-					var content = '[graph_lite id="' + response + '"]';
-					tinymce.activeEditor.execCommand('mceInsertContent', false, content);
-					$('#gl-admin-meta-box').fadeOut();
-					$('div#gl-admin-meta-box').find('input:text').val('');
-				},
-				error: function (error) {
-					alert('Something went wront please try again');
-				}
-			});
+			this.$store.dispatch('addNewGraph', chartDatas);
 		},
 		updateGraphData() {
 			var chartDatas = {
@@ -3650,7 +3496,9 @@ var Component = normalizeComponent(
 				}
 			};
 
-			this.$emit("applied", chartDatas, this.graphIndex);
+			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex };
+
+			this.$store.dispatch('editGraph', payload);
 		},
 		onLoad() {
 			var ctx = document.getElementById("bubbleChart");
@@ -3727,7 +3575,7 @@ var Component = normalizeComponent(
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ScatterChartTemplate_vue__ = __webpack_require__(30);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_47f6c3d3_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__ = __webpack_require__(84);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_bcd6ed9c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__ = __webpack_require__(84);
 function injectStyle (ssrContext) {
   __webpack_require__(82)
 }
@@ -3747,7 +3595,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ScatterChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_47f6c3d3_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_bcd6ed9c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -3941,25 +3789,7 @@ var Component = normalizeComponent(
 				}
 			};
 
-			$.ajax({
-				url: gl.ajax_url,
-				type: 'POST',
-				dataType: 'json',
-				data: {
-					action: 'save_chart',
-					graph_data: chartDatas
-				},
-				success: function (response) {
-					outerThis.$store.dispatch('addNewGraph', chartDatas);
-					var content = '[graph_lite id="' + response + '"]';
-					tinymce.activeEditor.execCommand('mceInsertContent', false, content);
-					$('#gl-admin-meta-box').fadeOut();
-					$('div#gl-admin-meta-box').find('input:text').val('');
-				},
-				error: function (error) {
-					alert('Something went wront please try again');
-				}
-			});
+			this.$store.dispatch('addNewGraph', chartDatas);
 		},
 		updateGraphData() {
 			var chartDatas = {
@@ -3979,7 +3809,9 @@ var Component = normalizeComponent(
 				}
 			};
 
-			this.$emit("applied", chartDatas, this.graphIndex);
+			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex };
+
+			this.$store.dispatch('editGraph', payload);
 		},
 		onLoad() {
 			var ctx = document.getElementById("scatterChart");
@@ -4064,6 +3896,8 @@ var Component = normalizeComponent(
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__BubbleChartTemplate__ = __webpack_require__(27);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__ScatterChartTemplate__ = __webpack_require__(29);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_vuex__ = __webpack_require__(32);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 //
 //
 //
@@ -4103,14 +3937,11 @@ var Component = normalizeComponent(
 			theChart: []
 		};
 	},
-	computed: {
-		allGraph() {
-			return this.$store.state.allGraph;
-		},
+	computed: _extends({
 		currentChartTabComponent: function () {
 			return this.currentComponent;
 		}
-	},
+	}, Object(__WEBPACK_IMPORTED_MODULE_8_vuex__["b" /* mapGetters */])(['allGraph'])),
 	components: {
 		pieChart: __WEBPACK_IMPORTED_MODULE_2__PieChartTemplate__["a" /* default */], doughnutChart: __WEBPACK_IMPORTED_MODULE_3__DoughnutChartTemplate__["a" /* default */], polarAreaChart: __WEBPACK_IMPORTED_MODULE_5__PolarAreaChartTemplate__["a" /* default */], barChart: __WEBPACK_IMPORTED_MODULE_0__BarChartTemplate__["a" /* default */], lineChart: __WEBPACK_IMPORTED_MODULE_1__LineChartTemplate__["a" /* default */], radarChart: __WEBPACK_IMPORTED_MODULE_4__RadarChartTemplate__["a" /* default */], bubbleChart: __WEBPACK_IMPORTED_MODULE_6__BubbleChartTemplate__["a" /* default */], scatterChart: __WEBPACK_IMPORTED_MODULE_7__ScatterChartTemplate__["a" /* default */]
 	},
@@ -4138,25 +3969,23 @@ var Component = normalizeComponent(
 			this.editedGraphIndex = index;
 			this.currentComponent = chartType;
 		},
-		whenGraphUpdated(data, index) {
+		whenGraphUpdated(index) {
 			this.currentComponent = '';
-			this.allGraph[index].data = data.data;
-			this.allGraph[index].options = data.options;
 
-			this.theChart[index].data.datasets = data.data.datasets;
-			this.theChart[index].options.legend.display = data.options.legend.display;
-			this.theChart[index].options.legend.position = data.options.legend.position;
-			this.theChart[index].options.title.display = data.options.title.display;
-			this.theChart[index].options.title.text = data.options.title.text;
+			this.theChart[index].data.datasets = this.allGraph[index].data.datasets;
+			this.theChart[index].options.legend.display = this.allGraph[index].options.legend.display;
+			this.theChart[index].options.legend.position = this.allGraph[index].options.legend.position;
+			this.theChart[index].options.title.display = this.allGraph[index].options.title.display;
+			this.theChart[index].options.title.text = this.allGraph[index].options.title.text;
 
-			if (data.type == "pie" || data.type == "doughnut" || data.type == "polarArea" || data.type == "bar" || data.type == "line" || data.type == "radar") {
-				this.theChart[index].data.labels = data.data.labels;
+			if (this.allGraph[index].type == "pie" || this.allGraph[index].type == "doughnut" || this.allGraph[index].type == "polarArea" || this.allGraph[index].type == "bar" || this.allGraph[index].type == "line" || this.allGraph[index].type == "radar") {
+				this.theChart[index].data.labels = this.allGraph[index].data.labels;
 			}
-			if (data.type == "bar" || data.type == "line") {
-				this.theChart[index].options.scales.yAxes[0].ticks.beginAtZero = data.options.scales.yAxes[0].ticks.beginAtZero;
+			if (this.allGraph[index].type == "bar" || this.allGraph[index].type == "line") {
+				this.theChart[index].options.scales.yAxes[0].ticks.beginAtZero = this.allGraph[index].options.scales.yAxes[0].ticks.beginAtZero;
 			}
-			if (data.type == "radar") {
-				this.theChart[index].options.scale.ticks.beginAtZero = data.options.scale.ticks.beginAtZero;
+			if (this.allGraph[index].type == "radar") {
+				this.theChart[index].options.scale.ticks.beginAtZero = this.allGraph[index].options.scale.ticks.beginAtZero;
 			}
 
 			this.theChart[index].update();
@@ -4206,7 +4035,7 @@ var Component = normalizeComponent(
 /* unused harmony export install */
 /* unused harmony export mapState */
 /* unused harmony export mapMutations */
-/* unused harmony export mapGetters */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return mapGetters; });
 /* unused harmony export mapActions */
 /* unused harmony export createNamespacedHelpers */
 /**
@@ -5174,6 +5003,9 @@ new __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */]({
 		currentTabComponent: function () {
 			return this.currentTab;
 		}
+	},
+	beforeCreate() {
+		this.$store.dispatch('onLoad');
 	}
 });
 
@@ -16487,7 +16319,7 @@ var content = __webpack_require__(42);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("60556496", content, true, {});
+var update = __webpack_require__(2)("b0e40b2c", content, true, {});
 
 /***/ }),
 /* 42 */
@@ -16524,7 +16356,7 @@ var content = __webpack_require__(45);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("3e97d6a4", content, true, {});
+var update = __webpack_require__(2)("ce958bea", content, true, {});
 
 /***/ }),
 /* 45 */
@@ -16561,11 +16393,7 @@ var content = __webpack_require__(48);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-<<<<<<< HEAD
-var update = __webpack_require__(2)("aa863734", content, true, {});
-=======
-var update = __webpack_require__(2)("1374ecf0", content, true, {});
->>>>>>> ed232eb2976458bedd80aef42146224a16ea7b9c
+var update = __webpack_require__(2)("3774673a", content, true, {});
 
 /***/ }),
 /* 48 */
@@ -17667,7 +17495,7 @@ var content = __webpack_require__(71);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("77cfd5c2", content, true, {});
+var update = __webpack_require__(2)("3fbc7471", content, true, {});
 
 /***/ }),
 /* 71 */
@@ -17704,7 +17532,7 @@ var content = __webpack_require__(74);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("7f144e0d", content, true, {});
+var update = __webpack_require__(2)("3f5cc635", content, true, {});
 
 /***/ }),
 /* 74 */
@@ -17741,7 +17569,7 @@ var content = __webpack_require__(77);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("5f35b700", content, true, {});
+var update = __webpack_require__(2)("2da07d45", content, true, {});
 
 /***/ }),
 /* 77 */
@@ -17778,7 +17606,7 @@ var content = __webpack_require__(80);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("90b5e0dc", content, true, {});
+var update = __webpack_require__(2)("70e88608", content, true, {});
 
 /***/ }),
 /* 80 */
@@ -17815,7 +17643,7 @@ var content = __webpack_require__(83);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("15f34f8a", content, true, {});
+var update = __webpack_require__(2)("67ad9020", content, true, {});
 
 /***/ }),
 /* 83 */
@@ -17858,7 +17686,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(31);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_93aa8682_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(89);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_327f01aa_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(89);
 function injectStyle (ssrContext) {
   __webpack_require__(87)
 }
@@ -17878,7 +17706,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_allSavedChartsTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_93aa8682_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_327f01aa_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -17899,7 +17727,7 @@ var content = __webpack_require__(88);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("7886524a", content, true, {});
+var update = __webpack_require__(2)("8e401ee6", content, true, {});
 
 /***/ }),
 /* 88 */
@@ -17930,80 +17758,86 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+var _this = this;
+
 /* harmony default export */ __webpack_exports__["a"] = ({
 	state: {
-		allGraph: [{
-			type: 'pie',
-			data: {
-				labels: ['A', 'B', 'C'],
-				datasets: [{
-					data: [4, 5, 6],
-					backgroundColor: ['red', 'green', 'blue']
-				}]
-			},
-			options: {
-				title: {
-					display: true,
-					text: 'Pie Chart'
-				},
-				legend: {
-					display: true,
-					position: 'left'
-				}
-			},
-			graph_id: 1
-		}, {
-			type: 'doughnut',
-			data: {
-				labels: ['A', 'B', 'C'],
-				datasets: [{
-					data: [4, 5, 6],
-					backgroundColor: ['red', 'green', 'blue']
-				}]
-			},
-			options: {
-				title: {
-					display: true,
-					text: 'Doughnut Chart'
-				},
-				legend: {
-					display: true,
-					position: 'left'
-				}
-			},
-			graph_id: 2
-		}, {
-			type: 'polarArea',
-			data: {
-				labels: ['A', 'B', 'C'],
-				datasets: [{
-					data: [4, 5, 6],
-					backgroundColor: ['red', 'green', 'blue']
-				}]
-			},
-			options: {
-				title: {
-					display: true,
-					text: 'Polar Area Chart'
-				},
-				legend: {
-					display: true,
-					position: 'left'
-				}
-			},
-			graph_id: 3
-		}],
-		count: 0
+		allGraph: []
 	},
-	getters: {},
+	getters: {
+		allGraph: state => {
+			return state.allGraph;
+		}
+	},
 	mutations: {
+		onLoad(state) {
+			state.allGraph = gl.all_graphs;
+		},
 		addNewGraph(state, newGraph) {
 			state.allGraph.push(newGraph);
+		},
+		editGraph(state, details) {
+			let dataIndex = details.graphIndex;
+			let graphDetails = details.chartDetails;
+			state.allGraph[dataIndex].data = graphDetails.data;
+			state.allGraph[dataIndex].options = graphDetails.options;
+		},
+		deleteGraph(state, index) {
+			state.allGraph.splice(index, 1);
 		}
 	},
 	actions: {
+		onLoad: context => {
+			context.commit('onLoad');
+		},
 		addNewGraph: (context, newGraph) => {
-			context.commit('addNewGraph', newGraph);
+			$.ajax({
+				url: gl.ajax_url,
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					action: 'save_chart',
+					graph_data: newGraph
+				},
+				success: function (response) {
+					newGraph.graph_id = response;
+					context.commit('addNewGraph', newGraph);
+					var content = '[graph_lite id="' + response + '"]';
+					tinymce.activeEditor.execCommand('mceInsertContent', false, content);
+					$('#gl-admin-meta-box').fadeOut();
+					$('div#gl-admin-meta-box').find('input:text').val('');
+				},
+				error: function (error) {
+					alert('Something went wront please try again');
+				}
+			});
+		},
+		editGraph: (context, editedGraphDetails) => {
+			let outerThis = _this;
+			let graphIndex = editedGraphDetails.graphIndex;
+			let graphDetails = editedGraphDetails.chartDetails;
+			let graphId = editedGraphDetails.chartDetails.graph_id;
+
+			axios.post(gl.ajax_url, querystring.stringify({ action: 'save_chart', graph_id: graphId, updated_graph_data: graphDetails }), {
+				'content-type': 'multipart/form-data'
+			}).then(response => {
+				context.commit('editGraph', editedGraphDetails);
+
+				$.sweetModal({
+					content: 'Graph id ' + response + ' updated',
+					icon: $.sweetModal.ICON_SUCCESS,
+					timeout: 1300,
+					showCloseButton: false
+				});
+				setTimeout(function () {
+					outerThis.$emit("applied", graphIndex);
+				}, 1500);
+			}).catch(function (error) {
+				alert('Something went wront please try again');
+			});
+		},
+		deleteGraph: (context, index) => {
+			context.commit('deleteGraph', index);
 		}
 	}
 });

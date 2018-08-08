@@ -23,5 +23,8 @@ new Vue({
 		currentTabComponent: function () {
 			return this.currentTab;
 		}
+	},
+	beforeCreate() {
+		this.$store.dispatch('onLoad');
 	}
 })

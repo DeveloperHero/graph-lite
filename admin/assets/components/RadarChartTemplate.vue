@@ -189,25 +189,7 @@
 					}
 				};
 
-				$.ajax({
-					url: gl.ajax_url,
-					type: 'POST',
-					dataType: 'json',
-					data: {
-						action: 'save_chart',
-						graph_data: chartDatas,
-					},
-					success: function( response ) {
-						outerThis.$store.dispatch('addNewGraph', chartDatas);
-						var content = '[graph_lite id="'+response+'"]';
-						tinymce.activeEditor.execCommand('mceInsertContent', false, content);
-						$('#gl-admin-meta-box').fadeOut();
-						$('div#gl-admin-meta-box').find('input:text').val('');
-					},
-					error: function( error ) {
-						alert('Something went wront please try again');
-					}
-				});
+				this.$store.dispatch('addNewGraph', chartDatas);
 			},
 			updateGraphData() {
 				var chartDatas = {
@@ -233,7 +215,9 @@
 					}
 				};
 
-				this.$emit("applied", chartDatas, this.graphIndex);
+				let payload = {'chartDetails': chartDatas, 'graphIndex': this.graphIndex};
+
+				this.$store.dispatch('editGraph', payload);
 			},
 			onLoad() {
 				var ctx = document.getElementById("radarChart");
@@ -308,7 +292,6 @@
 			if(this.graphData) {
 				this.forEdit();
 			}
-			console.log(this.graphData);
 		}
 	}
 </script>

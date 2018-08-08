@@ -128,25 +128,7 @@
 					}
 				};
 
-				$.ajax({
-					url: gl.ajax_url,
-					type: 'POST',
-					dataType: 'json',
-					data: {
-						action: 'save_chart',
-						graph_data: chartDatas,
-					},
-					success: function( response ) {
-						outerThis.$store.dispatch('addNewGraph', chartDatas);
-						var content = '[graph_lite id="'+response+'"]';
-						tinymce.activeEditor.execCommand('mceInsertContent', false, content);
-						$('#gl-admin-meta-box').fadeOut();
-						$('div#gl-admin-meta-box').find('input:text').val('');
-					},
-					error: function( error ) {
-						alert('Something went wront please try again');
-					}
-				});
+				this.$store.dispatch('addNewGraph', chartDatas);
 			},
 			updateGraphData() {
 				let outerThis = this;
@@ -168,32 +150,9 @@
 					}
 				};
 
-				this.$emit("applied", chartDatas, this.graphIndex);
+				let payload = {'chartDetails': chartDatas, 'graphIndex': this.graphIndex};
 
-				// Problem is on chartDatas
-
-				$.ajax({
-					url: gl.ajax_url,
-					type: 'POST',
-					dataType: 'json',
-					data: {
-						action: 'save_chart',
-						graph_id: outerThis.editedGraphIdNo,
-						updated_graph_data: chartDatas,
-					},
-					success: function( response ) {
-						$.sweetModal({
-							content: 'Graph id '+ response + ' updated',
-							icon: $.sweetModal.ICON_SUCCESS,
-							timeout: 1300,
-							showCloseButton: false
-						});
-					},
-					error: function( error ) {
-						alert('Something went wront please try again');
-					}
-				});
-
+				this.$store.dispatch('editGraph', payload);
 			},
 			onLoad() {
 				var ctx = document.getElementById("pieChart");

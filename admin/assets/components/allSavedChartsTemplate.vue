@@ -26,7 +26,7 @@
 	import polarAreaChart from './PolarAreaChartTemplate';
 	import bubbleChart from './BubbleChartTemplate';
 	import scatterChart from './ScatterChartTemplate';
-	import { mapState, mapMutations } from 'vuex';
+	import { mapGetters } from 'vuex';
 
 	export default {
 		data() {
@@ -38,12 +38,10 @@
 			}
 		},
 		computed: {
-			allGraph() {
-				return this.$store.state.allGraph;
-			},
 			currentChartTabComponent: function () {
                 return this.currentComponent;
-            }
+            },
+            ...mapGetters(['allGraph'])
 		},
 		components: {
 	        pieChart, doughnutChart, polarAreaChart, barChart, lineChart, radarChart, bubbleChart, scatterChart
@@ -72,26 +70,23 @@
 				this.editedGraphIndex = index;
 				this.currentComponent = chartType;
 			},
-			whenGraphUpdated(data, index) {
+			whenGraphUpdated(index) {
 				this.currentComponent = '';
-				this.allGraph[index].data = data.data;
-				this.allGraph[index].options = data.options;
 
+				this.theChart[index].data.datasets = this.allGraph[index].data.datasets;
+				this.theChart[index].options.legend.display = this.allGraph[index].options.legend.display;
+				this.theChart[index].options.legend.position = this.allGraph[index].options.legend.position;
+				this.theChart[index].options.title.display = this.allGraph[index].options.title.display;
+					this.theChart[index].options.title.text = this.allGraph[index].options.title.text;
 
-				this.theChart[index].data.datasets = data.data.datasets;
-				this.theChart[index].options.legend.display = data.options.legend.display;
-				this.theChart[index].options.legend.position = data.options.legend.position;
-				this.theChart[index].options.title.display = data.options.title.display;
-					this.theChart[index].options.title.text = data.options.title.text;
-
-				if( data.type == "pie" || data.type == "doughnut" || data.type == "polarArea" || data.type == "bar" || data.type == "line" || data.type == "radar" ) {
-					this.theChart[index].data.labels = data.data.labels;
+				if( this.allGraph[index].type == "pie" || this.allGraph[index].type == "doughnut" || this.allGraph[index].type == "polarArea" || this.allGraph[index].type == "bar" || this.allGraph[index].type == "line" || this.allGraph[index].type == "radar" ) {
+					this.theChart[index].data.labels = this.allGraph[index].data.labels;
 				}
-				if( data.type == "bar" || data.type == "line" ) {
-					this.theChart[index].options.scales.yAxes[0].ticks.beginAtZero = data.options.scales.yAxes[0].ticks.beginAtZero;
+				if( this.allGraph[index].type == "bar" || this.allGraph[index].type == "line" ) {
+					this.theChart[index].options.scales.yAxes[0].ticks.beginAtZero = this.allGraph[index].options.scales.yAxes[0].ticks.beginAtZero;
 				}
-				if( data.type == "radar") {
-					this.theChart[index].options.scale.ticks.beginAtZero = data.options.scale.ticks.beginAtZero;
+				if( this.allGraph[index].type == "radar") {
+					this.theChart[index].options.scale.ticks.beginAtZero = this.allGraph[index].options.scale.ticks.beginAtZero;
 				}
 
 				this.theChart[index].update();
