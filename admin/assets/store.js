@@ -3,7 +3,8 @@ import querystring from 'querystring';
 
 export default {
 	state: {
-		allGraph: []
+		allGraph: [],
+		editedGraphIndex: ''
 	},
 	getters: {
 		allGraph: state => {
@@ -17,11 +18,12 @@ export default {
 		addNewGraph(state, newGraph) {
 			state.allGraph.push(newGraph);
 		},
-		editGraph(state, details) {
+		updateGraph(state, details) {
 			let dataIndex = details.graphIndex;
 			let graphDetails = details.chartDetails;
 			state.allGraph[dataIndex].data = graphDetails.data;
 			state.allGraph[dataIndex].options = graphDetails.options;
+			state.editedGraphIndex = dataIndex;
 		},
 		deleteGraph(state, index) {
 			state.allGraph.splice(index, 1);
@@ -53,7 +55,7 @@ export default {
 				}
 			});
 		},
-		editGraph(context, editedGraphDetails) {
+		updateGraph(context, editedGraphDetails) {
 			let outerThis = this;
 			let graphIndex = editedGraphDetails.graphIndex;
 			let graphDetails = editedGraphDetails.chartDetails;
@@ -63,17 +65,13 @@ export default {
 				  'content-type': 'multipart/form-data'
 			})
 			.then(function(response) {
-				context.commit('editGraph', editedGraphDetails);
-
+				context.commit('updateGraph', editedGraphDetails);
 				$.sweetModal({
 					content: 'Graph id '+ response + ' updated',
 					icon: $.sweetModal.ICON_SUCCESS,
 					timeout: 1300,
 					showCloseButton: false
 				});
-				setTimeout(function(){
-					// outerThis.$emit("applied", graphIndex);
-				}, 1500);
 			}).catch(function (error) {
 				alert('Something went wront please try again');
 			});

@@ -150,7 +150,11 @@
 
 				let payload = {'chartDetails': chartDatas, 'graphIndex': this.graphIndex};
 
-				this.$store.dispatch('editGraph', payload);
+				this.$store.dispatch('updateGraph', payload).then(function() {
+					setTimeout(function() {
+						outerThis.$emit("applied");
+					}, 1000);
+				});
 			},
 			onLoad() {
 				var ctx = document.getElementById("PolarAreaChart");

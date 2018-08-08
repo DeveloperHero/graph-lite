@@ -71,7 +71,8 @@
 				this.editedGraphIndex = index;
 				this.currentComponent = chartType;
 			},
-			whenGraphUpdated(index) {
+			whenGraphUpdated() {
+				let index = this.$store.state.editedGraphIndex;
 				this.currentComponent = '';
 
 				this.theChart[index].data.datasets = this.allGraph[index].data.datasets;
@@ -113,7 +114,7 @@
 								showCloseButton: false
 							});
 							setTimeout(function(){
-								outerThis.allGraph.splice(index, 1);
+								outerThis.$store.dispatch('deleteGraph', index);
 							}, 1310)
 						},
 						error: function( error ) {
