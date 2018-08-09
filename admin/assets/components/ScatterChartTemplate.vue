@@ -191,7 +191,7 @@
 				let chartDatas = {
 					type: this.chartType,
 					data: {
-						datasets: this.datasets
+						datasets: []
 					},
 					options: {
 						title: {
@@ -204,6 +204,17 @@
 						}
 					}
 				};
+
+				this.datasets.forEach(function(value, key) {
+					chartDatas.data.datasets.push({
+						label: value.label,
+						data: value.data,
+						backgroundColor: value.backgroundColor,
+						borderColor: value.borderColor,
+						fill: value.fill,
+						showLine: value.showLine
+					});
+				});
 
 				let payload = {'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id};
 
@@ -256,7 +267,6 @@
 						}
 						outerThis.datasets[key].data[innerKey].x = innerValue.x;
 						outerThis.datasets[key].data[innerKey].y = innerValue.y;
-						outerThis.datasets[key].data[innerKey].r = innerValue.r;
 					});
 					outerThis.datasets[key].backgroundColor = value.backgroundColor;
 					outerThis.datasets[key].borderColor = value.borderColor;

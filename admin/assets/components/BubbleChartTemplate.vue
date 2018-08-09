@@ -190,7 +190,7 @@
 				let chartDatas = {
 					type: this.chartType,
 					data: {
-						datasets: this.datasets
+						datasets: []
 					},
 					options: {
 						title: {
@@ -203,6 +203,16 @@
 						}
 					}
 				};
+
+				this.datasets.forEach(function(value, key) {
+					chartDatas.data.datasets.push({
+						label: value.label,
+						data: value.data,
+						backgroundColor: value.backgroundColor,
+						borderColor: value.borderColor,
+						hoverRadius: 0
+					});
+				});
 
 				let payload = {'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id};
 

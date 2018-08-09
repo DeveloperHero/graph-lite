@@ -185,7 +185,7 @@
 					type: this.chartType,
 					data: {
 						labels: this.labels,
-						datasets: this.datasets
+						datasets: []
 					},
 					options: {
 						scales: {
@@ -205,6 +205,10 @@
 						}
 					}
 				};
+
+				this.datasets.forEach(function(value) {
+					chartDatas.data.datasets.push({ label: value.label, data: value.data, chartDatasetDataString: value.chartDatasetDataString, backgroundColor: value.backgroundColor });
+				});
 
 				let payload = {'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id};
 

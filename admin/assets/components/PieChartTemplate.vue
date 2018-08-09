@@ -135,7 +135,12 @@
 					type: this.chartType,
 					data: {
 						labels: this.labels,
-						datasets: this.datasets
+						datasets: [
+							{
+								data: this.datasets[0].data,
+								backgroundColor: this.datasets[0].backgroundColor
+							}
+						]
 					},
 					options: {
 						title: {

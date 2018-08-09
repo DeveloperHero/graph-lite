@@ -56,27 +56,14 @@ export default {
 			let graphDetails = editedGraphDetails.chartDetails;
 			let graphId = editedGraphDetails.graph_id;
 
-			var cache = [];
-			let graphData = JSON.stringify(graphDetails, function(key, value) {
-			    if (typeof value === 'object' && value !== null) {
-			        if (cache.indexOf(value) !== -1) {
-			            // Circular reference found, discard key
-			            return;
-			        }
-			        // Store value in our collection
-			        cache.push(value);
-			    }
-			    return value;
-			});
-
 			$.ajax({
 				url: gl.ajax_url,
 				type: 'POST',
 				dataType: 'json',
 				data: {
 					action: 'update_chart',
-				graph_id: graphId,
-				updated_graph_data: graphData
+					graph_id: graphId,
+					updated_graph_data: graphDetails
 				},
 				success: function( response ) {
 					context.commit('updateGraph', editedGraphDetails);

@@ -1201,7 +1201,7 @@ process.umask = function() { return 0; };
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BarChartTemplate_vue__ = __webpack_require__(11);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_3045ffed_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_120da914_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__ = __webpack_require__(43);
 function injectStyle (ssrContext) {
   __webpack_require__(41)
 }
@@ -1221,7 +1221,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BarChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_3045ffed_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_120da914_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -1421,7 +1421,7 @@ var Component = normalizeComponent(
 				type: this.chartType,
 				data: {
 					labels: this.labels,
-					datasets: this.datasets
+					datasets: []
 				},
 				options: {
 					scales: {
@@ -1441,6 +1441,10 @@ var Component = normalizeComponent(
 					}
 				}
 			};
+
+			this.datasets.forEach(function (value) {
+				chartDatas.data.datasets.push({ label: value.label, data: value.data, chartDatasetDataString: value.chartDatasetDataString, backgroundColor: value.backgroundColor });
+			});
 
 			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
 
@@ -1529,7 +1533,7 @@ var Component = normalizeComponent(
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_LineChartTemplate_vue__ = __webpack_require__(13);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_a08fd454_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__ = __webpack_require__(46);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_60e08e68_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__ = __webpack_require__(46);
 function injectStyle (ssrContext) {
   __webpack_require__(44)
 }
@@ -1549,7 +1553,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_LineChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_a08fd454_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_60e08e68_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -1788,7 +1792,7 @@ var Component = normalizeComponent(
 				type: this.chartType,
 				data: {
 					labels: this.labels,
-					datasets: this.datasets
+					datasets: []
 				},
 				options: {
 					scales: {
@@ -1808,6 +1812,10 @@ var Component = normalizeComponent(
 					}
 				}
 			};
+
+			this.datasets.forEach(function (value) {
+				chartDatas.data.datasets.push({ label: value.label, data: value.data, chartDatasetDataString: value.chartDatasetDataString, backgroundColor: value.backgroundColor, borderColor: value.borderColor, fill: value.fill, straightLine: value.straightLine });
+			});
 
 			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
 
@@ -1904,7 +1912,7 @@ var Component = normalizeComponent(
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__ = __webpack_require__(15);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_253b4dc8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(69);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_a82a8446_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(69);
 function injectStyle (ssrContext) {
   __webpack_require__(47)
 }
@@ -1924,7 +1932,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_253b4dc8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_a82a8446_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -2078,7 +2086,10 @@ var Component = normalizeComponent(
 				type: this.chartType,
 				data: {
 					labels: this.labels,
-					datasets: this.datasets
+					datasets: [{
+						data: this.datasets[0].data,
+						backgroundColor: this.datasets[0].backgroundColor
+					}]
 				},
 				options: {
 					title: {
@@ -2431,7 +2442,7 @@ module.exports = Cancel;
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(22);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_cfa424ee_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(72);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7f55be80_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(72);
 function injectStyle (ssrContext) {
   __webpack_require__(70)
 }
@@ -2451,7 +2462,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DoughnutChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_cfa424ee_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7f55be80_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -2604,7 +2615,10 @@ var Component = normalizeComponent(
 				type: this.chartType,
 				data: {
 					labels: this.labels,
-					datasets: this.datasets
+					datasets: [{
+						data: this.datasets[0].data,
+						backgroundColor: this.datasets[0].backgroundColor
+					}]
 				},
 				options: {
 					title: {
@@ -2689,7 +2703,7 @@ var Component = normalizeComponent(
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_RadarChartTemplate_vue__ = __webpack_require__(24);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7af77f53_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__ = __webpack_require__(75);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_18448a8e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__ = __webpack_require__(75);
 function injectStyle (ssrContext) {
   __webpack_require__(73)
 }
@@ -2709,7 +2723,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_RadarChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7af77f53_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_18448a8e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -2893,7 +2907,7 @@ var Component = normalizeComponent(
 				type: this.chartType,
 				data: {
 					labels: this.labels,
-					datasets: this.datasets
+					datasets: []
 				},
 				options: {
 					scale: {
@@ -2911,6 +2925,10 @@ var Component = normalizeComponent(
 					}
 				}
 			};
+
+			this.datasets.forEach(function (value) {
+				chartDatas.data.datasets.push({ label: value.label, data: value.data, chartDatasetDataString: value.chartDatasetDataString, backgroundColor: value.backgroundColor, borderColor: value.borderColor, fill: value.fill });
+			});
 
 			this.$store.dispatch('addNewGraph', chartDatas);
 		},
@@ -3028,7 +3046,7 @@ var Component = normalizeComponent(
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(26);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_20bbca80_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_641c198e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(78);
 function injectStyle (ssrContext) {
   __webpack_require__(76)
 }
@@ -3048,7 +3066,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PolarAreaChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_20bbca80_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_641c198e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -3201,7 +3219,10 @@ var Component = normalizeComponent(
 				type: this.chartType,
 				data: {
 					labels: this.labels,
-					datasets: this.datasets
+					datasets: [{
+						data: this.datasets[0].data,
+						backgroundColor: this.datasets[0].backgroundColor
+					}]
 				},
 				options: {
 					title: {
@@ -3286,7 +3307,7 @@ var Component = normalizeComponent(
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BubbleChartTemplate_vue__ = __webpack_require__(28);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_880b6f7c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__ = __webpack_require__(81);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4ae4169f_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__ = __webpack_require__(81);
 function injectStyle (ssrContext) {
   __webpack_require__(79)
 }
@@ -3306,7 +3327,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BubbleChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_880b6f7c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4ae4169f_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -3505,7 +3526,7 @@ var Component = normalizeComponent(
 			let chartDatas = {
 				type: this.chartType,
 				data: {
-					datasets: this.datasets
+					datasets: []
 				},
 				options: {
 					title: {
@@ -3518,6 +3539,16 @@ var Component = normalizeComponent(
 					}
 				}
 			};
+
+			this.datasets.forEach(function (value, key) {
+				chartDatas.data.datasets.push({
+					label: value.label,
+					data: value.data,
+					backgroundColor: value.backgroundColor,
+					borderColor: value.borderColor,
+					hoverRadius: 0
+				});
+			});
 
 			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
 
@@ -3602,7 +3633,7 @@ var Component = normalizeComponent(
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ScatterChartTemplate_vue__ = __webpack_require__(30);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_c88a8030_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__ = __webpack_require__(84);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_076a606c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__ = __webpack_require__(84);
 function injectStyle (ssrContext) {
   __webpack_require__(82)
 }
@@ -3622,7 +3653,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ScatterChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_c88a8030_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_076a606c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -3822,7 +3853,7 @@ var Component = normalizeComponent(
 			let chartDatas = {
 				type: this.chartType,
 				data: {
-					datasets: this.datasets
+					datasets: []
 				},
 				options: {
 					title: {
@@ -3835,6 +3866,17 @@ var Component = normalizeComponent(
 					}
 				}
 			};
+
+			this.datasets.forEach(function (value, key) {
+				chartDatas.data.datasets.push({
+					label: value.label,
+					data: value.data,
+					backgroundColor: value.backgroundColor,
+					borderColor: value.borderColor,
+					fill: value.fill,
+					showLine: value.showLine
+				});
+			});
 
 			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
 
@@ -3883,7 +3925,6 @@ var Component = normalizeComponent(
 					}
 					outerThis.datasets[key].data[innerKey].x = innerValue.x;
 					outerThis.datasets[key].data[innerKey].y = innerValue.y;
-					outerThis.datasets[key].data[innerKey].r = innerValue.r;
 				});
 				outerThis.datasets[key].backgroundColor = value.backgroundColor;
 				outerThis.datasets[key].borderColor = value.borderColor;
@@ -3995,7 +4036,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 			tinymce.activeEditor.execCommand('mceInsertContent', false, content);
 			$('#gl-admin-meta-box').fadeOut();
 		},
-		editGraphDetails(index, id) {
+		editGraphDetails(index) {
 			let chartType = this.allGraph[index].type + "Chart";
 			this.editedGraphData = this.allGraph[index];
 			this.editedGraphIndex = index;
@@ -16352,7 +16393,7 @@ var content = __webpack_require__(42);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("5dfd705f", content, true, {});
+var update = __webpack_require__(2)("d93890e8", content, true, {});
 
 /***/ }),
 /* 42 */
@@ -16389,7 +16430,7 @@ var content = __webpack_require__(45);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("9b00526c", content, true, {});
+var update = __webpack_require__(2)("ef60ee7c", content, true, {});
 
 /***/ }),
 /* 45 */
@@ -16426,7 +16467,7 @@ var content = __webpack_require__(48);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("2ea60545", content, true, {});
+var update = __webpack_require__(2)("02ad1e38", content, true, {});
 
 /***/ }),
 /* 48 */
@@ -17528,7 +17569,7 @@ var content = __webpack_require__(71);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("235e3c02", content, true, {});
+var update = __webpack_require__(2)("1f82e460", content, true, {});
 
 /***/ }),
 /* 71 */
@@ -17565,7 +17606,7 @@ var content = __webpack_require__(74);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("12712c58", content, true, {});
+var update = __webpack_require__(2)("d93c4302", content, true, {});
 
 /***/ }),
 /* 74 */
@@ -17602,7 +17643,7 @@ var content = __webpack_require__(77);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("d2ae4430", content, true, {});
+var update = __webpack_require__(2)("5a89a7f7", content, true, {});
 
 /***/ }),
 /* 77 */
@@ -17639,7 +17680,7 @@ var content = __webpack_require__(80);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("deca4f90", content, true, {});
+var update = __webpack_require__(2)("3ba2dc58", content, true, {});
 
 /***/ }),
 /* 80 */
@@ -17676,7 +17717,7 @@ var content = __webpack_require__(83);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("e166d9ee", content, true, {});
+var update = __webpack_require__(2)("67a6703a", content, true, {});
 
 /***/ }),
 /* 83 */
@@ -17719,7 +17760,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(31);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_e177d7a6_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(89);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_90eed9c4_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(89);
 function injectStyle (ssrContext) {
   __webpack_require__(87)
 }
@@ -17739,7 +17780,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_allSavedChartsTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_e177d7a6_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_90eed9c4_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -17760,7 +17801,7 @@ var content = __webpack_require__(88);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("86f8d630", content, true, {});
+var update = __webpack_require__(2)("55d9071f", content, true, {});
 
 /***/ }),
 /* 88 */
@@ -17781,7 +17822,7 @@ exports.push([module.i, "", ""]);
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c(_vm.currentChartTabComponent,{tag:"component",attrs:{"graph-data":_vm.editedGraphData,"graph-index":_vm.editedGraphIndex},on:{"applied":_vm.whenGraphUpdated}}),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.currentComponent),expression:"!currentComponent"}]},[_c('h1',[_vm._v("All Charts")]),_vm._v(" "),_vm._l((_vm.allGraph),function(graph,index){return _c('div',{key:graph.graph_id,staticClass:"gl_single_graph"},[_c('div',{staticClass:"gl_graph_box"},[_c('canvas',{attrs:{"id":index}})]),_vm._v(" "),_c('div',{staticClass:"gl_control_area"},[_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.useGraph(graph.graph_id)}}},[_vm._v("Use")]),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.editGraphDetails(index, graph.graph_id)}}},[_vm._v("Edit")]),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.deleteGraph(index)}}},[_vm._v("Delete")])])])})],2)],1)}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c(_vm.currentChartTabComponent,{tag:"component",attrs:{"graph-data":_vm.editedGraphData,"graph-index":_vm.editedGraphIndex},on:{"applied":_vm.whenGraphUpdated}}),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.currentComponent),expression:"!currentComponent"}]},[_c('h1',[_vm._v("All Charts")]),_vm._v(" "),_vm._l((_vm.allGraph),function(graph,index){return _c('div',{key:graph.graph_id,staticClass:"gl_single_graph"},[_c('div',{staticClass:"gl_graph_box"},[_c('canvas',{attrs:{"id":index}})]),_vm._v(" "),_c('div',{staticClass:"gl_control_area"},[_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.useGraph(graph.graph_id)}}},[_vm._v("Use")]),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.editGraphDetails(index)}}},[_vm._v("Edit")]),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.deleteGraph(index)}}},[_vm._v("Delete")])])])})],2)],1)}
 var staticRenderFns = []
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
@@ -17849,19 +17890,6 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 			let graphDetails = editedGraphDetails.chartDetails;
 			let graphId = editedGraphDetails.graph_id;
 
-			var cache = [];
-			let graphData = JSON.stringify(graphDetails, function (key, value) {
-				if (typeof value === 'object' && value !== null) {
-					if (cache.indexOf(value) !== -1) {
-						// Circular reference found, discard key
-						return;
-					}
-					// Store value in our collection
-					cache.push(value);
-				}
-				return value;
-			});
-
 			$.ajax({
 				url: gl.ajax_url,
 				type: 'POST',
@@ -17869,7 +17897,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 				data: {
 					action: 'update_chart',
 					graph_id: graphId,
-					updated_graph_data: graphData
+					updated_graph_data: graphDetails
 				},
 				success: function (response) {
 					context.commit('updateGraph', editedGraphDetails);
