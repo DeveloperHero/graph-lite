@@ -109,7 +109,6 @@
 				this.theChart.update();
 			},
 			saveGraphData() {
-				let outerThis = this;
 				let chartDatas = {
 					type: this.chartType,
 					data: {
@@ -159,7 +158,7 @@
 				});
 			},
 			onLoad() {
-				var ctx = document.getElementById("pieChart");
+				let ctx = document.getElementById("pieChart");
 				this.theChart = new Chart(ctx, {
 					type: this.chartType,
 					data: {
