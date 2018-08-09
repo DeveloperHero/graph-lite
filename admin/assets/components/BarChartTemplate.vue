@@ -152,8 +152,7 @@
 				this.theChart.update();
 			},
 			saveGraphData() {
-				let outerThis = this;
-				var chartDatas = {
+				let chartDatas = {
 					type: this.chartType,
 					data: {
 						labels: this.labels,
@@ -181,6 +180,7 @@
 				this.$store.dispatch('addNewGraph', chartDatas);
 			},
 			updateGraphData() {
+				let outerThis = this;
 				let chartDatas = {
 					type: this.chartType,
 					data: {
@@ -206,7 +206,7 @@
 					}
 				};
 
-				let payload = {'chartDetails': chartDatas, 'graphIndex': this.graphIndex};
+				let payload = {'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id};
 
 				this.$store.dispatch('updateGraph', payload).then(function() {
 					setTimeout(function() {
@@ -215,7 +215,7 @@
 				});
 			},
 			onLoad() {
-				var ctx = document.getElementById("barChart");
+				let ctx = document.getElementById("barChart");
 				this.theChart = new Chart(ctx, {
 					type: this.chartType,
 					data: {
