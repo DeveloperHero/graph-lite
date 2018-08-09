@@ -24,7 +24,7 @@
   * Mishuk
   */
 
- div#gl-admin-meta-box {
+div#gl-admin-meta-box {
     padding: 1% 2%;
  	background: #fff;
  	display: none;
@@ -141,6 +141,14 @@ button.saveGraphData {
 
 .gl_single_graph .gl_graph_box {
     min-height: 290px;
+}
+
+div#gl-admin-meta-box .sweet-modal-buttons a.button {
+    padding-top:  1px !important;
+}
+
+.sweet-modal-buttons a.button {
+    padding-top:  1px !important;
 }
 
 @media only screen and (max-width: 767px) {
