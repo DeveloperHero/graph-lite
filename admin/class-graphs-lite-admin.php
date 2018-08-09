@@ -201,9 +201,12 @@ class Graph_Lite_Admin {
 
 	}
 
-	public function global_data() { ?>
+	public function global_data() {
+
+		$all_graph_data = array_reverse( get_option( 'graphs_lite_all_data', true ) ); ?>
+
 		<script>
-		var global_chart_data = <?php echo json_encode( get_option('graphs_lite_all_data', true) );?>;
+		var global_chart_data = <?php echo json_encode( $all_graph_data );?>;
 		function gl_findAndReplace(object, value, replacevalue){
 		  for(var x in object){
 		    if(typeof object[x] == typeof {}){
