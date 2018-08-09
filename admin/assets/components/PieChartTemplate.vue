@@ -150,7 +150,7 @@
 					}
 				};
 
-				let payload = {'chartDetails': chartDatas, 'graphIndex': this.graphIndex};
+				let payload = {'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id};
 
 				this.$store.dispatch('updateGraph', payload).then(function() {
 					setTimeout(function() {

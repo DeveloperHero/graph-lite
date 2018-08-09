@@ -1,6 +1,3 @@
-import axios from 'axios';
-import querystring from 'querystring';
-
 export default {
 	state: {
 		allGraph: [],
@@ -56,24 +53,43 @@ export default {
 			});
 		},
 		updateGraph(context, editedGraphDetails) {
-			let outerThis = this;
-			let graphIndex = editedGraphDetails.graphIndex;
 			let graphDetails = editedGraphDetails.chartDetails;
-			let graphId = editedGraphDetails.chartDetails.graph_id;
+			let graphId = editedGraphDetails.graph_id;
 
-			axios.post(gl.ajax_url, querystring.stringify({action: 'save_chart', graph_id: graphId, updated_graph_data: graphDetails}), {
-				  'content-type': 'multipart/form-data'
-			})
-			.then(function(response) {
-				context.commit('updateGraph', editedGraphDetails);
-				$.sweetModal({
-					content: 'Graph id '+ response + ' updated',
-					icon: $.sweetModal.ICON_SUCCESS,
-					timeout: 1300,
-					showCloseButton: false
-				});
-			}).catch(function (error) {
-				alert('Something went wront please try again');
+			var cache = [];
+			let graphData = JSON.stringify(graphDetails, function(key, value) {
+			    if (typeof value === 'object' && value !== null) {
+			        if (cache.indexOf(value) !== -1) {
+			            // Circular reference found, discard key
+			            return;
+			        }
+			        // Store value in our collection
+			        cache.push(value);
+			    }
+			    return value;
+			});
+
+			$.ajax({
+				url: gl.ajax_url,
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					action: 'update_chart',
+				graph_id: graphId,
+				updated_graph_data: graphData
+				},
+				success: function( response ) {
+					context.commit('updateGraph', editedGraphDetails);
+					$.sweetModal({
+						content: 'Graph id '+ response + ' updated',
+						icon: $.sweetModal.ICON_SUCCESS,
+						timeout: 1300,
+						showCloseButton: false
+					});
+				},
+				error: function( error ) {
+					alert('Something went wront please try again');
+				}
 			});
 		},
 		deleteGraph: (context, index) => {
