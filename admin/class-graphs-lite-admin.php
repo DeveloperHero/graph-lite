@@ -92,7 +92,7 @@ class Graph_Lite_Admin {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/graphs-lite-admin.js', array( 'jquery' ), $this->version, true );
 
 		wp_localize_script( $this->plugin_name, 'gl', [
-			'all_graphs'      =>	get_option('graphs_light_all_data', true),
+			'all_graphs'      =>	get_option('graphs_lite_all_data', true),
 			'ajax_url'        =>	admin_url( 'admin-ajax.php' ),
 			'save_ajax_url'   =>	admin_url( 'admin-ajax.php?action=save_chart' ),
 			'update_ajax_url' =>	admin_url( 'admin-ajax.php?action=update_chart' ),
@@ -173,7 +173,7 @@ class Graph_Lite_Admin {
 	public function graphs_data_store() {
 
 		$args = [
-			'post_type'      =>	'graphs_light',
+			'post_type'      =>	'graphs_lite',
 			'posts_per_page' => -1,
 		];
 
@@ -183,7 +183,7 @@ class Graph_Lite_Admin {
 
 		foreach ($graphs as $key => $graph) {
 
-			$get_graph_meta = unserialize( get_post_meta( $graph->ID, 'graphs_light_data', true ) );
+			$get_graph_meta = unserialize( get_post_meta( $graph->ID, 'graphs_lite_data', true ) );
 
 			$get_graph_meta['graph_id'] = $graph->ID;
 
@@ -191,7 +191,7 @@ class Graph_Lite_Admin {
 
 		}
 
-		update_option( 'graphs_light_all_data', $graphs_data );
+		update_option( 'graphs_lite_all_data', $graphs_data );
 
 	}
 
@@ -203,7 +203,7 @@ class Graph_Lite_Admin {
 
 	public function global_data() { ?>
 		<script>
-		var global_chart_data = <?php echo json_encode( get_option('graphs_light_all_data', true) );?>;
+		var global_chart_data = <?php echo json_encode( get_option('graphs_lite_all_data', true) );?>;
 		function gl_findAndReplace(object, value, replacevalue){
 		  for(var x in object){
 		    if(typeof object[x] == typeof {}){

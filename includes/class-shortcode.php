@@ -19,7 +19,7 @@ class Graph_Lite_Shortcode
 			'id'	=> '',
 		), $atts ));
 
-		$chart_data = unserialize(get_post_meta( $id, 'graphs_light_data', true ));
+		$chart_data = unserialize(get_post_meta( $id, 'graphs_lite_data', true ));
 
 		wp_localize_script( GRAPHS_LITE_NAME, 'gl', [
 			'chart_id'   => $id,

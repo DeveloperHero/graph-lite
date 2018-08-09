@@ -36,7 +36,7 @@ class Graph_Lite_Init
 
 	public function register_custom_post_type() {
 
-		register_post_type( 'graphs_light', [
+		register_post_type( 'graphs_lite', [
 
               'label'               => __( 'Graphs Light', 'graphs-light' ),
               'public'              => true,

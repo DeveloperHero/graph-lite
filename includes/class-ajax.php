@@ -42,13 +42,13 @@ class Graph_Lite_Ajax
 		$data = $_POST['graph_data'];
 
 		$post_id = wp_insert_post( [
-			'post_type'      => 'graphs_light',
+			'post_type'      => 'graphs_lite',
 			'post_title'     => $data['title_text'],
 			'post_status'    => 'publish',
 			'comment_status' => 'closed'
 		] );
 
-		update_post_meta( $post_id, 'graphs_light_data', serialize($data) );
+		update_post_meta( $post_id, 'graphs_lite_data', serialize($data) );
 
 		wp_send_json( $post_id );
 
@@ -69,7 +69,7 @@ class Graph_Lite_Ajax
 			'post_title'   => $new_data['title_text'],
 		] );
 
-		update_post_meta( $post_id, 'graphs_light_data', serialize($new_data) );
+		update_post_meta( $post_id, 'graphs_lite_data', serialize($new_data) );
 
 		wp_send_json( $post_id );
 
@@ -79,9 +79,9 @@ class Graph_Lite_Ajax
 
 		wp_delete_post( $_POST['graph_id'], true );
 
-		delete_post_meta( gl_get_graph_index($_POST['graph_id']), 'graphs_light_data' );
+		delete_post_meta( gl_get_graph_index($_POST['graph_id']), 'graphs_lite_data' );
 
-		delete_option( 'graphs_light_all_data' )[$_POST['graph_id']];
+		delete_option( 'graphs_lite_all_data' )[$_POST['graph_id']];
 
 		wp_send_json( __( 'Graph '.$_POST['graph_id'].' deleted', 'graphs-lite') );
 

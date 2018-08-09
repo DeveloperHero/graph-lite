@@ -2,7 +2,7 @@
 
 	<?php
 
-	$all_graphs = get_option('graphs_light_all_data', true);
+	$all_graphs = get_option('graphs_lite_all_data', true);
 
 	foreach ($all_graphs as $key => $graph): ?>
 
