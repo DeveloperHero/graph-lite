@@ -245,8 +245,19 @@
 					}
 				};
 
-				this.datasets.forEach(function(value) {
-					chartDatas.data.datasets.push({ label: value.label, data: value.data, chartDatasetDataString: value.chartDatasetDataString, backgroundColor: value.backgroundColor, borderColor: value.borderColor, fill: value.fill, straightLine: value.straightLine });
+				this.datasets.forEach(function(value, key) {
+					chartDatas.data.datasets.push({
+						label: value.label,
+						data: value.data,
+						chartDatasetDataString: value.chartDatasetDataString,
+						backgroundColor: value.backgroundColor,
+						borderColor: value.borderColor,
+						fill: value.fill,
+						straightLine: value.straightLine
+					});
+					if(value.straightLine) {
+						chartDatas.data.datasets[key].lineTension = 0;
+					}
 				});
 
 				let payload = {'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id};

@@ -1533,7 +1533,7 @@ var Component = normalizeComponent(
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_LineChartTemplate_vue__ = __webpack_require__(13);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_60e08e68_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__ = __webpack_require__(46);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_57ffbc24_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__ = __webpack_require__(46);
 function injectStyle (ssrContext) {
   __webpack_require__(44)
 }
@@ -1553,7 +1553,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_LineChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_60e08e68_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_57ffbc24_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -1813,8 +1813,19 @@ var Component = normalizeComponent(
 				}
 			};
 
-			this.datasets.forEach(function (value) {
-				chartDatas.data.datasets.push({ label: value.label, data: value.data, chartDatasetDataString: value.chartDatasetDataString, backgroundColor: value.backgroundColor, borderColor: value.borderColor, fill: value.fill, straightLine: value.straightLine });
+			this.datasets.forEach(function (value, key) {
+				chartDatas.data.datasets.push({
+					label: value.label,
+					data: value.data,
+					chartDatasetDataString: value.chartDatasetDataString,
+					backgroundColor: value.backgroundColor,
+					borderColor: value.borderColor,
+					fill: value.fill,
+					straightLine: value.straightLine
+				});
+				if (value.straightLine) {
+					chartDatas.data.datasets[key].lineTension = 0;
+				}
 			});
 
 			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
@@ -2703,7 +2714,7 @@ var Component = normalizeComponent(
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_RadarChartTemplate_vue__ = __webpack_require__(24);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_18448a8e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__ = __webpack_require__(75);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6a6c968e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__ = __webpack_require__(75);
 function injectStyle (ssrContext) {
   __webpack_require__(73)
 }
@@ -2723,7 +2734,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_RadarChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_18448a8e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6a6c968e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -2907,6 +2918,33 @@ var Component = normalizeComponent(
 				type: this.chartType,
 				data: {
 					labels: this.labels,
+					datasets: this.datasets
+				},
+				options: {
+					scale: {
+						ticks: {
+							beginAtZero: true
+						}
+					},
+					title: {
+						display: this.showTitle,
+						text: this.titleText
+					},
+					legend: {
+						display: this.showLegend,
+						position: this.legendPosition
+					}
+				}
+			};
+
+			this.$store.dispatch('addNewGraph', chartDatas);
+		},
+		updateGraphData() {
+			let outerThis = this;
+			let chartDatas = {
+				type: this.chartType,
+				data: {
+					labels: this.labels,
 					datasets: []
 				},
 				options: {
@@ -2929,33 +2967,6 @@ var Component = normalizeComponent(
 			this.datasets.forEach(function (value) {
 				chartDatas.data.datasets.push({ label: value.label, data: value.data, chartDatasetDataString: value.chartDatasetDataString, backgroundColor: value.backgroundColor, borderColor: value.borderColor, fill: value.fill });
 			});
-
-			this.$store.dispatch('addNewGraph', chartDatas);
-		},
-		updateGraphData() {
-			let outerThis = this;
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					labels: this.labels,
-					datasets: this.datasets
-				},
-				options: {
-					scale: {
-						ticks: {
-							beginAtZero: true
-						}
-					},
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
 
 			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
 
@@ -16430,7 +16441,7 @@ var content = __webpack_require__(45);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("ef60ee7c", content, true, {});
+var update = __webpack_require__(2)("49b0a351", content, true, {});
 
 /***/ }),
 /* 45 */
@@ -17606,7 +17617,7 @@ var content = __webpack_require__(74);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("d93c4302", content, true, {});
+var update = __webpack_require__(2)("3d9af87a", content, true, {});
 
 /***/ }),
 /* 74 */

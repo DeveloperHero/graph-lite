@@ -169,6 +169,33 @@
 					type: this.chartType,
 					data: {
 						labels: this.labels,
+						datasets: this.datasets
+					},
+					options: {
+						scale: {
+							ticks: {
+								beginAtZero: true
+							}
+						},
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.$store.dispatch('addNewGraph', chartDatas);
+			},
+			updateGraphData() {
+				let outerThis = this;
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
 						datasets: []
 					},
 					options: {
@@ -191,33 +218,6 @@
 				this.datasets.forEach(function(value) {
 					chartDatas.data.datasets.push({ label: value.label, data: value.data, chartDatasetDataString: value.chartDatasetDataString, backgroundColor: value.backgroundColor, borderColor: value.borderColor, fill: value.fill });
 				});
-
-				this.$store.dispatch('addNewGraph', chartDatas);
-			},
-			updateGraphData() {
-				let outerThis = this;
-				let chartDatas = {
-					type: this.chartType,
-					data: {
-						labels: this.labels,
-						datasets: this.datasets
-					},
-					options: {
-						scale: {
-							ticks: {
-								beginAtZero: true
-							}
-						},
-						title: {
-							display: this.showTitle,
-							text: this.titleText
-						},
-						legend: {
-							display: this.showLegend,
-							position: this.legendPosition
-						}
-					}
-				};
 
 				let payload = {'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id};
 
