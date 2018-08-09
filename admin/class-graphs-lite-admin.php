@@ -173,7 +173,8 @@ class Graph_Lite_Admin {
 	public function graphs_data_store() {
 
 		$args = [
-			'post_type'	=>	'graphs_light'
+			'post_type'      =>	'graphs_light',
+			'posts_per_page' => -1,
 		];
 
 		$graphs = get_posts( $args );
