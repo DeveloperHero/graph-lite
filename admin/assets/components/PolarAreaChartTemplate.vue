@@ -1,5 +1,5 @@
 <template>
-	<div class="PolarAreaChart" id="PolarArea">
+	<div class="PolarAreaChart gl_chart_template" id="PolarArea">
 		<div class="graphOptions">
 			<table class="form-table">
 				<tr>

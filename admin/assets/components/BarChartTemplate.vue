@@ -1,5 +1,5 @@
 <template>
-	<div class="barChart" id="bar">
+	<div class="barChart gl_chart_template" id="bar">
 		<div class="graphOptions">
 			<table class="form-table">
 				<tr>

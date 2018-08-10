@@ -1,5 +1,5 @@
 <template>
-	<div class="pieChart" id="pie">
+	<div class="pieChart gl_chart_template" id="pie">
 		<div class="graphOptions">
 			<table class="form-table">
 				<tr>

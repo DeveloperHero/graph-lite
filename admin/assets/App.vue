@@ -1,15 +1,18 @@
 <template>
     <div id="app">
-        <div class="dropdown">
-            <button class="dropbtn">{{ activeChart }}</button>
-            <div class="dropdown-content">
-                <a href="javascript:void(0)"
-                   v-for="(chartTab, index) in chartTabs"
-                   v-bind:key="chartTab.tabFileName"
-                   @click="changeTabChart(index)">{{ chartTab.tabName }}</a>
+        <div class="gl_chart_dropdown_area">
+            <p class="gl_chart_template_title">Select a chart</p>
+            <div class="dropdown gl_chart_dropdown">
+                <button class="dropbtn">{{ activeChart }}</button>
+                <div class="dropdown-content">
+                    <a href="javascript:void(0)"
+                       v-for="(chartTab, index) in chartTabs"
+                       v-bind:key="chartTab.tabFileName"
+                       @click="changeTabChart(index)">{{ chartTab.tabName }}</a>
+                </div>
             </div>
         </div>
-        
+
         <component v-bind:is="currentChartTabComponent"></component>
     </div>
 </template>

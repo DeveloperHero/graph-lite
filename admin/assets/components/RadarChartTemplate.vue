@@ -1,5 +1,5 @@
 <template>
-	<div class="radarChart" id="line">
+	<div class="radarChart gl_chart_template" id="line">
 		<div class="graphOptions">
 			<table class="form-table">
 				<tr>

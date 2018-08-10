@@ -151,6 +151,102 @@ div#gl-admin-meta-box .sweet-modal-buttons a.button {
     padding-top:  1px !important;
 }
 
+/**
+ * Template
+ */
+.gl_chart_template button {
+    border:  0;
+    padding: 8px 12px;
+    color: white;
+    background: #3473aa;
+    font-weight:  bold;
+    float:  right;
+    margin-top: 15px;
+    font-size:  14px;
+    cursor:  pointer;
+}
+
+.gl_chart_template input[type="text"] {
+    width:  100%;
+}
+
+.gl_sc_point {
+    width:  100%;
+    margin-bottom: 5px;
+}
+
+.gl_sc_point div {
+    width: 49%;
+    display:  inline-block;
+}
+
+.gl_sc_point input {
+    width: 59%;
+    display:  inline-block;
+}
+
+.gl_sc_point label {
+    width: 30%;
+    display:  inline-block;
+}
+
+.gl_sc_yp {
+    text-align:  right;
+    float:  right;
+}
+
+p.gl_chart_template_title {
+    display:  inline-block;
+    font-size:  16px;
+    margin: 0;
+    margin-right: 15px;
+    font-weight: 900;
+    color: #e74c3c;
+}
+
+.gl_bb_point {
+    width: 98%;
+    display:  block;
+    border: 1px solid #dddddd;
+    margin-bottom:  5px;
+    padding: 2%;
+}
+
+.gl_bb_xp, .gl_bb_yp {
+    width:  49%;
+    display:  inline-block;
+}
+
+.gl_bb_r {
+    margin-top: 5px;
+    overflow:  hidden;
+}
+
+.gl_bb_xp label, .gl_bb_yp label {
+    width:  30%;
+}
+
+.gl_bb_xp input, .gl_bb_yp input {
+    width: 70%;
+}
+
+.gl_bb_yp {
+    text-align:  right;
+    float:  right;
+}
+
+.gl_bb_r label {
+    width: 25%;
+    float:  left;
+    margin-top: 5px;
+}
+
+.gl_bb_r input {
+    width: 73%;
+    text-align: right;
+    float:  right;
+}
+
 @media only screen and (max-width: 767px) {
 
     .gl_single_graph .gl_graph_box {

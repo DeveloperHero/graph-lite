@@ -1,5 +1,5 @@
 <template>
-	<div class="DoughnutChart" id="Doughnut">
+	<div class="DoughnutChart gl_chart_template" id="Doughnut">
 		<div class="graphOptions">
 			<table class="form-table">
 				<tr>

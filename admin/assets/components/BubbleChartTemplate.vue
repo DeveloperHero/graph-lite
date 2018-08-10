@@ -1,5 +1,5 @@
 <template>
-	<div class="bubbleChart" id="bubble">
+	<div class="bubbleChart gl_chart_template" id="bubble">
 		<div class="graphOptions">
 			<table class="form-table">
 				<template v-for="(dataset, index) in datasets">
@@ -11,13 +11,19 @@
 						<th scope="row"><label for="datasets">Data</label></th>
 							<td>
 								<template v-for="(data, PIndex) in dataset.data">
-									<div>
-										<label for="xPoint">x-point</label>
-										<input class="bubblePoints" type="number" id="xPoint" v-model="dataset.data[PIndex].x" @keyup="addDatasetDataPoints(index, PIndex, 'x')">
-										<label for="xPoint">y-point</label>
-										<input class="bubblePoints" type="number" id="yPoint" v-model="dataset.data[PIndex].y" @keyup="addDatasetDataPoints(index, PIndex, 'y')">
-										<label for="radius">Bubble Radius</label>
-										<input class="bubblePoints" type="number" id="radius" v-model="dataset.data[PIndex].r" @keyup="addDatasetDataPoints(index, PIndex, 'r')">
+									<div class="gl_bb_point">
+										<div class="gl_bb_xp">
+											<label for="xPoint">x-point</label>
+											<input class="bubblePoints" type="number" id="xPoint" v-model="dataset.data[PIndex].x" @keyup="addDatasetDataPoints(index, PIndex, 'x')">
+										</div>
+										<div class="gl_bb_yp">
+											<label for="xPoint">y-point</label>
+											<input class="bubblePoints" type="number" id="yPoint" v-model="dataset.data[PIndex].y" @keyup="addDatasetDataPoints(index, PIndex, 'y')">
+										</div>
+										<div class="gl_bb_r">
+											<label for="radius">Bubble Radius</label>
+											<input class="bubblePoints" type="number" id="radius" v-model="dataset.data[PIndex].r" @keyup="addDatasetDataPoints(index, PIndex, 'r')">
+										</div>
 									</div>
 								</template>
 								<button type="button" @click="addBubblePoint(index)">Add Bubble Point</button>

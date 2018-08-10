@@ -1,5 +1,5 @@
 <template>
-	<div class="lineChart" id="line">
+	<div class="lineChart gl_chart_template" id="line">
 		<div class="graphOptions">
 			<table class="form-table">
 				<tr>
