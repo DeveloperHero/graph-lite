@@ -3,16 +3,16 @@ Contributors: orchestra, mymizan, mishuk24
 Donate link: http://orchestra.ltd
 Tags: chart, charting, graphs, graph, data visualization, pie chart, bar chart, line chart, doughnut chart
 Requires at least: 4
-Tested up to: 4.9.7
-Stable tag: 1.0.0
+Tested up to: 4.9.8
+Stable tag: 2.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-The most user friendly graph and charting library. 
+User friendly graph and charting plugin
 
 == Description ==
 
-We designed the plugin to be simple and easy to use. Provides instant feedback while building the graph. You can easily see how the graph will look like without loading the page. 
+The plugin has an interactive graph builder. It's easy to use and supports 9 types of charts. 
 
 
 == Frequently Asked Questions ==
@@ -25,7 +25,7 @@ A chart button is added in the TinyMCE toolbar. Clicking on it will open the pop
 
 A short-code is added to the page or post. Alternatively, you can copy that too. 
 
-= Is it responseive? =
+= Is it responsive? =
 
 Yes, the graphs are responsive and will take the width of the container. 
 
@@ -37,3 +37,12 @@ Yes, the graphs are responsive and will take the width of the container.
 
 = 1.0.0 =
 * First Release
+
+= 2.0.0 =
+* Revamped Interface
+
+= 2.0.1 =
+* Minor fix
+
+= 2.0.2 =
+* Minor fix
