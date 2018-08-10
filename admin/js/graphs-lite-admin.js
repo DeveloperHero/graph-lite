@@ -1201,7 +1201,7 @@ process.umask = function() { return 0; };
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BarChartTemplate_vue__ = __webpack_require__(11);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_120da914_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_27e0504b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__ = __webpack_require__(43);
 function injectStyle (ssrContext) {
   __webpack_require__(41)
 }
@@ -1221,7 +1221,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BarChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_120da914_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_27e0504b_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -1488,34 +1488,27 @@ var Component = normalizeComponent(
 		forEdit() {
 			let outerThis = this;
 			this.chartlabelsString = this.graphData.data.labels.join(", ");
-			this.labels = this.graphData.data.labels;
-
+			this.theChart.data.labels = this.labels = this.graphData.data.labels;
 			this.graphData.data.datasets.forEach(function (value, key) {
 				if (key) {
 					outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor: '' });
+					outerThis.theChart.data.datasets.push({ label: '', data: [], backgroundColor: '' });
 				}
-				outerThis.datasets[key].label = outerThis.graphData.data.datasets[key].label;
+				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = outerThis.graphData.data.datasets[key].label;
+
 				outerThis.datasets[key].chartDatasetDataString = outerThis.graphData.data.datasets[key].chartDatasetDataString;
-				outerThis.datasets[key].data = outerThis.graphData.data.datasets[key].data;
-				outerThis.datasets[key].backgroundColor = outerThis.graphData.data.datasets[key].backgroundColor;
+
+				outerThis.theChart.data.datasets[key].data = outerThis.datasets[key].data = outerThis.graphData.data.datasets[key].data;
+
+				outerThis.theChart.data.datasets[key].backgroundColor = outerThis.datasets[key].backgroundColor = outerThis.graphData.data.datasets[key].backgroundColor;
 			});
 
-			this.showTitle = this.graphData.options.title.display;
-			this.titleText = this.graphData.options.title.text;
-			this.showLegend = this.graphData.options.legend.display;
-			this.legendPosition = this.graphData.options.legend.position;
-			this.beginAtZero = this.graphData.options.scales.yAxes[0].ticks.beginAtZero;
-
-			this.theChart.data.labels = this.labels;
-			this.theChart.data.datasets = this.datasets;
-			this.theChart.options.title.display = this.showTitle;
-			this.theChart.options.title.text = this.titleText;
-			this.theChart.options.legend.display = this.showLegend;
-			this.theChart.options.legend.position = this.legendPosition;
-			this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero;
+			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
+			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
+			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
+			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
+			this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero = this.graphData.options.scales.yAxes[0].ticks.beginAtZero;
 			this.theChart.update();
-
-			this.editedGraphIdNo = this.graphData.graph_id;
 		}
 	},
 	mounted() {
@@ -1533,7 +1526,7 @@ var Component = normalizeComponent(
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_LineChartTemplate_vue__ = __webpack_require__(13);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_57ffbc24_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__ = __webpack_require__(46);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7fe1180f_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__ = __webpack_require__(46);
 function injectStyle (ssrContext) {
   __webpack_require__(44)
 }
@@ -1553,7 +1546,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_LineChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_57ffbc24_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7fe1180f_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -1872,37 +1865,35 @@ var Component = normalizeComponent(
 		forEdit() {
 			let outerThis = this;
 			this.chartlabelsString = this.graphData.data.labels.join(", ");
-			this.labels = this.graphData.data.labels;
-
+			this.theChart.data.labels = this.labels = this.graphData.data.labels;
 			this.graphData.data.datasets.forEach(function (value, key) {
 				if (key) {
 					outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor: '' });
+					outerThis.theChart.data.datasets.push({ label: '', data: [], backgroundColor: '' });
 				}
-				outerThis.datasets[key].label = outerThis.graphData.data.datasets[key].label;
+				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = outerThis.graphData.data.datasets[key].label;
+
 				outerThis.datasets[key].chartDatasetDataString = outerThis.graphData.data.datasets[key].chartDatasetDataString;
-				outerThis.datasets[key].data = outerThis.graphData.data.datasets[key].data;
-				outerThis.datasets[key].backgroundColor = outerThis.graphData.data.datasets[key].backgroundColor;
-				outerThis.datasets[key].borderColor = outerThis.graphData.data.datasets[key].borderColor;
-				outerThis.datasets[key].fill = outerThis.graphData.data.datasets[key].fill;
+
+				outerThis.theChart.data.datasets[key].data = outerThis.datasets[key].data = outerThis.graphData.data.datasets[key].data;
+
+				outerThis.theChart.data.datasets[key].backgroundColor = outerThis.datasets[key].backgroundColor = outerThis.graphData.data.datasets[key].backgroundColor;
+
+				outerThis.theChart.data.datasets[key].borderColor = outerThis.datasets[key].borderColor = outerThis.graphData.data.datasets[key].borderColor;
+
+				outerThis.theChart.data.datasets[key].fill = outerThis.datasets[key].fill = outerThis.graphData.data.datasets[key].fill;
+
 				outerThis.datasets[key].straightLine = outerThis.graphData.data.datasets[key].straightLine;
 				if (outerThis.graphData.data.datasets[key].straightLine) {
-					outerThis.datasets[key].lineTension = 0;
+					outerThis.theChart.data.datasets[key].lineTension = outerThis.datasets[key].lineTension = 0;
 				}
 			});
 
-			this.showTitle = this.graphData.options.title.display;
-			this.titleText = this.graphData.options.title.text;
-			this.showLegend = this.graphData.options.legend.display;
-			this.legendPosition = this.graphData.options.legend.position;
-			this.beginAtZero = this.graphData.options.scales.yAxes[0].ticks.beginAtZero;
-
-			this.theChart.data.labels = this.labels;
-			this.theChart.data.datasets = this.datasets;
-			this.theChart.options.title.display = this.showTitle;
-			this.theChart.options.title.text = this.titleText;
-			this.theChart.options.legend.display = this.showLegend;
-			this.theChart.options.legend.position = this.legendPosition;
-			this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero;
+			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
+			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
+			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
+			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
+			this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero = this.graphData.options.scales.yAxes[0].ticks.beginAtZero;
 			this.theChart.update();
 
 			this.editedGraphIdNo = this.graphData.graph_id;
@@ -2714,7 +2705,7 @@ var Component = normalizeComponent(
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_RadarChartTemplate_vue__ = __webpack_require__(24);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6a6c968e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__ = __webpack_require__(75);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_02ac9599_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__ = __webpack_require__(75);
 function injectStyle (ssrContext) {
   __webpack_require__(73)
 }
@@ -2734,7 +2725,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_RadarChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6a6c968e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_02ac9599_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -3010,36 +3001,31 @@ var Component = normalizeComponent(
 		forEdit() {
 			let outerThis = this;
 			this.chartlabelsString = this.graphData.data.labels.join(", ");
-			this.labels = this.graphData.data.labels;
-
+			this.theChart.data.labels = this.labels = this.graphData.data.labels;
 			this.graphData.data.datasets.forEach(function (value, key) {
 				if (key) {
 					outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor: '' });
+					outerThis.theChart.data.datasets.push({ label: '', data: [], backgroundColor: '' });
 				}
-				outerThis.datasets[key].label = outerThis.graphData.data.datasets[key].label;
+				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = outerThis.graphData.data.datasets[key].label;
+
 				outerThis.datasets[key].chartDatasetDataString = outerThis.graphData.data.datasets[key].chartDatasetDataString;
-				outerThis.datasets[key].data = outerThis.graphData.data.datasets[key].data;
-				outerThis.datasets[key].backgroundColor = outerThis.graphData.data.datasets[key].backgroundColor;
-				outerThis.datasets[key].borderColor = outerThis.graphData.data.datasets[key].borderColor;
-				outerThis.datasets[key].fill = outerThis.graphData.data.datasets[key].fill;
+
+				outerThis.theChart.data.datasets[key].data = outerThis.datasets[key].data = outerThis.graphData.data.datasets[key].data;
+
+				outerThis.theChart.data.datasets[key].backgroundColor = outerThis.datasets[key].backgroundColor = outerThis.graphData.data.datasets[key].backgroundColor;
+
+				outerThis.theChart.data.datasets[key].borderColor = outerThis.datasets[key].borderColor = outerThis.graphData.data.datasets[key].borderColor;
+
+				outerThis.theChart.data.datasets[key].fill = outerThis.datasets[key].fill = outerThis.graphData.data.datasets[key].fill;
 			});
 
-			this.showTitle = this.graphData.options.title.display;
-			this.titleText = this.graphData.options.title.text;
-			this.showLegend = this.graphData.options.legend.display;
-			this.legendPosition = this.graphData.options.legend.position;
-			this.beginAtZero = this.graphData.options.scale.ticks.beginAtZero;
-
-			this.theChart.data.labels = this.labels;
-			this.theChart.data.datasets = this.datasets;
-			this.theChart.options.title.display = this.showTitle;
-			this.theChart.options.title.text = this.titleText;
-			this.theChart.options.legend.display = this.showLegend;
-			this.theChart.options.legend.position = this.legendPosition;
-			this.theChart.options.scale.ticks.beginAtZero = this.beginAtZero;
+			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
+			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
+			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
+			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
+			this.theChart.options.scale.ticks.beginAtZero = this.beginAtZero = this.graphData.options.scale.ticks.beginAtZero;
 			this.theChart.update();
-
-			this.editedGraphIdNo = this.graphData.graph_id;
 		}
 	},
 	mounted() {
@@ -3318,7 +3304,7 @@ var Component = normalizeComponent(
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BubbleChartTemplate_vue__ = __webpack_require__(28);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4ae4169f_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__ = __webpack_require__(81);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_51642697_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__ = __webpack_require__(81);
 function injectStyle (ssrContext) {
   __webpack_require__(79)
 }
@@ -3338,7 +3324,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BubbleChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4ae4169f_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_51642697_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -3599,34 +3585,28 @@ var Component = normalizeComponent(
 			this.graphData.data.datasets.forEach(function (value, key) {
 				if (key) {
 					outerThis.datasets.push({ label: '', data: [{ x: '', y: '', r: '' }], backgroundColor: '' });
+					outerThis.theChart.data.datasets.push({ label: '', data: [{ x: '', y: '', r: '' }], backgroundColor: '' });
 				}
-				outerThis.datasets[key].label = value.label;
+				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = value.label;
 				value.data.forEach(function (innerValue, innerKey) {
 					if (innerKey) {
 						outerThis.datasets[key].data.push({ x: '', y: '', r: '' });
+						outerThis.theChart.data.datasets[key].data.push({ x: '', y: '', r: '' });
 					}
-					outerThis.datasets[key].data[innerKey].x = innerValue.x;
-					outerThis.datasets[key].data[innerKey].y = innerValue.y;
-					outerThis.datasets[key].data[innerKey].r = innerValue.r;
+					outerThis.theChart.data.datasets[key].data[innerKey].x = outerThis.datasets[key].data[innerKey].x = innerValue.x;
+					outerThis.theChart.data.datasets[key].data[innerKey].y = outerThis.datasets[key].data[innerKey].y = innerValue.y;
+					outerThis.theChart.data.datasets[key].data[innerKey].r = outerThis.datasets[key].data[innerKey].r = innerValue.r;
 				});
-				outerThis.datasets[key].backgroundColor = value.backgroundColor;
-				outerThis.datasets[key].borderColor = value.borderColor;
-				outerThis.datasets[key].hoverRadius = 0;
+				outerThis.theChart.data.datasets[key].backgroundColor = outerThis.datasets[key].backgroundColor = value.backgroundColor;
+				outerThis.theChart.data.datasets[key].borderColor = outerThis.datasets[key].borderColor = value.borderColor;
+				outerThis.theChart.data.datasets[key].hoverRadius = outerThis.datasets[key].hoverRadius = 0;
 			});
 
-			this.showTitle = this.graphData.options.title.display;
-			this.titleText = this.graphData.options.title.text;
-			this.showLegend = this.graphData.options.legend.display;
-			this.legendPosition = this.graphData.options.legend.position;
-
-			this.theChart.data.datasets = this.datasets;
-			this.theChart.options.title.display = this.showTitle;
-			this.theChart.options.title.text = this.titleText;
-			this.theChart.options.legend.display = this.showLegend;
-			this.theChart.options.legend.position = this.legendPosition;
+			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
+			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
+			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
+			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
 			this.theChart.update();
-
-			this.editedGraphIdNo = this.graphData.graph_id;
 		}
 	},
 	mounted() {
@@ -3644,7 +3624,7 @@ var Component = normalizeComponent(
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ScatterChartTemplate_vue__ = __webpack_require__(30);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_076a606c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__ = __webpack_require__(84);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_bb3397e2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__ = __webpack_require__(84);
 function injectStyle (ssrContext) {
   __webpack_require__(82)
 }
@@ -3664,7 +3644,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ScatterChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_076a606c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_bb3397e2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -3928,33 +3908,26 @@ var Component = normalizeComponent(
 			this.graphData.data.datasets.forEach(function (value, key) {
 				if (key) {
 					outerThis.datasets.push({ label: '', data: [{ x: '', y: '' }], backgroundColor: '', fill: false, showLine: false });
+					outerThis.theChart.data.datasets.push({ label: '', data: [{ x: '', y: '' }], backgroundColor: '', fill: false, showLine: false });
 				}
-				outerThis.datasets[key].label = value.label;
+				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = value.label;
 				value.data.forEach(function (innerValue, innerKey) {
 					if (innerKey) {
 						outerThis.datasets[key].data.push({ x: '', y: '' });
+						outerThis.theChart.data.datasets[key].data.push({ x: '', y: '' });
 					}
-					outerThis.datasets[key].data[innerKey].x = innerValue.x;
-					outerThis.datasets[key].data[innerKey].y = innerValue.y;
+					outerThis.theChart.data.datasets[key].data[innerKey].x = outerThis.datasets[key].data[innerKey].x = innerValue.x;
+					outerThis.theChart.data.datasets[key].data[innerKey].y = outerThis.datasets[key].data[innerKey].y = innerValue.y;
 				});
-				outerThis.datasets[key].backgroundColor = value.backgroundColor;
-				outerThis.datasets[key].borderColor = value.borderColor;
-				outerThis.datasets[key].hoverRadius = 0;
+				outerThis.theChart.data.datasets[key].backgroundColor = outerThis.datasets[key].backgroundColor = value.backgroundColor;
+				outerThis.theChart.data.datasets[key].borderColor = outerThis.datasets[key].borderColor = value.borderColor;
 			});
 
-			this.showTitle = this.graphData.options.title.display;
-			this.titleText = this.graphData.options.title.text;
-			this.showLegend = this.graphData.options.legend.display;
-			this.legendPosition = this.graphData.options.legend.position;
-
-			this.theChart.data.datasets = this.datasets;
-			this.theChart.options.title.display = this.showTitle;
-			this.theChart.options.title.text = this.titleText;
-			this.theChart.options.legend.display = this.showLegend;
-			this.theChart.options.legend.position = this.legendPosition;
+			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
+			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
+			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
+			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
 			this.theChart.update();
-
-			this.editedGraphIdNo = this.graphData.graph_id;
 		}
 	},
 	mounted() {
@@ -16404,7 +16377,7 @@ var content = __webpack_require__(42);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("d93890e8", content, true, {});
+var update = __webpack_require__(2)("da4ad43a", content, true, {});
 
 /***/ }),
 /* 42 */
@@ -16441,7 +16414,7 @@ var content = __webpack_require__(45);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("49b0a351", content, true, {});
+var update = __webpack_require__(2)("fe532784", content, true, {});
 
 /***/ }),
 /* 45 */
@@ -17617,7 +17590,7 @@ var content = __webpack_require__(74);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("3d9af87a", content, true, {});
+var update = __webpack_require__(2)("36296f7c", content, true, {});
 
 /***/ }),
 /* 74 */
@@ -17691,7 +17664,7 @@ var content = __webpack_require__(80);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("3ba2dc58", content, true, {});
+var update = __webpack_require__(2)("a57bb42c", content, true, {});
 
 /***/ }),
 /* 80 */
@@ -17728,7 +17701,7 @@ var content = __webpack_require__(83);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("67a6703a", content, true, {});
+var update = __webpack_require__(2)("fa77ec5e", content, true, {});
 
 /***/ }),
 /* 83 */

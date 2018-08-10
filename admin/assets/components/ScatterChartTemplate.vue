@@ -259,33 +259,26 @@
 				this.graphData.data.datasets.forEach(function(value, key) {
 					if(key) {
 						outerThis.datasets.push({ label: '', data: [{ x: '', y: '' }], backgroundColor:'', fill: false, showLine: false });
+						outerThis.theChart.data.datasets.push({ label: '', data: [{ x: '', y: '' }], backgroundColor:'', fill: false, showLine: false });
 					}
-					outerThis.datasets[key].label = value.label;
+					outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = value.label;
 					value.data.forEach(function(innerValue, innerKey) {
 						if(innerKey) {
 							outerThis.datasets[key].data.push({ x: '', y: '' });
+							outerThis.theChart.data.datasets[key].data.push({ x: '', y: '' });
 						}
-						outerThis.datasets[key].data[innerKey].x = innerValue.x;
-						outerThis.datasets[key].data[innerKey].y = innerValue.y;
+						outerThis.theChart.data.datasets[key].data[innerKey].x = outerThis.datasets[key].data[innerKey].x = innerValue.x;
+						outerThis.theChart.data.datasets[key].data[innerKey].y = outerThis.datasets[key].data[innerKey].y = innerValue.y;
 					});
-					outerThis.datasets[key].backgroundColor = value.backgroundColor;
-					outerThis.datasets[key].borderColor = value.borderColor;
-					outerThis.datasets[key].hoverRadius = 0;
+					outerThis.theChart.data.datasets[key].backgroundColor = outerThis.datasets[key].backgroundColor = value.backgroundColor;
+					outerThis.theChart.data.datasets[key].borderColor = outerThis.datasets[key].borderColor = value.borderColor;
 				});
 
-				this.showTitle = this.graphData.options.title.display;
-				this.titleText = this.graphData.options.title.text;
-				this.showLegend = this.graphData.options.legend.display;
-				this.legendPosition = this.graphData.options.legend.position;
-
-				this.theChart.data.datasets = this.datasets;
-				this.theChart.options.title.display = this.showTitle;
-				this.theChart.options.title.text = this.titleText;
-				this.theChart.options.legend.display = this.showLegend;
-				this.theChart.options.legend.position = this.legendPosition;
+				this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
+				this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
+				this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
+				this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
 				this.theChart.update();
-
-				this.editedGraphIdNo = this.graphData.graph_id;
 			}
 		},
 		mounted() {
