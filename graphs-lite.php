@@ -3,7 +3,7 @@
 /**
  * Graphs Lite
  *
- * The plugin has an interactive graph builder. It's easy to use and supports 9 types of charts. 
+ * Interactive graphs and chart builder with 9 supported types 
  *
  * @link              http://orchestra.ltd
  * @since             1.0.0
@@ -12,8 +12,8 @@
  * @wordpress-plugin
  * Plugin Name:       Graph Lite
  * Plugin URI:        http://wordpress.org/plugins/graphs-lite
- * Description:       The plugin has an interactive graph builder. It's easy to use and supports 9 types of charts.
- * Version:           2.0.2
+ * Description:       Interactive graphs and chart builder with 9 supported types
+ * Version:           2.0.3
  * Author:            Orchestra Technologies
  * Author URI:        http://orchestra.ltd
  * License:           GPL-2.0+
@@ -32,7 +32,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'GRAPHS_LITE_VERSION', '2.0.2' );
+define( 'GRAPHS_LITE_VERSION', '2.0.3' );
 define( 'GRAPHS_LITE_NAME', 'Graph Light' );
 
 /**

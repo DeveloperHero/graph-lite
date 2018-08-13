@@ -4,16 +4,15 @@ Donate link: http://orchestra.ltd
 Tags: chart, charting, graphs, graph, data visualization, pie chart, bar chart, line chart, doughnut chart
 Requires at least: 4
 Tested up to: 4.9.8
-Stable tag: 2.0.2
+Stable tag: 2.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-User friendly graph and charting plugin
+Interactive graphs and chart builder with 9 supported types
 
 == Description ==
 
-The plugin has an interactive graph builder. It's easy to use and supports 9 types of charts. 
-
+Interactive graphs and chart builder with 9 supported types
 
 == Frequently Asked Questions ==
 
