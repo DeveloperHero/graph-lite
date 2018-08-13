@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/js/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 33);
+/******/ 	return __webpack_require__(__webpack_require__.s = 24);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,8 +70,8 @@
 "use strict";
 
 
-var bind = __webpack_require__(16);
-var isBuffer = __webpack_require__(50);
+var bind = __webpack_require__(14);
+var isBuffer = __webpack_require__(45);
 
 /*global toString:true*/
 
@@ -475,7 +475,7 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
   ) }
 }
 
-var listToStyles = __webpack_require__(40)
+var listToStyles = __webpack_require__(32)
 
 /*
 type StyleObject = {
@@ -823,7 +823,7 @@ module.exports = g;
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(49);
+module.exports = __webpack_require__(44);
 
 /***/ }),
 /* 6 */
@@ -833,7 +833,7 @@ module.exports = __webpack_require__(49);
 /* WEBPACK VAR INJECTION */(function(process) {
 
 var utils = __webpack_require__(0);
-var normalizeHeaderName = __webpack_require__(52);
+var normalizeHeaderName = __webpack_require__(47);
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -849,10 +849,10 @@ function getDefaultAdapter() {
   var adapter;
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(17);
+    adapter = __webpack_require__(15);
   } else if (typeof process !== 'undefined') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(17);
+    adapter = __webpack_require__(15);
   }
   return adapter;
 }
@@ -936,8 +936,8 @@ module.exports = defaults;
 "use strict";
 
 
-exports.decode = exports.parse = __webpack_require__(67);
-exports.encode = exports.stringify = __webpack_require__(68);
+exports.decode = exports.parse = __webpack_require__(62);
+exports.encode = exports.stringify = __webpack_require__(63);
 
 
 /***/ }),
@@ -1132,2973 +1132,6 @@ process.umask = function() { return 0; };
 
 /***/ }),
 /* 9 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_BarChartTemplate__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_LineChartTemplate__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_PieChartTemplate__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_DoughnutChartTemplate__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_RadarChartTemplate__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_PolarAreaChartTemplate__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_BubbleChartTemplate__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_ScatterChartTemplate__ = __webpack_require__(29);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-
-
-
-
-
-
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-    name: 'app',
-    data() {
-        return {
-            activeChart: 'Pie Chart',
-            currentChartTab: 'pieChart',
-            chartTabs: [{ tabFileName: 'pieChart', tabName: 'Pie Chart' }, { tabFileName: 'doughnutChart', tabName: 'Doughnut Chart' }, { tabFileName: 'polarAreaChart', tabName: 'Polar Area Chart' }, { tabFileName: 'barChart', tabName: 'Bar Chart' }, { tabFileName: 'lineChart', tabName: 'Line Chart' }, { tabFileName: 'radarChart', tabName: 'Radar Chart' }, { tabFileName: 'bubbleChart', tabName: 'Bubble Chart' }, { tabFileName: 'scatterChart', tabName: 'Scatter Chart' }]
-        };
-    },
-    components: {
-        pieChart: __WEBPACK_IMPORTED_MODULE_2__components_PieChartTemplate__["a" /* default */], doughnutChart: __WEBPACK_IMPORTED_MODULE_3__components_DoughnutChartTemplate__["a" /* default */], polarAreaChart: __WEBPACK_IMPORTED_MODULE_5__components_PolarAreaChartTemplate__["a" /* default */], barChart: __WEBPACK_IMPORTED_MODULE_0__components_BarChartTemplate__["a" /* default */], lineChart: __WEBPACK_IMPORTED_MODULE_1__components_LineChartTemplate__["a" /* default */], radarChart: __WEBPACK_IMPORTED_MODULE_4__components_RadarChartTemplate__["a" /* default */], bubbleChart: __WEBPACK_IMPORTED_MODULE_6__components_BubbleChartTemplate__["a" /* default */], scatterChart: __WEBPACK_IMPORTED_MODULE_7__components_ScatterChartTemplate__["a" /* default */]
-    },
-    computed: {
-        currentChartTabComponent: function () {
-            return this.currentChartTab;
-        }
-    },
-    methods: {
-        changeTabChart(index) {
-            this.activeChart = this.chartTabs[index].tabName;
-            this.currentChartTab = this.chartTabs[index].tabFileName;
-        }
-    }
-});
-
-/***/ }),
-/* 10 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BarChartTemplate_vue__ = __webpack_require__(11);
-/* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4bf77176_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__ = __webpack_require__(43);
-function injectStyle (ssrContext) {
-  __webpack_require__(41)
-}
-var normalizeComponent = __webpack_require__(3)
-/* script */
-
-
-/* template */
-
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = injectStyle
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BarChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4bf77176_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__["a" /* default */],
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-
-/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-	props: ['graphData', 'graphIndex'],
-	data() {
-		return {
-			chartType: 'bar',
-			chartlabelsString: '',
-			titleText: '',
-			legendPosition: 'top',
-			labels: [],
-			showTitle: false,
-			showLegend: true,
-			beginAtZero: false,
-			datasets: [{
-				label: '',
-				chartDatasetDataString: '',
-				data: [],
-				backgroundColor: ''
-			}]
-		};
-	},
-	methods: {
-		addDataset() {
-			this.datasets.push({
-				label: '',
-				chartDatasetDataString: '',
-				data: [],
-				backgroundColor: ''
-			});
-			this.theChart.data.datasets.push({
-				label: '',
-				data: [],
-				backgroundColor: ''
-			});
-			this.theChart.update();
-		},
-		addLabels() {
-			this.labels = this.chartlabelsString.split(',');
-			this.theChart.data.labels = this.labels;
-			this.theChart.update();
-		},
-		addDatasetLabel(index) {
-			this.theChart.data.datasets[index].label = this.datasets[index].label;
-			this.theChart.update();
-		},
-		addDatasetData(index) {
-			this.datasets[index].data = this.datasets[index].chartDatasetDataString.split(',');
-			this.theChart.data.datasets[index].data = this.datasets[index].data;
-			this.theChart.update();
-		},
-		addDatasetBgColor(index) {
-			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
-			this.theChart.update();
-		},
-		showingGraphTitle() {
-			this.theChart.options.title.display = this.showTitle;
-			this.theChart.update();
-		},
-		addTitleText() {
-			this.theChart.options.title.text = this.titleText;
-			this.theChart.update();
-		},
-		yAxesRange() {
-			this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero;
-			this.theChart.update();
-		},
-		showingGraphLegend() {
-			this.theChart.options.legend.display = this.showLegend;
-			this.theChart.update();
-		},
-		changeLegendPosition() {
-			this.theChart.options.legend.position = this.legendPosition;
-			this.theChart.update();
-		},
-		deleteDataset(index) {
-			this.datasets.splice(index, 1);
-			this.theChart.data.datasets.splice(index, 1);
-			this.theChart.update();
-		},
-		saveGraphData() {
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					labels: this.labels,
-					datasets: this.datasets
-				},
-				options: {
-					scales: {
-						yAxes: [{
-							ticks: {
-								beginAtZero: this.beginAtZero
-							}
-						}]
-					},
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
-
-			this.$store.dispatch('addNewGraph', chartDatas);
-		},
-		updateGraphData() {
-			let outerThis = this;
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					labels: this.labels,
-					datasets: []
-				},
-				options: {
-					scales: {
-						yAxes: [{
-							ticks: {
-								beginAtZero: this.beginAtZero
-							}
-						}]
-					},
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
-
-			this.datasets.forEach(function (value) {
-				chartDatas.data.datasets.push({ label: value.label, data: value.data, chartDatasetDataString: value.chartDatasetDataString, backgroundColor: value.backgroundColor });
-			});
-
-			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
-
-			this.$store.dispatch('updateGraph', payload).then(function () {
-				setTimeout(function () {
-					outerThis.$emit("applied");
-				}, 1000);
-			});
-		},
-		onLoad() {
-			let ctx = document.getElementById("barChart");
-			this.theChart = new Chart(ctx, {
-				type: this.chartType,
-				data: {
-					labels: [],
-					datasets: [{
-						label: '',
-						data: [],
-						backgroundColor: ''
-					}]
-				},
-				options: {
-					scales: {
-						yAxes: [{
-							ticks: {
-								beginAtZero: false
-							}
-						}]
-					},
-					title: {
-						display: false,
-						text: ''
-					},
-					legend: {
-						display: true,
-						position: 'top'
-					}
-				}
-			});
-		},
-		forEdit() {
-			let outerThis = this;
-			this.chartlabelsString = this.graphData.data.labels.join(", ");
-			this.theChart.data.labels = this.labels = this.graphData.data.labels;
-			this.graphData.data.datasets.forEach(function (value, key) {
-				if (key) {
-					outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor: '' });
-					outerThis.theChart.data.datasets.push({ label: '', data: [], backgroundColor: '' });
-				}
-				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = outerThis.graphData.data.datasets[key].label;
-
-				outerThis.datasets[key].chartDatasetDataString = outerThis.graphData.data.datasets[key].chartDatasetDataString;
-
-				outerThis.theChart.data.datasets[key].data = outerThis.datasets[key].data = outerThis.graphData.data.datasets[key].data;
-
-				outerThis.theChart.data.datasets[key].backgroundColor = outerThis.datasets[key].backgroundColor = outerThis.graphData.data.datasets[key].backgroundColor;
-			});
-
-			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
-			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
-			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
-			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
-			this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero = this.graphData.options.scales.yAxes[0].ticks.beginAtZero;
-			this.theChart.update();
-		}
-	},
-	mounted() {
-		this.onLoad();
-		if (this.graphData) {
-			this.forEdit();
-		}
-	}
-});
-
-/***/ }),
-/* 12 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_LineChartTemplate_vue__ = __webpack_require__(13);
-/* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_a9e9d10c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__ = __webpack_require__(46);
-function injectStyle (ssrContext) {
-  __webpack_require__(44)
-}
-var normalizeComponent = __webpack_require__(3)
-/* script */
-
-
-/* template */
-
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = injectStyle
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_LineChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_a9e9d10c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__["a" /* default */],
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-
-/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
-
-
-/***/ }),
-/* 13 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-	props: ['graphData', 'graphIndex'],
-	data() {
-		return {
-			chartType: 'line',
-			chartlabelsString: '',
-			titleText: '',
-			legendPosition: 'top',
-			labels: [],
-			showTitle: false,
-			showLegend: true,
-			beginAtZero: false,
-			datasets: [{
-				label: '',
-				chartDatasetDataString: '',
-				data: [],
-				backgroundColor: '',
-				borderColor: '',
-				fill: false,
-				straightLine: false
-			}]
-		};
-	},
-	methods: {
-		addDataset() {
-			this.datasets.push({
-				label: '',
-				chartDatasetDataString: '',
-				data: [],
-				backgroundColor: '',
-				borderColor: '',
-				fill: false,
-				straightLine: false
-			});
-			this.theChart.data.datasets.push({
-				label: '',
-				data: [],
-				backgroundColor: '',
-				borderColor: '',
-				fill: false
-			});
-			this.theChart.update();
-		},
-		addLabels() {
-			this.labels = this.chartlabelsString.split(',');
-			this.theChart.data.labels = this.labels;
-			this.theChart.update();
-		},
-		addDatasetLabel(index) {
-			this.theChart.data.datasets[index].label = this.datasets[index].label;
-			this.theChart.update();
-		},
-		addDatasetData(index) {
-			this.datasets[index].data = this.datasets[index].chartDatasetDataString.split(',');
-			this.theChart.data.datasets[index].data = this.datasets[index].data;
-			this.theChart.update();
-		},
-		addDatasetBgColor(index) {
-			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
-			this.theChart.update();
-		},
-		addDatasetborderColor(index) {
-			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
-			this.theChart.update();
-		},
-		fillColor(index) {
-			this.theChart.data.datasets[index].fill = this.datasets[index].fill;
-			this.theChart.update();
-		},
-		showingGraphTitle() {
-			this.theChart.options.title.display = this.showTitle;
-			this.theChart.update();
-		},
-		addTitleText() {
-			this.theChart.options.title.text = this.titleText;
-			this.theChart.update();
-		},
-		showingGraphLegend() {
-			this.theChart.options.legend.display = this.showLegend;
-			this.theChart.update();
-		},
-		changeLegendPosition() {
-			this.theChart.options.legend.position = this.legendPosition;
-			this.theChart.update();
-		},
-		yAxesRange() {
-			this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero;
-			this.theChart.update();
-		},
-		makeLineStraight(index) {
-			if (this.datasets[index].straightLine) {
-				this.datasets[index].lineTension = 0;
-				this.theChart.data.datasets[index].lineTension = 0;
-				this.theChart.update();
-			} else {
-				delete this.datasets[index].lineTension;
-				delete this.theChart.data.datasets[index].lineTension;
-				this.theChart.update();
-			}
-		},
-		deleteDataset(index) {
-			this.datasets.splice(index, 1);
-			this.theChart.data.datasets.splice(index, 1);
-			this.theChart.update();
-		},
-		saveGraphData() {
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					labels: this.labels,
-					datasets: this.datasets
-				},
-				options: {
-					scales: {
-						yAxes: [{
-							ticks: {
-								beginAtZero: this.beginAtZero
-							}
-						}]
-					},
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
-
-			this.$store.dispatch('addNewGraph', chartDatas);
-		},
-		updateGraphData() {
-			let outerThis = this;
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					labels: this.labels,
-					datasets: []
-				},
-				options: {
-					scales: {
-						yAxes: [{
-							ticks: {
-								beginAtZero: this.beginAtZero
-							}
-						}]
-					},
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
-
-			this.datasets.forEach(function (value, key) {
-				chartDatas.data.datasets.push({
-					label: value.label,
-					data: value.data,
-					chartDatasetDataString: value.chartDatasetDataString,
-					backgroundColor: value.backgroundColor,
-					borderColor: value.borderColor,
-					fill: value.fill,
-					straightLine: value.straightLine
-				});
-				if (value.straightLine) {
-					chartDatas.data.datasets[key].lineTension = 0;
-				}
-			});
-
-			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
-
-			this.$store.dispatch('updateGraph', payload).then(function () {
-				setTimeout(function () {
-					outerThis.$emit("applied");
-				}, 1000);
-			});
-		},
-		onLoad() {
-			let ctx = document.getElementById("lineChart");
-			this.theChart = new Chart(ctx, {
-				type: this.chartType,
-				data: {
-					labels: [],
-					datasets: [{
-						label: '',
-						data: [],
-						backgroundColor: '',
-						borderColor: '',
-						fill: false
-					}]
-				},
-				options: {
-					scales: {
-						yAxes: [{
-							ticks: {
-								beginAtZero: false
-							}
-						}]
-					},
-					title: {
-						display: false,
-						text: ''
-					},
-					legend: {
-						display: true,
-						position: 'top'
-					}
-				}
-			});
-		},
-		forEdit() {
-			let outerThis = this;
-			this.chartlabelsString = this.graphData.data.labels.join(", ");
-			this.theChart.data.labels = this.labels = this.graphData.data.labels;
-			this.graphData.data.datasets.forEach(function (value, key) {
-				if (key) {
-					outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor: '' });
-					outerThis.theChart.data.datasets.push({ label: '', data: [], backgroundColor: '' });
-				}
-				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = outerThis.graphData.data.datasets[key].label;
-
-				outerThis.datasets[key].chartDatasetDataString = outerThis.graphData.data.datasets[key].chartDatasetDataString;
-
-				outerThis.theChart.data.datasets[key].data = outerThis.datasets[key].data = outerThis.graphData.data.datasets[key].data;
-
-				outerThis.theChart.data.datasets[key].backgroundColor = outerThis.datasets[key].backgroundColor = outerThis.graphData.data.datasets[key].backgroundColor;
-
-				outerThis.theChart.data.datasets[key].borderColor = outerThis.datasets[key].borderColor = outerThis.graphData.data.datasets[key].borderColor;
-
-				outerThis.theChart.data.datasets[key].fill = outerThis.datasets[key].fill = outerThis.graphData.data.datasets[key].fill;
-
-				outerThis.datasets[key].straightLine = outerThis.graphData.data.datasets[key].straightLine;
-				if (outerThis.graphData.data.datasets[key].straightLine) {
-					outerThis.theChart.data.datasets[key].lineTension = outerThis.datasets[key].lineTension = 0;
-				}
-			});
-
-			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
-			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
-			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
-			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
-			this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero = this.graphData.options.scales.yAxes[0].ticks.beginAtZero;
-			this.theChart.update();
-
-			this.editedGraphIdNo = this.graphData.graph_id;
-		}
-	},
-	mounted() {
-		this.onLoad();
-		if (this.graphData) {
-			this.forEdit();
-		}
-	}
-});
-
-/***/ }),
-/* 14 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__ = __webpack_require__(15);
-/* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7a3f5452_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(69);
-function injectStyle (ssrContext) {
-  __webpack_require__(47)
-}
-var normalizeComponent = __webpack_require__(3)
-/* script */
-
-
-/* template */
-
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = injectStyle
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7a3f5452_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-
-/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
-
-
-/***/ }),
-/* 15 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_querystring__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-	props: ['graphData', 'graphIndex'],
-	data() {
-		return {
-			chartType: 'pie',
-			chartlabelString: '',
-			chartDatasetDataString: '',
-			chartDatasetBgColorString: '',
-			titleText: '',
-			editedGraphIdNo: '',
-			legendPosition: 'top',
-			labels: [],
-			datasets: [{
-				data: [],
-				backgroundColor: []
-			}],
-			showTitle: false,
-			showLegend: true
-		};
-	},
-	methods: {
-		addLabels() {
-			this.labels = this.chartlabelString.split(',');
-			this.theChart.data.labels = this.labels;
-			this.theChart.update();
-		},
-		addDatasetData() {
-			this.datasets[0].data = this.chartDatasetDataString.split(',');
-			this.theChart.data.datasets[0].data = this.datasets[0].data;
-			this.theChart.update();
-		},
-		addDatasetBgColor() {
-			this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
-			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor;
-			this.theChart.update();
-		},
-		showingGraphTitle() {
-			this.theChart.options.title.display = this.showTitle;
-			this.theChart.update();
-		},
-		addTitleText() {
-			this.theChart.options.title.text = this.titleText;
-			this.theChart.update();
-		},
-		showingGraphLegend() {
-			this.theChart.options.legend.display = this.showLegend;
-			this.theChart.update();
-		},
-		changeLegendPosition() {
-			this.theChart.options.legend.position = this.legendPosition;
-			this.theChart.update();
-		},
-		saveGraphData() {
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					labels: this.labels,
-					datasets: this.datasets
-				},
-				options: {
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
-
-			this.$store.dispatch('addNewGraph', chartDatas);
-		},
-		updateGraphData() {
-			let outerThis = this;
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					labels: this.labels,
-					datasets: [{
-						data: this.datasets[0].data,
-						backgroundColor: this.datasets[0].backgroundColor
-					}]
-				},
-				options: {
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
-
-			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
-
-			this.$store.dispatch('updateGraph', payload).then(function () {
-				setTimeout(function () {
-					outerThis.$emit("applied");
-				}, 1000);
-			});
-		},
-		onLoad() {
-			let ctx = document.getElementById("pieChart");
-			this.theChart = new Chart(ctx, {
-				type: this.chartType,
-				data: {
-					labels: [],
-					datasets: [{
-						data: [],
-						backgroundColor: []
-					}]
-				},
-				options: {
-					title: {
-						display: false,
-						text: ''
-					},
-					legend: {
-						display: true,
-						position: 'top'
-					}
-				}
-			});
-		},
-		forEdit() {
-			this.chartlabelString = this.graphData.data.labels.join(", ");
-			this.labels = this.graphData.data.labels;
-
-			this.chartDatasetBgColorString = this.graphData.data.datasets[0].backgroundColor.join(", ");
-			this.datasets[0].backgroundColor = this.graphData.data.datasets[0].backgroundColor;
-			this.chartDatasetDataString = this.graphData.data.datasets[0].data.join(", ");
-			this.datasets[0].data = this.graphData.data.datasets[0].data;
-
-			this.showTitle = this.graphData.options.title.display;
-			this.titleText = this.graphData.options.title.text;
-			this.showLegend = this.graphData.options.legend.display;
-			this.legendPosition = this.graphData.options.legend.position;
-
-			this.theChart.data.labels = this.labels;
-			this.theChart.data.datasets = this.datasets;
-			this.theChart.options.title.display = this.showTitle;
-			this.theChart.options.title.text = this.titleText;
-			this.theChart.options.legend.display = this.showLegend;
-			this.theChart.options.legend.position = this.legendPosition;
-			this.theChart.update();
-
-			this.editedGraphIdNo = this.graphData.graph_id;
-		}
-	},
-	mounted() {
-		this.onLoad();
-		if (this.graphData) {
-			this.forEdit();
-		}
-	}
-});
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = function bind(fn, thisArg) {
-  return function wrap() {
-    var args = new Array(arguments.length);
-    for (var i = 0; i < args.length; i++) {
-      args[i] = arguments[i];
-    }
-    return fn.apply(thisArg, args);
-  };
-};
-
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-var settle = __webpack_require__(53);
-var buildURL = __webpack_require__(55);
-var parseHeaders = __webpack_require__(56);
-var isURLSameOrigin = __webpack_require__(57);
-var createError = __webpack_require__(18);
-var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(58);
-
-module.exports = function xhrAdapter(config) {
-  return new Promise(function dispatchXhrRequest(resolve, reject) {
-    var requestData = config.data;
-    var requestHeaders = config.headers;
-
-    if (utils.isFormData(requestData)) {
-      delete requestHeaders['Content-Type']; // Let the browser set it
-    }
-
-    var request = new XMLHttpRequest();
-    var loadEvent = 'onreadystatechange';
-    var xDomain = false;
-
-    // For IE 8/9 CORS support
-    // Only supports POST and GET calls and doesn't returns the response headers.
-    // DON'T do this for testing b/c XMLHttpRequest is mocked, not XDomainRequest.
-    if ("production" !== 'test' &&
-        typeof window !== 'undefined' &&
-        window.XDomainRequest && !('withCredentials' in request) &&
-        !isURLSameOrigin(config.url)) {
-      request = new window.XDomainRequest();
-      loadEvent = 'onload';
-      xDomain = true;
-      request.onprogress = function handleProgress() {};
-      request.ontimeout = function handleTimeout() {};
-    }
-
-    // HTTP basic authentication
-    if (config.auth) {
-      var username = config.auth.username || '';
-      var password = config.auth.password || '';
-      requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
-    }
-
-    request.open(config.method.toUpperCase(), buildURL(config.url, config.params, config.paramsSerializer), true);
-
-    // Set the request timeout in MS
-    request.timeout = config.timeout;
-
-    // Listen for ready state
-    request[loadEvent] = function handleLoad() {
-      if (!request || (request.readyState !== 4 && !xDomain)) {
-        return;
-      }
-
-      // The request errored out and we didn't get a response, this will be
-      // handled by onerror instead
-      // With one exception: request that using file: protocol, most browsers
-      // will return status as 0 even though it's a successful request
-      if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
-        return;
-      }
-
-      // Prepare the response
-      var responseHeaders = 'getAllResponseHeaders' in request ? parseHeaders(request.getAllResponseHeaders()) : null;
-      var responseData = !config.responseType || config.responseType === 'text' ? request.responseText : request.response;
-      var response = {
-        data: responseData,
-        // IE sends 1223 instead of 204 (https://github.com/axios/axios/issues/201)
-        status: request.status === 1223 ? 204 : request.status,
-        statusText: request.status === 1223 ? 'No Content' : request.statusText,
-        headers: responseHeaders,
-        config: config,
-        request: request
-      };
-
-      settle(resolve, reject, response);
-
-      // Clean up request
-      request = null;
-    };
-
-    // Handle low level network errors
-    request.onerror = function handleError() {
-      // Real errors are hidden from us by the browser
-      // onerror should only fire if it's a network error
-      reject(createError('Network Error', config, null, request));
-
-      // Clean up request
-      request = null;
-    };
-
-    // Handle timeout
-    request.ontimeout = function handleTimeout() {
-      reject(createError('timeout of ' + config.timeout + 'ms exceeded', config, 'ECONNABORTED',
-        request));
-
-      // Clean up request
-      request = null;
-    };
-
-    // Add xsrf header
-    // This is only done if running in a standard browser environment.
-    // Specifically not if we're in a web worker, or react-native.
-    if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(59);
-
-      // Add xsrf header
-      var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
-          cookies.read(config.xsrfCookieName) :
-          undefined;
-
-      if (xsrfValue) {
-        requestHeaders[config.xsrfHeaderName] = xsrfValue;
-      }
-    }
-
-    // Add headers to the request
-    if ('setRequestHeader' in request) {
-      utils.forEach(requestHeaders, function setRequestHeader(val, key) {
-        if (typeof requestData === 'undefined' && key.toLowerCase() === 'content-type') {
-          // Remove Content-Type if data is undefined
-          delete requestHeaders[key];
-        } else {
-          // Otherwise add header to the request
-          request.setRequestHeader(key, val);
-        }
-      });
-    }
-
-    // Add withCredentials to request if needed
-    if (config.withCredentials) {
-      request.withCredentials = true;
-    }
-
-    // Add responseType to request if needed
-    if (config.responseType) {
-      try {
-        request.responseType = config.responseType;
-      } catch (e) {
-        // Expected DOMException thrown by browsers not compatible XMLHttpRequest Level 2.
-        // But, this can be suppressed for 'json' type as it can be parsed by default 'transformResponse' function.
-        if (config.responseType !== 'json') {
-          throw e;
-        }
-      }
-    }
-
-    // Handle progress if needed
-    if (typeof config.onDownloadProgress === 'function') {
-      request.addEventListener('progress', config.onDownloadProgress);
-    }
-
-    // Not all browsers support upload events
-    if (typeof config.onUploadProgress === 'function' && request.upload) {
-      request.upload.addEventListener('progress', config.onUploadProgress);
-    }
-
-    if (config.cancelToken) {
-      // Handle cancellation
-      config.cancelToken.promise.then(function onCanceled(cancel) {
-        if (!request) {
-          return;
-        }
-
-        request.abort();
-        reject(cancel);
-        // Clean up request
-        request = null;
-      });
-    }
-
-    if (requestData === undefined) {
-      requestData = null;
-    }
-
-    // Send the request
-    request.send(requestData);
-  });
-};
-
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var enhanceError = __webpack_require__(54);
-
-/**
- * Create an Error with the specified message, config, error code, request and response.
- *
- * @param {string} message The error message.
- * @param {Object} config The config.
- * @param {string} [code] The error code (for example, 'ECONNABORTED').
- * @param {Object} [request] The request.
- * @param {Object} [response] The response.
- * @returns {Error} The created error.
- */
-module.exports = function createError(message, config, code, request, response) {
-  var error = new Error(message);
-  return enhanceError(error, config, code, request, response);
-};
-
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = function isCancel(value) {
-  return !!(value && value.__CANCEL__);
-};
-
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * A `Cancel` is an object that is thrown when an operation is canceled.
- *
- * @class
- * @param {string=} message The message.
- */
-function Cancel(message) {
-  this.message = message;
-}
-
-Cancel.prototype.toString = function toString() {
-  return 'Cancel' + (this.message ? ': ' + this.message : '');
-};
-
-Cancel.prototype.__CANCEL__ = true;
-
-module.exports = Cancel;
-
-
-/***/ }),
-/* 21 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(22);
-/* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2fc68b75_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(72);
-function injectStyle (ssrContext) {
-  __webpack_require__(70)
-}
-var normalizeComponent = __webpack_require__(3)
-/* script */
-
-
-/* template */
-
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = injectStyle
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DoughnutChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2fc68b75_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__["a" /* default */],
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-
-/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
-
-
-/***/ }),
-/* 22 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_querystring__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-	props: ['graphData', 'graphIndex'],
-	data() {
-		return {
-			chartType: 'doughnut',
-			chartlabelString: '',
-			chartDatasetDataString: '',
-			chartDatasetBgColorString: '',
-			titleText: '',
-			legendPosition: 'top',
-			labels: [],
-			datasets: [{
-				data: [],
-				backgroundColor: []
-			}],
-			showTitle: false,
-			showLegend: true
-		};
-	},
-	methods: {
-		addLabels() {
-			this.labels = this.chartlabelString.split(',');
-			this.theChart.data.labels = this.labels;
-			this.theChart.update();
-		},
-		addDatasetData() {
-			this.datasets[0].data = this.chartDatasetDataString.split(',');
-			this.theChart.data.datasets[0].data = this.datasets[0].data;
-			this.theChart.update();
-		},
-		addDatasetBgColor() {
-			this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
-			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor;
-			this.theChart.update();
-		},
-		showingGraphTitle() {
-			this.theChart.options.title.display = this.showTitle;
-			this.theChart.update();
-		},
-		addTitleText() {
-			this.theChart.options.title.text = this.titleText;
-			this.theChart.update();
-		},
-		showingGraphLegend() {
-			this.theChart.options.legend.display = this.showLegend;
-			this.theChart.update();
-		},
-		changeLegendPosition() {
-			this.theChart.options.legend.position = this.legendPosition;
-			this.theChart.update();
-		},
-		saveGraphData() {
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					labels: this.labels,
-					datasets: this.datasets
-				},
-				options: {
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
-
-			this.$store.dispatch('addNewGraph', chartDatas);
-		},
-		updateGraphData() {
-			let outerThis = this;
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					labels: this.labels,
-					datasets: [{
-						data: this.datasets[0].data,
-						backgroundColor: this.datasets[0].backgroundColor
-					}]
-				},
-				options: {
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
-
-			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
-
-			this.$store.dispatch('updateGraph', payload).then(function () {
-				setTimeout(function () {
-					outerThis.$emit("applied");
-				}, 1000);
-			});
-		},
-		onLoad() {
-			let ctx = document.getElementById("DoughnutChart");
-			this.theChart = new Chart(ctx, {
-				type: this.chartType,
-				data: {
-					labels: [],
-					datasets: [{
-						data: [],
-						backgroundColor: []
-					}]
-				},
-				options: {
-					title: {
-						display: false,
-						text: ''
-					},
-					legend: {
-						display: true,
-						position: 'top'
-					}
-				}
-			});
-		},
-		forEdit() {
-			this.chartlabelString = this.graphData.data.labels.join(", ");
-			this.labels = this.graphData.data.labels;
-
-			this.chartDatasetBgColorString = this.graphData.data.datasets[0].backgroundColor.join(", ");
-			this.datasets[0].backgroundColor = this.graphData.data.datasets[0].backgroundColor;
-			this.chartDatasetDataString = this.graphData.data.datasets[0].data.join(", ");
-			this.datasets[0].data = this.graphData.data.datasets[0].data;
-
-			this.showTitle = this.graphData.options.title.display;
-			this.titleText = this.graphData.options.title.text;
-			this.showLegend = this.graphData.options.legend.display;
-			this.legendPosition = this.graphData.options.legend.position;
-
-			this.theChart.data.labels = this.labels;
-			this.theChart.data.datasets = this.datasets;
-			this.theChart.options.title.display = this.showTitle;
-			this.theChart.options.title.text = this.titleText;
-			this.theChart.options.legend.display = this.showLegend;
-			this.theChart.options.legend.position = this.legendPosition;
-			this.theChart.update();
-
-			this.editedGraphIdNo = this.graphData.graph_id;
-		}
-	},
-	mounted() {
-		this.onLoad();
-		if (this.graphData) {
-			this.forEdit();
-		}
-	}
-});
-
-/***/ }),
-/* 23 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_RadarChartTemplate_vue__ = __webpack_require__(24);
-/* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6621788e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__ = __webpack_require__(75);
-function injectStyle (ssrContext) {
-  __webpack_require__(73)
-}
-var normalizeComponent = __webpack_require__(3)
-/* script */
-
-
-/* template */
-
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = injectStyle
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_RadarChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6621788e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__["a" /* default */],
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-
-/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
-
-
-/***/ }),
-/* 24 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-	props: ['graphData', 'graphIndex'],
-	data() {
-		return {
-			chartType: 'radar',
-			chartlabelsString: '',
-			titleText: '',
-			legendPosition: 'top',
-			labels: [],
-			showTitle: false,
-			showLegend: true,
-			datasets: [{
-				label: '',
-				chartDatasetDataString: '',
-				data: [],
-				backgroundColor: '',
-				borderColor: '',
-				fill: false
-			}]
-		};
-	},
-	methods: {
-		addDataset() {
-			this.datasets.push({
-				label: '',
-				chartDatasetDataString: '',
-				data: [],
-				backgroundColor: '',
-				borderColor: '',
-				fill: false
-			});
-			this.theChart.data.datasets.push({
-				label: '',
-				data: [],
-				backgroundColor: '',
-				borderColor: '',
-				fill: false
-			});
-			this.theChart.update();
-		},
-		addLabels() {
-			this.labels = this.chartlabelsString.split(',');
-			this.theChart.data.labels = this.labels;
-			this.theChart.update();
-		},
-		addDatasetLabel(index) {
-			this.theChart.data.datasets[index].label = this.datasets[index].label;
-			this.theChart.update();
-		},
-		addDatasetData(index) {
-			this.datasets[index].data = this.datasets[index].chartDatasetDataString.split(',');
-			this.theChart.data.datasets[index].data = this.datasets[index].data;
-			this.theChart.update();
-		},
-		addDatasetBgColor(index) {
-			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
-			this.theChart.update();
-		},
-		fillColor(index) {
-			this.theChart.data.datasets[index].fill = this.datasets[index].fill;
-			this.theChart.update();
-		},
-		addDatasetborderColor(index) {
-			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
-			this.theChart.update();
-		},
-		showingGraphTitle() {
-			this.theChart.options.title.display = this.showTitle;
-			this.theChart.update();
-		},
-		addTitleText() {
-			this.theChart.options.title.text = this.titleText;
-			this.theChart.update();
-		},
-		showingGraphLegend() {
-			this.theChart.options.legend.display = this.showLegend;
-			this.theChart.update();
-		},
-		changeLegendPosition() {
-			this.theChart.options.legend.position = this.legendPosition;
-			this.theChart.update();
-		},
-		deleteDataset(index) {
-			this.datasets.splice(index, 1);
-			this.theChart.data.datasets.splice(index, 1);
-			this.theChart.update();
-		},
-		saveGraphData() {
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					labels: this.labels,
-					datasets: this.datasets
-				},
-				options: {
-					scale: {
-						ticks: {
-							beginAtZero: true
-						}
-					},
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
-
-			this.$store.dispatch('addNewGraph', chartDatas);
-		},
-		updateGraphData() {
-			let outerThis = this;
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					labels: this.labels,
-					datasets: []
-				},
-				options: {
-					scale: {
-						ticks: {
-							beginAtZero: true
-						}
-					},
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
-
-			this.datasets.forEach(function (value) {
-				chartDatas.data.datasets.push({ label: value.label, data: value.data, chartDatasetDataString: value.chartDatasetDataString, backgroundColor: value.backgroundColor, borderColor: value.borderColor, fill: value.fill });
-			});
-
-			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
-
-			this.$store.dispatch('updateGraph', payload).then(function () {
-				setTimeout(function () {
-					outerThis.$emit("applied");
-				}, 1000);
-			});
-		},
-		onLoad() {
-			let ctx = document.getElementById("radarChart");
-			this.theChart = new Chart(ctx, {
-				type: this.chartType,
-				data: {
-					labels: [],
-					datasets: [{
-						label: '',
-						data: [],
-						backgroundColor: '',
-						borderColor: '',
-						fill: false
-					}]
-				},
-				options: {
-					scale: {
-						ticks: {
-							beginAtZero: true
-						}
-					},
-					title: {
-						display: false,
-						text: ''
-					},
-					legend: {
-						display: true,
-						position: 'top'
-					}
-				}
-			});
-		},
-		forEdit() {
-			let outerThis = this;
-			this.chartlabelsString = this.graphData.data.labels.join(", ");
-			this.theChart.data.labels = this.labels = this.graphData.data.labels;
-			this.graphData.data.datasets.forEach(function (value, key) {
-				if (key) {
-					outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor: '' });
-					outerThis.theChart.data.datasets.push({ label: '', data: [], backgroundColor: '' });
-				}
-				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = outerThis.graphData.data.datasets[key].label;
-
-				outerThis.datasets[key].chartDatasetDataString = outerThis.graphData.data.datasets[key].chartDatasetDataString;
-
-				outerThis.theChart.data.datasets[key].data = outerThis.datasets[key].data = outerThis.graphData.data.datasets[key].data;
-
-				outerThis.theChart.data.datasets[key].backgroundColor = outerThis.datasets[key].backgroundColor = outerThis.graphData.data.datasets[key].backgroundColor;
-
-				outerThis.theChart.data.datasets[key].borderColor = outerThis.datasets[key].borderColor = outerThis.graphData.data.datasets[key].borderColor;
-
-				outerThis.theChart.data.datasets[key].fill = outerThis.datasets[key].fill = outerThis.graphData.data.datasets[key].fill;
-			});
-
-			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
-			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
-			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
-			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
-			this.theChart.options.scale.ticks.beginAtZero = this.beginAtZero = this.graphData.options.scale.ticks.beginAtZero;
-			this.theChart.update();
-		}
-	},
-	mounted() {
-		this.onLoad();
-		if (this.graphData) {
-			this.forEdit();
-		}
-	}
-});
-
-/***/ }),
-/* 25 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(26);
-/* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_bf76e438_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(78);
-function injectStyle (ssrContext) {
-  __webpack_require__(76)
-}
-var normalizeComponent = __webpack_require__(3)
-/* script */
-
-
-/* template */
-
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = injectStyle
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PolarAreaChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_bf76e438_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__["a" /* default */],
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-
-/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
-
-
-/***/ }),
-/* 26 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_querystring__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-	props: ['graphData', 'graphIndex'],
-	data() {
-		return {
-			chartType: 'polarArea',
-			chartlabelString: '',
-			chartDatasetDataString: '',
-			chartDatasetBgColorString: '',
-			titleText: '',
-			legendPosition: 'top',
-			labels: [],
-			datasets: [{
-				data: [],
-				backgroundColor: []
-			}],
-			showTitle: false,
-			showLegend: true
-		};
-	},
-	methods: {
-		addLabels() {
-			this.labels = this.chartlabelString.split(',');
-			this.theChart.data.labels = this.labels;
-			this.theChart.update();
-		},
-		addDatasetData() {
-			this.datasets[0].data = this.chartDatasetDataString.split(',');
-			this.theChart.data.datasets[0].data = this.datasets[0].data;
-			this.theChart.update();
-		},
-		addDatasetBgColor() {
-			this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
-			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor;
-			this.theChart.update();
-		},
-		showingGraphTitle() {
-			this.theChart.options.title.display = this.showTitle;
-			this.theChart.update();
-		},
-		addTitleText() {
-			this.theChart.options.title.text = this.titleText;
-			this.theChart.update();
-		},
-		showingGraphLegend() {
-			this.theChart.options.legend.display = this.showLegend;
-			this.theChart.update();
-		},
-		changeLegendPosition() {
-			this.theChart.options.legend.position = this.legendPosition;
-			this.theChart.update();
-		},
-		saveGraphData() {
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					labels: this.labels,
-					datasets: this.datasets
-				},
-				options: {
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
-
-			this.$store.dispatch('addNewGraph', chartDatas);
-		},
-		updateGraphData() {
-			let outerThis = this;
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					labels: this.labels,
-					datasets: [{
-						data: this.datasets[0].data,
-						backgroundColor: this.datasets[0].backgroundColor
-					}]
-				},
-				options: {
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
-
-			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
-
-			this.$store.dispatch('updateGraph', payload).then(function () {
-				setTimeout(function () {
-					outerThis.$emit("applied");
-				}, 1000);
-			});
-		},
-		onLoad() {
-			let ctx = document.getElementById("PolarAreaChart");
-			this.theChart = new Chart(ctx, {
-				type: this.chartType,
-				data: {
-					labels: [],
-					datasets: [{
-						data: [],
-						backgroundColor: []
-					}]
-				},
-				options: {
-					title: {
-						display: false,
-						text: ''
-					},
-					legend: {
-						display: true,
-						position: 'top'
-					}
-				}
-			});
-		},
-		forEdit() {
-			this.chartlabelString = this.graphData.data.labels.join(", ");
-			this.labels = this.graphData.data.labels;
-
-			this.chartDatasetBgColorString = this.graphData.data.datasets[0].backgroundColor.join(", ");
-			this.datasets[0].backgroundColor = this.graphData.data.datasets[0].backgroundColor;
-			this.chartDatasetDataString = this.graphData.data.datasets[0].data.join(", ");
-			this.datasets[0].data = this.graphData.data.datasets[0].data;
-
-			this.showTitle = this.graphData.options.title.display;
-			this.titleText = this.graphData.options.title.text;
-			this.showLegend = this.graphData.options.legend.display;
-			this.legendPosition = this.graphData.options.legend.position;
-
-			this.theChart.data.labels = this.labels;
-			this.theChart.data.datasets = this.datasets;
-			this.theChart.options.title.display = this.showTitle;
-			this.theChart.options.title.text = this.titleText;
-			this.theChart.options.legend.display = this.showLegend;
-			this.theChart.options.legend.position = this.legendPosition;
-			this.theChart.update();
-
-			this.editedGraphIdNo = this.graphData.graph_id;
-		}
-	},
-	mounted() {
-		this.onLoad();
-		if (this.graphData) {
-			this.forEdit();
-		}
-	}
-});
-
-/***/ }),
-/* 27 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BubbleChartTemplate_vue__ = __webpack_require__(28);
-/* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_db76afec_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__ = __webpack_require__(81);
-function injectStyle (ssrContext) {
-  __webpack_require__(79)
-}
-var normalizeComponent = __webpack_require__(3)
-/* script */
-
-
-/* template */
-
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = injectStyle
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BubbleChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_db76afec_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__["a" /* default */],
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-
-/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
-
-
-/***/ }),
-/* 28 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-	props: ['graphData', 'graphIndex'],
-	data() {
-		return {
-			chartType: 'bubble',
-			titleText: '',
-			legendPosition: 'top',
-			showTitle: false,
-			showLegend: true,
-			datasets: [{
-				label: '',
-				data: [{ x: '', y: '', r: '' }],
-				backgroundColor: '',
-				borderColor: '',
-				hoverRadius: 0
-			}]
-		};
-	},
-	methods: {
-		addDataset() {
-			this.datasets.push({
-				label: '',
-				data: [{ x: '', y: '', r: '' }],
-				backgroundColor: '',
-				borderColor: '',
-				hoverRadius: 0
-			});
-			this.theChart.data.datasets.push({
-				label: '',
-				data: [{ x: '', y: '', r: '' }],
-				backgroundColor: '',
-				borderColor: '',
-				hoverRadius: 0
-			});
-			this.theChart.update();
-		},
-		addBubblePoint(index) {
-			this.datasets[index].data.push({ x: '', y: '', r: '' });
-			this.theChart.data.datasets[index].data.push({ x: '', y: '', r: '' });
-			this.theChart.update();
-		},
-		addDatasetLabel(index) {
-			this.theChart.data.datasets[index].label = this.datasets[index].label;
-			this.theChart.update();
-		},
-		addDatasetDataPoints(index, pIndex, point) {
-			this.theChart.data.datasets[index].data[pIndex][point] = this.datasets[index].data[pIndex][point];
-			this.theChart.update();
-		},
-		addDatasetBgColor(index) {
-			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
-			this.theChart.update();
-		},
-		addDatasetborderColor(index) {
-			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
-			this.theChart.update();
-		},
-		showingGraphTitle() {
-			this.theChart.options.title.display = this.showTitle;
-			this.theChart.update();
-		},
-		addTitleText() {
-			this.theChart.options.title.text = this.titleText;
-			this.theChart.update();
-		},
-		showingGraphLegend() {
-			this.theChart.options.legend.display = this.showLegend;
-			this.theChart.update();
-		},
-		changeLegendPosition() {
-			this.theChart.options.legend.position = this.legendPosition;
-			this.theChart.update();
-		},
-		deleteDataset(index) {
-			this.datasets.splice(index, 1);
-			this.theChart.data.datasets.splice(index, 1);
-			this.theChart.update();
-		},
-		saveGraphData() {
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					datasets: this.datasets
-				},
-				options: {
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
-
-			this.$store.dispatch('addNewGraph', chartDatas);
-		},
-		updateGraphData() {
-			let outerThis = this;
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					datasets: []
-				},
-				options: {
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
-
-			this.datasets.forEach(function (value, key) {
-				chartDatas.data.datasets.push({
-					label: value.label,
-					data: value.data,
-					backgroundColor: value.backgroundColor,
-					borderColor: value.borderColor,
-					hoverRadius: 0
-				});
-			});
-
-			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
-
-			this.$store.dispatch('updateGraph', payload).then(function () {
-				setTimeout(function () {
-					outerThis.$emit("applied");
-				}, 1000);
-			});
-		},
-		onLoad() {
-			let ctx = document.getElementById("bubbleChart");
-			this.theChart = new Chart(ctx, {
-				type: this.chartType,
-				data: {
-					datasets: [{
-						label: '',
-						data: [{ x: '', y: '', r: '' }],
-						backgroundColor: '',
-						borderColor: '',
-						hoverRadius: 0
-					}]
-				},
-				options: {
-					title: {
-						display: false,
-						text: ''
-					},
-					legend: {
-						display: true,
-						position: 'top'
-					}
-				}
-			});
-		},
-		forEdit() {
-			let outerThis = this;
-			this.graphData.data.datasets.forEach(function (value, key) {
-				if (key) {
-					outerThis.datasets.push({ label: '', data: [{ x: '', y: '', r: '' }], backgroundColor: '' });
-					outerThis.theChart.data.datasets.push({ label: '', data: [{ x: '', y: '', r: '' }], backgroundColor: '' });
-				}
-				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = value.label;
-				value.data.forEach(function (innerValue, innerKey) {
-					if (innerKey) {
-						outerThis.datasets[key].data.push({ x: '', y: '', r: '' });
-						outerThis.theChart.data.datasets[key].data.push({ x: '', y: '', r: '' });
-					}
-					outerThis.theChart.data.datasets[key].data[innerKey].x = outerThis.datasets[key].data[innerKey].x = innerValue.x;
-					outerThis.theChart.data.datasets[key].data[innerKey].y = outerThis.datasets[key].data[innerKey].y = innerValue.y;
-					outerThis.theChart.data.datasets[key].data[innerKey].r = outerThis.datasets[key].data[innerKey].r = innerValue.r;
-				});
-				outerThis.theChart.data.datasets[key].backgroundColor = outerThis.datasets[key].backgroundColor = value.backgroundColor;
-				outerThis.theChart.data.datasets[key].borderColor = outerThis.datasets[key].borderColor = value.borderColor;
-				outerThis.theChart.data.datasets[key].hoverRadius = outerThis.datasets[key].hoverRadius = 0;
-			});
-
-			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
-			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
-			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
-			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
-			this.theChart.update();
-		}
-	},
-	mounted() {
-		this.onLoad();
-		if (this.graphData) {
-			this.forEdit();
-		}
-	}
-});
-
-/***/ }),
-/* 29 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ScatterChartTemplate_vue__ = __webpack_require__(30);
-/* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2150f582_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__ = __webpack_require__(84);
-function injectStyle (ssrContext) {
-  __webpack_require__(82)
-}
-var normalizeComponent = __webpack_require__(3)
-/* script */
-
-
-/* template */
-
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = injectStyle
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ScatterChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2150f582_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__["a" /* default */],
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-
-/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
-
-
-/***/ }),
-/* 30 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-	props: ['graphData', 'graphIndex'],
-	data() {
-		return {
-			chartType: 'scatter',
-			titleText: '',
-			legendPosition: 'top',
-			showTitle: false,
-			showLegend: true,
-			datasets: [{
-				label: '',
-				data: [{ x: '', y: '' }],
-				backgroundColor: '',
-				borderColor: '',
-				fill: false,
-				showLine: false
-			}]
-		};
-	},
-	methods: {
-		addDataset() {
-			this.datasets.push({
-				label: '',
-				data: [{ x: '', y: '' }],
-				backgroundColor: '',
-				borderColor: '',
-				fill: false,
-				showLine: false
-			});
-			this.theChart.data.datasets.push({
-				label: '',
-				data: [{ x: '', y: '' }],
-				backgroundColor: '',
-				borderColor: '',
-				fill: false,
-				showLine: false
-			});
-			this.theChart.update();
-		},
-		addBubblePoint(index) {
-			this.datasets[index].data.push({ x: '', y: '' });
-			this.theChart.data.datasets[index].data.push({ x: '', y: '' });
-			this.theChart.update();
-		},
-		addDatasetLabel(index) {
-			this.theChart.data.datasets[index].label = this.datasets[index].label;
-			this.theChart.update();
-		},
-		addDatasetDataPoints(index, pIndex, point) {
-			this.theChart.data.datasets[index].data[pIndex][point] = this.datasets[index].data[pIndex][point];
-			this.theChart.update();
-		},
-		addDatasetBgColor(index) {
-			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
-			this.theChart.update();
-		},
-		addDatasetborderColor(index) {
-			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
-			this.theChart.update();
-		},
-		showingGraphTitle() {
-			this.theChart.options.title.display = this.showTitle;
-			this.theChart.update();
-		},
-		addTitleText() {
-			this.theChart.options.title.text = this.titleText;
-			this.theChart.update();
-		},
-		showingGraphLegend() {
-			this.theChart.options.legend.display = this.showLegend;
-			this.theChart.update();
-		},
-		changeLegendPosition() {
-			this.theChart.options.legend.position = this.legendPosition;
-			this.theChart.update();
-		},
-		deleteDataset(index) {
-			this.datasets.splice(index, 1);
-			this.theChart.data.datasets.splice(index, 1);
-			this.theChart.update();
-		},
-		saveGraphData() {
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					datasets: this.datasets
-				},
-				options: {
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
-
-			this.$store.dispatch('addNewGraph', chartDatas);
-		},
-		updateGraphData() {
-			let outerThis = this;
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					datasets: []
-				},
-				options: {
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
-
-			this.datasets.forEach(function (value, key) {
-				chartDatas.data.datasets.push({
-					label: value.label,
-					data: value.data,
-					backgroundColor: value.backgroundColor,
-					borderColor: value.borderColor,
-					fill: value.fill,
-					showLine: value.showLine
-				});
-			});
-
-			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
-
-			this.$store.dispatch('updateGraph', payload).then(function () {
-				setTimeout(function () {
-					outerThis.$emit("applied");
-				}, 1000);
-			});
-		},
-		onLoad() {
-			let ctx = document.getElementById("scatterChart");
-			this.theChart = new Chart(ctx, {
-				type: this.chartType,
-				data: {
-					datasets: [{
-						label: '',
-						data: [{ x: '', y: '' }],
-						backgroundColor: '',
-						borderColor: '',
-						fill: false,
-						showLine: false
-					}]
-				},
-				options: {
-					title: {
-						display: false,
-						text: ''
-					},
-					legend: {
-						display: true,
-						position: 'top'
-					}
-				}
-			});
-		},
-		forEdit() {
-			let outerThis = this;
-			this.graphData.data.datasets.forEach(function (value, key) {
-				if (key) {
-					outerThis.datasets.push({ label: '', data: [{ x: '', y: '' }], backgroundColor: '', fill: false, showLine: false });
-					outerThis.theChart.data.datasets.push({ label: '', data: [{ x: '', y: '' }], backgroundColor: '', fill: false, showLine: false });
-				}
-				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = value.label;
-				value.data.forEach(function (innerValue, innerKey) {
-					if (innerKey) {
-						outerThis.datasets[key].data.push({ x: '', y: '' });
-						outerThis.theChart.data.datasets[key].data.push({ x: '', y: '' });
-					}
-					outerThis.theChart.data.datasets[key].data[innerKey].x = outerThis.datasets[key].data[innerKey].x = innerValue.x;
-					outerThis.theChart.data.datasets[key].data[innerKey].y = outerThis.datasets[key].data[innerKey].y = innerValue.y;
-				});
-				outerThis.theChart.data.datasets[key].backgroundColor = outerThis.datasets[key].backgroundColor = value.backgroundColor;
-				outerThis.theChart.data.datasets[key].borderColor = outerThis.datasets[key].borderColor = value.borderColor;
-			});
-
-			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
-			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
-			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
-			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
-			this.theChart.update();
-		}
-	},
-	mounted() {
-		this.onLoad();
-		if (this.graphData) {
-			this.forEdit();
-		}
-	}
-});
-
-/***/ }),
-/* 31 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__BarChartTemplate__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__LineChartTemplate__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__PieChartTemplate__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__DoughnutChartTemplate__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__RadarChartTemplate__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__PolarAreaChartTemplate__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__BubbleChartTemplate__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__ScatterChartTemplate__ = __webpack_require__(29);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_vuex__ = __webpack_require__(32);
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-
-
-
-
-
-
-
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-	data() {
-		return {
-			currentComponent: '',
-			editedGraphData: [],
-			editedGraphIndex: '',
-			theChart: []
-		};
-	},
-	computed: _extends({
-		currentChartTabComponent: function () {
-			return this.currentComponent;
-		}
-	}, Object(__WEBPACK_IMPORTED_MODULE_8_vuex__["b" /* mapGetters */])(['allGraph'])),
-	components: {
-		pieChart: __WEBPACK_IMPORTED_MODULE_2__PieChartTemplate__["a" /* default */], doughnutChart: __WEBPACK_IMPORTED_MODULE_3__DoughnutChartTemplate__["a" /* default */], polarAreaChart: __WEBPACK_IMPORTED_MODULE_5__PolarAreaChartTemplate__["a" /* default */], barChart: __WEBPACK_IMPORTED_MODULE_0__BarChartTemplate__["a" /* default */], lineChart: __WEBPACK_IMPORTED_MODULE_1__LineChartTemplate__["a" /* default */], radarChart: __WEBPACK_IMPORTED_MODULE_4__RadarChartTemplate__["a" /* default */], bubbleChart: __WEBPACK_IMPORTED_MODULE_6__BubbleChartTemplate__["a" /* default */], scatterChart: __WEBPACK_IMPORTED_MODULE_7__ScatterChartTemplate__["a" /* default */]
-	},
-	methods: {
-		onLoad() {
-			console.log(this.allGraph);
-			let outerThis = this;
-			this.allGraph.forEach(function (value, key) {
-				var ctx = document.getElementById(key);
-				outerThis.theChart[key] = new Chart(ctx, {
-					type: value.type,
-					data: value.data,
-					options: value.options
-				});
-			});
-		},
-		// @mishuk
-		useGraph(id) {
-			var content = '[graph_lite id="' + id + '"]';
-			tinymce.activeEditor.execCommand('mceInsertContent', false, content);
-			$('#gl-admin-meta-box').fadeOut();
-		},
-		editGraphDetails(index) {
-			let chartType = this.allGraph[index].type + "Chart";
-			this.editedGraphData = this.allGraph[index];
-			this.editedGraphIndex = index;
-			this.currentComponent = chartType;
-		},
-		whenGraphUpdated() {
-			let index = this.$store.state.editedGraphIndex;
-			this.currentComponent = '';
-
-			this.theChart[index].data.datasets = this.allGraph[index].data.datasets;
-			this.theChart[index].options.legend.display = this.allGraph[index].options.legend.display;
-			this.theChart[index].options.legend.position = this.allGraph[index].options.legend.position;
-			this.theChart[index].options.title.display = this.allGraph[index].options.title.display;
-			this.theChart[index].options.title.text = this.allGraph[index].options.title.text;
-
-			if (this.allGraph[index].type == "pie" || this.allGraph[index].type == "doughnut" || this.allGraph[index].type == "polarArea" || this.allGraph[index].type == "bar" || this.allGraph[index].type == "line" || this.allGraph[index].type == "radar") {
-				this.theChart[index].data.labels = this.allGraph[index].data.labels;
-			}
-			if (this.allGraph[index].type == "bar" || this.allGraph[index].type == "line") {
-				this.theChart[index].options.scales.yAxes[0].ticks.beginAtZero = this.allGraph[index].options.scales.yAxes[0].ticks.beginAtZero;
-			}
-			if (this.allGraph[index].type == "radar") {
-				this.theChart[index].options.scale.ticks.beginAtZero = this.allGraph[index].options.scale.ticks.beginAtZero;
-			}
-
-			this.theChart[index].update();
-		},
-		deleteGraph(index) {
-			let deletedGraphId = this.allGraph[index].graph_id;
-			const outerThis = this;
-
-			$.sweetModal.confirm('Are you sure to delete this (' + deletedGraphId + ') chart?', function () {
-				$.ajax({
-					url: ajaxurl,
-					type: 'POST',
-					dataType: 'json',
-					data: {
-						action: 'delete_chart',
-						graph_id: deletedGraphId
-					},
-					success: function (response) {
-						$.sweetModal({
-							content: response,
-							icon: $.sweetModal.ICON_SUCCESS,
-							timeout: 1300,
-							showCloseButton: false
-						});
-						setTimeout(function () {
-							outerThis.$store.dispatch('deleteGraph', index);
-						}, 1310);
-					},
-					error: function (error) {
-						alert('Something went wront please try again');
-					}
-				});
-			});
-		}
-	},
-	mounted() {
-		this.onLoad();
-	}
-});
-
-/***/ }),
-/* 32 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5042,33 +2075,2662 @@ var index_esm = {
 
 
 /***/ }),
-/* 33 */
+/* 10 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__BarChartTemplate__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__LineChartTemplate__ = __webpack_require__(37);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__PieChartTemplate__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__DoughnutChartTemplate__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__RadarChartTemplate__ = __webpack_require__(69);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__PolarAreaChartTemplate__ = __webpack_require__(73);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__BubbleChartTemplate__ = __webpack_require__(77);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__ScatterChartTemplate__ = __webpack_require__(81);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_vuex__ = __webpack_require__(9);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+
+
+
+
+
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+	data() {
+		return {
+			currentComponent: '',
+			editedGraphData: [],
+			editedGraphIndex: '',
+			theChart: [],
+			docState: 'add'
+		};
+	},
+	computed: _extends({
+		currentChartTabComponent: function () {
+			return this.currentComponent;
+		}
+	}, Object(__WEBPACK_IMPORTED_MODULE_8_vuex__["b" /* mapGetters */])(['allGraph'])),
+	components: {
+		pieChart: __WEBPACK_IMPORTED_MODULE_2__PieChartTemplate__["a" /* default */], doughnutChart: __WEBPACK_IMPORTED_MODULE_3__DoughnutChartTemplate__["a" /* default */], polarAreaChart: __WEBPACK_IMPORTED_MODULE_5__PolarAreaChartTemplate__["a" /* default */], barChart: __WEBPACK_IMPORTED_MODULE_0__BarChartTemplate__["a" /* default */], lineChart: __WEBPACK_IMPORTED_MODULE_1__LineChartTemplate__["a" /* default */], radarChart: __WEBPACK_IMPORTED_MODULE_4__RadarChartTemplate__["a" /* default */], bubbleChart: __WEBPACK_IMPORTED_MODULE_6__BubbleChartTemplate__["a" /* default */], scatterChart: __WEBPACK_IMPORTED_MODULE_7__ScatterChartTemplate__["a" /* default */]
+	},
+	methods: {
+		onLoad() {
+			console.log(this.allGraph);
+			let outerThis = this;
+			this.allGraph.forEach(function (value, key) {
+				var ctx = document.getElementById(key);
+				outerThis.theChart[key] = new Chart(ctx, {
+					type: value.type,
+					data: value.data,
+					options: value.options
+				});
+			});
+		},
+		// @mishuk
+		useGraph(id) {
+			var content = '[graph_lite id="' + id + '"]';
+			tinymce.activeEditor.execCommand('mceInsertContent', false, content);
+			$('#gl-admin-meta-box').fadeOut();
+		},
+		editGraphDetails(index) {
+			let chartType = this.allGraph[index].type + "Chart";
+			this.editedGraphData = this.allGraph[index];
+			this.editedGraphIndex = index;
+			this.currentComponent = chartType;
+		},
+		whenGraphUpdated(updateChart) {
+			let index = this.$store.state.editedGraphIndex;
+			this.currentComponent = '';
+
+			if (updateChart) {
+				this.theChart[index].data.datasets = this.allGraph[index].data.datasets;
+				this.theChart[index].options.legend.display = this.allGraph[index].options.legend.display;
+				this.theChart[index].options.legend.position = this.allGraph[index].options.legend.position;
+				this.theChart[index].options.title.display = this.allGraph[index].options.title.display;
+				this.theChart[index].options.title.text = this.allGraph[index].options.title.text;
+
+				if (this.allGraph[index].type == "pie" || this.allGraph[index].type == "doughnut" || this.allGraph[index].type == "polarArea" || this.allGraph[index].type == "bar" || this.allGraph[index].type == "line" || this.allGraph[index].type == "radar") {
+					this.theChart[index].data.labels = this.allGraph[index].data.labels;
+				}
+				if (this.allGraph[index].type == "bar" || this.allGraph[index].type == "line") {
+					this.theChart[index].options.scales.yAxes[0].ticks.beginAtZero = this.allGraph[index].options.scales.yAxes[0].ticks.beginAtZero;
+				}
+				if (this.allGraph[index].type == "radar") {
+					this.theChart[index].options.scale.ticks.beginAtZero = this.allGraph[index].options.scale.ticks.beginAtZero;
+				}
+
+				this.theChart[index].update();
+			}
+		},
+		deleteGraph(index) {
+			let deletedGraphId = this.allGraph[index].graph_id;
+			const outerThis = this;
+
+			$.sweetModal.confirm('Are you sure to delete this (' + deletedGraphId + ') chart?', function () {
+				$.ajax({
+					url: ajaxurl,
+					type: 'POST',
+					dataType: 'json',
+					data: {
+						action: 'delete_chart',
+						graph_id: deletedGraphId
+					},
+					success: function (response) {
+						$.sweetModal({
+							content: response,
+							icon: $.sweetModal.ICON_SUCCESS,
+							timeout: 1300,
+							showCloseButton: false
+						});
+						setTimeout(function () {
+							outerThis.$store.dispatch('deleteGraph', index);
+						}, 1310);
+					},
+					error: function (error) {
+						alert('Something went wront please try again');
+					}
+				});
+			});
+		}
+	},
+	mounted() {
+		this.onLoad();
+	}
+});
+
+/***/ }),
+/* 11 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+	props: ['graphData', 'graphIndex'],
+	data() {
+		return {
+			chartType: 'bar',
+			chartlabelsString: '',
+			titleText: '',
+			legendPosition: 'top',
+			labels: [],
+			showTitle: false,
+			showLegend: true,
+			beginAtZero: false,
+			datasets: [{
+				label: '',
+				chartDatasetDataString: '',
+				data: [],
+				backgroundColor: ''
+			}]
+		};
+	},
+	methods: {
+		addDataset() {
+			this.datasets.push({
+				label: '',
+				chartDatasetDataString: '',
+				data: [],
+				backgroundColor: ''
+			});
+			this.theChart.data.datasets.push({
+				label: '',
+				data: [],
+				backgroundColor: ''
+			});
+			this.theChart.update();
+		},
+		addLabels() {
+			this.labels = this.chartlabelsString.split(',');
+			this.theChart.data.labels = this.labels;
+			this.theChart.update();
+		},
+		addDatasetLabel(index) {
+			this.theChart.data.datasets[index].label = this.datasets[index].label;
+			this.theChart.update();
+		},
+		addDatasetData(index) {
+			this.datasets[index].data = this.datasets[index].chartDatasetDataString.split(',');
+			this.theChart.data.datasets[index].data = this.datasets[index].data;
+			this.theChart.update();
+		},
+		addDatasetBgColor(index) {
+			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
+			this.theChart.update();
+		},
+		showingGraphTitle() {
+			this.theChart.options.title.display = this.showTitle;
+			this.theChart.update();
+		},
+		addTitleText() {
+			this.theChart.options.title.text = this.titleText;
+			this.theChart.update();
+		},
+		yAxesRange() {
+			this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero;
+			this.theChart.update();
+		},
+		showingGraphLegend() {
+			this.theChart.options.legend.display = this.showLegend;
+			this.theChart.update();
+		},
+		changeLegendPosition() {
+			this.theChart.options.legend.position = this.legendPosition;
+			this.theChart.update();
+		},
+		deleteDataset(index) {
+			this.datasets.splice(index, 1);
+			this.theChart.data.datasets.splice(index, 1);
+			this.theChart.update();
+		},
+		saveGraphData() {
+			let chartDatas = {
+				type: this.chartType,
+				data: {
+					labels: this.labels,
+					datasets: this.datasets
+				},
+				options: {
+					scales: {
+						yAxes: [{
+							ticks: {
+								beginAtZero: this.beginAtZero
+							}
+						}]
+					},
+					title: {
+						display: this.showTitle,
+						text: this.titleText
+					},
+					legend: {
+						display: this.showLegend,
+						position: this.legendPosition
+					}
+				}
+			};
+
+			this.$store.dispatch('addNewGraph', chartDatas);
+		},
+		updateGraphData() {
+			let outerThis = this;
+			let chartDatas = {
+				type: this.chartType,
+				data: {
+					labels: this.labels,
+					datasets: []
+				},
+				options: {
+					scales: {
+						yAxes: [{
+							ticks: {
+								beginAtZero: this.beginAtZero
+							}
+						}]
+					},
+					title: {
+						display: this.showTitle,
+						text: this.titleText
+					},
+					legend: {
+						display: this.showLegend,
+						position: this.legendPosition
+					}
+				}
+			};
+
+			this.datasets.forEach(function (value) {
+				chartDatas.data.datasets.push({ label: value.label, data: value.data, chartDatasetDataString: value.chartDatasetDataString, backgroundColor: value.backgroundColor });
+			});
+
+			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+
+			this.$store.dispatch('updateGraph', payload).then(function () {
+				setTimeout(function () {
+					outerThis.$emit("applied");
+				}, 1000);
+			});
+		},
+		onLoad() {
+			let ctx = document.getElementById("barChart");
+			this.theChart = new Chart(ctx, {
+				type: this.chartType,
+				data: {
+					labels: [],
+					datasets: [{
+						label: '',
+						data: [],
+						backgroundColor: ''
+					}]
+				},
+				options: {
+					scales: {
+						yAxes: [{
+							ticks: {
+								beginAtZero: false
+							}
+						}]
+					},
+					title: {
+						display: false,
+						text: ''
+					},
+					legend: {
+						display: true,
+						position: 'top'
+					}
+				}
+			});
+		},
+		forEdit() {
+			let outerThis = this;
+			this.chartlabelsString = this.graphData.data.labels.join(", ");
+			this.theChart.data.labels = this.labels = this.graphData.data.labels;
+			this.graphData.data.datasets.forEach(function (value, key) {
+				if (key) {
+					outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor: '' });
+					outerThis.theChart.data.datasets.push({ label: '', data: [], backgroundColor: '' });
+				}
+				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = outerThis.graphData.data.datasets[key].label;
+
+				outerThis.datasets[key].chartDatasetDataString = outerThis.graphData.data.datasets[key].chartDatasetDataString;
+
+				outerThis.theChart.data.datasets[key].data = outerThis.datasets[key].data = outerThis.graphData.data.datasets[key].data;
+
+				outerThis.theChart.data.datasets[key].backgroundColor = outerThis.datasets[key].backgroundColor = outerThis.graphData.data.datasets[key].backgroundColor;
+			});
+
+			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
+			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
+			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
+			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
+			this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero = this.graphData.options.scales.yAxes[0].ticks.beginAtZero;
+			this.theChart.update();
+		}
+	},
+	mounted() {
+		this.onLoad();
+		if (this.graphData) {
+			this.forEdit();
+		}
+	}
+});
+
+/***/ }),
+/* 12 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+	props: ['graphData', 'graphIndex'],
+	data() {
+		return {
+			chartType: 'line',
+			chartlabelsString: '',
+			titleText: '',
+			legendPosition: 'top',
+			labels: [],
+			showTitle: false,
+			showLegend: true,
+			beginAtZero: false,
+			datasets: [{
+				label: '',
+				chartDatasetDataString: '',
+				data: [],
+				backgroundColor: '',
+				borderColor: '',
+				fill: false,
+				straightLine: false
+			}]
+		};
+	},
+	methods: {
+		addDataset() {
+			this.datasets.push({
+				label: '',
+				chartDatasetDataString: '',
+				data: [],
+				backgroundColor: '',
+				borderColor: '',
+				fill: false,
+				straightLine: false
+			});
+			this.theChart.data.datasets.push({
+				label: '',
+				data: [],
+				backgroundColor: '',
+				borderColor: '',
+				fill: false
+			});
+			this.theChart.update();
+		},
+		addLabels() {
+			this.labels = this.chartlabelsString.split(',');
+			this.theChart.data.labels = this.labels;
+			this.theChart.update();
+		},
+		addDatasetLabel(index) {
+			this.theChart.data.datasets[index].label = this.datasets[index].label;
+			this.theChart.update();
+		},
+		addDatasetData(index) {
+			this.datasets[index].data = this.datasets[index].chartDatasetDataString.split(',');
+			this.theChart.data.datasets[index].data = this.datasets[index].data;
+			this.theChart.update();
+		},
+		addDatasetBgColor(index) {
+			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
+			this.theChart.update();
+		},
+		addDatasetborderColor(index) {
+			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
+			this.theChart.update();
+		},
+		fillColor(index) {
+			this.theChart.data.datasets[index].fill = this.datasets[index].fill;
+			this.theChart.update();
+		},
+		showingGraphTitle() {
+			this.theChart.options.title.display = this.showTitle;
+			this.theChart.update();
+		},
+		addTitleText() {
+			this.theChart.options.title.text = this.titleText;
+			this.theChart.update();
+		},
+		showingGraphLegend() {
+			this.theChart.options.legend.display = this.showLegend;
+			this.theChart.update();
+		},
+		changeLegendPosition() {
+			this.theChart.options.legend.position = this.legendPosition;
+			this.theChart.update();
+		},
+		yAxesRange() {
+			this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero;
+			this.theChart.update();
+		},
+		makeLineStraight(index) {
+			if (this.datasets[index].straightLine) {
+				this.datasets[index].lineTension = 0;
+				this.theChart.data.datasets[index].lineTension = 0;
+				this.theChart.update();
+			} else {
+				delete this.datasets[index].lineTension;
+				delete this.theChart.data.datasets[index].lineTension;
+				this.theChart.update();
+			}
+		},
+		deleteDataset(index) {
+			this.datasets.splice(index, 1);
+			this.theChart.data.datasets.splice(index, 1);
+			this.theChart.update();
+		},
+		saveGraphData() {
+			let chartDatas = {
+				type: this.chartType,
+				data: {
+					labels: this.labels,
+					datasets: this.datasets
+				},
+				options: {
+					scales: {
+						yAxes: [{
+							ticks: {
+								beginAtZero: this.beginAtZero
+							}
+						}]
+					},
+					title: {
+						display: this.showTitle,
+						text: this.titleText
+					},
+					legend: {
+						display: this.showLegend,
+						position: this.legendPosition
+					}
+				}
+			};
+
+			this.$store.dispatch('addNewGraph', chartDatas);
+		},
+		updateGraphData() {
+			let outerThis = this;
+			let chartDatas = {
+				type: this.chartType,
+				data: {
+					labels: this.labels,
+					datasets: []
+				},
+				options: {
+					scales: {
+						yAxes: [{
+							ticks: {
+								beginAtZero: this.beginAtZero
+							}
+						}]
+					},
+					title: {
+						display: this.showTitle,
+						text: this.titleText
+					},
+					legend: {
+						display: this.showLegend,
+						position: this.legendPosition
+					}
+				}
+			};
+
+			this.datasets.forEach(function (value, key) {
+				chartDatas.data.datasets.push({
+					label: value.label,
+					data: value.data,
+					chartDatasetDataString: value.chartDatasetDataString,
+					backgroundColor: value.backgroundColor,
+					borderColor: value.borderColor,
+					fill: value.fill,
+					straightLine: value.straightLine
+				});
+				if (value.straightLine) {
+					chartDatas.data.datasets[key].lineTension = 0;
+				}
+			});
+
+			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+
+			this.$store.dispatch('updateGraph', payload).then(function () {
+				setTimeout(function () {
+					outerThis.$emit("applied");
+				}, 1000);
+			});
+		},
+		onLoad() {
+			let ctx = document.getElementById("lineChart");
+			this.theChart = new Chart(ctx, {
+				type: this.chartType,
+				data: {
+					labels: [],
+					datasets: [{
+						label: '',
+						data: [],
+						backgroundColor: '',
+						borderColor: '',
+						fill: false
+					}]
+				},
+				options: {
+					scales: {
+						yAxes: [{
+							ticks: {
+								beginAtZero: false
+							}
+						}]
+					},
+					title: {
+						display: false,
+						text: ''
+					},
+					legend: {
+						display: true,
+						position: 'top'
+					}
+				}
+			});
+		},
+		forEdit() {
+			let outerThis = this;
+			this.chartlabelsString = this.graphData.data.labels.join(", ");
+			this.theChart.data.labels = this.labels = this.graphData.data.labels;
+			this.graphData.data.datasets.forEach(function (value, key) {
+				if (key) {
+					outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor: '' });
+					outerThis.theChart.data.datasets.push({ label: '', data: [], backgroundColor: '' });
+				}
+				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = outerThis.graphData.data.datasets[key].label;
+
+				outerThis.datasets[key].chartDatasetDataString = outerThis.graphData.data.datasets[key].chartDatasetDataString;
+
+				outerThis.theChart.data.datasets[key].data = outerThis.datasets[key].data = outerThis.graphData.data.datasets[key].data;
+
+				outerThis.theChart.data.datasets[key].backgroundColor = outerThis.datasets[key].backgroundColor = outerThis.graphData.data.datasets[key].backgroundColor;
+
+				outerThis.theChart.data.datasets[key].borderColor = outerThis.datasets[key].borderColor = outerThis.graphData.data.datasets[key].borderColor;
+
+				outerThis.theChart.data.datasets[key].fill = outerThis.datasets[key].fill = outerThis.graphData.data.datasets[key].fill;
+
+				outerThis.datasets[key].straightLine = outerThis.graphData.data.datasets[key].straightLine;
+				if (outerThis.graphData.data.datasets[key].straightLine) {
+					outerThis.theChart.data.datasets[key].lineTension = outerThis.datasets[key].lineTension = 0;
+				}
+			});
+
+			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
+			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
+			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
+			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
+			this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero = this.graphData.options.scales.yAxes[0].ticks.beginAtZero;
+			this.theChart.update();
+
+			this.editedGraphIdNo = this.graphData.graph_id;
+		}
+	},
+	mounted() {
+		this.onLoad();
+		if (this.graphData) {
+			this.forEdit();
+		}
+	}
+});
+
+/***/ }),
+/* 13 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_querystring__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+	props: ['graphData', 'graphIndex'],
+	data() {
+		return {
+			chartType: 'pie',
+			chartlabelString: '',
+			chartDatasetDataString: '',
+			chartDatasetBgColorString: '',
+			titleText: '',
+			editedGraphIdNo: '',
+			legendPosition: 'top',
+			labels: [],
+			datasets: [{
+				data: [],
+				backgroundColor: []
+			}],
+			showTitle: false,
+			showLegend: true,
+			backButton: false,
+			updateChart: false
+		};
+	},
+	methods: {
+		addLabels() {
+			this.labels = this.chartlabelString.split(',');
+			this.theChart.data.labels = this.labels;
+			this.theChart.update();
+		},
+		addDatasetData() {
+			this.datasets[0].data = this.chartDatasetDataString.split(',');
+			this.theChart.data.datasets[0].data = this.datasets[0].data;
+			this.theChart.update();
+		},
+		addDatasetBgColor() {
+			this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
+			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor;
+			this.theChart.update();
+		},
+		showingGraphTitle() {
+			this.theChart.options.title.display = this.showTitle;
+			this.theChart.update();
+		},
+		addTitleText() {
+			this.theChart.options.title.text = this.titleText;
+			this.theChart.update();
+		},
+		showingGraphLegend() {
+			this.theChart.options.legend.display = this.showLegend;
+			this.theChart.update();
+		},
+		changeLegendPosition() {
+			this.theChart.options.legend.position = this.legendPosition;
+			this.theChart.update();
+		},
+		saveGraphData() {
+			let chartDatas = {
+				type: this.chartType,
+				data: {
+					labels: this.labels,
+					datasets: this.datasets
+				},
+				options: {
+					title: {
+						display: this.showTitle,
+						text: this.titleText
+					},
+					legend: {
+						display: this.showLegend,
+						position: this.legendPosition
+					}
+				}
+			};
+
+			this.$store.dispatch('addNewGraph', chartDatas);
+		},
+		updateGraphData() {
+			let outerThis = this;
+			let chartDatas = {
+				type: this.chartType,
+				data: {
+					labels: this.labels,
+					datasets: [{
+						data: this.datasets[0].data,
+						backgroundColor: this.datasets[0].backgroundColor
+					}]
+				},
+				options: {
+					title: {
+						display: this.showTitle,
+						text: this.titleText
+					},
+					legend: {
+						display: this.showLegend,
+						position: this.legendPosition
+					}
+				}
+			};
+
+			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+
+			this.$store.dispatch('updateGraph', payload).then(function () {
+				setTimeout(function () {
+					outerThis.updateChart = true;
+					outerThis.$emit("applied", outerThis.updateChart);
+				}, 1000);
+			});
+		},
+		onLoad() {
+			let ctx = document.getElementById("pieChart");
+			this.theChart = new Chart(ctx, {
+				type: this.chartType,
+				data: {
+					labels: [],
+					datasets: [{
+						data: [],
+						backgroundColor: []
+					}]
+				},
+				options: {
+					title: {
+						display: false,
+						text: ''
+					},
+					legend: {
+						display: true,
+						position: 'top'
+					}
+				}
+			});
+		},
+		forEdit() {
+			this.chartlabelString = this.graphData.data.labels.join(", ");
+			this.labels = this.graphData.data.labels;
+
+			this.chartDatasetBgColorString = this.graphData.data.datasets[0].backgroundColor.join(", ");
+			this.datasets[0].backgroundColor = this.graphData.data.datasets[0].backgroundColor;
+			this.chartDatasetDataString = this.graphData.data.datasets[0].data.join(", ");
+			this.datasets[0].data = this.graphData.data.datasets[0].data;
+
+			this.showTitle = this.graphData.options.title.display;
+			this.titleText = this.graphData.options.title.text;
+			this.showLegend = this.graphData.options.legend.display;
+			this.legendPosition = this.graphData.options.legend.position;
+
+			this.theChart.data.labels = this.labels;
+			this.theChart.data.datasets = this.datasets;
+			this.theChart.options.title.display = this.showTitle;
+			this.theChart.options.title.text = this.titleText;
+			this.theChart.options.legend.display = this.showLegend;
+			this.theChart.options.legend.position = this.legendPosition;
+			this.theChart.update();
+
+			this.editedGraphIdNo = this.graphData.graph_id;
+		},
+		goBacktoAllGraphPage() {
+			this.backButton = false;
+			this.$emit("applied");
+		}
+	},
+	mounted() {
+		this.onLoad();
+		if (this.graphData) {
+			this.backButton = true;
+			this.forEdit();
+		}
+	}
+});
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function bind(fn, thisArg) {
+  return function wrap() {
+    var args = new Array(arguments.length);
+    for (var i = 0; i < args.length; i++) {
+      args[i] = arguments[i];
+    }
+    return fn.apply(thisArg, args);
+  };
+};
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(0);
+var settle = __webpack_require__(48);
+var buildURL = __webpack_require__(50);
+var parseHeaders = __webpack_require__(51);
+var isURLSameOrigin = __webpack_require__(52);
+var createError = __webpack_require__(16);
+var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(53);
+
+module.exports = function xhrAdapter(config) {
+  return new Promise(function dispatchXhrRequest(resolve, reject) {
+    var requestData = config.data;
+    var requestHeaders = config.headers;
+
+    if (utils.isFormData(requestData)) {
+      delete requestHeaders['Content-Type']; // Let the browser set it
+    }
+
+    var request = new XMLHttpRequest();
+    var loadEvent = 'onreadystatechange';
+    var xDomain = false;
+
+    // For IE 8/9 CORS support
+    // Only supports POST and GET calls and doesn't returns the response headers.
+    // DON'T do this for testing b/c XMLHttpRequest is mocked, not XDomainRequest.
+    if ("production" !== 'test' &&
+        typeof window !== 'undefined' &&
+        window.XDomainRequest && !('withCredentials' in request) &&
+        !isURLSameOrigin(config.url)) {
+      request = new window.XDomainRequest();
+      loadEvent = 'onload';
+      xDomain = true;
+      request.onprogress = function handleProgress() {};
+      request.ontimeout = function handleTimeout() {};
+    }
+
+    // HTTP basic authentication
+    if (config.auth) {
+      var username = config.auth.username || '';
+      var password = config.auth.password || '';
+      requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
+    }
+
+    request.open(config.method.toUpperCase(), buildURL(config.url, config.params, config.paramsSerializer), true);
+
+    // Set the request timeout in MS
+    request.timeout = config.timeout;
+
+    // Listen for ready state
+    request[loadEvent] = function handleLoad() {
+      if (!request || (request.readyState !== 4 && !xDomain)) {
+        return;
+      }
+
+      // The request errored out and we didn't get a response, this will be
+      // handled by onerror instead
+      // With one exception: request that using file: protocol, most browsers
+      // will return status as 0 even though it's a successful request
+      if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
+        return;
+      }
+
+      // Prepare the response
+      var responseHeaders = 'getAllResponseHeaders' in request ? parseHeaders(request.getAllResponseHeaders()) : null;
+      var responseData = !config.responseType || config.responseType === 'text' ? request.responseText : request.response;
+      var response = {
+        data: responseData,
+        // IE sends 1223 instead of 204 (https://github.com/axios/axios/issues/201)
+        status: request.status === 1223 ? 204 : request.status,
+        statusText: request.status === 1223 ? 'No Content' : request.statusText,
+        headers: responseHeaders,
+        config: config,
+        request: request
+      };
+
+      settle(resolve, reject, response);
+
+      // Clean up request
+      request = null;
+    };
+
+    // Handle low level network errors
+    request.onerror = function handleError() {
+      // Real errors are hidden from us by the browser
+      // onerror should only fire if it's a network error
+      reject(createError('Network Error', config, null, request));
+
+      // Clean up request
+      request = null;
+    };
+
+    // Handle timeout
+    request.ontimeout = function handleTimeout() {
+      reject(createError('timeout of ' + config.timeout + 'ms exceeded', config, 'ECONNABORTED',
+        request));
+
+      // Clean up request
+      request = null;
+    };
+
+    // Add xsrf header
+    // This is only done if running in a standard browser environment.
+    // Specifically not if we're in a web worker, or react-native.
+    if (utils.isStandardBrowserEnv()) {
+      var cookies = __webpack_require__(54);
+
+      // Add xsrf header
+      var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
+          cookies.read(config.xsrfCookieName) :
+          undefined;
+
+      if (xsrfValue) {
+        requestHeaders[config.xsrfHeaderName] = xsrfValue;
+      }
+    }
+
+    // Add headers to the request
+    if ('setRequestHeader' in request) {
+      utils.forEach(requestHeaders, function setRequestHeader(val, key) {
+        if (typeof requestData === 'undefined' && key.toLowerCase() === 'content-type') {
+          // Remove Content-Type if data is undefined
+          delete requestHeaders[key];
+        } else {
+          // Otherwise add header to the request
+          request.setRequestHeader(key, val);
+        }
+      });
+    }
+
+    // Add withCredentials to request if needed
+    if (config.withCredentials) {
+      request.withCredentials = true;
+    }
+
+    // Add responseType to request if needed
+    if (config.responseType) {
+      try {
+        request.responseType = config.responseType;
+      } catch (e) {
+        // Expected DOMException thrown by browsers not compatible XMLHttpRequest Level 2.
+        // But, this can be suppressed for 'json' type as it can be parsed by default 'transformResponse' function.
+        if (config.responseType !== 'json') {
+          throw e;
+        }
+      }
+    }
+
+    // Handle progress if needed
+    if (typeof config.onDownloadProgress === 'function') {
+      request.addEventListener('progress', config.onDownloadProgress);
+    }
+
+    // Not all browsers support upload events
+    if (typeof config.onUploadProgress === 'function' && request.upload) {
+      request.upload.addEventListener('progress', config.onUploadProgress);
+    }
+
+    if (config.cancelToken) {
+      // Handle cancellation
+      config.cancelToken.promise.then(function onCanceled(cancel) {
+        if (!request) {
+          return;
+        }
+
+        request.abort();
+        reject(cancel);
+        // Clean up request
+        request = null;
+      });
+    }
+
+    if (requestData === undefined) {
+      requestData = null;
+    }
+
+    // Send the request
+    request.send(requestData);
+  });
+};
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var enhanceError = __webpack_require__(49);
+
+/**
+ * Create an Error with the specified message, config, error code, request and response.
+ *
+ * @param {string} message The error message.
+ * @param {Object} config The config.
+ * @param {string} [code] The error code (for example, 'ECONNABORTED').
+ * @param {Object} [request] The request.
+ * @param {Object} [response] The response.
+ * @returns {Error} The created error.
+ */
+module.exports = function createError(message, config, code, request, response) {
+  var error = new Error(message);
+  return enhanceError(error, config, code, request, response);
+};
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function isCancel(value) {
+  return !!(value && value.__CANCEL__);
+};
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * A `Cancel` is an object that is thrown when an operation is canceled.
+ *
+ * @class
+ * @param {string=} message The message.
+ */
+function Cancel(message) {
+  this.message = message;
+}
+
+Cancel.prototype.toString = function toString() {
+  return 'Cancel' + (this.message ? ': ' + this.message : '');
+};
+
+Cancel.prototype.__CANCEL__ = true;
+
+module.exports = Cancel;
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_querystring__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+	props: ['graphData', 'graphIndex'],
+	data() {
+		return {
+			chartType: 'doughnut',
+			chartlabelString: '',
+			chartDatasetDataString: '',
+			chartDatasetBgColorString: '',
+			titleText: '',
+			legendPosition: 'top',
+			labels: [],
+			datasets: [{
+				data: [],
+				backgroundColor: []
+			}],
+			showTitle: false,
+			showLegend: true
+		};
+	},
+	methods: {
+		addLabels() {
+			this.labels = this.chartlabelString.split(',');
+			this.theChart.data.labels = this.labels;
+			this.theChart.update();
+		},
+		addDatasetData() {
+			this.datasets[0].data = this.chartDatasetDataString.split(',');
+			this.theChart.data.datasets[0].data = this.datasets[0].data;
+			this.theChart.update();
+		},
+		addDatasetBgColor() {
+			this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
+			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor;
+			this.theChart.update();
+		},
+		showingGraphTitle() {
+			this.theChart.options.title.display = this.showTitle;
+			this.theChart.update();
+		},
+		addTitleText() {
+			this.theChart.options.title.text = this.titleText;
+			this.theChart.update();
+		},
+		showingGraphLegend() {
+			this.theChart.options.legend.display = this.showLegend;
+			this.theChart.update();
+		},
+		changeLegendPosition() {
+			this.theChart.options.legend.position = this.legendPosition;
+			this.theChart.update();
+		},
+		saveGraphData() {
+			let chartDatas = {
+				type: this.chartType,
+				data: {
+					labels: this.labels,
+					datasets: this.datasets
+				},
+				options: {
+					title: {
+						display: this.showTitle,
+						text: this.titleText
+					},
+					legend: {
+						display: this.showLegend,
+						position: this.legendPosition
+					}
+				}
+			};
+
+			this.$store.dispatch('addNewGraph', chartDatas);
+		},
+		updateGraphData() {
+			let outerThis = this;
+			let chartDatas = {
+				type: this.chartType,
+				data: {
+					labels: this.labels,
+					datasets: [{
+						data: this.datasets[0].data,
+						backgroundColor: this.datasets[0].backgroundColor
+					}]
+				},
+				options: {
+					title: {
+						display: this.showTitle,
+						text: this.titleText
+					},
+					legend: {
+						display: this.showLegend,
+						position: this.legendPosition
+					}
+				}
+			};
+
+			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+
+			this.$store.dispatch('updateGraph', payload).then(function () {
+				setTimeout(function () {
+					outerThis.$emit("applied");
+				}, 1000);
+			});
+		},
+		onLoad() {
+			let ctx = document.getElementById("DoughnutChart");
+			this.theChart = new Chart(ctx, {
+				type: this.chartType,
+				data: {
+					labels: [],
+					datasets: [{
+						data: [],
+						backgroundColor: []
+					}]
+				},
+				options: {
+					title: {
+						display: false,
+						text: ''
+					},
+					legend: {
+						display: true,
+						position: 'top'
+					}
+				}
+			});
+		},
+		forEdit() {
+			this.chartlabelString = this.graphData.data.labels.join(", ");
+			this.labels = this.graphData.data.labels;
+
+			this.chartDatasetBgColorString = this.graphData.data.datasets[0].backgroundColor.join(", ");
+			this.datasets[0].backgroundColor = this.graphData.data.datasets[0].backgroundColor;
+			this.chartDatasetDataString = this.graphData.data.datasets[0].data.join(", ");
+			this.datasets[0].data = this.graphData.data.datasets[0].data;
+
+			this.showTitle = this.graphData.options.title.display;
+			this.titleText = this.graphData.options.title.text;
+			this.showLegend = this.graphData.options.legend.display;
+			this.legendPosition = this.graphData.options.legend.position;
+
+			this.theChart.data.labels = this.labels;
+			this.theChart.data.datasets = this.datasets;
+			this.theChart.options.title.display = this.showTitle;
+			this.theChart.options.title.text = this.titleText;
+			this.theChart.options.legend.display = this.showLegend;
+			this.theChart.options.legend.position = this.legendPosition;
+			this.theChart.update();
+
+			this.editedGraphIdNo = this.graphData.graph_id;
+		}
+	},
+	mounted() {
+		this.onLoad();
+		if (this.graphData) {
+			this.forEdit();
+		}
+	}
+});
+
+/***/ }),
+/* 20 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+	props: ['graphData', 'graphIndex'],
+	data() {
+		return {
+			chartType: 'radar',
+			chartlabelsString: '',
+			titleText: '',
+			legendPosition: 'top',
+			labels: [],
+			showTitle: false,
+			showLegend: true,
+			datasets: [{
+				label: '',
+				chartDatasetDataString: '',
+				data: [],
+				backgroundColor: '',
+				borderColor: '',
+				fill: false
+			}]
+		};
+	},
+	methods: {
+		addDataset() {
+			this.datasets.push({
+				label: '',
+				chartDatasetDataString: '',
+				data: [],
+				backgroundColor: '',
+				borderColor: '',
+				fill: false
+			});
+			this.theChart.data.datasets.push({
+				label: '',
+				data: [],
+				backgroundColor: '',
+				borderColor: '',
+				fill: false
+			});
+			this.theChart.update();
+		},
+		addLabels() {
+			this.labels = this.chartlabelsString.split(',');
+			this.theChart.data.labels = this.labels;
+			this.theChart.update();
+		},
+		addDatasetLabel(index) {
+			this.theChart.data.datasets[index].label = this.datasets[index].label;
+			this.theChart.update();
+		},
+		addDatasetData(index) {
+			this.datasets[index].data = this.datasets[index].chartDatasetDataString.split(',');
+			this.theChart.data.datasets[index].data = this.datasets[index].data;
+			this.theChart.update();
+		},
+		addDatasetBgColor(index) {
+			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
+			this.theChart.update();
+		},
+		fillColor(index) {
+			this.theChart.data.datasets[index].fill = this.datasets[index].fill;
+			this.theChart.update();
+		},
+		addDatasetborderColor(index) {
+			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
+			this.theChart.update();
+		},
+		showingGraphTitle() {
+			this.theChart.options.title.display = this.showTitle;
+			this.theChart.update();
+		},
+		addTitleText() {
+			this.theChart.options.title.text = this.titleText;
+			this.theChart.update();
+		},
+		showingGraphLegend() {
+			this.theChart.options.legend.display = this.showLegend;
+			this.theChart.update();
+		},
+		changeLegendPosition() {
+			this.theChart.options.legend.position = this.legendPosition;
+			this.theChart.update();
+		},
+		deleteDataset(index) {
+			this.datasets.splice(index, 1);
+			this.theChart.data.datasets.splice(index, 1);
+			this.theChart.update();
+		},
+		saveGraphData() {
+			let chartDatas = {
+				type: this.chartType,
+				data: {
+					labels: this.labels,
+					datasets: this.datasets
+				},
+				options: {
+					scale: {
+						ticks: {
+							beginAtZero: true
+						}
+					},
+					title: {
+						display: this.showTitle,
+						text: this.titleText
+					},
+					legend: {
+						display: this.showLegend,
+						position: this.legendPosition
+					}
+				}
+			};
+
+			this.$store.dispatch('addNewGraph', chartDatas);
+		},
+		updateGraphData() {
+			let outerThis = this;
+			let chartDatas = {
+				type: this.chartType,
+				data: {
+					labels: this.labels,
+					datasets: []
+				},
+				options: {
+					scale: {
+						ticks: {
+							beginAtZero: true
+						}
+					},
+					title: {
+						display: this.showTitle,
+						text: this.titleText
+					},
+					legend: {
+						display: this.showLegend,
+						position: this.legendPosition
+					}
+				}
+			};
+
+			this.datasets.forEach(function (value) {
+				chartDatas.data.datasets.push({ label: value.label, data: value.data, chartDatasetDataString: value.chartDatasetDataString, backgroundColor: value.backgroundColor, borderColor: value.borderColor, fill: value.fill });
+			});
+
+			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+
+			this.$store.dispatch('updateGraph', payload).then(function () {
+				setTimeout(function () {
+					outerThis.$emit("applied");
+				}, 1000);
+			});
+		},
+		onLoad() {
+			let ctx = document.getElementById("radarChart");
+			this.theChart = new Chart(ctx, {
+				type: this.chartType,
+				data: {
+					labels: [],
+					datasets: [{
+						label: '',
+						data: [],
+						backgroundColor: '',
+						borderColor: '',
+						fill: false
+					}]
+				},
+				options: {
+					scale: {
+						ticks: {
+							beginAtZero: true
+						}
+					},
+					title: {
+						display: false,
+						text: ''
+					},
+					legend: {
+						display: true,
+						position: 'top'
+					}
+				}
+			});
+		},
+		forEdit() {
+			let outerThis = this;
+			this.chartlabelsString = this.graphData.data.labels.join(", ");
+			this.theChart.data.labels = this.labels = this.graphData.data.labels;
+			this.graphData.data.datasets.forEach(function (value, key) {
+				if (key) {
+					outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor: '' });
+					outerThis.theChart.data.datasets.push({ label: '', data: [], backgroundColor: '' });
+				}
+				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = outerThis.graphData.data.datasets[key].label;
+
+				outerThis.datasets[key].chartDatasetDataString = outerThis.graphData.data.datasets[key].chartDatasetDataString;
+
+				outerThis.theChart.data.datasets[key].data = outerThis.datasets[key].data = outerThis.graphData.data.datasets[key].data;
+
+				outerThis.theChart.data.datasets[key].backgroundColor = outerThis.datasets[key].backgroundColor = outerThis.graphData.data.datasets[key].backgroundColor;
+
+				outerThis.theChart.data.datasets[key].borderColor = outerThis.datasets[key].borderColor = outerThis.graphData.data.datasets[key].borderColor;
+
+				outerThis.theChart.data.datasets[key].fill = outerThis.datasets[key].fill = outerThis.graphData.data.datasets[key].fill;
+			});
+
+			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
+			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
+			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
+			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
+			this.theChart.options.scale.ticks.beginAtZero = this.beginAtZero = this.graphData.options.scale.ticks.beginAtZero;
+			this.theChart.update();
+		}
+	},
+	mounted() {
+		this.onLoad();
+		if (this.graphData) {
+			this.forEdit();
+		}
+	}
+});
+
+/***/ }),
+/* 21 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_querystring__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+	props: ['graphData', 'graphIndex'],
+	data() {
+		return {
+			chartType: 'polarArea',
+			chartlabelString: '',
+			chartDatasetDataString: '',
+			chartDatasetBgColorString: '',
+			titleText: '',
+			legendPosition: 'top',
+			labels: [],
+			datasets: [{
+				data: [],
+				backgroundColor: []
+			}],
+			showTitle: false,
+			showLegend: true
+		};
+	},
+	methods: {
+		addLabels() {
+			this.labels = this.chartlabelString.split(',');
+			this.theChart.data.labels = this.labels;
+			this.theChart.update();
+		},
+		addDatasetData() {
+			this.datasets[0].data = this.chartDatasetDataString.split(',');
+			this.theChart.data.datasets[0].data = this.datasets[0].data;
+			this.theChart.update();
+		},
+		addDatasetBgColor() {
+			this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
+			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor;
+			this.theChart.update();
+		},
+		showingGraphTitle() {
+			this.theChart.options.title.display = this.showTitle;
+			this.theChart.update();
+		},
+		addTitleText() {
+			this.theChart.options.title.text = this.titleText;
+			this.theChart.update();
+		},
+		showingGraphLegend() {
+			this.theChart.options.legend.display = this.showLegend;
+			this.theChart.update();
+		},
+		changeLegendPosition() {
+			this.theChart.options.legend.position = this.legendPosition;
+			this.theChart.update();
+		},
+		saveGraphData() {
+			let chartDatas = {
+				type: this.chartType,
+				data: {
+					labels: this.labels,
+					datasets: this.datasets
+				},
+				options: {
+					title: {
+						display: this.showTitle,
+						text: this.titleText
+					},
+					legend: {
+						display: this.showLegend,
+						position: this.legendPosition
+					}
+				}
+			};
+
+			this.$store.dispatch('addNewGraph', chartDatas);
+		},
+		updateGraphData() {
+			let outerThis = this;
+			let chartDatas = {
+				type: this.chartType,
+				data: {
+					labels: this.labels,
+					datasets: [{
+						data: this.datasets[0].data,
+						backgroundColor: this.datasets[0].backgroundColor
+					}]
+				},
+				options: {
+					title: {
+						display: this.showTitle,
+						text: this.titleText
+					},
+					legend: {
+						display: this.showLegend,
+						position: this.legendPosition
+					}
+				}
+			};
+
+			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+
+			this.$store.dispatch('updateGraph', payload).then(function () {
+				setTimeout(function () {
+					outerThis.$emit("applied");
+				}, 1000);
+			});
+		},
+		onLoad() {
+			let ctx = document.getElementById("PolarAreaChart");
+			this.theChart = new Chart(ctx, {
+				type: this.chartType,
+				data: {
+					labels: [],
+					datasets: [{
+						data: [],
+						backgroundColor: []
+					}]
+				},
+				options: {
+					title: {
+						display: false,
+						text: ''
+					},
+					legend: {
+						display: true,
+						position: 'top'
+					}
+				}
+			});
+		},
+		forEdit() {
+			this.chartlabelString = this.graphData.data.labels.join(", ");
+			this.labels = this.graphData.data.labels;
+
+			this.chartDatasetBgColorString = this.graphData.data.datasets[0].backgroundColor.join(", ");
+			this.datasets[0].backgroundColor = this.graphData.data.datasets[0].backgroundColor;
+			this.chartDatasetDataString = this.graphData.data.datasets[0].data.join(", ");
+			this.datasets[0].data = this.graphData.data.datasets[0].data;
+
+			this.showTitle = this.graphData.options.title.display;
+			this.titleText = this.graphData.options.title.text;
+			this.showLegend = this.graphData.options.legend.display;
+			this.legendPosition = this.graphData.options.legend.position;
+
+			this.theChart.data.labels = this.labels;
+			this.theChart.data.datasets = this.datasets;
+			this.theChart.options.title.display = this.showTitle;
+			this.theChart.options.title.text = this.titleText;
+			this.theChart.options.legend.display = this.showLegend;
+			this.theChart.options.legend.position = this.legendPosition;
+			this.theChart.update();
+
+			this.editedGraphIdNo = this.graphData.graph_id;
+		}
+	},
+	mounted() {
+		this.onLoad();
+		if (this.graphData) {
+			this.forEdit();
+		}
+	}
+});
+
+/***/ }),
+/* 22 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+	props: ['graphData', 'graphIndex'],
+	data() {
+		return {
+			chartType: 'bubble',
+			titleText: '',
+			legendPosition: 'top',
+			showTitle: false,
+			showLegend: true,
+			datasets: [{
+				label: '',
+				data: [{ x: '', y: '', r: '' }],
+				backgroundColor: '',
+				borderColor: '',
+				hoverRadius: 0
+			}]
+		};
+	},
+	methods: {
+		addDataset() {
+			this.datasets.push({
+				label: '',
+				data: [{ x: '', y: '', r: '' }],
+				backgroundColor: '',
+				borderColor: '',
+				hoverRadius: 0
+			});
+			this.theChart.data.datasets.push({
+				label: '',
+				data: [{ x: '', y: '', r: '' }],
+				backgroundColor: '',
+				borderColor: '',
+				hoverRadius: 0
+			});
+			this.theChart.update();
+		},
+		addBubblePoint(index) {
+			this.datasets[index].data.push({ x: '', y: '', r: '' });
+			this.theChart.data.datasets[index].data.push({ x: '', y: '', r: '' });
+			this.theChart.update();
+		},
+		addDatasetLabel(index) {
+			this.theChart.data.datasets[index].label = this.datasets[index].label;
+			this.theChart.update();
+		},
+		addDatasetDataPoints(index, pIndex, point) {
+			this.theChart.data.datasets[index].data[pIndex][point] = this.datasets[index].data[pIndex][point];
+			this.theChart.update();
+		},
+		addDatasetBgColor(index) {
+			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
+			this.theChart.update();
+		},
+		addDatasetborderColor(index) {
+			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
+			this.theChart.update();
+		},
+		showingGraphTitle() {
+			this.theChart.options.title.display = this.showTitle;
+			this.theChart.update();
+		},
+		addTitleText() {
+			this.theChart.options.title.text = this.titleText;
+			this.theChart.update();
+		},
+		showingGraphLegend() {
+			this.theChart.options.legend.display = this.showLegend;
+			this.theChart.update();
+		},
+		changeLegendPosition() {
+			this.theChart.options.legend.position = this.legendPosition;
+			this.theChart.update();
+		},
+		deleteDataset(index) {
+			this.datasets.splice(index, 1);
+			this.theChart.data.datasets.splice(index, 1);
+			this.theChart.update();
+		},
+		saveGraphData() {
+			let chartDatas = {
+				type: this.chartType,
+				data: {
+					datasets: this.datasets
+				},
+				options: {
+					title: {
+						display: this.showTitle,
+						text: this.titleText
+					},
+					legend: {
+						display: this.showLegend,
+						position: this.legendPosition
+					}
+				}
+			};
+
+			this.$store.dispatch('addNewGraph', chartDatas);
+		},
+		updateGraphData() {
+			let outerThis = this;
+			let chartDatas = {
+				type: this.chartType,
+				data: {
+					datasets: []
+				},
+				options: {
+					title: {
+						display: this.showTitle,
+						text: this.titleText
+					},
+					legend: {
+						display: this.showLegend,
+						position: this.legendPosition
+					}
+				}
+			};
+
+			this.datasets.forEach(function (value, key) {
+				chartDatas.data.datasets.push({
+					label: value.label,
+					data: value.data,
+					backgroundColor: value.backgroundColor,
+					borderColor: value.borderColor,
+					hoverRadius: 0
+				});
+			});
+
+			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+
+			this.$store.dispatch('updateGraph', payload).then(function () {
+				setTimeout(function () {
+					outerThis.$emit("applied");
+				}, 1000);
+			});
+		},
+		onLoad() {
+			let ctx = document.getElementById("bubbleChart");
+			this.theChart = new Chart(ctx, {
+				type: this.chartType,
+				data: {
+					datasets: [{
+						label: '',
+						data: [{ x: '', y: '', r: '' }],
+						backgroundColor: '',
+						borderColor: '',
+						hoverRadius: 0
+					}]
+				},
+				options: {
+					title: {
+						display: false,
+						text: ''
+					},
+					legend: {
+						display: true,
+						position: 'top'
+					}
+				}
+			});
+		},
+		forEdit() {
+			let outerThis = this;
+			this.graphData.data.datasets.forEach(function (value, key) {
+				if (key) {
+					outerThis.datasets.push({ label: '', data: [{ x: '', y: '', r: '' }], backgroundColor: '' });
+					outerThis.theChart.data.datasets.push({ label: '', data: [{ x: '', y: '', r: '' }], backgroundColor: '' });
+				}
+				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = value.label;
+				value.data.forEach(function (innerValue, innerKey) {
+					if (innerKey) {
+						outerThis.datasets[key].data.push({ x: '', y: '', r: '' });
+						outerThis.theChart.data.datasets[key].data.push({ x: '', y: '', r: '' });
+					}
+					outerThis.theChart.data.datasets[key].data[innerKey].x = outerThis.datasets[key].data[innerKey].x = innerValue.x;
+					outerThis.theChart.data.datasets[key].data[innerKey].y = outerThis.datasets[key].data[innerKey].y = innerValue.y;
+					outerThis.theChart.data.datasets[key].data[innerKey].r = outerThis.datasets[key].data[innerKey].r = innerValue.r;
+				});
+				outerThis.theChart.data.datasets[key].backgroundColor = outerThis.datasets[key].backgroundColor = value.backgroundColor;
+				outerThis.theChart.data.datasets[key].borderColor = outerThis.datasets[key].borderColor = value.borderColor;
+				outerThis.theChart.data.datasets[key].hoverRadius = outerThis.datasets[key].hoverRadius = 0;
+			});
+
+			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
+			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
+			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
+			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
+			this.theChart.update();
+		}
+	},
+	mounted() {
+		this.onLoad();
+		if (this.graphData) {
+			this.forEdit();
+		}
+	}
+});
+
+/***/ }),
+/* 23 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+	props: ['graphData', 'graphIndex'],
+	data() {
+		return {
+			chartType: 'scatter',
+			titleText: '',
+			legendPosition: 'top',
+			showTitle: false,
+			showLegend: true,
+			datasets: [{
+				label: '',
+				data: [{ x: '', y: '' }],
+				backgroundColor: '',
+				borderColor: '',
+				fill: false,
+				showLine: false
+			}]
+		};
+	},
+	methods: {
+		addDataset() {
+			this.datasets.push({
+				label: '',
+				data: [{ x: '', y: '' }],
+				backgroundColor: '',
+				borderColor: '',
+				fill: false,
+				showLine: false
+			});
+			this.theChart.data.datasets.push({
+				label: '',
+				data: [{ x: '', y: '' }],
+				backgroundColor: '',
+				borderColor: '',
+				fill: false,
+				showLine: false
+			});
+			this.theChart.update();
+		},
+		addBubblePoint(index) {
+			this.datasets[index].data.push({ x: '', y: '' });
+			this.theChart.data.datasets[index].data.push({ x: '', y: '' });
+			this.theChart.update();
+		},
+		addDatasetLabel(index) {
+			this.theChart.data.datasets[index].label = this.datasets[index].label;
+			this.theChart.update();
+		},
+		addDatasetDataPoints(index, pIndex, point) {
+			this.theChart.data.datasets[index].data[pIndex][point] = this.datasets[index].data[pIndex][point];
+			this.theChart.update();
+		},
+		addDatasetBgColor(index) {
+			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
+			this.theChart.update();
+		},
+		addDatasetborderColor(index) {
+			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
+			this.theChart.update();
+		},
+		showingGraphTitle() {
+			this.theChart.options.title.display = this.showTitle;
+			this.theChart.update();
+		},
+		addTitleText() {
+			this.theChart.options.title.text = this.titleText;
+			this.theChart.update();
+		},
+		showingGraphLegend() {
+			this.theChart.options.legend.display = this.showLegend;
+			this.theChart.update();
+		},
+		changeLegendPosition() {
+			this.theChart.options.legend.position = this.legendPosition;
+			this.theChart.update();
+		},
+		deleteDataset(index) {
+			this.datasets.splice(index, 1);
+			this.theChart.data.datasets.splice(index, 1);
+			this.theChart.update();
+		},
+		saveGraphData() {
+			let chartDatas = {
+				type: this.chartType,
+				data: {
+					datasets: this.datasets
+				},
+				options: {
+					title: {
+						display: this.showTitle,
+						text: this.titleText
+					},
+					legend: {
+						display: this.showLegend,
+						position: this.legendPosition
+					}
+				}
+			};
+
+			this.$store.dispatch('addNewGraph', chartDatas);
+		},
+		updateGraphData() {
+			let outerThis = this;
+			let chartDatas = {
+				type: this.chartType,
+				data: {
+					datasets: []
+				},
+				options: {
+					title: {
+						display: this.showTitle,
+						text: this.titleText
+					},
+					legend: {
+						display: this.showLegend,
+						position: this.legendPosition
+					}
+				}
+			};
+
+			this.datasets.forEach(function (value, key) {
+				chartDatas.data.datasets.push({
+					label: value.label,
+					data: value.data,
+					backgroundColor: value.backgroundColor,
+					borderColor: value.borderColor,
+					fill: value.fill,
+					showLine: value.showLine
+				});
+			});
+
+			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+
+			this.$store.dispatch('updateGraph', payload).then(function () {
+				setTimeout(function () {
+					outerThis.$emit("applied");
+				}, 1000);
+			});
+		},
+		onLoad() {
+			let ctx = document.getElementById("scatterChart");
+			this.theChart = new Chart(ctx, {
+				type: this.chartType,
+				data: {
+					datasets: [{
+						label: '',
+						data: [{ x: '', y: '' }],
+						backgroundColor: '',
+						borderColor: '',
+						fill: false,
+						showLine: false
+					}]
+				},
+				options: {
+					title: {
+						display: false,
+						text: ''
+					},
+					legend: {
+						display: true,
+						position: 'top'
+					}
+				}
+			});
+		},
+		forEdit() {
+			let outerThis = this;
+			this.graphData.data.datasets.forEach(function (value, key) {
+				if (key) {
+					outerThis.datasets.push({ label: '', data: [{ x: '', y: '' }], backgroundColor: '', fill: false, showLine: false });
+					outerThis.theChart.data.datasets.push({ label: '', data: [{ x: '', y: '' }], backgroundColor: '', fill: false, showLine: false });
+				}
+				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = value.label;
+				value.data.forEach(function (innerValue, innerKey) {
+					if (innerKey) {
+						outerThis.datasets[key].data.push({ x: '', y: '' });
+						outerThis.theChart.data.datasets[key].data.push({ x: '', y: '' });
+					}
+					outerThis.theChart.data.datasets[key].data[innerKey].x = outerThis.datasets[key].data[innerKey].x = innerValue.x;
+					outerThis.theChart.data.datasets[key].data[innerKey].y = outerThis.datasets[key].data[innerKey].y = innerValue.y;
+				});
+				outerThis.theChart.data.datasets[key].backgroundColor = outerThis.datasets[key].backgroundColor = value.backgroundColor;
+				outerThis.theChart.data.datasets[key].borderColor = outerThis.datasets[key].borderColor = value.borderColor;
+			});
+
+			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
+			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
+			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
+			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
+			this.theChart.update();
+		}
+	},
+	mounted() {
+		this.onLoad();
+		if (this.graphData) {
+			this.forEdit();
+		}
+	}
+});
+
+/***/ }),
+/* 24 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(34);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__App_vue__ = __webpack_require__(37);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_allSavedChartsTemplate_vue__ = __webpack_require__(86);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vuex__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__store__ = __webpack_require__(90);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__store__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_allSavedChartsTemplate_vue__ = __webpack_require__(29);
 
 
 
 
+//components
 
 
-__WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].use(__WEBPACK_IMPORTED_MODULE_3_vuex__["a" /* default */]);
+__WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].use(__WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */]);
 
 new __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */]({
 	el: '#app',
-	store: new __WEBPACK_IMPORTED_MODULE_3_vuex__["a" /* default */].Store(__WEBPACK_IMPORTED_MODULE_4__store__["a" /* default */]),
+	store: new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store(__WEBPACK_IMPORTED_MODULE_2__store__["a" /* default */]),
 	data: {
-		currentTab: 'allSavedCharts',
-		tabs: [{ tabFileName: 'allSavedCharts', tabName: 'All Charts' }, { tabFileName: 'App', tabName: 'Add New Chart' }]
+		currentTab: 'allSavedCharts'
 	},
 	components: {
-		App: __WEBPACK_IMPORTED_MODULE_1__App_vue__["a" /* default */], allSavedCharts: __WEBPACK_IMPORTED_MODULE_2__components_allSavedChartsTemplate_vue__["a" /* default */]
+		allSavedCharts: __WEBPACK_IMPORTED_MODULE_3__components_allSavedChartsTemplate_vue__["a" /* default */]
 	},
 	computed: {
 		currentTabComponent: function () {
@@ -5081,7 +4743,7 @@ new __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */]({
 });
 
 /***/ }),
-/* 34 */
+/* 25 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -16017,10 +15679,10 @@ Vue.compile = compileToFunctions;
 
 /* harmony default export */ __webpack_exports__["a"] = (Vue);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(4), __webpack_require__(35).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(4), __webpack_require__(26).setImmediate))
 
 /***/ }),
-/* 35 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
@@ -16076,7 +15738,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(36);
+__webpack_require__(27);
 // On some exotic environments, it's not clear which object `setimmediate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -16090,7 +15752,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 36 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -16283,15 +15945,107 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(8)))
 
 /***/ }),
-/* 37 */
+/* 28 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(9);
+/* harmony default export */ __webpack_exports__["a"] = ({
+	state: {
+		allGraph: [],
+		editedGraphIndex: ''
+	},
+	getters: {
+		allGraph: state => {
+			return state.allGraph;
+		}
+	},
+	mutations: {
+		onLoad(state) {
+			state.allGraph = global_chart_data;
+		},
+		addNewGraph(state, newGraph) {
+			state.allGraph.push(newGraph);
+		},
+		updateGraph(state, details) {
+			let dataIndex = details.graphIndex;
+			let graphDetails = details.chartDetails;
+			state.allGraph[dataIndex].data = graphDetails.data;
+			state.allGraph[dataIndex].options = graphDetails.options;
+			state.editedGraphIndex = dataIndex;
+		},
+		deleteGraph(state, index) {
+			state.allGraph.splice(index, 1);
+		}
+	},
+	actions: {
+		onLoad: context => {
+			context.commit('onLoad');
+		},
+		addNewGraph: (context, newGraph) => {
+			$.ajax({
+				url: gl.ajax_url,
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					action: 'save_chart',
+					graph_data: newGraph
+				},
+				success: function (response) {
+					newGraph.graph_id = response;
+					context.commit('addNewGraph', newGraph);
+					var content = '[graph_lite id="' + response + '"]';
+					tinymce.activeEditor.execCommand('mceInsertContent', false, content);
+					$('#gl-admin-meta-box').fadeOut();
+					$('div#gl-admin-meta-box').find('input:text').val('');
+				},
+				error: function (error) {
+					alert('Something went wront please try again');
+				}
+			});
+		},
+		updateGraph(context, editedGraphDetails) {
+			let graphDetails = editedGraphDetails.chartDetails;
+			let graphId = editedGraphDetails.graph_id;
+
+			$.ajax({
+				url: gl.ajax_url,
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					action: 'update_chart',
+					graph_id: graphId,
+					updated_graph_data: graphDetails
+				},
+				success: function (response) {
+					context.commit('updateGraph', editedGraphDetails);
+					$.sweetModal({
+						content: 'Graph id ' + response + ' updated',
+						icon: $.sweetModal.ICON_SUCCESS,
+						timeout: 1300,
+						showCloseButton: false
+					});
+				},
+				error: function (error) {
+					alert('Something went wront please try again');
+				}
+			});
+		},
+		deleteGraph: (context, index) => {
+			context.commit('deleteGraph', index);
+		}
+	}
+});
+
+/***/ }),
+/* 29 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(10);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_ffe1f200_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(85);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_54327fa4_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(85);
 function injectStyle (ssrContext) {
-  __webpack_require__(38)
+  __webpack_require__(30)
 }
 var normalizeComponent = __webpack_require__(3)
 /* script */
@@ -16308,8 +16062,8 @@ var __vue_scopeId__ = null
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
-  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_ffe1f200_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_allSavedChartsTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_54327fa4_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -16320,20 +16074,20 @@ var Component = normalizeComponent(
 
 
 /***/ }),
-/* 38 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(39);
+var content = __webpack_require__(31);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("d830ede8", content, true, {});
+var update = __webpack_require__(2)("fa552a88", content, true, {});
 
 /***/ }),
-/* 39 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -16341,13 +16095,13 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "#app,body,html{min-height:100%!important;height:100%}.dropbtn{background-color:#3473aa;color:#fff;padding:10px;font-size:16px;border:none;cursor:pointer;min-width:130px}.dropdown{position:relative;display:inline-block}.dropdown-content{display:none;position:absolute;background-color:#f9f9f9;min-width:160px;box-shadow:0 8px 16px 0 rgba(0,0,0,.2);z-index:1}.dropdown-content a{color:#000;padding:12px 16px;text-decoration:none;display:block}.dropdown-content a:hover{background-color:#f1f1f1}.dropdown:hover .dropdown-content{display:block}.dropdown:hover .dropbtn{background-color:#3e8e41}", ""]);
+exports.push([module.i, "", ""]);
 
 // exports
 
 
 /***/ }),
-/* 40 */
+/* 32 */
 /***/ (function(module, exports) {
 
 /**
@@ -16380,20 +16134,57 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 41 */
+/* 33 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BarChartTemplate_vue__ = __webpack_require__(11);
+/* unused harmony namespace reexport */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4bf77176_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__ = __webpack_require__(36);
+function injectStyle (ssrContext) {
+  __webpack_require__(34)
+}
+var normalizeComponent = __webpack_require__(3)
+/* script */
+
+
+/* template */
+
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BarChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4bf77176_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__["a" /* default */],
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+
+/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
+
+
+/***/ }),
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(42);
+var content = __webpack_require__(35);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
 var update = __webpack_require__(2)("3b298ec4", content, true, {});
 
 /***/ }),
-/* 42 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -16407,7 +16198,7 @@ exports.push([module.i, ".barChart{width:100%;height:100%;display:flex;flex-dire
 
 
 /***/ }),
-/* 43 */
+/* 36 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -16417,20 +16208,57 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
 
 /***/ }),
-/* 44 */
+/* 37 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_LineChartTemplate_vue__ = __webpack_require__(12);
+/* unused harmony namespace reexport */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_a9e9d10c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__ = __webpack_require__(40);
+function injectStyle (ssrContext) {
+  __webpack_require__(38)
+}
+var normalizeComponent = __webpack_require__(3)
+/* script */
+
+
+/* template */
+
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_LineChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_a9e9d10c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__["a" /* default */],
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+
+/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
+
+
+/***/ }),
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(45);
+var content = __webpack_require__(39);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
 var update = __webpack_require__(2)("0374422c", content, true, {});
 
 /***/ }),
-/* 45 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -16444,7 +16272,7 @@ exports.push([module.i, ".lineChart{width:100%;height:100%;display:flex;flex-dir
 
 
 /***/ }),
-/* 46 */
+/* 40 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -16454,20 +16282,57 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
 
 /***/ }),
-/* 47 */
+/* 41 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__ = __webpack_require__(13);
+/* unused harmony namespace reexport */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_20b1d16e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(64);
+function injectStyle (ssrContext) {
+  __webpack_require__(42)
+}
+var normalizeComponent = __webpack_require__(3)
+/* script */
+
+
+/* template */
+
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_20b1d16e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+
+/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
+
+
+/***/ }),
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(48);
+var content = __webpack_require__(43);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("59e1d063", content, true, {});
+var update = __webpack_require__(2)("b93c079a", content, true, {});
 
 /***/ }),
-/* 48 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -16481,15 +16346,15 @@ exports.push([module.i, ".pieChart{width:100%;height:100%;display:flex;flex-dire
 
 
 /***/ }),
-/* 49 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(0);
-var bind = __webpack_require__(16);
-var Axios = __webpack_require__(51);
+var bind = __webpack_require__(14);
+var Axios = __webpack_require__(46);
 var defaults = __webpack_require__(6);
 
 /**
@@ -16523,15 +16388,15 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(20);
-axios.CancelToken = __webpack_require__(65);
-axios.isCancel = __webpack_require__(19);
+axios.Cancel = __webpack_require__(18);
+axios.CancelToken = __webpack_require__(60);
+axios.isCancel = __webpack_require__(17);
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(66);
+axios.spread = __webpack_require__(61);
 
 module.exports = axios;
 
@@ -16540,7 +16405,7 @@ module.exports.default = axios;
 
 
 /***/ }),
-/* 50 */
+/* 45 */
 /***/ (function(module, exports) {
 
 /*!
@@ -16567,7 +16432,7 @@ function isSlowBuffer (obj) {
 
 
 /***/ }),
-/* 51 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16575,8 +16440,8 @@ function isSlowBuffer (obj) {
 
 var defaults = __webpack_require__(6);
 var utils = __webpack_require__(0);
-var InterceptorManager = __webpack_require__(60);
-var dispatchRequest = __webpack_require__(61);
+var InterceptorManager = __webpack_require__(55);
+var dispatchRequest = __webpack_require__(56);
 
 /**
  * Create a new instance of Axios
@@ -16653,7 +16518,7 @@ module.exports = Axios;
 
 
 /***/ }),
-/* 52 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16672,13 +16537,13 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 
 /***/ }),
-/* 53 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var createError = __webpack_require__(18);
+var createError = __webpack_require__(16);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -16705,7 +16570,7 @@ module.exports = function settle(resolve, reject, response) {
 
 
 /***/ }),
-/* 54 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16733,7 +16598,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
 
 
 /***/ }),
-/* 55 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16806,7 +16671,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
 
 /***/ }),
-/* 56 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16866,7 +16731,7 @@ module.exports = function parseHeaders(headers) {
 
 
 /***/ }),
-/* 57 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16941,7 +16806,7 @@ module.exports = (
 
 
 /***/ }),
-/* 58 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16984,7 +16849,7 @@ module.exports = btoa;
 
 
 /***/ }),
-/* 59 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17044,7 +16909,7 @@ module.exports = (
 
 
 /***/ }),
-/* 60 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17103,18 +16968,18 @@ module.exports = InterceptorManager;
 
 
 /***/ }),
-/* 61 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(0);
-var transformData = __webpack_require__(62);
-var isCancel = __webpack_require__(19);
+var transformData = __webpack_require__(57);
+var isCancel = __webpack_require__(17);
 var defaults = __webpack_require__(6);
-var isAbsoluteURL = __webpack_require__(63);
-var combineURLs = __webpack_require__(64);
+var isAbsoluteURL = __webpack_require__(58);
+var combineURLs = __webpack_require__(59);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -17196,7 +17061,7 @@ module.exports = function dispatchRequest(config) {
 
 
 /***/ }),
-/* 62 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17223,7 +17088,7 @@ module.exports = function transformData(data, headers, fns) {
 
 
 /***/ }),
-/* 63 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17244,7 +17109,7 @@ module.exports = function isAbsoluteURL(url) {
 
 
 /***/ }),
-/* 64 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17265,13 +17130,13 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 
 /***/ }),
-/* 65 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Cancel = __webpack_require__(20);
+var Cancel = __webpack_require__(18);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -17329,7 +17194,7 @@ module.exports = CancelToken;
 
 
 /***/ }),
-/* 66 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17363,7 +17228,7 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 67 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17454,7 +17319,7 @@ var isArray = Array.isArray || function (xs) {
 
 
 /***/ }),
-/* 68 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17546,30 +17411,67 @@ var objectKeys = Object.keys || function (obj) {
 
 
 /***/ }),
-/* 69 */
+/* 64 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"pieChart gl_chart_template",attrs:{"id":"pie"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelString),expression:"chartlabelString"}],staticClass:"regular-text",attrs:{"type":"text","id":"labels"},domProps:{"value":(_vm.chartlabelString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(1),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetDataString),expression:"chartDatasetDataString"}],staticClass:"regular-text",attrs:{"type":"text","id":"datasets"},domProps:{"value":(_vm.chartDatasetDataString)},on:{"keyup":_vm.addDatasetData,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetDataString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(2),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetBgColorString),expression:"chartDatasetBgColorString"}],staticClass:"regular-text",attrs:{"type":"text","id":"colors"},domProps:{"value":(_vm.chartDatasetBgColorString)},on:{"keyup":_vm.addDatasetBgColor,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetBgColorString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(3),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showTitle),expression:"showTitle"}],attrs:{"type":"checkbox","id":"title"},domProps:{"checked":Array.isArray(_vm.showTitle)?_vm._i(_vm.showTitle,null)>-1:(_vm.showTitle)},on:{"change":[function($event){var $$a=_vm.showTitle,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showTitle=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showTitle=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showTitle=$$c}},_vm.showingGraphTitle]}})])]),_vm._v(" "),_c('tr',[_vm._m(4),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),(!_vm.graphData)?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])]),_vm._v(" "),_vm._m(8)])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"pieChart gl_chart_template",attrs:{"id":"pie"}},[(_vm.backButton)?_c('div',{staticStyle:{"display":"block"}},[_c('button',{attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Back")])]):_vm._e(),_vm._v(" "),_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelString),expression:"chartlabelString"}],staticClass:"regular-text",attrs:{"type":"text","id":"labels"},domProps:{"value":(_vm.chartlabelString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(1),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetDataString),expression:"chartDatasetDataString"}],staticClass:"regular-text",attrs:{"type":"text","id":"datasets"},domProps:{"value":(_vm.chartDatasetDataString)},on:{"keyup":_vm.addDatasetData,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetDataString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(2),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetBgColorString),expression:"chartDatasetBgColorString"}],staticClass:"regular-text",attrs:{"type":"text","id":"colors"},domProps:{"value":(_vm.chartDatasetBgColorString)},on:{"keyup":_vm.addDatasetBgColor,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetBgColorString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(3),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showTitle),expression:"showTitle"}],attrs:{"type":"checkbox","id":"title"},domProps:{"checked":Array.isArray(_vm.showTitle)?_vm._i(_vm.showTitle,null)>-1:(_vm.showTitle)},on:{"change":[function($event){var $$a=_vm.showTitle,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showTitle=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showTitle=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showTitle=$$c}},_vm.showingGraphTitle]}})])]),_vm._v(" "),_c('tr',[_vm._m(4),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),(!_vm.graphData)?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])]),_vm._v(" "),_vm._m(8)])}
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("Labels")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Color")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"title"}},[_vm._v("Show Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Title Text")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Legend")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Legend Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('canvas',{attrs:{"id":"pieChart"}})])}]
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
 
 /***/ }),
-/* 70 */
+/* 65 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(19);
+/* unused harmony namespace reexport */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2fc68b75_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(68);
+function injectStyle (ssrContext) {
+  __webpack_require__(66)
+}
+var normalizeComponent = __webpack_require__(3)
+/* script */
+
+
+/* template */
+
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DoughnutChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2fc68b75_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__["a" /* default */],
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+
+/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
+
+
+/***/ }),
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(71);
+var content = __webpack_require__(67);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
 var update = __webpack_require__(2)("de59e52a", content, true, {});
 
 /***/ }),
-/* 71 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -17583,7 +17485,7 @@ exports.push([module.i, ".DoughnutChart{width:100%;height:100%;display:flex;flex
 
 
 /***/ }),
-/* 72 */
+/* 68 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17593,20 +17495,57 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
 
 /***/ }),
-/* 73 */
+/* 69 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_RadarChartTemplate_vue__ = __webpack_require__(20);
+/* unused harmony namespace reexport */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6621788e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__ = __webpack_require__(72);
+function injectStyle (ssrContext) {
+  __webpack_require__(70)
+}
+var normalizeComponent = __webpack_require__(3)
+/* script */
+
+
+/* template */
+
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_RadarChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6621788e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__["a" /* default */],
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+
+/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
+
+
+/***/ }),
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(74);
+var content = __webpack_require__(71);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
 var update = __webpack_require__(2)("92e516a2", content, true, {});
 
 /***/ }),
-/* 74 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -17620,7 +17559,7 @@ exports.push([module.i, ".radarChart{width:100%;height:100%;display:flex;flex-di
 
 
 /***/ }),
-/* 75 */
+/* 72 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17630,20 +17569,57 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
 
 /***/ }),
-/* 76 */
+/* 73 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(21);
+/* unused harmony namespace reexport */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_bf76e438_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(76);
+function injectStyle (ssrContext) {
+  __webpack_require__(74)
+}
+var normalizeComponent = __webpack_require__(3)
+/* script */
+
+
+/* template */
+
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PolarAreaChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_bf76e438_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__["a" /* default */],
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+
+/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
+
+
+/***/ }),
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(77);
+var content = __webpack_require__(75);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
 var update = __webpack_require__(2)("73de9965", content, true, {});
 
 /***/ }),
-/* 77 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -17657,7 +17633,7 @@ exports.push([module.i, ".PolarAreaChart{width:100%;height:100%;display:flex;fle
 
 
 /***/ }),
-/* 78 */
+/* 76 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17667,20 +17643,57 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
 
 /***/ }),
-/* 79 */
+/* 77 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BubbleChartTemplate_vue__ = __webpack_require__(22);
+/* unused harmony namespace reexport */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_726be7b5_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__ = __webpack_require__(80);
+function injectStyle (ssrContext) {
+  __webpack_require__(78)
+}
+var normalizeComponent = __webpack_require__(3)
+/* script */
+
+
+/* template */
+
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BubbleChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_726be7b5_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__["a" /* default */],
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+
+/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
+
+
+/***/ }),
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(80);
+var content = __webpack_require__(79);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("417f5046", content, true, {});
+var update = __webpack_require__(2)("1d920e1a", content, true, {});
 
 /***/ }),
-/* 80 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -17694,14 +17707,51 @@ exports.push([module.i, ".bubbleChart{width:100%;height:100%;display:flex;flex-d
 
 
 /***/ }),
+/* 80 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"bubbleChart gl_chart_template",attrs:{"id":"bubble"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_vm._l((_vm.datasets),function(dataset,index){return [_c('tr',[_vm._m(0,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.label),expression:"dataset.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label"},domProps:{"value":(dataset.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_vm._l((dataset.data),function(data,PIndex){return [_c('div',{staticClass:"gl_bb_point"},[_c('div',{staticClass:"gl_bb_xp"},[_c('label',{attrs:{"for":"xPoint"}},[_vm._v("x-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].x),expression:"dataset.data[PIndex].x"}],staticClass:"bubblePoints",attrs:{"type":"number","id":"xPoint"},domProps:{"value":(dataset.data[PIndex].x)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "x", $event.target.value)}}})]),_vm._v(" "),_c('div',{staticClass:"gl_bb_yp"},[_c('label',{attrs:{"for":"xPoint"}},[_vm._v("y-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].y),expression:"dataset.data[PIndex].y"}],staticClass:"bubblePoints",attrs:{"type":"number","id":"yPoint"},domProps:{"value":(dataset.data[PIndex].y)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "y", $event.target.value)}}})]),_vm._v(" "),_c('div',{staticClass:"gl_bb_r"},[_c('label',{attrs:{"for":"radius"}},[_vm._v("Bubble Radius")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].r),expression:"dataset.data[PIndex].r"}],staticClass:"bubblePoints",attrs:{"type":"number","id":"radius"},domProps:{"value":(dataset.data[PIndex].r)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'r')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'r')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "r", $event.target.value)}}})])])]}),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.addBubblePoint(index)}}},[_vm._v("Add Bubble Point")])],2)]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.backgroundColor),expression:"dataset.backgroundColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"colors"},domProps:{"value":(dataset.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.borderColor),expression:"dataset.borderColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"line_color"},domProps:{"value":(dataset.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "borderColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])])]}),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showTitle),expression:"showTitle"}],attrs:{"type":"checkbox","id":"title"},domProps:{"checked":Array.isArray(_vm.showTitle)?_vm._i(_vm.showTitle,null)>-1:(_vm.showTitle)},on:{"change":[function($event){var $$a=_vm.showTitle,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showTitle=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showTitle=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showTitle=$$c}},_vm.showingGraphTitle]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(10),_vm._v(" "),(!_vm.graphData)?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])],2)]),_vm._v(" "),_vm._m(11)])}
+var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Circle Background Color")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"line_color"}},[_vm._v("Circle Border Color")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"title"}},[_vm._v("Show Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Title Text")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Legend")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Legend Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('canvas',{attrs:{"id":"bubbleChart"}})])}]
+var esExports = { render: render, staticRenderFns: staticRenderFns }
+/* harmony default export */ __webpack_exports__["a"] = (esExports);
+
+/***/ }),
 /* 81 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"bubbleChart gl_chart_template",attrs:{"id":"bubble"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_vm._l((_vm.datasets),function(dataset,index){return [_c('tr',[_vm._m(0,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.label),expression:"dataset.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label"},domProps:{"value":(dataset.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_vm._l((dataset.data),function(data,PIndex){return [_c('div',{staticClass:"gl_bb_point"},[_c('div',{staticClass:"gl_bb_xp"},[_c('label',{attrs:{"for":"xPoint"}},[_vm._v("x-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].x),expression:"dataset.data[PIndex].x"}],staticClass:"bubblePoints",attrs:{"type":"number","id":"xPoint"},domProps:{"value":(dataset.data[PIndex].x)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "x", $event.target.value)}}})]),_vm._v(" "),_c('div',{staticClass:"gl_bb_yp"},[_c('label',{attrs:{"for":"xPoint"}},[_vm._v("y-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].y),expression:"dataset.data[PIndex].y"}],staticClass:"bubblePoints",attrs:{"type":"number","id":"yPoint"},domProps:{"value":(dataset.data[PIndex].y)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "y", $event.target.value)}}})]),_vm._v(" "),_c('div',{staticClass:"gl_bb_r"},[_c('label',{attrs:{"for":"radius"}},[_vm._v("Bubble Radius")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].r),expression:"dataset.data[PIndex].r"}],staticClass:"bubblePoints",attrs:{"type":"number","id":"radius"},domProps:{"value":(dataset.data[PIndex].r)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'r')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "r", $event.target.value)}}})])])]}),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.addBubblePoint(index)}}},[_vm._v("Add Bubble Point")])],2)]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.backgroundColor),expression:"dataset.backgroundColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"colors"},domProps:{"value":(dataset.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.borderColor),expression:"dataset.borderColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"line_color"},domProps:{"value":(dataset.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "borderColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])])]}),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showTitle),expression:"showTitle"}],attrs:{"type":"checkbox","id":"title"},domProps:{"checked":Array.isArray(_vm.showTitle)?_vm._i(_vm.showTitle,null)>-1:(_vm.showTitle)},on:{"change":[function($event){var $$a=_vm.showTitle,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showTitle=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showTitle=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showTitle=$$c}},_vm.showingGraphTitle]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(10),_vm._v(" "),(!_vm.graphData)?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])],2)]),_vm._v(" "),_vm._m(11)])}
-var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Circle Background Color")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"line_color"}},[_vm._v("Circle Border Color")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"title"}},[_vm._v("Show Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Title Text")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Legend")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Legend Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('canvas',{attrs:{"id":"bubbleChart"}})])}]
-var esExports = { render: render, staticRenderFns: staticRenderFns }
-/* harmony default export */ __webpack_exports__["a"] = (esExports);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ScatterChartTemplate_vue__ = __webpack_require__(23);
+/* unused harmony namespace reexport */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2de8b59c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__ = __webpack_require__(84);
+function injectStyle (ssrContext) {
+  __webpack_require__(82)
+}
+var normalizeComponent = __webpack_require__(3)
+/* script */
+
+
+/* template */
+
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ScatterChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2de8b59c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__["a" /* default */],
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+
+/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
+
 
 /***/ }),
 /* 82 */
@@ -17714,7 +17764,7 @@ var content = __webpack_require__(83);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("78953b99", content, true, {});
+var update = __webpack_require__(2)("5184985a", content, true, {});
 
 /***/ }),
 /* 83 */
@@ -17735,7 +17785,7 @@ exports.push([module.i, ".scatterChart{width:100%;height:100%;display:flex;flex-
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"scatterChart gl_chart_template",attrs:{"id":"scatter"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_vm._l((_vm.datasets),function(dataset,index){return [_c('tr',[_vm._m(0,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.label),expression:"dataset.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label"},domProps:{"value":(dataset.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_vm._l((dataset.data),function(data,PIndex){return [_c('div',{staticClass:"gl_sc_point"},[_c('div',{staticClass:"gl_sc_xp"},[_c('label',{attrs:{"for":"xPoint"}},[_vm._v("x-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].x),expression:"dataset.data[PIndex].x"}],staticClass:"bubblePoints",attrs:{"type":"number","id":"xPoint"},domProps:{"value":(dataset.data[PIndex].x)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "x", $event.target.value)}}})]),_vm._v(" "),_c('div',{staticClass:"gl_sc_yp"},[_c('label',{attrs:{"for":"xPoint"}},[_vm._v("y-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].y),expression:"dataset.data[PIndex].y"}],staticClass:"bubblePoints",attrs:{"type":"number","id":"yPoint"},domProps:{"value":(dataset.data[PIndex].y)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "y", $event.target.value)}}})])])]}),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.addBubblePoint(index)}}},[_vm._v("Add Bubble Point")])],2)]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.backgroundColor),expression:"dataset.backgroundColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"colors"},domProps:{"value":(dataset.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.borderColor),expression:"dataset.borderColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"line_color"},domProps:{"value":(dataset.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "borderColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])])]}),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showTitle),expression:"showTitle"}],attrs:{"type":"checkbox","id":"title"},domProps:{"checked":Array.isArray(_vm.showTitle)?_vm._i(_vm.showTitle,null)>-1:(_vm.showTitle)},on:{"change":[function($event){var $$a=_vm.showTitle,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showTitle=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showTitle=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showTitle=$$c}},_vm.showingGraphTitle]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(10),_vm._v(" "),(!_vm.graphData)?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])],2)]),_vm._v(" "),_vm._m(11)])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"scatterChart gl_chart_template",attrs:{"id":"scatter"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_vm._l((_vm.datasets),function(dataset,index){return [_c('tr',[_vm._m(0,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.label),expression:"dataset.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label"},domProps:{"value":(dataset.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_vm._l((dataset.data),function(data,PIndex){return [_c('div',{staticClass:"gl_sc_point"},[_c('div',{staticClass:"gl_sc_xp"},[_c('label',{attrs:{"for":"xPoint"}},[_vm._v("x-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].x),expression:"dataset.data[PIndex].x"}],staticClass:"bubblePoints",attrs:{"type":"number","id":"xPoint"},domProps:{"value":(dataset.data[PIndex].x)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "x", $event.target.value)}}})]),_vm._v(" "),_c('div',{staticClass:"gl_sc_yp"},[_c('label',{attrs:{"for":"xPoint"}},[_vm._v("y-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].y),expression:"dataset.data[PIndex].y"}],staticClass:"bubblePoints",attrs:{"type":"number","id":"yPoint"},domProps:{"value":(dataset.data[PIndex].y)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "y", $event.target.value)}}})])])]}),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.addBubblePoint(index)}}},[_vm._v("Add Bubble Point")])],2)]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.backgroundColor),expression:"dataset.backgroundColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"colors"},domProps:{"value":(dataset.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.borderColor),expression:"dataset.borderColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"line_color"},domProps:{"value":(dataset.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "borderColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])])]}),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showTitle),expression:"showTitle"}],attrs:{"type":"checkbox","id":"title"},domProps:{"checked":Array.isArray(_vm.showTitle)?_vm._i(_vm.showTitle,null)>-1:(_vm.showTitle)},on:{"change":[function($event){var $$a=_vm.showTitle,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showTitle=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showTitle=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showTitle=$$c}},_vm.showingGraphTitle]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(10),_vm._v(" "),(!_vm.graphData)?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])],2)]),_vm._v(" "),_vm._m(11)])}
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Circle Background Color")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"line_color"}},[_vm._v("Circle Border Color")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"title"}},[_vm._v("Show Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Title Text")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Legend")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Legend Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('canvas',{attrs:{"id":"scatterChart"}})])}]
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
@@ -17745,176 +17795,10 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"id":"app"}},[_c('div',{staticClass:"gl_chart_dropdown_area"},[_c('p',{staticClass:"gl_chart_template_title"},[_vm._v("Select a chart")]),_vm._v(" "),_c('div',{staticClass:"dropdown gl_chart_dropdown"},[_c('button',{staticClass:"dropbtn"},[_vm._v(_vm._s(_vm.activeChart))]),_vm._v(" "),_c('div',{staticClass:"dropdown-content"},_vm._l((_vm.chartTabs),function(chartTab,index){return _c('a',{key:chartTab.tabFileName,attrs:{"href":"javascript:void(0)"},on:{"click":function($event){_vm.changeTabChart(index)}}},[_vm._v(_vm._s(chartTab.tabName))])}))])]),_vm._v(" "),_c(_vm.currentChartTabComponent,{tag:"component"})],1)}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c(_vm.currentChartTabComponent,{tag:"component",attrs:{"graph-data":_vm.editedGraphData,"graph-index":_vm.editedGraphIndex},on:{"applied":_vm.whenGraphUpdated}}),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.currentComponent),expression:"!currentComponent"}]},[_c('transition',{attrs:{"name":"slide-fade","mode":"out-in"}},[(_vm.docState === 'add')?_c('div',{staticClass:"gl_single_graph"},[_c('div',{staticClass:"gl_graph_box"}),_vm._v(" "),_c('div',{staticClass:"gl_control_area"},[_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.docState = 'create'}}},[_vm._v("Add")])])]):_vm._e(),_vm._v(" "),(_vm.docState === 'create')?_c('div',{staticClass:"gl_single_graph"},[_c('div',{staticClass:"gl_graph_box"},[_c('button',{attrs:{"type":"button"}},[_vm._v("Create")]),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.docState = 'add'}}},[_vm._v("Cancel")])])]):_vm._e()]),_vm._v(" "),_vm._l((_vm.allGraph),function(graph,index){return _c('div',{key:graph.graph_id,staticClass:"gl_single_graph"},[_c('div',{staticClass:"gl_graph_box"},[_c('canvas',{attrs:{"id":index}})]),_vm._v(" "),_c('div',{staticClass:"gl_control_area"},[_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.useGraph(graph.graph_id)}}},[_vm._v("Use")]),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.editGraphDetails(index)}}},[_vm._v("Edit")]),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.deleteGraph(index)}}},[_vm._v("Delete")])])])})],2)],1)}
 var staticRenderFns = []
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
-
-/***/ }),
-/* 86 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(31);
-/* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_022d4498_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(89);
-function injectStyle (ssrContext) {
-  __webpack_require__(87)
-}
-var normalizeComponent = __webpack_require__(3)
-/* script */
-
-
-/* template */
-
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = injectStyle
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_allSavedChartsTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_022d4498_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__["a" /* default */],
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-
-/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
-
-
-/***/ }),
-/* 87 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(88);
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__(2)("11820e09", content, true, {});
-
-/***/ }),
-/* 88 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(1)(false);
-// imports
-
-
-// module
-exports.push([module.i, "", ""]);
-
-// exports
-
-
-/***/ }),
-/* 89 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c(_vm.currentChartTabComponent,{tag:"component",attrs:{"graph-data":_vm.editedGraphData,"graph-index":_vm.editedGraphIndex},on:{"applied":_vm.whenGraphUpdated}}),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.currentComponent),expression:"!currentComponent"}]},[_c('h1',[_vm._v("All Charts")]),_vm._v(" "),_vm._l((_vm.allGraph),function(graph,index){return _c('div',{key:graph.graph_id,staticClass:"gl_single_graph"},[_c('div',{staticClass:"gl_graph_box"},[_c('canvas',{attrs:{"id":index}})]),_vm._v(" "),_c('div',{staticClass:"gl_control_area"},[_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.useGraph(graph.graph_id)}}},[_vm._v("Use")]),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.editGraphDetails(index)}}},[_vm._v("Edit")]),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.deleteGraph(index)}}},[_vm._v("Delete")])])])})],2)],1)}
-var staticRenderFns = []
-var esExports = { render: render, staticRenderFns: staticRenderFns }
-/* harmony default export */ __webpack_exports__["a"] = (esExports);
-
-/***/ }),
-/* 90 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony default export */ __webpack_exports__["a"] = ({
-	state: {
-		allGraph: [],
-		editedGraphIndex: ''
-	},
-	getters: {
-		allGraph: state => {
-			return state.allGraph;
-		}
-	},
-	mutations: {
-		onLoad(state) {
-			state.allGraph = global_chart_data;
-		},
-		addNewGraph(state, newGraph) {
-			state.allGraph.push(newGraph);
-		},
-		updateGraph(state, details) {
-			let dataIndex = details.graphIndex;
-			let graphDetails = details.chartDetails;
-			state.allGraph[dataIndex].data = graphDetails.data;
-			state.allGraph[dataIndex].options = graphDetails.options;
-			state.editedGraphIndex = dataIndex;
-		},
-		deleteGraph(state, index) {
-			state.allGraph.splice(index, 1);
-		}
-	},
-	actions: {
-		onLoad: context => {
-			context.commit('onLoad');
-		},
-		addNewGraph: (context, newGraph) => {
-			$.ajax({
-				url: gl.ajax_url,
-				type: 'POST',
-				dataType: 'json',
-				data: {
-					action: 'save_chart',
-					graph_data: newGraph
-				},
-				success: function (response) {
-					newGraph.graph_id = response;
-					context.commit('addNewGraph', newGraph);
-					var content = '[graph_lite id="' + response + '"]';
-					tinymce.activeEditor.execCommand('mceInsertContent', false, content);
-					$('#gl-admin-meta-box').fadeOut();
-					$('div#gl-admin-meta-box').find('input:text').val('');
-				},
-				error: function (error) {
-					alert('Something went wront please try again');
-				}
-			});
-		},
-		updateGraph(context, editedGraphDetails) {
-			let graphDetails = editedGraphDetails.chartDetails;
-			let graphId = editedGraphDetails.graph_id;
-
-			$.ajax({
-				url: gl.ajax_url,
-				type: 'POST',
-				dataType: 'json',
-				data: {
-					action: 'update_chart',
-					graph_id: graphId,
-					updated_graph_data: graphDetails
-				},
-				success: function (response) {
-					context.commit('updateGraph', editedGraphDetails);
-					$.sweetModal({
-						content: 'Graph id ' + response + ' updated',
-						icon: $.sweetModal.ICON_SUCCESS,
-						timeout: 1300,
-						showCloseButton: false
-					});
-				},
-				error: function (error) {
-					alert('Something went wront please try again');
-				}
-			});
-		},
-		deleteGraph: (context, index) => {
-			context.commit('deleteGraph', index);
-		}
-	}
-});
 
 /***/ })
 /******/ ]);

@@ -1,8 +1,10 @@
 import Vue from 'vue';
-import App from './App.vue';
-import allSavedCharts from './components/allSavedChartsTemplate.vue';
 import Vuex from 'vuex';
 import store from './store';
+
+//components
+import App from './App.vue';
+import allSavedCharts from './components/allSavedChartsTemplate.vue';
 
 Vue.use(Vuex);
 
@@ -11,13 +13,9 @@ new Vue({
 	store: new Vuex.Store(store),
 	data: {
 		currentTab: 'allSavedCharts',
-		tabs: [
-			{ tabFileName: 'allSavedCharts', tabName: 'All Charts' },
-			{ tabFileName: 'App', tabName: 'Add New Chart' }
-		]
 	},
 	components: {
-		App, allSavedCharts
+		allSavedCharts
 	},
 	computed: {
 		currentTabComponent: function () {

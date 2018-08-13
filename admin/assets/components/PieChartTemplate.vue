@@ -73,7 +73,8 @@
 					}
 				],
 				showTitle: false,
-				showLegend: true
+				showLegend: true,
+				updateChart: false
 			};
 		},
 		methods: {
@@ -158,7 +159,8 @@
 
 				this.$store.dispatch('updateGraph', payload).then(function() {
 					setTimeout(function() {
-						outerThis.$emit("applied");
+						outerThis.updateChart = true;
+						outerThis.$emit("applied", outerThis.updateChart);
 					}, 1000);
 				});
 			},
@@ -210,6 +212,9 @@
 				this.theChart.update();
 
 				this.editedGraphIdNo = this.graphData.graph_id;
+			},
+			goBacktoAllGraphPage() {
+				this.$emit("applied");
 			}
 		},
 		mounted() {

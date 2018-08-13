@@ -14,15 +14,15 @@
 									<div class="gl_bb_point">
 										<div class="gl_bb_xp">
 											<label for="xPoint">x-point</label>
-											<input class="bubblePoints" type="number" id="xPoint" v-model="dataset.data[PIndex].x" @keyup="addDatasetDataPoints(index, PIndex, 'x')">
+											<input class="bubblePoints" type="number" id="xPoint" v-model="dataset.data[PIndex].x" @keyup="addDatasetDataPoints(index, PIndex, 'x')" @mouseup="addDatasetDataPoints(index, PIndex, 'x')">
 										</div>
 										<div class="gl_bb_yp">
 											<label for="xPoint">y-point</label>
-											<input class="bubblePoints" type="number" id="yPoint" v-model="dataset.data[PIndex].y" @keyup="addDatasetDataPoints(index, PIndex, 'y')">
+											<input class="bubblePoints" type="number" id="yPoint" v-model="dataset.data[PIndex].y" @keyup="addDatasetDataPoints(index, PIndex, 'y')" @mouseup="addDatasetDataPoints(index, PIndex, 'y')">
 										</div>
 										<div class="gl_bb_r">
 											<label for="radius">Bubble Radius</label>
-											<input class="bubblePoints" type="number" id="radius" v-model="dataset.data[PIndex].r" @keyup="addDatasetDataPoints(index, PIndex, 'r')">
+											<input class="bubblePoints" type="number" id="radius" v-model="dataset.data[PIndex].r" @keyup="addDatasetDataPoints(index, PIndex, 'r')" @mouseup="addDatasetDataPoints(index, PIndex, 'r')">
 										</div>
 									</div>
 								</template>
