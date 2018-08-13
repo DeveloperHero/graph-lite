@@ -2134,6 +2134,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
 
 
 
@@ -2245,6 +2246,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 					}
 				});
 			});
+		},
+		resetComponent() {
+			let outerThis = this;
+			setTimeout(function () {
+				outerThis.currentComponent = '';
+			}, 500);
 		}
 	},
 	mounted() {
@@ -16097,7 +16104,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(10);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_17f75036_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(85);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_5f12cd54_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(85);
 function injectStyle (ssrContext) {
   __webpack_require__(30)
 }
@@ -16117,7 +16124,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_allSavedChartsTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_17f75036_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_5f12cd54_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -16138,7 +16145,7 @@ var content = __webpack_require__(31);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("9441c958", content, true, {});
+var update = __webpack_require__(2)("553bdd77", content, true, {});
 
 /***/ }),
 /* 31 */
@@ -17849,7 +17856,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c(_vm.currentChartTabComponent,{tag:"component",attrs:{"graph-data":_vm.editedGraphData,"graph-index":_vm.editedGraphIndex},on:{"applied":_vm.whenGraphUpdated}}),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.currentComponent),expression:"!currentComponent"}]},[_c('transition',{attrs:{"name":"slide-fade","mode":"out-in"}},[(_vm.docState === 'add')?_c('div',{staticClass:"gl_single_graph"},[_c('div',{staticClass:"gl_graph_box"}),_vm._v(" "),_c('div',{staticClass:"gl_control_area"},[_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.docState = 'create'}}},[_vm._v("Add")])])]):_vm._e(),_vm._v(" "),(_vm.docState === 'create')?_c('div',{staticClass:"gl_single_graph"},[_c('div',{staticClass:"gl_graph_box"},[_c('div',{staticClass:"gl_chart_dropdown_area"},[_c('div',{staticClass:"dropdown gl_chart_dropdown"},[_c('button',{staticClass:"dropbtn"},[_vm._v("Select a chart")]),_vm._v(" "),_c('div',{staticClass:"dropdown-content"},_vm._l((_vm.chartTabs),function(chartTab,index){return _c('a',{key:chartTab.tabFileName,attrs:{"href":"javascript:void(0)"},on:{"click":function($event){_vm.changeTabChart(index)}}},[_vm._v(_vm._s(chartTab.tabName))])}))])]),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.docState = 'add'}}},[_vm._v("Cancel")])])]):_vm._e()]),_vm._v(" "),_vm._l((_vm.allGraph),function(graph,index){return _c('div',{key:graph.graph_id,staticClass:"gl_single_graph"},[_c('div',{staticClass:"gl_graph_box"},[_c('canvas',{attrs:{"id":index}})]),_vm._v(" "),_c('div',{staticClass:"gl_control_area"},[_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.useGraph(graph.graph_id)}}},[_vm._v("Use")]),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.editGraphDetails(index)}}},[_vm._v("Edit")]),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.deleteGraph(index)}}},[_vm._v("Delete")])])])})],2)],1)}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('div',{staticStyle:{"text-align":"right","font-weight":"bold","font-size":"18px"}},[_c('a',{staticClass:"close_graph_modal",staticStyle:{"text-decoration":"none","color":"#000","box-shadow":"none"},attrs:{"href":"javascript:void(0)"},on:{"click":_vm.resetComponent}},[_vm._v("X")])]),_vm._v(" "),_c(_vm.currentChartTabComponent,{tag:"component",attrs:{"graph-data":_vm.editedGraphData,"graph-index":_vm.editedGraphIndex},on:{"applied":_vm.whenGraphUpdated}}),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.currentComponent),expression:"!currentComponent"}]},[_c('transition',{attrs:{"name":"slide-fade","mode":"out-in"}},[(_vm.docState === 'add')?_c('div',{staticClass:"gl_single_graph"},[_c('div',{staticClass:"gl_graph_box"}),_vm._v(" "),_c('div',{staticClass:"gl_control_area"},[_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.docState = 'create'}}},[_vm._v("Add")])])]):_vm._e(),_vm._v(" "),(_vm.docState === 'create')?_c('div',{staticClass:"gl_single_graph"},[_c('div',{staticClass:"gl_graph_box"},[_c('div',{staticClass:"gl_chart_dropdown_area"},[_c('div',{staticClass:"dropdown gl_chart_dropdown"},[_c('button',{staticClass:"dropbtn"},[_vm._v("Select a chart")]),_vm._v(" "),_c('div',{staticClass:"dropdown-content"},_vm._l((_vm.chartTabs),function(chartTab,index){return _c('a',{key:chartTab.tabFileName,attrs:{"href":"javascript:void(0)"},on:{"click":function($event){_vm.changeTabChart(index)}}},[_vm._v(_vm._s(chartTab.tabName))])}))])]),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.docState = 'add'}}},[_vm._v("Cancel")])])]):_vm._e()]),_vm._v(" "),_vm._l((_vm.allGraph),function(graph,index){return _c('div',{key:graph.graph_id,staticClass:"gl_single_graph"},[_c('div',{staticClass:"gl_graph_box"},[_c('canvas',{attrs:{"id":index}})]),_vm._v(" "),_c('div',{staticClass:"gl_control_area"},[_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.useGraph(graph.graph_id)}}},[_vm._v("Use")]),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.editGraphDetails(index)}}},[_vm._v("Edit")]),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.deleteGraph(index)}}},[_vm._v("Delete")])])])})],2)],1)}
 var staticRenderFns = []
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);

@@ -1,5 +1,6 @@
 <template>
 	<div>
+		<div style="text-align: right; font-weight: bold; font-size: 18px;"><a href="javascript:void(0)" style="text-decoration: none; color: #000; box-shadow: none;" @click="resetComponent" class="close_graph_modal">X</a></div>
 		<component @applied="whenGraphUpdated" v-bind:is="currentChartTabComponent" :graph-data="editedGraphData" :graph-index="editedGraphIndex"></component>
 		<div v-show="!currentComponent">
 			<transition name="slide-fade" mode="out-in">
@@ -163,6 +164,12 @@
 						}
 					});
 				});
+			},
+			resetComponent() {
+				let outerThis = this;
+				setTimeout(function() {
+					outerThis.currentComponent = '';
+				}, 500);
 			}
 		},
 		mounted() {
