@@ -1,6 +1,9 @@
 <template>
 	<div class="pieChart gl_chart_template" id="pie">
 		<div class="graphOptions">
+			<div>
+				<button type="button" @click="goBacktoAllGraphPage">Go Back</button>
+			</div>
 			<table class="form-table">
 				<tr>
 					<th scope="row"><label for="labels">Labels</label></th>
@@ -39,7 +42,7 @@
 				</tr>
 				<tr>
 					<th scope="row"><label></label></th>
-					<td v-if="!graphData"><button type="button" class="saveGraphData" @click="saveGraphData">Save</button></td>
+					<td v-if="graphData == ''"><button type="button" class="saveGraphData" @click="saveGraphData">Save</button></td>
 					<td v-else><button type="button" class="saveGraphData" @click="updateGraphData">Update</button></td>
 				</tr>
 			</table>
@@ -210,8 +213,6 @@
 				this.theChart.options.legend.display = this.showLegend;
 				this.theChart.options.legend.position = this.legendPosition;
 				this.theChart.update();
-
-				this.editedGraphIdNo = this.graphData.graph_id;
 			},
 			goBacktoAllGraphPage() {
 				this.$emit("applied");
@@ -219,7 +220,7 @@
 		},
 		mounted() {
 			this.onLoad();
-			if(this.graphData) {
+			if(this.graphData != '') {
 				this.forEdit();
 			}
 		}
@@ -236,6 +237,7 @@
 	.graphOptions {
 		width: 50%;
 		padding-top: 20px;
+		overflow-y: scroll;
 	}
 	.graphDiv {
 		width: 50%;

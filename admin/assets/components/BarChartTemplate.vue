@@ -1,6 +1,9 @@
 <template>
 	<div class="barChart gl_chart_template" id="bar">
 		<div class="graphOptions">
+			<div>
+				<button type="button" @click="goBacktoAllGraphPage">Go Back</button>
+			</div>
 			<table class="form-table">
 				<tr>
 					<th scope="row"><label for="labels">Labels</label></th>
@@ -59,7 +62,7 @@
 				</tr>
 				<tr>
 					<th scope="row"><label></label></th>
-					<td v-if="!graphData"><button type="button" class="saveGraphData" @click="saveGraphData">Save</button></td>
+					<td v-if="graphData == ''"><button type="button" class="saveGraphData" @click="saveGraphData">Save</button></td>
 					<td v-else><button type="button" class="saveGraphData" @click="updateGraphData">Update</button></td>
 				</tr>
 			</table>
@@ -83,6 +86,7 @@
 				showTitle: false,
 				showLegend: true,
 				beginAtZero: false,
+				updateChart: false,
 				datasets: [
 					{
 						label: '',
@@ -214,7 +218,8 @@
 
 				this.$store.dispatch('updateGraph', payload).then(function() {
 					setTimeout(function() {
-						outerThis.$emit("applied");
+						outerThis.updateChart = true;
+						outerThis.$emit("applied", outerThis.updateChart);
 					}, 1000);
 				});
 			},
@@ -275,11 +280,14 @@
 				this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
 				this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero = this.graphData.options.scales.yAxes[0].ticks.beginAtZero;
 				this.theChart.update();
+			},
+			goBacktoAllGraphPage() {
+				this.$emit("applied");
 			}
 		},
 		mounted() {
 			this.onLoad();
-			if(this.graphData) {
+			if(this.graphData != '') {
 				this.forEdit();
 			}
 		}
@@ -296,6 +304,7 @@
 	.graphOptions {
 		width: 50%;
 		padding-top: 20px;
+		overflow-y: scroll;
 	}
 	.graphDiv {
 		width: 50%;
