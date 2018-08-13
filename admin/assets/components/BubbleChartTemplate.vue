@@ -324,4 +324,7 @@
 	.bubblePoints {
 		width: 50px;
 	}
+	input[type="text"] {
+	    height: 35px;
+	}
 </style>

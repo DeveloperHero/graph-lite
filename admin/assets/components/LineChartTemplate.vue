@@ -375,4 +375,7 @@
 	.saveGraphData {
 		float: right;
 	}
+	input[type="text"] {
+	    height: 35px;
+	}
 </style>

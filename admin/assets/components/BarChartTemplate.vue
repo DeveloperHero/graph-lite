@@ -7,16 +7,16 @@
 			<table class="form-table">
 				<tr>
 					<th scope="row"><label for="labels">Labels</label></th>
-					<td><input class="regular-text" type="text" id="labels" v-model="chartlabelsString" @keyup="addLabels"></td>
+					<td><input class="regular-text gl_input_field_height" type="text" id="labels" v-model="chartlabelsString" @keyup="addLabels"></td>
 				</tr>
 				<template v-for="(data, index) in datasets" :key="data">
 					<tr>
 						<th scope="row"><label for="label">Label</label></th>
-						<td><input class="regular-text" type="text" id="label" v-model="data.label" @keyup="addDatasetLabel(index)"></td>
+						<td><input class="regular-text gl_input_field_height" type="text" id="label" v-model="data.label" @keyup="addDatasetLabel(index)"></td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="datasets">Data</label></th>
-						<td><input class="regular-text" type="text" id="datasets" v-model="data.chartDatasetDataString" @keyup="addDatasetData(index)"></td>
+						<td><input class="regular-text gl_input_field_height" type="text" id="datasets" v-model="data.chartDatasetDataString" @keyup="addDatasetData(index)"></td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="colors">Color</label></th>
@@ -315,5 +315,8 @@
 	.delete_dataset {
 		float: right;
 		margin-right: 20px !important;
+	}
+	input[type="text"] {
+	    height: 35px;
 	}
 </style>
