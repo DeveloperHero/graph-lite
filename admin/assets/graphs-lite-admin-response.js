@@ -1,4 +1,7 @@
 jQuery(document).ready(function($) {
+
+	$('div#gl-admin-meta-box h2.hndle.ui-sortable-handle').remove();
+
 	$('#gl-admin-meta-box').appendTo('body');
 	$('button.close_graph_modal').appendTo('div#gl-admin-meta-box h2.hndle');
 	$('#gl-admin-meta-box').hide();

@@ -31,7 +31,7 @@ div#gl-admin-meta-box {
     position: fixed;
     left: 5px;
     top: 5px;
-    width: 95%;
+    width: 95.5%;
     height: 94.5%;
     overflow-y: scroll;
     z-index:  99999999999999;
@@ -140,7 +140,18 @@ button.saveGraphData {
 }
 
 .gl_single_graph .gl_graph_box {
-    min-height: 290px;
+    min-height: 295px;
+}
+
+.gl_single_graph.gl_single_graph_create .gl_graph_box {
+    min-height: 339px;
+    display: table;
+    margin: auto;
+}
+
+.gl_graph_box_cca {
+    display: table-cell;
+    vertical-align: middle;
 }
 
 div#gl-admin-meta-box .sweet-modal-buttons a.button {
@@ -245,6 +256,24 @@ p.gl_chart_template_title {
     width: 73%;
     text-align: right;
     float:  right;
+}
+
+div#gl-admin-meta-box h2.hndle.ui-sortable-handle {
+    display: none;
+}
+
+body::-webkit-scrollbar-track, body::-webkit-scrollbar-thumb, body::-webkit-scrollbar {
+    display: none;
+}
+
+.graphDiv canvas {
+    width: auto!important;
+    height: 100% !important;
+    margin:  auto;
+}
+
+.graphOptions {
+    padding-right: 15px;
 }
 
 @media only screen and (max-width: 767px) {

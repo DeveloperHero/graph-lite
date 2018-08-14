@@ -1,17 +1,21 @@
 <template>
 	<div>
+		<div style="float: left;">All Graph</div>
 		<div style="text-align: right; font-weight: bold; font-size: 18px;"><a href="javascript:void(0)" style="text-decoration: none; color: #000; box-shadow: none;" @click="resetComponent" class="close_graph_modal">X</a></div>
 		<component @applied="whenGraphUpdated" v-bind:is="currentChartTabComponent" :graph-data="editedGraphData" :graph-index="editedGraphIndex"></component>
 		<div v-show="!currentComponent">
 			<transition name="slide-fade" mode="out-in">
-				<div class="gl_single_graph" v-if="docState === 'add'">
+				<div class="gl_single_graph gl_single_graph_create" v-if="docState === 'add'">
 					<div class="gl_graph_box">
+						<div class="gl_graph_box_cca">
+							<button class="button button-primary button-large create_new_graph" type="button" @click="docState = 'create'">Add</button>
+						</div>
 					</div>
-					<div class="gl_control_area">
+					<!-- <div class="gl_control_area">
 						<button type="button" @click="docState = 'create'">Add</button>
-					</div>
+					</div> -->
 				</div>
-				<div class="gl_single_graph" v-if="docState === 'create'">
+				<div class="gl_single_graph gl_single_graph_create" v-if="docState === 'create'">
 					<div class="gl_graph_box">
 						<div class="gl_chart_dropdown_area">
 				            <!-- <p class="gl_chart_template_title"></p> -->
