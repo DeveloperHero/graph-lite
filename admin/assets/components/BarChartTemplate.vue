@@ -2,25 +2,25 @@
 	<div class="barChart gl_chart_template" id="bar">
 		<div class="graphOptions">
 			<div>
-				<button type="button" @click="goBacktoAllGraphPage">Go Back</button>
+				<button type="button" style="margin-right: 10px;" @click="goBacktoAllGraphPage">Go Back</button>
 			</div>
 			<table class="form-table">
 				<tr>
-					<th scope="row"><label for="labels">Labels</label></th>
-					<td><input class="regular-text gl_input_field_height" type="text" id="labels" v-model="chartlabelsString" @keyup="addLabels"></td>
+					<th scope="row"><label for="labels">xAsis Labels</label></th>
+					<td><input class="regular-text" type="text" id="labels" placeholder="Comma separated list of labels" v-model="chartlabelsString" @keyup="addLabels"></td>
 				</tr>
 				<template v-for="(data, index) in datasets" :key="data">
 					<tr>
 						<th scope="row"><label for="label">Label</label></th>
-						<td><input class="regular-text gl_input_field_height" type="text" id="label" v-model="data.label" @keyup="addDatasetLabel(index)"></td>
+						<td><input class="regular-text" type="text" id="label" v-model="data.label" @keyup="addDatasetLabel(index)"></td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="datasets">Data</label></th>
-						<td><input class="regular-text gl_input_field_height" type="text" id="datasets" v-model="data.chartDatasetDataString" @keyup="addDatasetData(index)"></td>
+						<td><input class="regular-text" type="text" id="datasets" placeholder="Numeric data value for each label. Eg. 1,2,3 etc" v-model="data.chartDatasetDataString" @keyup="addDatasetData(index)"></td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="colors">Color</label></th>
-						<td><input class="regular-text" type="text" id="colors" v-model="data.backgroundColor" @keyup="addDatasetBgColor(index)"></td>
+						<td><input class="regular-text" type="text" id="colors" placeholder="Color value for bar. Eg. red" v-model="data.backgroundColor" @keyup="addDatasetBgColor(index)"></td>
 					</tr>
 					<tr>
 						<th scope="row"><label></label></th>
@@ -34,23 +34,19 @@
 					</td>
 				</tr>
 				<tr>
-					<th scope="row"><label for="title">Show Chart Title</label></th>
-					<td><input type="checkbox" id="title" v-model="showTitle" @change="showingGraphTitle"></td>
-				</tr>
-				<tr>
-					<th scope="row"><label for="titleText">Title Text</label></th>
-					<td><input class="regular-text" type="text" id="titleText" v-model="titleText" @keyup="addTitleText"></td>
+					<th scope="row"><label for="titleText">Chart Title</label></th>
+					<td><input class="regular-text" type="text" id="titleText" placeholder="Title for the chart" v-model="titleText" @keyup="addTitleText"></td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="beginAtZero">yAxes Range (Begin at 0)</label></th>
 					<td><input type="checkbox" id="beginAtZero" v-model="beginAtZero" @change="yAxesRange"></td>
 				</tr>
 				<tr>
-					<th scope="row"><label for="legend">Show Legend</label></th>
+					<th scope="row"><label for="legend">Show Label</label></th>
 					<td><input type="checkbox" id="legend" v-model="showLegend" @change="showingGraphLegend"></td>
 				</tr>
 				<tr>
-					<th scope="row"><label for="legend">Legend Position</label></th>
+					<th scope="row"><label for="legend_position">Label Position</label></th>
 					<td>
 						<select id="legend_position" v-model="legendPosition" @change="changeLegendPosition">
 							<option selected="selected" value="top">Top</option>
@@ -130,11 +126,9 @@
 				this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
 				this.theChart.update();
 			},
-			showingGraphTitle() {
-				this.theChart.options.title.display = this.showTitle;
-				this.theChart.update();
-			},
 			addTitleText() {
+				this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
+				this.theChart.options.title.display = this.showTitle;
 				this.theChart.options.title.text = this.titleText;
 				this.theChart.update();
 			},
@@ -181,7 +175,11 @@
 					}
 				};
 
-				this.$store.dispatch('addNewGraph', chartDatas);
+				this.$store.dispatch('addNewGraph', chartDatas).then(function() {
+					setTimeout(function() {
+						outerThis.$emit("applied");
+					}, 1000);
+				});
 			},
 			updateGraphData() {
 				let outerThis = this;
@@ -276,8 +274,10 @@
 
 				this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
 				this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
+
 				this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
 				this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
+
 				this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero = this.graphData.options.scales.yAxes[0].ticks.beginAtZero;
 				this.theChart.update();
 			},
@@ -298,17 +298,18 @@
 	.barChart {
 		width: 100%;
 		height: 100%;
-		max-height: 80vh;
 		display: flex;
 		flex-direction: row;
 	}
 	.graphOptions {
 		width: 50%;
 		padding-top: 20px;
-		overflow-y: scroll;
 	}
 	.graphDiv {
-		width: 50%;
+		position: fixed;
+		width: 46%;
+		left: 50%;
+		top: 120px;
 	}
 	.saveGraphData {
 		float: right;
@@ -318,6 +319,6 @@
 		margin-right: 20px !important;
 	}
 	input[type="text"] {
-	    height: 35px;
+		height: 35px;
 	}
 </style>

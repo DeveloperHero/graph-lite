@@ -2,7 +2,7 @@
 	<div class="bubbleChart gl_chart_template" id="bubble">
 		<div class="graphOptions">
 			<div>
-				<button type="button" @click="goBacktoAllGraphPage">Go Back</button>
+				<button type="button" style="margin-right: 10px;" @click="goBacktoAllGraphPage">Go Back</button>
 			</div>
 			<table class="form-table">
 				<template v-for="(dataset, index) in datasets">
@@ -52,19 +52,15 @@
 					</td>
 				</tr>
 				<tr>
-					<th scope="row"><label for="title">Show Chart Title</label></th>
-					<td><input type="checkbox" id="title" v-model="showTitle" @change="showingGraphTitle"></td>
+					<th scope="row"><label for="titleText">Chart Title</label></th>
+					<td><input class="regular-text" type="text" id="titleText" placeholder="Title for the chart" v-model="titleText" @keyup="addTitleText"></td>
 				</tr>
 				<tr>
-					<th scope="row"><label for="titleText">Title Text</label></th>
-					<td><input class="regular-text" type="text" id="titleText" v-model="titleText" @keyup="addTitleText"></td>
-				</tr>
-				<tr>
-					<th scope="row"><label for="legend">Show Legend</label></th>
+					<th scope="row"><label for="legend">Show Label</label></th>
 					<td><input type="checkbox" id="legend" v-model="showLegend" @change="showingGraphLegend"></td>
 				</tr>
 				<tr>
-					<th scope="row"><label for="legend">Legend Position</label></th>
+					<th scope="row"><label for="legend_position">Label Position</label></th>
 					<td>
 						<select id="legend_position" v-model="legendPosition" @change="changeLegendPosition">
 							<option selected="selected" value="top">Top</option>
@@ -154,11 +150,9 @@
 				this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
 				this.theChart.update();
 			},
-			showingGraphTitle() {
-				this.theChart.options.title.display = this.showTitle;
-				this.theChart.update();
-			},
 			addTitleText() {
+				this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
+				this.theChart.options.title.display = this.showTitle;
 				this.theChart.options.title.text = this.titleText;
 				this.theChart.update();
 			},
@@ -307,17 +301,18 @@
 	.bubbleChart {
 		width: 100%;
 		height: 100%;
-		max-height: 80vh;
 		display: flex;
 		flex-direction: row;
 	}
 	.graphOptions {
 		width: 50%;
 		padding-top: 20px;
-		overflow-y: scroll;
 	}
 	.graphDiv {
-		width: 50%;
+		position: fixed;
+		width: 46%;
+		left: 50%;
+		top: 120px;
 	}
 	.saveGraphData {
 		float: right;
