@@ -34,7 +34,7 @@
 					<canvas :id="index"></canvas>
 				</div>
 				<div class="gl_control_area">
-					<button type="button" @click="useGraph(graph.graph_id)">Use</button>
+					<button type="button" @click="useGraph(graph.graph_id)">Insert</button>
 					<button type="button" @click="editGraphDetails(index)">Edit</button>
 					<button type="button" @click="deleteGraph(index)">Delete</button>
 				</div>
