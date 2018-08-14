@@ -232,11 +232,10 @@
 		width: 50%;
 		padding-top: 20px;
 	}
-	.graphDiv {
+	.pieChart .graphDiv {
 		position: fixed;
-		width: 46%;
-		height: 75vh;
-		left: 50%;
+		width: 35%;
+		left: 55%;
 		top: 120px;
 	}
 	.saveGraphDataButton {

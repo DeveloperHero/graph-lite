@@ -16312,7 +16312,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__ = __webpack_require__(13);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_5c112560_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(64);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_02e62066_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(64);
 function injectStyle (ssrContext) {
   __webpack_require__(42)
 }
@@ -16332,7 +16332,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_5c112560_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_02e62066_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -16353,7 +16353,7 @@ var content = __webpack_require__(43);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("6e313b84", content, true, {});
+var update = __webpack_require__(2)("346cfcb8", content, true, {});
 
 /***/ }),
 /* 43 */
@@ -16364,7 +16364,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, ".pieChart{width:100%;height:100%;display:flex;flex-direction:row}.graphOptions{width:50%;padding-top:20px}.graphDiv{position:fixed;width:46%;height:75vh;left:50%;top:120px}.saveGraphDataButton{display:block}.saveGraphData{float:right}input[type=text]{height:35px}", ""]);
+exports.push([module.i, ".pieChart{width:100%;height:100%;display:flex;flex-direction:row}.graphOptions{width:50%;padding-top:20px}.pieChart .graphDiv{position:fixed;width:35%;left:55%;top:120px}.saveGraphDataButton{display:block}.saveGraphData{float:right}input[type=text]{height:35px}", ""]);
 
 // exports
 
@@ -17451,7 +17451,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(19);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_68718fb2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_3c14d4b0_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(68);
 function injectStyle (ssrContext) {
   __webpack_require__(66)
 }
@@ -17471,7 +17471,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DoughnutChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_68718fb2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_3c14d4b0_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -17492,7 +17492,7 @@ var content = __webpack_require__(67);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("25d544d3", content, true, {});
+var update = __webpack_require__(2)("1c2b9c3c", content, true, {});
 
 /***/ }),
 /* 67 */
@@ -17503,7 +17503,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, ".DoughnutChart{width:100%;height:100%;display:flex;flex-direction:row}.graphOptions{width:50%;padding-top:20px}.graphDiv{position:fixed;width:46%;left:50%;top:120px}.saveGraphDataButton{display:block}.saveGraphData{float:right}input[type=text]{height:35px}", ""]);
+exports.push([module.i, ".DoughnutChart{width:100%;height:100%;display:flex;flex-direction:row}.graphOptions{width:50%;padding-top:20px}.DoughnutChart .graphDiv{position:fixed;width:35%;left:55%;top:120px}.saveGraphDataButton{display:block}.saveGraphData{float:right}input[type=text]{height:35px}", ""]);
 
 // exports
 
@@ -17599,7 +17599,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(21);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_091ba5fa_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(76);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1cc0be44_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(76);
 function injectStyle (ssrContext) {
   __webpack_require__(74)
 }
@@ -17619,7 +17619,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PolarAreaChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_091ba5fa_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1cc0be44_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -17640,7 +17640,7 @@ var content = __webpack_require__(75);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("5a80f800", content, true, {});
+var update = __webpack_require__(2)("2f7b3c67", content, true, {});
 
 /***/ }),
 /* 75 */
@@ -17651,7 +17651,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, ".PolarAreaChart{width:100%;height:100%;display:flex;flex-direction:row}.graphOptions{width:50%;padding-top:20px}.graphDiv{position:fixed;width:46%;left:50%;top:120px}.saveGraphDataButton{display:block}.saveGraphData{float:right}input[type=text]{height:35px}", ""]);
+exports.push([module.i, ".PolarAreaChart{width:100%;height:100%;display:flex;flex-direction:row}.graphOptions{width:50%;padding-top:20px}.PolarAreaChart .graphDiv{position:fixed;width:35%;left:55%;top:120px}.saveGraphDataButton{display:block}.saveGraphData{float:right}input[type=text]{height:35px}", ""]);
 
 // exports
 
