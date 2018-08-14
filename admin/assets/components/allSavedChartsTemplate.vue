@@ -102,6 +102,8 @@
 				$('#gl-admin-meta-box').fadeOut();
 			},
 			changeTabChart(index) {
+				this.editedGraphIndex = 0;
+				this.editedGraphData = '';
 	            this.currentComponent = this.chartTabs[index].tabFileName;
 	        },
 			editGraphDetails(index) {
