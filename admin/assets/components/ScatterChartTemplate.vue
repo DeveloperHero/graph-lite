@@ -169,6 +169,7 @@
 				this.theChart.update();
 			},
 			saveGraphData() {
+				let outerThis = this;
 				let chartDatas = {
 					type: this.chartType,
 					data: {
@@ -186,7 +187,11 @@
 					}
 				};
 
-				this.$store.dispatch('addNewGraph', chartDatas);
+				this.$store.dispatch('addNewGraph', chartDatas).then(function() {
+					setTimeout(function() {
+						outerThis.$emit("applied");
+					}, 1000);
+				});
 			},
 			updateGraphData() {
 				let outerThis = this;

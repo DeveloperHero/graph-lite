@@ -163,6 +163,7 @@
 				this.theChart.update();
 			},
 			saveGraphData() {
+				let outerThis = this;
 				let chartDatas = {
 					type: this.chartType,
 					data: {
