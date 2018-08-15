@@ -1,7 +1,7 @@
 (function($) {
 	tinymce.PluginManager.add('graphs_lite_mce_btn', function( editor, url ) {
 		editor.addButton( 'graphs_lite_mce_btn', {
-			// text: 'Chart',
+			title: 'Insert Graph',
 			icon: true,
 			image: '/wp-content/plugins/Graphs-Lite/admin/images/16x16.png',
 			type: 'button',

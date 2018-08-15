@@ -114,12 +114,13 @@ button.saveGraphData {
     display:  block;
     width:  100%;
     overflow:  hidden;
-    margin: 10px 0;
+    margin: 5px 0;
+    padding: 5px 0;
     text-align:  center;
 }
 
 .gl_single_graph .gl_control_area button {
-    border:  0;
+/*    border:  0;
     color:  #fff;
     padding:  5px 10px;
     width:  68px;
@@ -127,24 +128,24 @@ button.saveGraphData {
     font-weight:  bold;
     cursor: pointer;
     outline: none;
-    background: #3472aa;
+    background: #3472aa;*/
 }
 
 
-.gl_single_graph .gl_control_area button:first-child {
+/*.gl_single_graph .gl_control_area button:first-child {
     background: #3e8e41;
 }
 
 .gl_single_graph .gl_control_area button:last-child {
     background: #e74c3c;
-}
+}*/
 
 .gl_single_graph .gl_graph_box {
     min-height: 295px;
 }
 
 .gl_single_graph.gl_single_graph_create .gl_graph_box {
-    min-height: 339px;
+    min-height: 343px;
     display: table;
     margin: auto;
 }
@@ -152,6 +153,25 @@ button.saveGraphData {
 .gl_graph_box_cca {
     display: table-cell;
     vertical-align: middle;
+}
+
+.gl_heading_area {
+    display:  block;
+    overflow:  hidden;
+    clear:  both;
+    border-bottom:  1px solid #ddd;
+    margin-bottom: 10px;
+}
+
+.gl_heading p {
+    font-size:  18px;
+    font-weight:  bold;
+    margin:  10px 0;
+}
+
+.gl_single_body_content {
+    display: table-cell;
+    vertical-align:  middle;
 }
 
 div#gl-admin-meta-box .sweet-modal-buttons a.button {

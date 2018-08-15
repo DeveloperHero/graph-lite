@@ -1,14 +1,20 @@
 <template>
 	<div>
-		<div style="float: left;">All Graph</div>
-		<div style="text-align: right; font-weight: bold; font-size: 18px;"><a href="javascript:void(0)" style="text-decoration: none; color: #000; box-shadow: none;" @click="resetComponent" class="close_graph_modal">X</a></div>
+		<div class="gl_heading_area">
+			<div class="gl_heading" style="float: left;">
+				<p v-if="docState === 'add'">All Graph</p>
+				<p v-if="docState === 'create'">Create Graph</p>
+			</div>
+
+			<div style="text-align: right; font-weight: bold; font-size: 18px;"><a href="javascript:void(0)" style="text-decoration: none; color: #000; box-shadow: none;" @click="resetComponent" class="close_graph_modal">X</a></div>
+		</div>
 		<component @applied="whenGraphUpdated" v-bind:is="currentChartTabComponent" :graph-data="editedGraphData" :graph-index="editedGraphIndex"></component>
 		<div v-show="!currentComponent">
 			<transition name="slide-fade" mode="out-in">
 				<div class="gl_single_graph gl_single_graph_create" v-if="docState === 'add'">
 					<div class="gl_graph_box">
 						<div class="gl_graph_box_cca">
-							<button class="button button-primary button-large create_new_graph" type="button" @click="docState = 'create'">Add</button>
+							<button class="button button-primary button-large create_new_graph" type="button" @click="docState = 'create'">Add new graph</button>
 						</div>
 					</div>
 					<!-- <div class="gl_control_area">
@@ -16,20 +22,22 @@
 					</div> -->
 				</div>
 				<div class="gl_single_graph gl_single_graph_create" v-if="docState === 'create'">
-					<div class="gl_graph_box">
-						<div class="gl_chart_dropdown_area">
-				            <!-- <p class="gl_chart_template_title"></p> -->
-				            <div class="dropdown gl_chart_dropdown">
-				                <button class="dropbtn">Select a chart</button>
-				                <div class="dropdown-content">
-				                    <a href="javascript:void(0)"
-				                       v-for="(chartTab, index) in chartTabs"
-				                       v-bind:key="chartTab.tabFileName"
-				                       @click="changeTabChart(index)">{{ chartTab.tabName }}</a>
-				                </div>
-				            </div>
-				        </div>
-						<button type="button" @click="docState = 'add'">Cancel</button>
+					<div class="gl_graph_box gl_single_graph_create_content">
+						<div class="gl_single_body_content">
+							<div class="gl_chart_dropdown_area">
+					            <!-- <p class="gl_chart_template_title"></p> -->
+					            <div class="dropdown gl_chart_dropdown">
+					                <button class="dropbtn">Select a chart</button>
+					                <div class="dropdown-content">
+					                    <a href="javascript:void(0)"
+					                       v-for="(chartTab, index) in chartTabs"
+					                       v-bind:key="chartTab.tabFileName"
+					                       @click="changeTabChart(index)">{{ chartTab.tabName }}</a>
+					                </div>
+					            </div>
+					        </div>
+							<button type="button" class="button imgedit-cancel-btn" @click="docState = 'add'">Cancel</button>
+						</div>
 					</div>
 				</div>
 			</transition>
@@ -38,9 +46,9 @@
 					<canvas :id="index"></canvas>
 				</div>
 				<div class="gl_control_area">
-					<button type="button" @click="useGraph(graph.graph_id)">Insert</button>
-					<button type="button" @click="editGraphDetails(index)">Edit</button>
-					<button type="button" @click="deleteGraph(index)">Delete</button>
+					<button type="button" class="button button-primary" @click="useGraph(graph.graph_id)">Insert</button>
+					<button type="button" class="button button-primary" @click="editGraphDetails(index)">Edit</button>
+					<button type="button" class="button imgedit-cancel-btn" @click="deleteGraph(index)">Delete</button>
 				</div>
 			</div>
 		</div>
