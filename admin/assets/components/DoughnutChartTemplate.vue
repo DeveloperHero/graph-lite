@@ -2,35 +2,31 @@
 	<div class="DoughnutChart gl_chart_template" id="Doughnut">
 		<div class="graphOptions">
 			<div>
-				<button type="button" @click="goBacktoAllGraphPage">Go Back</button>
+				<button style="margin-right: 10px;" type="button" @click="goBacktoAllGraphPage">Go Back</button>
 			</div>
 			<table class="form-table">
 				<tr>
 					<th scope="row"><label for="labels">Labels</label></th>
-					<td><input class="regular-text" type="text" id="labels" v-model="chartlabelString" @keyup="addLabels"></td>
+					<td><input class="regular-text" type="text" id="labels" placeholder="Comma separated list of labels" v-model="chartlabelString" @keyup="addLabels"></td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="datasets">Data</label></th>
-					<td><input class="regular-text" type="text" id="datasets" v-model="chartDatasetDataString" @keyup="addDatasetData"></td>
+					<td><input class="regular-text" type="text" id="datasets" placeholder="Numeric data value for each label. Eg. 1,2,3 etc" v-model="chartDatasetDataString" @keyup="addDatasetData"></td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="colors">Color</label></th>
-					<td><input class="regular-text" type="text" id="colors" v-model="chartDatasetBgColorString" @keyup="addDatasetBgColor"></td>
+					<td><input class="regular-text" type="text" id="colors" placeholder="Color value for each label. Eg. red, green, blue" v-model="chartDatasetBgColorString" @keyup="addDatasetBgColor"></td>
 				</tr>
 				<tr>
-					<th scope="row"><label for="title">Show Chart Title</label></th>
-					<td><input type="checkbox" id="title" v-model="showTitle" @change="showingGraphTitle"></td>
+					<th scope="row"><label for="titleText">Chart Title</label></th>
+					<td><input class="regular-text" type="text" id="titleText" placeholder="Title for the chart" v-model="titleText" @keyup="addTitleText"></td>
 				</tr>
 				<tr>
-					<th scope="row"><label for="titleText">Title Text</label></th>
-					<td><input class="regular-text" type="text" id="titleText" v-model="titleText" @keyup="addTitleText"></td>
-				</tr>
-				<tr>
-					<th scope="row"><label for="legend">Show Legend</label></th>
+					<th scope="row"><label for="legend">Show Label</label></th>
 					<td><input type="checkbox" id="legend" v-model="showLegend" @change="showingGraphLegend"></td>
 				</tr>
 				<tr>
-					<th scope="row"><label for="legend">Legend Position</label></th>
+					<th scope="row"><label for="legend_position">Label Position</label></th>
 					<td>
 						<select id="legend_position" v-model="legendPosition" @change="changeLegendPosition">
 							<option selected="selected" value="top">Top</option>
@@ -95,11 +91,9 @@
 				this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor;
 				this.theChart.update();
 			},
-			showingGraphTitle() {
-				this.theChart.options.title.display = this.showTitle;
-				this.theChart.update();
-			},
 			addTitleText() {
+				this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
+				this.theChart.options.title.display = this.showTitle;
 				this.theChart.options.title.text = this.titleText;
 				this.theChart.update();
 			},
@@ -112,6 +106,7 @@
 				this.theChart.update();
 			},
 			saveGraphData() {
+				let outerThis = this;
 				let chartDatas = {
 					type: this.chartType,
 					data: {
@@ -130,7 +125,11 @@
 					}
 				};
 
-				this.$store.dispatch('addNewGraph', chartDatas);
+				this.$store.dispatch('addNewGraph', chartDatas).then(function() {
+					setTimeout(function() {
+						outerThis.$emit("applied");
+					}, 1000);
+				});
 			},
 			updateGraphData() {
 				let outerThis = this;
@@ -193,24 +192,19 @@
 			},
 			forEdit() {
 				this.chartlabelString = this.graphData.data.labels.join(", ");
-				this.labels = this.graphData.data.labels;
+				this.theChart.data.labels = this.labels = this.graphData.data.labels;
 
 				this.chartDatasetBgColorString = this.graphData.data.datasets[0].backgroundColor.join(", ");
-				this.datasets[0].backgroundColor = this.graphData.data.datasets[0].backgroundColor;
+				this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.graphData.data.datasets[0].backgroundColor;
+
 				this.chartDatasetDataString = this.graphData.data.datasets[0].data.join(", ");
-				this.datasets[0].data = this.graphData.data.datasets[0].data;
+				this.theChart.data.datasets[0].data = this.datasets[0].data = this.graphData.data.datasets[0].data;
 
-				this.showTitle = this.graphData.options.title.display;
-				this.titleText = this.graphData.options.title.text;
-				this.showLegend = this.graphData.options.legend.display;
-				this.legendPosition = this.graphData.options.legend.position;
+				this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
+				this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
 
-				this.theChart.data.labels = this.labels;
-				this.theChart.data.datasets = this.datasets;
-				this.theChart.options.title.display = this.showTitle;
-				this.theChart.options.title.text = this.titleText;
-				this.theChart.options.legend.display = this.showLegend;
-				this.theChart.options.legend.position = this.legendPosition;
+				this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
+				this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
 				this.theChart.update();
 			},
 			goBacktoAllGraphPage() {
@@ -230,17 +224,18 @@
 	.DoughnutChart {
 		width: 100%;
 		height: 100%;
-		max-height: 80vh;
 		display: flex;
 		flex-direction: row;
 	}
 	.graphOptions {
 		width: 50%;
 		padding-top: 20px;
-		overflow-y: scroll;
 	}
-	.graphDiv {
-		width: 50%;
+	.DoughnutChart .graphDiv {
+		position: fixed;
+		width: 35%;
+		left: 55%;
+		top: 120px;
 	}
 	.saveGraphDataButton {
 		display: block;

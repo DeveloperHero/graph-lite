@@ -97,7 +97,6 @@
 	    },
 		methods: {
 			onLoad() {
-				console.log(this.allGraph);
 				let outerThis = this;
 				this.allGraph.forEach(function(value, key) {
 					var ctx = document.getElementById(key);
@@ -115,6 +114,8 @@
 				$('#gl-admin-meta-box').fadeOut();
 			},
 			changeTabChart(index) {
+				this.editedGraphIndex = 0;
+				this.editedGraphData = '';
 	            this.currentComponent = this.chartTabs[index].tabFileName;
 	        },
 			editGraphDetails(index) {
