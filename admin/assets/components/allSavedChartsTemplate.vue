@@ -26,15 +26,10 @@
 						<div class="gl_single_body_content">
 							<div class="gl_chart_dropdown_area">
 					            <!-- <p class="gl_chart_template_title"></p> -->
-					            <div class="dropdown gl_chart_dropdown">
-					                <button class="dropbtn">Select a chart</button>
-					                <div class="dropdown-content">
-					                    <a href="javascript:void(0)"
-					                       v-for="(chartTab, index) in chartTabs"
-					                       v-bind:key="chartTab.tabFileName"
-					                       @click="changeTabChart(index)">{{ chartTab.tabName }}</a>
-					                </div>
-					            </div>
+					            <select v-model="selectedChartIndex" @change="changeTabChart">
+									<option value="">Select a chart</option>
+									<option  v-for="(chartTab, index) in chartTabs" v-bind:key="chartTab.tabFileName" :value="index">{{ chartTab.tabName }}</option>
+								</select>
 					        </div>
 							<button type="button" class="button imgedit-cancel-btn" @click="docState = 'add'">Cancel</button>
 						</div>
@@ -70,6 +65,7 @@
 		data() {
 			return {
 				currentComponent: '',
+				selectedChartIndex: '',
 				editedGraphData: [],
 				editedGraphIndex: '',
 				theChart: [],
@@ -113,10 +109,11 @@
 				tinymce.activeEditor.execCommand('mceInsertContent', false, content);
 				$('#gl-admin-meta-box').fadeOut();
 			},
-			changeTabChart(index) {
+			changeTabChart() {
 				this.editedGraphIndex = 0;
 				this.editedGraphData = '';
-	            this.currentComponent = this.chartTabs[index].tabFileName;
+	            this.currentComponent = this.chartTabs[this.selectedChartIndex].tabFileName;
+	            this.selectedChartIndex = '';
 	        },
 			editGraphDetails(index) {
 				let chartType = this.allGraph[index].type+"Chart";
@@ -184,40 +181,7 @@
 </script>
 
 <style>
-    .dropbtn {
-        background-color: #3473aa;
-        color: white;
-        padding: 10px;
-        font-size: 16px;
-        border: none;
-        cursor: pointer;
-        min-width: 130px;
-    }
-    .dropdown {
-        position: relative;
-        display: inline-block;
-    }
-    .dropdown-content {
-        display: none;
-        position: absolute;
-        background-color: #f9f9f9;
-        min-width: 160px;
-        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-        z-index: 1;
-    }
-    .dropdown-content a {
-        color: black;
-        padding: 12px 16px;
-        text-decoration: none;
-        display: block;
-    }
-    .dropdown-content a:hover {
-        background-color: #f1f1f1
-    }
-    .dropdown:hover .dropdown-content {
-        display: block;
-    }
-    .dropdown:hover .dropbtn {
-        background-color: #3e8e41;
-    }
+.gl_chart_dropdown_area {
+	margin-bottom: 10px;
+}
 </style>
