@@ -2233,7 +2233,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 			let deletedGraphId = this.allGraph[index].graph_id;
 			const outerThis = this;
 
-			$.sweetModal.confirm('Are you sure to delete this (' + deletedGraphId + ') chart?', function () {
+			$.sweetModal.confirm('Do you really want to delete the chart?', function () {
 				$.ajax({
 					url: ajaxurl,
 					type: 'POST',
@@ -2243,15 +2243,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 						graph_id: deletedGraphId
 					},
 					success: function (response) {
-						$.sweetModal({
-							content: response,
-							icon: $.sweetModal.ICON_SUCCESS,
-							timeout: 1300,
-							showCloseButton: false
-						});
-						setTimeout(function () {
-							outerThis.$store.dispatch('deleteGraph', index);
-						}, 1310);
+						outerThis.$store.dispatch('deleteGraph', index);
 					},
 					error: function (error) {
 						alert('Something went wront please try again');
@@ -16116,7 +16108,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(10);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_cbd5d63e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(85);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_9dda1734_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(85);
 function injectStyle (ssrContext) {
   __webpack_require__(30)
 }
@@ -16136,7 +16128,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_allSavedChartsTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_cbd5d63e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_9dda1734_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -16157,7 +16149,7 @@ var content = __webpack_require__(31);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("ba712930", content, true, {});
+var update = __webpack_require__(2)("cd55c5e6", content, true, {});
 
 /***/ }),
 /* 31 */

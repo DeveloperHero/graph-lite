@@ -151,7 +151,7 @@
 				let deletedGraphId = this.allGraph[index].graph_id;
 				const outerThis = this;
 
-				$.sweetModal.confirm('Are you sure to delete this ('+deletedGraphId+') chart?', function() {
+				$.sweetModal.confirm('Do you really want to delete the chart?', function() {
 					$.ajax({
 						url: ajaxurl,
 						type: 'POST',
@@ -161,15 +161,7 @@
 							graph_id: deletedGraphId,
 						},
 						success: function( response ) {
-							$.sweetModal({
-								content: response,
-								icon: $.sweetModal.ICON_SUCCESS,
-								timeout: 1300,
-								showCloseButton: false
-							});
-							setTimeout(function(){
-								outerThis.$store.dispatch('deleteGraph', index);
-							}, 1310)
+							outerThis.$store.dispatch('deleteGraph', index);
 						},
 						error: function( error ) {
 							alert('Something went wront please try again');
