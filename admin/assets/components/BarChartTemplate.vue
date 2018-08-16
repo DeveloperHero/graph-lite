@@ -2,7 +2,8 @@
 	<div class="barChart gl_chart_template" id="bar">
 		<div class="graphOptions">
 			<div>
-				<button type="button" style="margin-right: 10px;" @click="goBacktoAllGraphPage">Go Back</button>
+				<!-- <a href="#"><img src="../../images/back-arrow.png"></a> -->
+				<button type="button" style="float: left;" @click="goBacktoAllGraphPage">Go Back</button>
 			</div>
 			<table class="form-table">
 				<tr>

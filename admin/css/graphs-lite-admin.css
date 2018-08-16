@@ -286,11 +286,11 @@ body::-webkit-scrollbar-track, body::-webkit-scrollbar-thumb, body::-webkit-scro
     display: none;
 }
 
-.graphDiv canvas {
+/*.graphDiv canvas {
     width: auto!important;
     height: 100% !important;
     margin:  auto;
-}
+}*/
 
 .graphOptions {
     padding-right: 15px;
