@@ -4,7 +4,7 @@ Donate link: http://orchestra.ltd
 Tags: chart, charts, graphs, graph, data visualization
 Requires at least: 4
 Tested up to: 4.9.8
-Stable tag: 2.0.3
+Stable tag: 2.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,9 @@ Create beautiful charts. Interactive and easy to use.
 
 == Description ==
 
-Interactive graphs and chart builder with 8 supported types.
+Build beautiful charts and graphs with Graph Lite. The plugin is designed to be very easy to use. It features an interactive builder which updates the graph as you build it. We support 8 types of charts. 
+
+Embed anywhere with a shortcode. Charts are responsive and interactive. 
 
 == Frequently Asked Questions ==
 
@@ -58,4 +60,7 @@ Yes, the graphs are responsive.
 * Minor fix
 
 = 2.0.3 =
+* Bug fixes
+
+= 2.0.4 =
 * Bug fixes
