@@ -4,7 +4,7 @@ Donate link: http://orchestra.ltd
 Tags: chart, charts, graphs, graph, data visualization
 Requires at least: 4
 Tested up to: 4.9.8
-Stable tag: 2.0.4
+Stable tag: 2.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -63,4 +63,7 @@ Yes, the graphs are responsive.
 * Bug fixes
 
 = 2.0.4 =
+* Bug fixes
+
+= 2.0.5 =
 * Bug fixes

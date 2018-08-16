@@ -13,7 +13,7 @@
  * Plugin Name:       Graph Lite
  * Plugin URI:        http://wordpress.org/plugins/graphs-lite
  * Description:       Create beautiful charts. Interactive and easy to use.
- * Version:           2.0.4
+ * Version:           2.0.5
  * Author:            Orchestra Technologies
  * Author URI:        http://orchestra.ltd
  * License:           GPL-2.0+
@@ -32,7 +32,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'GRAPHS_LITE_VERSION', '2.0.4' );
+define( 'GRAPHS_LITE_VERSION', '2.0.5' );
 define( 'GRAPHS_LITE_NAME', 'Graph Light' );
 
 /**
