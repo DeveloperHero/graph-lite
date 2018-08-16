@@ -81,7 +81,9 @@
 			</table>
 		</div>
 		<div class="graphDiv">
-			<canvas id="lineChart"></canvas>
+			<div class="gl_graphChildDiv">
+				<canvas id="lineChart"></canvas>
+			</div>
 		</div>
 	</div>
 </template>
@@ -202,6 +204,7 @@
 						datasets: this.datasets
 					},
 					options: {
+						maintainAspectRatio: false,
 						scales: {
 							yAxes: [{
 								ticks: {
@@ -235,6 +238,7 @@
 						datasets: []
 					},
 					options: {
+						maintainAspectRatio: false,
 						scales: {
 							yAxes: [{
 								ticks: {
@@ -294,6 +298,7 @@
 						]
 					},
 					options: {
+						maintainAspectRatio: false,
 						scales: {
 							yAxes: [{
 								ticks: {
@@ -371,10 +376,14 @@
 		padding-top: 20px;
 	}
 	.graphDiv {
+		width: 50%;
+	}
+	.gl_graphChildDiv {
 		position: fixed;
 		width: 46%;
-		left: 50%;
-		top: 120px;
+		height: 50%;
+		right: 40px;
+		top: 150px;
 	}
 	.saveGraphData {
 		float: right;

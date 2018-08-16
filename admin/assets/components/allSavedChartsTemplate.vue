@@ -10,33 +10,31 @@
 		</div>
 		<component @applied="whenGraphUpdated" v-bind:is="currentChartTabComponent" :graph-data="editedGraphData" :graph-index="editedGraphIndex"></component>
 		<div v-show="!currentComponent">
-			<transition name="slide-fade" mode="out-in">
-				<div class="gl_single_graph gl_single_graph_create" v-if="docState === 'add'">
-					<div class="gl_graph_box">
-						<div class="gl_graph_box_cca">
-							<p class="plusIcon">+</p>
-							<button class="button button-primary button-large create_new_graph" type="button" @click="docState = 'create'">Add New Graph</button>
-						</div>
-					</div>
-					<!-- <div class="gl_control_area">
-						<button type="button" @click="docState = 'create'">Add</button>
-					</div> -->
-				</div>
-				<div class="gl_single_graph gl_single_graph_create" v-if="docState === 'create'">
-					<div class="gl_graph_box gl_single_graph_create_content">
-						<div class="gl_single_body_content">
-							<div class="gl_chart_dropdown_area">
-					            <!-- <p class="gl_chart_template_title"></p> -->
-					            <select v-model="selectedChartIndex" @change="changeTabChart">
-									<option value="">Select a chart</option>
-									<option  v-for="(chartTab, index) in chartTabs" v-bind:key="chartTab.tabFileName" :value="index">{{ chartTab.tabName }}</option>
-								</select>
-					        </div>
-							<button type="button" class="button imgedit-cancel-btn" @click="docState = 'add'">Cancel</button>
-						</div>
+			<div class="gl_single_graph gl_single_graph_create" v-if="docState === 'add'">
+				<div class="gl_graph_box">
+					<div class="gl_graph_box_cca">
+						<p class="plusIcon">+</p>
+						<button class="button button-primary button-large create_new_graph" type="button" @click="docState = 'create'">Add New Graph</button>
 					</div>
 				</div>
-			</transition>
+				<!-- <div class="gl_control_area">
+					<button type="button" @click="docState = 'create'">Add</button>
+				</div> -->
+			</div>
+			<div class="gl_single_graph gl_single_graph_create" v-if="docState === 'create'">
+				<div class="gl_graph_box gl_single_graph_create_content">
+					<div class="gl_single_body_content">
+						<div class="gl_chart_dropdown_area">
+				            <!-- <p class="gl_chart_template_title"></p> -->
+				            <select v-model="selectedChartIndex" @change="changeTabChart">
+								<option value="">Select a chart</option>
+								<option  v-for="(chartTab, index) in chartTabs" v-bind:key="chartTab.tabFileName" :value="index">{{ chartTab.tabName }}</option>
+							</select>
+				        </div>
+						<button type="button" class="button imgedit-cancel-btn" @click="docState = 'add'">Cancel</button>
+					</div>
+				</div>
+			</div>
 			<div class="gl_single_graph" v-for="(graph, index) in allGraph" :key="graph.graph_id">
 				<div class="gl_graph_box">
 					<canvas :id="index"></canvas>
@@ -103,6 +101,7 @@
 						data: value.data,
 						options: value.options
 					});
+					ctx.height = 295;
 				});
 			},
 			// @mishuk

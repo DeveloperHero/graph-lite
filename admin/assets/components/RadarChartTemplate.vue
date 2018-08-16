@@ -73,7 +73,9 @@
 			</table>
 		</div>
 		<div class="graphDiv">
-			<canvas id="radarChart"></canvas>
+			<div class="gl_graphChildDiv">
+				<canvas id="radarChart"></canvas>
+			</div>
 		</div>
 	</div>
 </template>
@@ -176,6 +178,7 @@
 						datasets: this.datasets
 					},
 					options: {
+						maintainAspectRatio: false,
 						scale: {
 							ticks: {
 								beginAtZero: true
@@ -207,6 +210,7 @@
 						datasets: []
 					},
 					options: {
+						maintainAspectRatio: false,
 						scale: {
 							ticks: {
 								beginAtZero: true
@@ -253,6 +257,7 @@
 						]
 					},
 					options: {
+						maintainAspectRatio: false,
 						scale: {
 							ticks: {
 								beginAtZero: true
@@ -323,10 +328,14 @@
 		padding-top: 20px;
 	}
 	.graphDiv {
+		width: 50%;
+	}
+	.gl_graphChildDiv {
 		position: fixed;
 		width: 46%;
-		left: 50%;
-		top: 120px;
+		height: 65%;
+		right: 40px;
+		top: 150px;
 	}
 	.saveGraphData {
 		float: right;

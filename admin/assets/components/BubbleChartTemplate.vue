@@ -79,7 +79,9 @@
 			</table>
 		</div>
 		<div class="graphDiv">
-			<canvas id="bubbleChart"></canvas>
+			<div class="gl_graphChildDiv">
+				<canvas id="bubbleChart"></canvas>
+			</div>
 		</div>
 	</div>
 </template>
@@ -178,6 +180,7 @@
 						datasets: this.datasets
 					},
 					options: {
+						maintainAspectRatio: false,
 						title: {
 							display: this.showTitle,
 							text: this.titleText
@@ -203,6 +206,7 @@
 						datasets: []
 					},
 					options: {
+						maintainAspectRatio: false,
 						title: {
 							display: this.showTitle,
 							text: this.titleText
@@ -251,6 +255,7 @@
 						],
 					},
 					options: {
+						maintainAspectRatio: false,
 						title: {
 							display: false,
 							text: ''
@@ -315,10 +320,14 @@
 		padding-top: 20px;
 	}
 	.graphDiv {
+		width: 50%;
+	}
+	.gl_graphChildDiv {
 		position: fixed;
 		width: 46%;
-		left: 50%;
-		top: 120px;
+		height: 50%;
+		right: 40px;
+		top: 150px;
 	}
 	.saveGraphData {
 		float: right;

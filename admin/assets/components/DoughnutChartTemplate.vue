@@ -44,7 +44,9 @@
 			</table>
 		</div>
 		<div class="graphDiv">
-			<canvas id="DoughnutChart"></canvas>
+			<div class="gl_graphChildDiv">
+				<canvas id="DoughnutChart"></canvas>
+			</div>
 		</div>
 	</div>
 </template>
@@ -114,6 +116,7 @@
 						datasets: this.datasets
 					},
 					options: {
+						maintainAspectRatio: false,
 						title: {
 							display: this.showTitle,
 							text: this.titleText
@@ -145,6 +148,7 @@
 						]
 					},
 					options: {
+						maintainAspectRatio: false,
 						title: {
 							display: this.showTitle,
 							text: this.titleText
@@ -179,6 +183,7 @@
 						]
 					},
 					options: {
+						maintainAspectRatio: false,
 						title: {
 							display: false,
 							text: ''
@@ -232,10 +237,14 @@
 		padding-top: 20px;
 	}
 	.DoughnutChart .graphDiv {
+		width: 50%;
+	}
+	.DoughnutChart .graphDiv .gl_graphChildDiv {
 		position: fixed;
-		width: 35%;
-		left: 55%;
-		top: 120px;
+		width: 40%;
+		height: 65%;
+		right: 5%;
+		top: 150px;
 	}
 	.saveGraphDataButton {
 		display: block;
