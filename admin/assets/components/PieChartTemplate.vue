@@ -247,4 +247,7 @@
 	input[type="text"] {
 	    height: 35px;
 	}
+	.form-table th {
+		width: 25%;
+	}
 </style>

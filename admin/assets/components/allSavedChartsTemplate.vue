@@ -1,11 +1,12 @@
 <template>
 	<div>
 		<div class="gl_heading_area">
-			<div class="gl_heading" style="float: left;">
-				<p>All Graphs</p>
+			<div class="gl_heading">
+				<p>{{currentPageName}}</p>
+				<div>
+					<a href="javascript:void(0)" @click="resetComponent" class="close_graph_modal">X</a>
+				</div>
 			</div>
-
-			<div style="text-align: right; font-weight: bold; font-size: 18px;"><a href="javascript:void(0)" style="text-decoration: none; color: #000; box-shadow: none;" @click="resetComponent" class="close_graph_modal">X</a></div>
 		</div>
 		<component @applied="whenGraphUpdated" v-bind:is="currentChartTabComponent" :graph-data="editedGraphData" :graph-index="editedGraphIndex"></component>
 		<div v-show="!currentComponent">
@@ -13,6 +14,7 @@
 				<div class="gl_single_graph gl_single_graph_create" v-if="docState === 'add'">
 					<div class="gl_graph_box">
 						<div class="gl_graph_box_cca">
+							<p class="plusIcon">+</p>
 							<button class="button button-primary button-large create_new_graph" type="button" @click="docState = 'create'">Add New Graph</button>
 						</div>
 					</div>
@@ -69,27 +71,28 @@
 				editedGraphIndex: '',
 				theChart: [],
 				docState: 'add',
+				currentPageName: 'All Graphs',
 				chartTabs: [
-	                { tabFileName: 'pieChart', tabName: 'Pie Chart' },
-	                { tabFileName: 'doughnutChart', tabName: 'Doughnut Chart' },
-	                { tabFileName: 'polarAreaChart', tabName: 'Polar Area Chart' },
-	                { tabFileName: 'barChart', tabName: 'Bar Chart' },
-	                { tabFileName: 'lineChart', tabName: 'Line Chart' },
-	                { tabFileName: 'radarChart', tabName: 'Radar Chart' },
-	                { tabFileName: 'bubbleChart', tabName: 'Bubble Chart' },
-	                { tabFileName: 'scatterChart', tabName: 'Scatter Chart' }
-	            ]
+					{ tabFileName: 'pieChart', tabName: 'Pie Chart' },
+					{ tabFileName: 'doughnutChart', tabName: 'Doughnut Chart' },
+					{ tabFileName: 'polarAreaChart', tabName: 'Polar Area Chart' },
+					{ tabFileName: 'barChart', tabName: 'Bar Chart' },
+					{ tabFileName: 'lineChart', tabName: 'Line Chart' },
+					{ tabFileName: 'radarChart', tabName: 'Radar Chart' },
+					{ tabFileName: 'bubbleChart', tabName: 'Bubble Chart' },
+					{ tabFileName: 'scatterChart', tabName: 'Scatter Chart' }
+				]
 			}
 		},
 		computed: {
 			currentChartTabComponent: function () {
-                return this.currentComponent;
-            },
-            ...mapGetters(['allGraph'])
+				return this.currentComponent;
+			},
+			...mapGetters(['allGraph'])
 		},
 		components: {
-	        pieChart, doughnutChart, polarAreaChart, barChart, lineChart, radarChart, bubbleChart, scatterChart
-	    },
+			pieChart, doughnutChart, polarAreaChart, barChart, lineChart, radarChart, bubbleChart, scatterChart
+		},
 		methods: {
 			onLoad() {
 				let outerThis = this;
@@ -111,18 +114,23 @@
 			changeTabChart() {
 				this.editedGraphIndex = 0;
 				this.editedGraphData = '';
-	            this.currentComponent = this.chartTabs[this.selectedChartIndex].tabFileName;
-	            this.selectedChartIndex = '';
-	        },
+				this.currentPageName = this.chartTabs[this.selectedChartIndex].tabName;
+				this.currentComponent = this.chartTabs[this.selectedChartIndex].tabFileName;
+				this.selectedChartIndex = '';
+				this.docState = 'add';
+			},
 			editGraphDetails(index) {
 				let chartType = this.allGraph[index].type+"Chart";
 				this.editedGraphData = this.allGraph[index];
 				this.editedGraphIndex = index;
+				let result = this.chartTabs.find(chart => chart.tabFileName === chartType);
+				this.currentPageName = result.tabName;
 				this.currentComponent = chartType;
 			},
 			whenGraphUpdated(updateChart) {
 				let index = this.$store.state.editedGraphIndex;
 				this.currentComponent = '';
+				this.currentPageName = 'All Graphs';
 
 				if(updateChart) {
 					this.theChart[index].data.datasets = this.allGraph[index].data.datasets;
@@ -168,6 +176,7 @@
 			},
 			resetComponent() {
 				let outerThis = this;
+				this.currentPageName = 'All Graphs';
 				setTimeout(function() {
 					outerThis.currentComponent = '';
 				}, 500);
@@ -180,7 +189,29 @@
 </script>
 
 <style>
+.gl_heading p {
+	display: inline-block;
+}
+.gl_heading div {
+	text-align: right;
+	font-weight: bold;
+	font-size: 18px;
+	display: inline-block;
+	float: right;
+	margin-top: 13px;
+}
+.gl_heading div a {
+	text-decoration: none;
+	color: #000;
+	box-shadow: none;
+}
 .gl_chart_dropdown_area {
 	margin-bottom: 10px;
+}
+.plusIcon {
+	font-size: 50px;
+	margin: 0px;
+	font-weight: bold;
+	margin-top: -65px;
 }
 </style>

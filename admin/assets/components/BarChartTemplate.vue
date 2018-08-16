@@ -23,7 +23,7 @@
 						<th scope="row"><label for="colors">Color</label></th>
 						<td><input class="regular-text" type="text" id="colors" placeholder="Color value for bar. Eg. red" v-model="data.backgroundColor" @keyup="addDatasetBgColor(index)"></td>
 					</tr>
-					<tr>
+					<tr v-if="index != 0">
 						<th scope="row"><label></label></th>
 						<td><input type="button" class="button button-danger delete_dataset" value="Delete Dataset" @click="deleteDataset(index)"></td>
 					</tr>
@@ -322,5 +322,8 @@
 	}
 	input[type="text"] {
 		height: 35px;
+	}
+	.form-table th {
+		width: 25%;
 	}
 </style>

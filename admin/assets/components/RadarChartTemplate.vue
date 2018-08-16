@@ -30,7 +30,7 @@
 						<th scope="row"><label for="fill">Fill Color Under the line</label></th>
 						<td><input type="checkbox" id="fill" v-model="data.fill" @change="fillColor(index)"></td>
 					</tr>
-					<tr>
+					<tr v-if="index != 0">
 						<th scope="row"><label></label></th>
 						<td><input type="button" class="button button-danger delete_dataset" value="Delete Dataset" @click="deleteDataset(index)"></td>
 					</tr>
@@ -328,5 +328,8 @@
 	}
 	input[type="text"] {
 	    height: 35px;
+	}
+	.form-table th {
+		width: 25%;
 	}
 </style>

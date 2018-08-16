@@ -1,9 +1,9 @@
 <template>
 	<div class="bubbleChart gl_chart_template" id="bubble">
+		<div>
+			<button type="button" style="margin-right: 10px;" @click="goBacktoAllGraphPage">Go Back</button>
+		</div>
 		<div class="graphOptions">
-			<div>
-				<button type="button" style="margin-right: 10px;" @click="goBacktoAllGraphPage">Go Back</button>
-			</div>
 			<table class="form-table">
 				<template v-for="(dataset, index) in datasets">
 					<tr>
@@ -40,7 +40,7 @@
 						<th scope="row"><label for="line_color">Circle Border Color</label></th>
 						<td><input class="regular-text" type="text" id="line_color" v-model="dataset.borderColor" @keyup="addDatasetborderColor(index)"></td>
 					</tr>
-					<tr>
+					<tr v-if="index != 0">
 						<th scope="row"><label></label></th>
 						<td><input type="button" class="button button-danger delete_dataset" value="Delete Dataset" @click="deleteDataset(index)"></td>
 					</tr>
@@ -327,5 +327,8 @@
 	}
 	input[type="text"] {
 	    height: 35px;
+	}
+	.form-table th {
+		width: 25%;
 	}
 </style>

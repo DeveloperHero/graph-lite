@@ -15,7 +15,7 @@
 
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
 
-<button type="submit" class="close_graph_modal">X</button>
+<!-- <button type="submit" class="close_graph_modal">X</button> -->
 
 <!-- <div class="gl_nav">
 	<nav id="gl_new_chart">Add New Chart</nav>
