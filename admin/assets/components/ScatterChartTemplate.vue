@@ -4,22 +4,24 @@
 			<div>
 				<button type="button" style="margin-right: 10px;" @click="goBacktoAllGraphPage">Go Back</button>
 			</div>
-			<table class="form-table">
-				<template v-for="(dataset, index) in datasets">
+
+			<fieldset v-for="(dataset, index) in datasets" :key="dataset">
+				<legend>Dataset {{index+1}}</legend>
+				<table class="form-table">
 					<tr>
 						<th scope="row"><label for="label">Label</label></th>
-						<td><input class="regular-text" type="text" id="label" v-model="dataset.label" @keyup="addDatasetLabel(index)"></td>
+						<td><input class="regular-text" type="text" id="label" placeholder="Dataset label" v-model="dataset.label" @keyup="addDatasetLabel(index)"></td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="datasets">Data</label></th>
 							<td>
 								<template v-for="(data, PIndex) in dataset.data">
-									<div class="gl_sc_point">
-										<div class="gl_sc_xp">
+									<div class="gl_bb_point">
+										<div class="gl_bb_xp">
 											<label for="xPoint">x-point</label>
 											<input class="bubblePoints" type="number" id="xPoint" v-model="dataset.data[PIndex].x" @keyup="addDatasetDataPoints(index, PIndex, 'x')" @mouseup="addDatasetDataPoints(index, PIndex, 'x')">
 										</div>
-										<div class="gl_sc_yp">
+										<div class="gl_bb_yp">
 											<label for="yPoint">y-point</label>
 											<input class="bubblePoints" type="number" id="yPoint" v-model="dataset.data[PIndex].y" @keyup="addDatasetDataPoints(index, PIndex, 'y')" @mouseup="addDatasetDataPoints(index, PIndex, 'y')">
 										</div>
@@ -29,23 +31,24 @@
 							</td>
 					</tr>
 					<tr>
-						<th scope="row"><label for="colors">Circle Background Color</label></th>
+						<th scope="row" style="padding-top: 5px; padding-bottom: 5px"><label for="colors">Circle Background Color</label></th>
 						<td><input class="regular-text" type="text" id="colors" v-model="dataset.backgroundColor" @keyup="addDatasetBgColor(index)"></td>
 					</tr>
 					<tr>
-						<th scope="row"><label for="line_color">Circle Border Color</label></th>
+						<th scope="row" style="padding-top: 5px; padding-bottom: 5px"><label for="line_color">Circle Border Color</label></th>
 						<td><input class="regular-text" type="text" id="line_color" v-model="dataset.borderColor" @keyup="addDatasetborderColor(index)"></td>
 					</tr>
 					<tr v-if="index != 0">
-						<th scope="row"><label></label></th>
-						<td><input type="button" class="button button-danger delete_dataset" value="Delete Dataset" @click="deleteDataset(index)"></td>
+						<th scope="row" class="gl_deleteButtonTh"><label></label></th>
+						<td class="gl_deleteButtonTd"><input type="button" class="button button-danger delete_dataset" value="Delete Dataset" @click="deleteDataset(index)"></td>
 					</tr>
-				</template>
+				</table>
+			</fieldset>
+
+			<table class="form-table">
 				<tr>
-					<th scope="row"><label></label></th>
-					<td>
-						<input type="button" id="add_dataset" class="button button-primary" value="Add Dataset" @click="addDataset">
-					</td>
+					<th scope="row" style="padding-top: 5px;"><input type="button" id="add_dataset" class="button button-primary" value="Add Dataset" @click="addDataset"></th>
+					<td></td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="titleText">Chart Title</label></th>
@@ -329,5 +332,28 @@
 	}
 	.form-table th {
 		width: 25%;
+	}
+	.gl_deleteButtonTd, .gl_deleteButtonTh {
+		padding: 0 !important;
+	}
+	.delete_dataset {
+		float: right;
+		background-color: #dc3545 !important;
+		border-color: #dc3545 !important;
+		color: #fff !important;
+		margin-bottom: 8px !important;
+		margin-right: 10px !important;
+	}
+	fieldset {
+		width: 100%;
+		border: 1px solid #32373c;
+		padding-left: 10px;
+		margin-bottom: 7px;
+	}
+	legend {
+		font-weight: bold;
+	}
+	fieldset table {
+		margin-top: 0 !important;
 	}
 </style>
