@@ -6,16 +6,16 @@
 			</div>
 			<table class="form-table">
 				<tr>
-					<th scope="row"><label for="labels">Labels</label></th>
-					<td><input class="regular-text" type="text" id="labels" placeholder="Comma separated list of labels" v-model="chartlabelString" @keyup="addLabels"></td>
-				</tr>
-				<tr>
 					<th scope="row"><label for="datasets">Data</label></th>
 					<td><input class="regular-text" type="text" id="datasets" placeholder="Numeric data value for each label. Eg. 1,2,3 etc" v-model="chartDatasetDataString" @keyup="addDatasetData"></td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="colors">Color</label></th>
 					<td><input class="regular-text" type="text" id="colors" placeholder="Color value for each label. Eg. red, green, blue" v-model="chartDatasetBgColorString" @keyup="addDatasetBgColor"></td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="labels">Labels</label></th>
+					<td><input class="regular-text" type="text" id="labels" placeholder="Comma separated list of labels" v-model="chartlabelString" @keyup="addLabels"></td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="titleText">Chart Title</label></th>
