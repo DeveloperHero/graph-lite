@@ -3,7 +3,7 @@
 		editor.addButton( 'graphs_lite_mce_btn', {
 			title: 'Insert Graph',
 			icon: true,
-			image: '/wp-content/plugins/Graphs-Lite/admin/images/16x16.png',
+			image: '/wp-content/plugins/graph-lite/admin/images/16x16.png',
 			type: 'button',
 			onclick: function() {
 				$('#gl-admin-meta-box').fadeIn();
