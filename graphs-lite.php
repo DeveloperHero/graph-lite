@@ -3,7 +3,7 @@
 /**
  * Graphs Lite
  *
- * Interactive graphs and chart builder with 9 supported types 
+ * Create beautiful charts. Interactive and easy to use. 
  *
  * @link              http://orchestra.ltd
  * @since             1.0.0
@@ -12,7 +12,7 @@
  * @wordpress-plugin
  * Plugin Name:       Graph Lite
  * Plugin URI:        http://wordpress.org/plugins/graphs-lite
- * Description:       Interactive graphs and chart builder with 9 supported types
+ * Description:       Create beautiful charts. Interactive and easy to use.
  * Version:           2.0.3
  * Author:            Orchestra Technologies
  * Author URI:        http://orchestra.ltd
