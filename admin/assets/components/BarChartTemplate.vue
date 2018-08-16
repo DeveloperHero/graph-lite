@@ -219,7 +219,7 @@
 					setTimeout(function() {
 						outerThis.updateChart = true;
 						outerThis.$emit("applied", outerThis.updateChart);
-					}, 1000);
+					}, 2000);
 				});
 			},
 			onLoad() {

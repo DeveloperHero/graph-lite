@@ -2,8 +2,7 @@
 	<div>
 		<div class="gl_heading_area">
 			<div class="gl_heading" style="float: left;">
-				<p v-if="docState === 'add'">All Graph</p>
-				<p v-if="docState === 'create'">Create Graph</p>
+				<p>All Graphs</p>
 			</div>
 
 			<div style="text-align: right; font-weight: bold; font-size: 18px;"><a href="javascript:void(0)" style="text-decoration: none; color: #000; box-shadow: none;" @click="resetComponent" class="close_graph_modal">X</a></div>
@@ -14,7 +13,7 @@
 				<div class="gl_single_graph gl_single_graph_create" v-if="docState === 'add'">
 					<div class="gl_graph_box">
 						<div class="gl_graph_box_cca">
-							<button class="button button-primary button-large create_new_graph" type="button" @click="docState = 'create'">Add new graph</button>
+							<button class="button button-primary button-large create_new_graph" type="button" @click="docState = 'create'">Add New Graph</button>
 						</div>
 					</div>
 					<!-- <div class="gl_control_area">

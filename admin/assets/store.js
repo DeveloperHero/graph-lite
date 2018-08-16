@@ -68,7 +68,7 @@ export default {
 				success: function( response ) {
 					context.commit('updateGraph', editedGraphDetails);
 					$.sweetModal({
-						content: 'Graph id '+ response + ' updated',
+						content: 'Updated',
 						icon: $.sweetModal.ICON_SUCCESS,
 						timeout: 1300,
 						showCloseButton: false

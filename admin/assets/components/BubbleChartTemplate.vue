@@ -20,7 +20,7 @@
 											<input class="bubblePoints" type="number" id="xPoint" v-model="dataset.data[PIndex].x" @keyup="addDatasetDataPoints(index, PIndex, 'x')" @mouseup="addDatasetDataPoints(index, PIndex, 'x')">
 										</div>
 										<div class="gl_bb_yp">
-											<label for="xPoint">y-point</label>
+											<label for="yPoint">y-point</label>
 											<input class="bubblePoints" type="number" id="yPoint" v-model="dataset.data[PIndex].y" @keyup="addDatasetDataPoints(index, PIndex, 'y')" @mouseup="addDatasetDataPoints(index, PIndex, 'y')">
 										</div>
 										<div class="gl_bb_r">
@@ -229,7 +229,7 @@
 					setTimeout(function() {
 						outerThis.updateChart = true;
 						outerThis.$emit("applied", outerThis.updateChart);
-					}, 1000);
+					}, 2000);
 				});
 			},
 			onLoad() {
