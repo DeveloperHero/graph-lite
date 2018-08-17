@@ -97,6 +97,7 @@ class Graph_Lite_Admin {
 			'save_ajax_url'   =>	admin_url( 'admin-ajax.php?action=save_chart' ),
 			'update_ajax_url' =>	admin_url( 'admin-ajax.php?action=update_chart' ),
 			'delete_ajax_url' =>	admin_url( 'admin-ajax.php?action=delete_chart' ),
+			'admin_dir_url'   =>	plugins_url( __FILE__ ),
 		] );
 
 		wp_enqueue_script( 'graphs-light-response', plugin_dir_url( __FILE__ ) . 'assets/graphs-lite-admin-response.js', array( 'jquery' ), $this->version, true );
@@ -162,7 +163,7 @@ class Graph_Lite_Admin {
 	public function adding_custom_meta_boxes( $post_type, $post ) {
 	    add_meta_box(
 	        'gl-admin-meta-box',
-	        __( 'Graph Lite', 'graphs-light' ),
+	        __( 'Graph Light', 'graphs-light' ),
 	        [$this, 'render_graph_light_admin_metabox'],
 	        array('post','page'),
 	        'normal',
