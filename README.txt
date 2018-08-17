@@ -16,6 +16,7 @@ Build beautiful charts and graphs with Graph (Lite).
 
 The interface is intuitive and easy to use. You can see your graphs updated in real-time when you are building it. Embed anywhere with a shortcode. Graphs are responsive and interactive. 
 
+https://youtu.be/Hwn4UKc5Bew?rel=0
 
 8 Supported Chart Types
 
