@@ -162,7 +162,7 @@ class Graph_Lite_Admin {
 	public function adding_custom_meta_boxes( $post_type, $post ) {
 	    add_meta_box(
 	        'gl-admin-meta-box',
-	        __( 'Graph Light', 'graphs-light' ),
+	        __( 'Graph Lite', 'graphs-light' ),
 	        [$this, 'render_graph_light_admin_metabox'],
 	        array('post','page'),
 	        'normal',

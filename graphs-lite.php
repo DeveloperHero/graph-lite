@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Graphs Lite
+ * Graph Lite
  *
  * Create beautiful charts. Interactive and easy to use. 
  *
@@ -33,7 +33,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Rename this for your plugin and update it as you release new versions.
  */
 define( 'GRAPHS_LITE_VERSION', '2.0.5' );
-define( 'GRAPHS_LITE_NAME', 'Graph Light' );
+define( 'GRAPHS_LITE_NAME', 'Graph Lite' );
 
 /**
  * Initial Class of the plugin
