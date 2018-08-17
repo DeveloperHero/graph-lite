@@ -1,4 +1,4 @@
-=== Plugin Name ===
+=== Graph Lite ===
 Contributors: orchestra, mymizan, mishuk24
 Donate link: http://orchestra.ltd
 Tags: chart, charts, graphs, graph, data visualization
@@ -12,19 +12,43 @@ Create beautiful charts. Interactive and easy to use.
 
 == Description ==
 
-Build beautiful charts and graphs with Graph Lite. The plugin is designed to be very easy to use. It features an interactive builder which updates the graph as you build it. We support 8 types of charts. 
+Build beautiful charts and graphs with Graph (Lite). 
 
-Embed anywhere with a shortcode. Charts are responsive and interactive. 
+The interface is intuitive and easy to use. You can see your graphs updated in real-time when you are building it. Embed anywhere with a shortcode. Graphs are responsive and interactive. 
+
+
+8 Supported Chart Types
+
+ * Pie
+ * Doughnut
+ * Polar
+ * Bar
+ * Line
+ * Radar
+ * Bubble
+ * Scatter
+
+Features
+
+ * Easy to use editor
+ * Real-time update
+ * Integrated with WordPress editor
+ * Eight chart types
+ * Import/Export from CSV (Pro Version)
+ * Unlimited Graphs (Pro Version)
+
+If you find this plugin helpful, check our [other plugins](https://orchestra.ltd/wp) too.
+
 
 == Frequently Asked Questions ==
 
 = How do I use it? =
 
-Look for a chart icon in the TinyMCE toolbar. Clicking on the button will open an window with the plugin. 
+Look for the "Insert Graph" icon in the WordPress editor. Clicking on it will load the graph editor.
 
 = How do I show the graph? =
 
-Graphs are shown on the frontend via shortcodes. At this moment, we support one shortcode per page. 
+A unique short-code is generated for every graph. You can show your graphs anywhere by inserting the shortcode. 
 
 = How do I show multiple graphs on the same page? =
 
@@ -32,7 +56,7 @@ You need to buy the pro-version. Please contact us.
 
 = Is it responsive? =
 
-Yes, the graphs are responsive. 
+Graphs will adjust size based on the screen and available space (parent div). 
 
 == Screenshots ==
 
