@@ -4,7 +4,7 @@ Donate link: http://orchestra.ltd
 Tags: chart, charts, graphs, graph, data visualization
 Requires at least: 4
 Tested up to: 4.9.8
-Stable tag: 2.0.5
+Stable tag: 2.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -90,4 +90,7 @@ Graphs will adjust size based on the screen and available space (parent div).
 * Bug fixes
 
 = 2.0.5 =
+* Bug fixes
+
+= 2.0.6 =
 * Bug fixes
