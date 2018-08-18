@@ -89,7 +89,6 @@
 				showTitle: false,
 				showLegend: true,
 				beginAtZero: false,
-				updateChart: false,
 				datasets: [
 					{
 						label: '',
@@ -186,7 +185,7 @@
 
 				this.$store.dispatch('addNewGraph', chartDatas).then(function() {
 					setTimeout(function() {
-						outerThis.$emit("applied");
+						outerThis.$emit("saved");
 					}, 1000);
 				});
 			},
@@ -226,8 +225,7 @@
 
 				this.$store.dispatch('updateGraph', payload).then(function() {
 					setTimeout(function() {
-						outerThis.updateChart = true;
-						outerThis.$emit("applied", outerThis.updateChart);
+						outerThis.$emit("updated");
 					}, 2000);
 				});
 			},
@@ -293,7 +291,7 @@
 				this.theChart.update();
 			},
 			goBacktoAllGraphPage() {
-				this.$emit("applied");
+				this.$emit("backed");
 			}
 		},
 		mounted() {

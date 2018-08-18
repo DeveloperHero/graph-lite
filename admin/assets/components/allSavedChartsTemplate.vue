@@ -8,7 +8,7 @@
 				</div>
 			</div>
 		</div>
-		<component @applied="whenGraphUpdated" v-bind:is="currentChartTabComponent" :graph-data="editedGraphData" :graph-index="editedGraphIndex"></component>
+		<component @saved="whenGraphSaved" @updated="whenGraphUpdated" @backed="wenBackButtonPressed" v-bind:is="currentChartTabComponent" :graph-data="editedGraphData" :graph-index="editedGraphIndex"></component>
 		<div v-show="!currentComponent">
 			<div class="gl_single_graph gl_single_graph_create" v-if="docState === 'add'">
 				<div class="gl_graph_box">
@@ -17,9 +17,6 @@
 						<button class="button button-primary button-large create_new_graph" type="button" @click="docState = 'create'">Add New Graph</button>
 					</div>
 				</div>
-				<!-- <div class="gl_control_area">
-					<button type="button" @click="docState = 'create'">Add</button>
-				</div> -->
 			</div>
 			<div class="gl_single_graph gl_single_graph_create" v-if="docState === 'create'">
 				<div class="gl_graph_box gl_single_graph_create_content">
@@ -126,30 +123,34 @@
 				this.currentPageName = result.tabName;
 				this.currentComponent = chartType;
 			},
-			whenGraphUpdated(updateChart) {
-				let index = this.$store.state.editedGraphIndex;
+			whenGraphSaved() {
+				this.currentComponent = '';
+			},
+			whenGraphUpdated() {
 				this.currentComponent = '';
 				this.currentPageName = 'All Graphs';
 
-				if(updateChart) {
-					this.theChart[index].data.datasets = this.allGraph[index].data.datasets;
-					this.theChart[index].options.legend.display = this.allGraph[index].options.legend.display;
-					this.theChart[index].options.legend.position = this.allGraph[index].options.legend.position;
-					this.theChart[index].options.title.display = this.allGraph[index].options.title.display;
-						this.theChart[index].options.title.text = this.allGraph[index].options.title.text;
+				let index = this.$store.state.editedGraphIndex;
+				this.theChart[index].data.datasets = this.allGraph[index].data.datasets;
+				this.theChart[index].options.legend.display = this.allGraph[index].options.legend.display;
+				this.theChart[index].options.legend.position = this.allGraph[index].options.legend.position;
+				this.theChart[index].options.title.display = this.allGraph[index].options.title.display;
+					this.theChart[index].options.title.text = this.allGraph[index].options.title.text;
 
-					if( this.allGraph[index].type == "pie" || this.allGraph[index].type == "doughnut" || this.allGraph[index].type == "polarArea" || this.allGraph[index].type == "bar" || this.allGraph[index].type == "line" || this.allGraph[index].type == "radar" ) {
-						this.theChart[index].data.labels = this.allGraph[index].data.labels;
-					}
-					if( this.allGraph[index].type == "bar" || this.allGraph[index].type == "line" ) {
-						this.theChart[index].options.scales.yAxes[0].ticks.beginAtZero = this.allGraph[index].options.scales.yAxes[0].ticks.beginAtZero;
-					}
-					if( this.allGraph[index].type == "radar") {
-						this.theChart[index].options.scale.ticks.beginAtZero = this.allGraph[index].options.scale.ticks.beginAtZero;
-					}
-
-					this.theChart[index].update();
+				if( this.allGraph[index].type == "pie" || this.allGraph[index].type == "doughnut" || this.allGraph[index].type == "polarArea" || this.allGraph[index].type == "bar" || this.allGraph[index].type == "line" || this.allGraph[index].type == "radar" ) {
+					this.theChart[index].data.labels = this.allGraph[index].data.labels;
 				}
+				if( this.allGraph[index].type == "bar" || this.allGraph[index].type == "line" ) {
+					this.theChart[index].options.scales.yAxes[0].ticks.beginAtZero = this.allGraph[index].options.scales.yAxes[0].ticks.beginAtZero;
+				}
+				if( this.allGraph[index].type == "radar") {
+					this.theChart[index].options.scale.ticks.beginAtZero = this.allGraph[index].options.scale.ticks.beginAtZero;
+				}
+
+				this.theChart[index].update();
+			},
+			wenBackButtonPressed() {
+				this.currentComponent = '';
 			},
 			deleteGraph(index) {
 				let deletedGraphId = this.allGraph[index].graph_id;
