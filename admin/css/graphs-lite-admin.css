@@ -145,7 +145,7 @@ button.saveGraphData {
 }
 
 .gl_single_graph.gl_single_graph_create .gl_graph_box {
-    min-height: 343px;
+    height: 343px;
     display: table;
     margin: auto;
 }
@@ -325,6 +325,13 @@ body::-webkit-scrollbar-track, body::-webkit-scrollbar-thumb, body::-webkit-scro
     .gl_single_graph .gl_graph_box {
         min-height: 243px;
     }
+
+    .gl_single_graph.gl_single_graph_create .gl_graph_box {
+        height: 291px;
+        display: table;
+        margin: auto;
+    }
+
     .gl_single_graph {
         width: 48%;
     }
