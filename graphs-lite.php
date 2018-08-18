@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Graph Lite
+ * Graphs
  *
  * Create beautiful charts. Interactive and easy to use. 
  *
@@ -10,7 +10,7 @@
  * @package           Graph_Lite
  *
  * @wordpress-plugin
- * Plugin Name:       Graph Lite
+ * Plugin Name:       Graphs
  * Plugin URI:        http://wordpress.org/plugins/graphs-lite
  * Description:       Create beautiful charts. Interactive and easy to use.
  * Version:           2.0.6
@@ -33,7 +33,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Rename this for your plugin and update it as you release new versions.
  */
 define( 'GRAPHS_LITE_VERSION', '2.0.6' );
-define( 'GRAPHS_LITE_NAME', 'Graph Lite' );
+define( 'GRAPHS_LITE_NAME', 'Graphs' );
 
 /**
  * Initial Class of the plugin
