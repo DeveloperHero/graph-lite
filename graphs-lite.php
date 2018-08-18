@@ -3,7 +3,7 @@
 /**
  * Graphs
  *
- * Create beautiful charts. Interactive and easy to use. 
+ * Create beautiful graphs. Interactive and easy to use. 
  *
  * @link              http://orchestra.ltd
  * @since             1.0.0
@@ -12,7 +12,7 @@
  * @wordpress-plugin
  * Plugin Name:       Graphs
  * Plugin URI:        http://wordpress.org/plugins/graphs-lite
- * Description:       Create beautiful charts. Interactive and easy to use.
+ * Description:       Create beautiful graphs. Interactive and easy to use.
  * Version:           2.0.6
  * Author:            Orchestra Technologies
  * Author URI:        http://orchestra.ltd

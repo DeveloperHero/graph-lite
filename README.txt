@@ -8,17 +8,17 @@ Stable tag: 2.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Create beautiful charts. Interactive and easy to use. 
+Create beautiful graphs. Interactive and easy to use. 
 
 == Description ==
 
-Build beautiful charts and graphs with Graphs. 
+Create beautiful graphs
 
-The interface is intuitive and easy to use. You can see your graphs updated in real-time when you are building it. Embed anywhere with a shortcode. Graphs are responsive and interactive. 
+The interface is designed to intuitive and easy to use. You can see your graphs updated in real-time when you are building it. Embed anywhere with a shortcode. Graphs are responsive and interactive. 
 
 https://youtu.be/Hwn4UKc5Bew?rel=0
 
-8 Supported Chart Types
+8 Supported Types
 
  * Pie
  * Doughnut
