@@ -24,6 +24,9 @@ export default {
 		},
 		deleteGraph(state, index) {
 			state.allGraph.splice(index, 1);
+		},
+		emptyEditGraph(state) {
+			state.editedGraphIndex =  '';
 		}
 	},
 	actions: {

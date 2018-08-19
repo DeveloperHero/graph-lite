@@ -3,13 +3,13 @@ import Vuex from 'vuex';
 import store from './store';
 
 //components
-import allSavedCharts from './components/allSavedChartsTemplate.vue';
+import App from './App.vue';
 
 Vue.use(Vuex);
 
 new Vue({
 	el: '#app',
-	render: h => h(allSavedCharts),
+	render: h => h(App),
 	store: new Vuex.Store(store),
 	created() {
 		this.$store.dispatch('onLoad');
