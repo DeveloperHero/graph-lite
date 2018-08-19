@@ -1,60 +1,40 @@
 <template>
 	<div>
-		<div class="gl_heading_area">
-			<div class="gl_heading">
-				<p>{{currentPageName}}</p>
-				<div>
-					<a href="javascript:void(0)" @click="resetComponent" class="close_graph_modal">X</a>
+		<div class="gl_single_graph gl_single_graph_create" v-if="docState === 'add'">
+			<div class="gl_graph_box">
+				<div class="gl_graph_box_cca">
+					<p class="plusIcon">+</p>
+					<button class="button button-primary button-large create_new_graph" type="button" @click="docState = 'create'">Add New Graph</button>
 				</div>
 			</div>
 		</div>
-		<component @saved="whenGraphSaved" @updated="whenGraphUpdated" @backed="wenBackButtonPressed" v-bind:is="currentChartTabComponent" :graph-data="editedGraphData" :graph-index="editedGraphIndex"></component>
-		<div v-show="!currentComponent">
-			<div class="gl_single_graph gl_single_graph_create" v-if="docState === 'add'">
-				<div class="gl_graph_box">
-					<div class="gl_graph_box_cca">
-						<p class="plusIcon">+</p>
-						<button class="button button-primary button-large create_new_graph" type="button" @click="docState = 'create'">Add New Graph</button>
-					</div>
+		<div class="gl_single_graph gl_single_graph_create" v-if="docState === 'create'">
+			<div class="gl_graph_box gl_single_graph_create_content">
+				<div class="gl_single_body_content">
+					<div class="gl_chart_dropdown_area">
+			            <select v-model="selectedChartIndex" @change="changeTabChart">
+							<option value="">Select a chart</option>
+							<option  v-for="(chartTab, index) in chartTabs" v-bind:key="chartTab.tabFileName" :value="index">{{ chartTab.tabName }}</option>
+						</select>
+			        </div>
+					<button type="button" class="button imgedit-cancel-btn" @click="docState = 'add'">Cancel</button>
 				</div>
 			</div>
-			<div class="gl_single_graph gl_single_graph_create" v-if="docState === 'create'">
-				<div class="gl_graph_box gl_single_graph_create_content">
-					<div class="gl_single_body_content">
-						<div class="gl_chart_dropdown_area">
-				            <!-- <p class="gl_chart_template_title"></p> -->
-				            <select v-model="selectedChartIndex" @change="changeTabChart">
-								<option value="">Select a chart</option>
-								<option  v-for="(chartTab, index) in chartTabs" v-bind:key="chartTab.tabFileName" :value="index">{{ chartTab.tabName }}</option>
-							</select>
-				        </div>
-						<button type="button" class="button imgedit-cancel-btn" @click="docState = 'add'">Cancel</button>
-					</div>
-				</div>
+		</div>
+		<div class="gl_single_graph" v-for="(graph, index) in allGraph" :key="graph.graph_id">
+			<div class="gl_graph_box">
+				<canvas :id="index"></canvas>
 			</div>
-			<div class="gl_single_graph" v-for="(graph, index) in allGraph" :key="graph.graph_id">
-				<div class="gl_graph_box">
-					<canvas :id="index"></canvas>
-				</div>
-				<div class="gl_control_area">
-					<button type="button" class="button button-primary" @click="useGraph(graph.graph_id)">Insert</button>
-					<button type="button" class="button button-primary" @click="editGraphDetails(index)">Edit</button>
-					<button type="button" class="button imgedit-cancel-btn" @click="deleteGraph(index)">Delete</button>
-				</div>
+			<div class="gl_control_area">
+				<button type="button" class="button button-primary" @click="useGraph(graph.graph_id)">Insert</button>
+				<button type="button" class="button button-primary" @click="editGraphDetails(index)">Edit</button>
+				<button type="button" class="button imgedit-cancel-btn" @click="deleteGraph(index)">Delete</button>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script>
-	import barChart from './BarChartTemplate';
-	import lineChart from './LineChartTemplate';
-	import pieChart from './PieChartTemplate';
-	import doughnutChart from './DoughnutChartTemplate';
-	import radarChart from './RadarChartTemplate';
-	import polarAreaChart from './PolarAreaChartTemplate';
-	import bubbleChart from './BubbleChartTemplate';
-	import scatterChart from './ScatterChartTemplate';
 	import { mapGetters } from 'vuex';
 
 	export default {
@@ -62,31 +42,22 @@
 			return {
 				currentComponent: '',
 				selectedChartIndex: '',
-				editedGraphData: [],
-				editedGraphIndex: '',
 				theChart: [],
 				docState: 'add',
-				currentPageName: 'All Graphs',
 				chartTabs: [
-					{ tabFileName: 'pieChart', tabName: 'Pie Chart' },
-					{ tabFileName: 'doughnutChart', tabName: 'Doughnut Chart' },
-					{ tabFileName: 'polarAreaChart', tabName: 'Polar Area Chart' },
-					{ tabFileName: 'barChart', tabName: 'Bar Chart' },
-					{ tabFileName: 'lineChart', tabName: 'Line Chart' },
-					{ tabFileName: 'radarChart', tabName: 'Radar Chart' },
-					{ tabFileName: 'bubbleChart', tabName: 'Bubble Chart' },
-					{ tabFileName: 'scatterChart', tabName: 'Scatter Chart' }
-				]
+                    { tabFileName: 'pieChart', tabName: 'Pie Chart' },
+                    { tabFileName: 'doughnutChart', tabName: 'Doughnut Chart' },
+                    { tabFileName: 'polarAreaChart', tabName: 'Polar Area Chart' },
+                    { tabFileName: 'barChart', tabName: 'Bar Chart' },
+                    { tabFileName: 'lineChart', tabName: 'Line Chart' },
+                    { tabFileName: 'radarChart', tabName: 'Radar Chart' },
+                    { tabFileName: 'bubbleChart', tabName: 'Bubble Chart' },
+                    { tabFileName: 'scatterChart', tabName: 'Scatter Chart' }
+                ]
 			}
 		},
 		computed: {
-			currentChartTabComponent: function () {
-				return this.currentComponent;
-			},
 			...mapGetters(['allGraph'])
-		},
-		components: {
-			pieChart, doughnutChart, polarAreaChart, barChart, lineChart, radarChart, bubbleChart, scatterChart
 		},
 		methods: {
 			onLoad() {
@@ -101,56 +72,51 @@
 					ctx.height = 295;
 				});
 			},
-			// @mishuk
 			useGraph(id){
 				var content = '[graph_lite id="'+id+'"]';
 				tinymce.activeEditor.execCommand('mceInsertContent', false, content);
 				$('#gl-admin-meta-box').fadeOut();
 			},
 			changeTabChart() {
-				this.editedGraphIndex = 0;
-				this.editedGraphData = '';
 				this.currentPageName = this.chartTabs[this.selectedChartIndex].tabName;
 				this.currentComponent = this.chartTabs[this.selectedChartIndex].tabFileName;
 				this.selectedChartIndex = '';
 				this.docState = 'add';
+
+				let withData = { graphIndex: 0, graphData: '', pageName: this.currentPageName, currentComponent: this.currentComponent };
+				this.$emit('graphPage', withData);
 			},
 			editGraphDetails(index) {
 				let chartType = this.allGraph[index].type+"Chart";
-				this.editedGraphData = this.allGraph[index];
-				this.editedGraphIndex = index;
 				let result = this.chartTabs.find(chart => chart.tabFileName === chartType);
 				this.currentPageName = result.tabName;
 				this.currentComponent = chartType;
-			},
-			whenGraphSaved() {
-				this.currentComponent = '';
+
+				let withData = { graphIndex: index, graphData: this.allGraph[index], pageName: this.currentPageName, currentComponent: this.currentComponent };
+				this.$emit('graphPage', withData);
 			},
 			whenGraphUpdated() {
-				this.currentComponent = '';
-				this.currentPageName = 'All Graphs';
-
 				let index = this.$store.state.editedGraphIndex;
-				this.theChart[index].data.datasets = this.allGraph[index].data.datasets;
-				this.theChart[index].options.legend.display = this.allGraph[index].options.legend.display;
-				this.theChart[index].options.legend.position = this.allGraph[index].options.legend.position;
-				this.theChart[index].options.title.display = this.allGraph[index].options.title.display;
-					this.theChart[index].options.title.text = this.allGraph[index].options.title.text;
+				if(index != '') {
+					this.theChart[index].data.datasets = this.allGraph[index].data.datasets;
+					this.theChart[index].options.legend.display = this.allGraph[index].options.legend.display;
+					this.theChart[index].options.legend.position = this.allGraph[index].options.legend.position;
+					this.theChart[index].options.title.display = this.allGraph[index].options.title.display;
+						this.theChart[index].options.title.text = this.allGraph[index].options.title.text;
 
-				if( this.allGraph[index].type == "pie" || this.allGraph[index].type == "doughnut" || this.allGraph[index].type == "polarArea" || this.allGraph[index].type == "bar" || this.allGraph[index].type == "line" || this.allGraph[index].type == "radar" ) {
-					this.theChart[index].data.labels = this.allGraph[index].data.labels;
-				}
-				if( this.allGraph[index].type == "bar" || this.allGraph[index].type == "line" ) {
-					this.theChart[index].options.scales.yAxes[0].ticks.beginAtZero = this.allGraph[index].options.scales.yAxes[0].ticks.beginAtZero;
-				}
-				if( this.allGraph[index].type == "radar") {
-					this.theChart[index].options.scale.ticks.beginAtZero = this.allGraph[index].options.scale.ticks.beginAtZero;
-				}
+					if( this.allGraph[index].type == "pie" || this.allGraph[index].type == "doughnut" || this.allGraph[index].type == "polarArea" || this.allGraph[index].type == "bar" || this.allGraph[index].type == "line" || this.allGraph[index].type == "radar" ) {
+						this.theChart[index].data.labels = this.allGraph[index].data.labels;
+					}
+					if( this.allGraph[index].type == "bar" || this.allGraph[index].type == "line" ) {
+						this.theChart[index].options.scales.yAxes[0].ticks.beginAtZero = this.allGraph[index].options.scales.yAxes[0].ticks.beginAtZero;
+					}
+					if( this.allGraph[index].type == "radar") {
+						this.theChart[index].options.scale.ticks.beginAtZero = this.allGraph[index].options.scale.ticks.beginAtZero;
+					}
 
-				this.theChart[index].update();
-			},
-			wenBackButtonPressed() {
-				this.currentComponent = '';
+					this.theChart[index].update();
+					this.$store.commit('emptyEditGraph');
+				}
 			},
 			deleteGraph(index) {
 				let deletedGraphId = this.allGraph[index].graph_id;
@@ -173,45 +139,23 @@
 						}
 					});
 				});
-			},
-			resetComponent() {
-				let outerThis = this;
-				this.currentPageName = 'All Graphs';
-				setTimeout(function() {
-					outerThis.currentComponent = '';
-				}, 500);
 			}
 		},
 		mounted() {
 			this.onLoad();
+			this.whenGraphUpdated();
 		}
 	}
 </script>
 
 <style>
-.gl_heading p {
-	display: inline-block;
-}
-.gl_heading div {
-	text-align: right;
-	font-weight: bold;
-	font-size: 18px;
-	display: inline-block;
-	float: right;
-	margin-top: 13px;
-}
-.gl_heading div a {
-	text-decoration: none;
-	color: #000;
-	box-shadow: none;
-}
-.gl_chart_dropdown_area {
-	margin-bottom: 10px;
-}
-.plusIcon {
-	font-size: 50px;
-	margin: 0px;
-	font-weight: bold;
-	margin-top: -65px;
-}
+	.gl_chart_dropdown_area {
+		margin-bottom: 10px;
+	}
+	.plusIcon {
+		font-size: 50px;
+		margin: 0px;
+		font-weight: bold;
+		margin-top: -65px;
+	}
 </style>
