@@ -1,4 +1,4 @@
-=== Graph Lite ===
+=== Graphs ===
 Contributors: orchestra, mymizan, mishuk24
 Donate link: http://orchestra.ltd
 Tags: chart, charts, graphs, graph, data visualization
@@ -12,7 +12,7 @@ Create beautiful charts. Interactive and easy to use.
 
 == Description ==
 
-Build beautiful charts and graphs with Graph (Lite). 
+Build beautiful charts and graphs with Graphs. 
 
 The interface is intuitive and easy to use. You can see your graphs updated in real-time when you are building it. Embed anywhere with a shortcode. Graphs are responsive and interactive. 
 
