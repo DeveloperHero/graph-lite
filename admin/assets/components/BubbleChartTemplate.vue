@@ -16,17 +16,22 @@
 							<td>
 								<template v-for="(data, PIndex) in dataset.data">
 									<div class="gl_bb_point">
-										<div class="gl_bb_xp">
-											<label for="xPoint">x-point</label>
-											<input class="bubblePoints" type="number" id="xPoint" v-model="dataset.data[PIndex].x" @keyup="addDatasetDataPoints(index, PIndex, 'x')" @mouseup="addDatasetDataPoints(index, PIndex, 'x')">
+										<div class="button_input_fields">
+											<div class="gl_bb_xp">
+												<label for="xPoint">x-point</label>
+												<input class="bubblePoints" type="number" id="xPoint" v-model="dataset.data[PIndex].x" @keyup="addDatasetDataPoints(index, PIndex, 'x')" @mouseup="addDatasetDataPoints(index, PIndex, 'x')">
+											</div>
+											<div class="gl_bb_yp">
+												<label for="yPoint">y-point</label>
+												<input class="bubblePoints" type="number" id="yPoint" v-model="dataset.data[PIndex].y" @keyup="addDatasetDataPoints(index, PIndex, 'y')" @mouseup="addDatasetDataPoints(index, PIndex, 'y')">
+											</div>
+											<div class="gl_bb_r">
+												<label for="radius">Bubble Radius</label>
+												<input class="bubblePoints" type="number" id="radius" v-model="dataset.data[PIndex].r" @keyup="addDatasetDataPoints(index, PIndex, 'r')" @mouseup="addDatasetDataPoints(index, PIndex, 'r')">
+											</div>
 										</div>
-										<div class="gl_bb_yp">
-											<label for="yPoint">y-point</label>
-											<input class="bubblePoints" type="number" id="yPoint" v-model="dataset.data[PIndex].y" @keyup="addDatasetDataPoints(index, PIndex, 'y')" @mouseup="addDatasetDataPoints(index, PIndex, 'y')">
-										</div>
-										<div class="gl_bb_r">
-											<label for="radius">Bubble Radius</label>
-											<input class="bubblePoints" type="number" id="radius" v-model="dataset.data[PIndex].r" @keyup="addDatasetDataPoints(index, PIndex, 'r')" @mouseup="addDatasetDataPoints(index, PIndex, 'r')">
+										<div v-if="PIndex != 0">
+											<a href="javascript:void(0)" class="deleteButtonPoint" @click="deleteButtonPoint(index, PIndex)">X</a>
 										</div>
 									</div>
 								</template>
@@ -169,6 +174,11 @@
 			deleteDataset(index) {
 				this.datasets.splice(index, 1);
 				this.theChart.data.datasets.splice(index, 1);
+				this.theChart.update();
+			},
+			deleteButtonPoint(datasetIndex, bubblePointIndex) {
+				this.datasets[datasetIndex].data.splice(bubblePointIndex, 1);
+				this.theChart.data.datasets[datasetIndex].data.splice(bubblePointIndex, 1);
 				this.theChart.update();
 			},
 			saveGraphData() {
@@ -361,5 +371,13 @@
 	}
 	fieldset table {
 		margin-top: 0 !important;
+	}
+	.button_input_fields {
+		padding-right: 8px;
+	}
+	.deleteButtonPoint {
+		text-decoration: none;
+		font-size: 13px;
+		color: black;
 	}
 </style>
