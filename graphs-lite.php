@@ -1,19 +1,23 @@
 <?php
 
 /**
- * Graphs
+ * Graphs & Charts
  *
- * Create beautiful graphs. Interactive and easy to use. 
+ * A very user-friendly WordPress plugin to create beautiful, interactive charts and graphs with supports for 8 commonly 
+ * used chart types. No lock-ins or paid upgrades necessary. 
  *
  * @link              http://orchestra.ltd
  * @since             1.0.0
  * @package           Graph_Lite
  *
- * @wordpress-plugin
- * Plugin Name:       Graphs
+ * Plugin Name:       Graphs & Charts
  * Plugin URI:        http://wordpress.org/plugins/graphs-lite
- * Description:       Create beautiful graphs. Interactive and easy to use.
- * Version:           2.0.6
+ * Description:       A very user-friendly WordPress plugin to create beautiful, interactive charts and graphs. 
+ * It has an interactive builder to show you live updates of the charts as you enter the data. 
+ * The plugin supports 8 commonly used chart types. 
+ * It's completely free to use, well-designed and no paid upgrades needed. Supported chart types are pie, doughnut, polar, bar, line, radar, bubble and scatter chart. 
+ * 
+ * Version:           2.0.7
  * Author:            Orchestra Technologies
  * Author URI:        http://orchestra.ltd
  * License:           GPL-2.0+
@@ -27,18 +31,10 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-/**
- * Currently plugin version.
- * Start at version 1.0.0 and use SemVer - https://semver.org
- * Rename this for your plugin and update it as you release new versions.
- */
-define( 'GRAPHS_LITE_VERSION', '2.0.6' );
-define( 'GRAPHS_LITE_NAME', 'Graphs' );
 
-/**
- * Initial Class of the plugin
- * should run first
- */
+define( 'GRAPHS_LITE_VERSION', '2.0.7' );
+define( 'GRAPHS_LITE_NAME', 'Graphs & Charts' );
+
 require plugin_dir_path( __FILE__ ) . 'includes/class-graphs-lite-init.php';
 
 /**
