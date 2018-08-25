@@ -1,13 +1,16 @@
 <template>
 	<div class="barChart gl_chart_template" id="bar">
 		<div class="graphOptions">
-			<div>
-				<button type="button" style="margin-right: 10px;" @click="goBacktoAllGraphPage">Go Back</button>
-			</div>
 			<table class="form-table">
 				<tr>
-					<th scope="row"><label for="labels">xAsis Labels</label></th>
-					<td><input class="regular-text" type="text" id="labels" placeholder="Comma separated list of labels" v-model="chartlabelsString" @keyup="addLabels"></td>
+					<th scope="row" class="gl_backButotnTh"><button type="button" @click="goBacktoAllGraphPage">Go Back</button></th>
+					<td class="gl_backButotnTh">
+						<p class="gl_fieldRequiredError" v-if="fieldsRequired">Field(s) required</p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="labels">xAsis Labels*</label></th>
+					<td><input class="regular-text" :class="{'gl_fieldRequired': ifxAxesLabelEmpty}" type="text" id="labels" placeholder="Comma separated list of labels" v-model="chartlabelsString" @keyup="addLabels"></td>
 				</tr>
 			</table>
 
@@ -19,12 +22,12 @@
 						<td><input class="regular-text" type="text" id="label" placeholder="Dataset label" v-model="data.label" @keyup="addDatasetLabel(index)"></td>
 					</tr>
 					<tr>
-						<th scope="row"><label for="datasets">Data</label></th>
-						<td><input class="regular-text" type="text" id="datasets" placeholder="Numeric data value for each label. Eg. 1,2,3 etc" v-model="data.chartDatasetDataString" @keyup="addDatasetData(index)"></td>
+						<th scope="row"><label for="datasets">Data*</label></th>
+						<td><input class="regular-text" :class="{'gl_fieldRequired': data.ifDataEmpty}" type="text" id="datasets" placeholder="Numeric data value for each label. Eg. 1,2,3 etc" v-model="data.chartDatasetDataString" @keyup="addDatasetData(index)"></td>
 					</tr>
 					<tr>
-						<th scope="row"><label for="colors">Color</label></th>
-						<td><input class="regular-text" type="text" id="colors" placeholder="Color value for bar. Eg. red" v-model="data.backgroundColor" @keyup="addDatasetBgColor(index)"></td>
+						<th scope="row"><label for="colors">Color*</label></th>
+						<td><input class="regular-text" :class="{'gl_fieldRequired': data.ifBackgroundEmpty}" type="text" id="colors" placeholder="Color value for bar. Eg. red" v-model="data.backgroundColor" @keyup="addDatasetBgColor(index)"></td>
 					</tr>
 					<tr v-if="index != 0">
 						<th scope="row" class="gl_deleteButtonTh"><label></label></th>
@@ -89,12 +92,16 @@
 				showTitle: false,
 				showLegend: true,
 				beginAtZero: false,
+				ifxAxesLabelEmpty: false,
+				fieldsRequired: false,
 				datasets: [
 					{
 						label: '',
 						chartDatasetDataString: '',
 						data: [],
-						backgroundColor: ''
+						backgroundColor: '',
+						ifDataEmpty: false,
+						ifBackgroundEmpty: false
 					}
 				]
 			};
@@ -105,7 +112,9 @@
 					label: '',
 					chartDatasetDataString: '',
 					data: [],
-					backgroundColor: ''
+					backgroundColor: '',
+					ifDataEmpty: false,
+					ifBackgroundEmpty: false
 				});
 				this.theChart.data.datasets.push({
 					label: '',
@@ -115,6 +124,9 @@
 				this.theChart.update();
 			},
 			addLabels() {
+				if(this.ifxAxesLabelEmpty) {
+					this.ifxAxesLabelEmpty = false;
+				}
 				this.labels = this.chartlabelsString.split(',');
 				this.theChart.data.labels = this.labels;
 				this.theChart.update();
@@ -124,11 +136,17 @@
 				this.theChart.update();
 			},
 			addDatasetData(index) {
+				if(this.datasets[index].ifDataEmpty) {
+					this.datasets[index].ifDataEmpty = false;
+				}
 				this.datasets[index].data = this.datasets[index].chartDatasetDataString.split(',');
 				this.theChart.data.datasets[index].data = this.datasets[index].data;
 				this.theChart.update();
 			},
 			addDatasetBgColor(index) {
+				if(this.datasets[index].ifBackgroundEmpty) {
+					this.datasets[index].ifBackgroundEmpty = false;
+				}
 				this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
 				this.theChart.update();
 			},
@@ -157,77 +175,123 @@
 			},
 			saveGraphData() {
 				let outerThis = this;
-				let chartDatas = {
-					type: this.chartType,
-					data: {
-						labels: this.labels,
-						datasets: this.datasets
-					},
-					options: {
-						maintainAspectRatio: false,
-						scales: {
-							yAxes: [{
-								ticks: {
-									beginAtZero: this.beginAtZero
-								}
-							}]
-						},
-						title: {
-							display: this.showTitle,
-							text: this.titleText
-						},
-						legend: {
-							display: this.showLegend,
-							position: this.legendPosition
-						}
-					}
-				};
+				let DatasetHasEmptyValue = true
 
-				this.$store.dispatch('addNewGraph', chartDatas).then(function() {
-					setTimeout(function() {
-						outerThis.$emit("saved");
-					}, 1000);
+				this.datasets.forEach(function(value) {
+					if(value.chartDatasetDataString === '') {
+						value.ifDataEmpty = true;
+						DatasetHasEmptyValue = false;
+						outerThis.fieldsRequired = true;
+					}
+					if(value.backgroundColor === '') {
+						value.ifBackgroundEmpty = true;
+						DatasetHasEmptyValue = false;
+						outerThis.fieldsRequired = true;
+					}
 				});
+
+				if(this.chartlabelsString === '') {
+					this.fieldsRequired = true;
+					this.ifxAxesLabelEmpty = true;
+				}
+
+				if(this.chartlabelsString !== '' && DatasetHasEmptyValue) {
+					let chartDatas = {
+						type: this.chartType,
+						data: {
+							labels: this.labels,
+							datasets: this.datasets
+						},
+						options: {
+							maintainAspectRatio: false,
+							scales: {
+								yAxes: [{
+									ticks: {
+										beginAtZero: this.beginAtZero
+									}
+								}]
+							},
+							title: {
+								display: this.showTitle,
+								text: this.titleText
+							},
+							legend: {
+								display: this.showLegend,
+								position: this.legendPosition
+							}
+						}
+					};
+
+					this.$store.dispatch('addNewGraph', chartDatas).then(function() {
+						setTimeout(function() {
+							outerThis.$emit("saved");
+						}, 1500);
+					});
+				}
 			},
 			updateGraphData() {
 				let outerThis = this;
-				let chartDatas = {
-					type: this.chartType,
-					data: {
-						labels: this.labels,
-						datasets: []
-					},
-					options: {
-						maintainAspectRatio: false,
-						scales: {
-							yAxes: [{
-								ticks: {
-									beginAtZero: this.beginAtZero
-								}
-							}]
-						},
-						title: {
-							display: this.showTitle,
-							text: this.titleText
-						},
-						legend: {
-							display: this.showLegend,
-							position: this.legendPosition
-						}
-					}
-				};
+				let DatasetHasEmptyValue = true
 
 				this.datasets.forEach(function(value) {
-					chartDatas.data.datasets.push({ label: value.label, data: value.data, chartDatasetDataString: value.chartDatasetDataString, backgroundColor: value.backgroundColor });
+					if(value.chartDatasetDataString === '') {
+						value.ifDataEmpty = true;
+						DatasetHasEmptyValue = false;
+						outerThis.fieldsRequired = true;
+					}
+					if(value.backgroundColor === '') {
+						value.ifBackgroundEmpty = true;
+						DatasetHasEmptyValue = false;
+						outerThis.fieldsRequired = true;
+					}
 				});
 
-				let payload = {'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id};
+				if(this.chartlabelsString === '') {
+					this.fieldsRequired = true;
+					if(this.chartlabelsString === '') {
+						this.ifxAxesLabelEmpty = true;
+					}
+				}
 
-				this.$store.dispatch('updateGraph', payload).then(function() {
-					setTimeout(function() {
-						outerThis.$emit("updated");
-					}, 2000);
-				});
+				if(this.chartlabelsString !== '' && DatasetHasEmptyValue) {
+					let chartDatas = {
+						type: this.chartType,
+						data: {
+							labels: this.labels,
+							datasets: []
+						},
+						options: {
+							maintainAspectRatio: false,
+							scales: {
+								yAxes: [{
+									ticks: {
+										beginAtZero: this.beginAtZero
+									}
+								}]
+							},
+							title: {
+								display: this.showTitle,
+								text: this.titleText
+							},
+							legend: {
+								display: this.showLegend,
+								position: this.legendPosition
+							}
+						}
+					};
+
+					this.datasets.forEach(function(value) {
+						chartDatas.data.datasets.push({ label: value.label, data: value.data, chartDatasetDataString: value.chartDatasetDataString, backgroundColor: value.backgroundColor });
+					});
+
+					let payload = {'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id};
+
+					this.$store.dispatch('updateGraph', payload).then(function() {
+						setTimeout(function() {
+							outerThis.$emit("updated");
+						}, 2000);
+					});
+				}
 			},
 			onLoad() {
 				let ctx = document.getElementById("barChart");
@@ -269,7 +333,7 @@
 				this.theChart.data.labels = this.labels = this.graphData.data.labels;
 				this.graphData.data.datasets.forEach(function(value, key) {
 					if(key) {
-						outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor:'' });
+						outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor:'', ifDataEmpty: false, ifBackgroundEmpty: false });
 						outerThis.theChart.data.datasets.push({ label: '', data: [], backgroundColor:'' });
 					}
 					outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = outerThis.graphData.data.datasets[key].label;

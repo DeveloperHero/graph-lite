@@ -1,9 +1,15 @@
 <template>
 	<div class="bubbleChart gl_chart_template" id="bubble">
 		<div class="graphOptions">
-			<div>
-				<button type="button" style="margin-right: 10px;" @click="goBacktoAllGraphPage">Go Back</button>
-			</div>
+			<table class="form-table">
+				<tr>
+					<th scope="row" class="gl_backButotnTh"><button type="button" @click="goBacktoAllGraphPage">Go Back</button></th>
+					<td class="gl_backButotnTh">
+						<p class="gl_fieldRequiredError" v-if="fieldsRequired">Field(s) required</p>
+					</td>
+				</tr>
+			</table>
+
 			<fieldset v-for="(dataset, index) in datasets" :key="dataset">
 				<legend>Dataset {{index+1}}</legend>
 				<table class="form-table">
@@ -12,22 +18,22 @@
 						<td><input class="regular-text" type="text" id="label" placeholder="Dataset label" v-model="dataset.label" @keyup="addDatasetLabel(index)"></td>
 					</tr>
 					<tr>
-						<th scope="row"><label for="datasets">Data</label></th>
+						<th scope="row"><label for="datasets">Data*</label></th>
 							<td>
 								<template v-for="(data, PIndex) in dataset.data">
 									<div class="gl_bb_point">
 										<div class="button_input_fields">
 											<div class="gl_bb_xp">
 												<label for="xPoint">x-point</label>
-												<input class="bubblePoints" type="number" id="xPoint" v-model="dataset.data[PIndex].x" @keyup="addDatasetDataPoints(index, PIndex, 'x')" @mouseup="addDatasetDataPoints(index, PIndex, 'x')">
+												<input class="bubblePoints" :class="{'gl_fieldRequired': data.ifxPointEmpty}" type="number" id="xPoint" v-model="dataset.data[PIndex].x" @keyup="addDatasetDataPoints(index, PIndex, 'x')" @mouseup="addDatasetDataPoints(index, PIndex, 'x')">
 											</div>
 											<div class="gl_bb_yp">
 												<label for="yPoint">y-point</label>
-												<input class="bubblePoints" type="number" id="yPoint" v-model="dataset.data[PIndex].y" @keyup="addDatasetDataPoints(index, PIndex, 'y')" @mouseup="addDatasetDataPoints(index, PIndex, 'y')">
+												<input class="bubblePoints" :class="{'gl_fieldRequired': data.ifyPointEmpty}" type="number" id="yPoint" v-model="dataset.data[PIndex].y" @keyup="addDatasetDataPoints(index, PIndex, 'y')" @mouseup="addDatasetDataPoints(index, PIndex, 'y')">
 											</div>
 											<div class="gl_bb_r">
 												<label for="radius">Bubble Radius</label>
-												<input class="bubblePoints" type="number" id="radius" v-model="dataset.data[PIndex].r" @keyup="addDatasetDataPoints(index, PIndex, 'r')" @mouseup="addDatasetDataPoints(index, PIndex, 'r')">
+												<input class="bubblePoints" :class="{'gl_fieldRequired': data.ifrPointEmpty}" type="number" id="radius" v-model="dataset.data[PIndex].r" @keyup="addDatasetDataPoints(index, PIndex, 'r')" @mouseup="addDatasetDataPoints(index, PIndex, 'r')">
 											</div>
 										</div>
 										<div v-if="PIndex != 0">
@@ -39,12 +45,12 @@
 							</td>
 					</tr>
 					<tr>
-						<th scope="row" style="padding-top: 5px; padding-bottom: 5px;"><label for="colors">Circle Background Color</label></th>
-						<td><input class="regular-text" type="text" id="colors" v-model="dataset.backgroundColor" @keyup="addDatasetBgColor(index)"></td>
+						<th scope="row" style="padding-top: 5px; padding-bottom: 5px;"><label for="colors">Circle Background Color*</label></th>
+						<td><input class="regular-text" :class="{'gl_fieldRequired': dataset.ifCircleBackgroundEmpty}" type="text" id="colors" v-model="dataset.backgroundColor" @keyup="addDatasetBgColor(index)"></td>
 					</tr>
 					<tr>
-						<th scope="row" style="padding-top: 5px; padding-bottom: 5px;"><label for="line_color">Circle Border Color</label></th>
-						<td><input class="regular-text" type="text" id="line_color" v-model="dataset.borderColor" @keyup="addDatasetborderColor(index)"></td>
+						<th scope="row" style="padding-top: 5px; padding-bottom: 5px;"><label for="line_color">Circle Border Color*</label></th>
+						<td><input class="regular-text" :class="{'gl_fieldRequired': dataset.ifCicleBorderColorEmpty}" type="text" id="line_color" v-model="dataset.borderColor" @keyup="addDatasetborderColor(index)"></td>
 					</tr>
 					<tr v-if="index != 0">
 						<th scope="row" class="gl_deleteButtonTh"><label></label></th>
@@ -101,15 +107,25 @@
 				legendPosition: 'top',
 				showTitle: false,
 				showLegend: true,
+				fieldsRequired: false,
 				datasets: [
 					{
 						label: '',
 						data: [
-							{x: '', y: '', r: ''}
+							{
+								x: '',
+								y: '',
+								r: '',
+								ifxPointEmpty: false,
+								ifyPointEmpty: false,
+								ifrPointEmpty: false
+							}
 						],
 						backgroundColor: '',
 						borderColor: '',
-						hoverRadius: 0
+						hoverRadius: 0,
+						ifCircleBackgroundEmpty: false,
+						ifCicleBorderColorEmpty: false
 					}
 				]
 			};
@@ -119,11 +135,20 @@
 				this.datasets.push({
 					label: '',
 					data: [
-						{x: '', y: '', r: ''}
+						{
+							x: '',
+							y: '',
+							r: '',
+							ifxPointEmpty: false,
+							ifyPointEmpty: false,
+							ifrPointEmpty: false
+						}
 					],
 					backgroundColor: '',
 					borderColor: '',
-					hoverRadius: 0
+					hoverRadius: 0,
+					ifCircleBackgroundEmpty: false,
+					ifCicleBorderColorEmpty: false
 				});
 				this.theChart.data.datasets.push({
 					label: '',
@@ -137,7 +162,14 @@
 				this.theChart.update();
 			},
 			addBubblePoint(index) {
-				this.datasets[index].data.push({x: '', y: '', r: ''});
+				this.datasets[index].data.push({
+					x: '',
+					y: '',
+					r: '',
+					ifxPointEmpty: false,
+					ifyPointEmpty: false,
+					ifrPointEmpty: false
+				});
 				this.theChart.data.datasets[index].data.push({x: '', y: '', r: ''});
 				this.theChart.update();
 			},
@@ -146,14 +178,24 @@
 				this.theChart.update();
 			},
 			addDatasetDataPoints(index, pIndex, point) {
+				let gettingErrorPoint = 'if'+point+'PointEmpty';
+				if(this.datasets[index].data[pIndex][gettingErrorPoint]) {
+					this.datasets[index].data[pIndex][gettingErrorPoint] = false;
+				}
 				this.theChart.data.datasets[index].data[pIndex][point] = this.datasets[index].data[pIndex][point];
 				this.theChart.update();
 			},
 			addDatasetBgColor(index) {
+				if(this.datasets[index].ifCircleBackgroundEmpty) {
+					this.datasets[index].ifCircleBackgroundEmpty = false;
+				}
 				this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
 				this.theChart.update();
 			},
 			addDatasetborderColor(index) {
+				if(this.datasets[index].ifCicleBorderColorEmpty) {
+					this.datasets[index].ifCicleBorderColorEmpty = false;
+				}
 				this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
 				this.theChart.update();
 			},
@@ -182,68 +224,138 @@
 				this.theChart.update();
 			},
 			saveGraphData() {
-			let outerThis = this;
-				let chartDatas = {
-					type: this.chartType,
-					data: {
-						datasets: this.datasets
-					},
-					options: {
-						maintainAspectRatio: false,
-						title: {
-							display: this.showTitle,
-							text: this.titleText
-						},
-						legend: {
-							display: this.showLegend,
-							position: this.legendPosition
-						}
-					}
-				};
+				let outerThis = this;
+				let DatasetHasEmptyValue = true
 
-				this.$store.dispatch('addNewGraph', chartDatas).then(function() {
-					setTimeout(function() {
-						outerThis.$emit("saved");
-					}, 1000);
+				this.datasets.forEach(function(value) {
+					if(value.backgroundColor === '') {
+						value.ifCircleBackgroundEmpty = true;
+						DatasetHasEmptyValue = false;
+						outerThis.fieldsRequired = true;
+					}
+					if(value.borderColor === '') {
+						value.ifCicleBorderColorEmpty = true;
+						DatasetHasEmptyValue = false;
+						outerThis.fieldsRequired = true;
+					}
+
+					value.data.forEach(function(data) {
+						if(data.x === '') {
+							data.ifxPointEmpty = true;
+							DatasetHasEmptyValue = false;
+							outerThis.fieldsRequired = true;
+						}
+						if(data.y === '') {
+							data.ifyPointEmpty = true;
+							DatasetHasEmptyValue = false;
+							outerThis.fieldsRequired = true;
+						}
+						if(data.r === '') {
+							data.ifrPointEmpty = true;
+							DatasetHasEmptyValue = false;
+							outerThis.fieldsRequired = true;
+						}
+					})
 				});
+
+				if(DatasetHasEmptyValue) {
+					let chartDatas = {
+						type: this.chartType,
+						data: {
+							datasets: this.datasets
+						},
+						options: {
+							maintainAspectRatio: false,
+							title: {
+								display: this.showTitle,
+								text: this.titleText
+							},
+							legend: {
+								display: this.showLegend,
+								position: this.legendPosition
+							}
+						}
+					};
+
+					this.$store.dispatch('addNewGraph', chartDatas).then(function() {
+						setTimeout(function() {
+							outerThis.$emit("saved");
+						}, 1500);
+					});
+				}
 			},
 			updateGraphData() {
 				let outerThis = this;
-				let chartDatas = {
-					type: this.chartType,
-					data: {
-						datasets: []
-					},
-					options: {
-						maintainAspectRatio: false,
-						title: {
-							display: this.showTitle,
-							text: this.titleText
-						},
-						legend: {
-							display: this.showLegend,
-							position: this.legendPosition
-						}
+				let DatasetHasEmptyValue = true
+
+				this.datasets.forEach(function(value) {
+					if(value.backgroundColor === '') {
+						value.ifCircleBackgroundEmpty = true;
+						DatasetHasEmptyValue = false;
+						outerThis.fieldsRequired = true;
 					}
-				};
+					if(value.borderColor === '') {
+						value.ifCicleBorderColorEmpty = true;
+						DatasetHasEmptyValue = false;
+						outerThis.fieldsRequired = true;
+					}
 
-				this.datasets.forEach(function(value, key) {
-					chartDatas.data.datasets.push({
-						label: value.label,
-						data: value.data,
-						backgroundColor: value.backgroundColor,
-						borderColor: value.borderColor,
-						hoverRadius: 0
+					value.data.forEach(function(data) {
+						if(data.x === '') {
+							data.ifxPointEmpty = true;
+							DatasetHasEmptyValue = false;
+							outerThis.fieldsRequired = true;
+						}
+						if(data.y === '') {
+							data.ifyPointEmpty = true;
+							DatasetHasEmptyValue = false;
+							outerThis.fieldsRequired = true;
+						}
+						if(data.r === '') {
+							data.ifrPointEmpty = true;
+							DatasetHasEmptyValue = false;
+							outerThis.fieldsRequired = true;
+						}
+					})
+				});
+
+				if(DatasetHasEmptyValue) {
+					let chartDatas = {
+						type: this.chartType,
+						data: {
+							datasets: []
+						},
+						options: {
+							maintainAspectRatio: false,
+							title: {
+								display: this.showTitle,
+								text: this.titleText
+							},
+							legend: {
+								display: this.showLegend,
+								position: this.legendPosition
+							}
+						}
+					};
+
+					this.datasets.forEach(function(value, key) {
+						chartDatas.data.datasets.push({
+							label: value.label,
+							data: value.data,
+							backgroundColor: value.backgroundColor,
+							borderColor: value.borderColor,
+							hoverRadius: 0
+						});
 					});
-				});
 
-				let payload = {'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id};
+					let payload = {'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id};
 
-				this.$store.dispatch('updateGraph', payload).then(function() {
-					setTimeout(function() {
-						outerThis.$emit("updated");
-					}, 2000);
-				});
+					this.$store.dispatch('updateGraph', payload).then(function() {
+						setTimeout(function() {
+							outerThis.$emit("updated");
+						}, 2000);
+					});
+				}
 			},
 			onLoad() {
 				let ctx = document.getElementById("bubbleChart");
@@ -279,7 +391,7 @@
 				let outerThis = this;
 				this.graphData.data.datasets.forEach(function(value, key) {
 					if(key) {
-						outerThis.datasets.push({ label: '', data: [{ x: '', y: '', r: '' }], backgroundColor:'' });
+						outerThis.datasets.push({ label: '', data: [{ x: '', y: '', r: '', ifxPointEmpty: false, ifyPointEmpty: false, ifrPointEmpty: false }], backgroundColor:'', ifCircleBackgroundEmpty: false, ifCicleBorderColorEmpty: false });
 						outerThis.theChart.data.datasets.push({ label: '', data: [{ x: '', y: '', r: '' }], backgroundColor:'' });
 					}
 					outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = value.label;

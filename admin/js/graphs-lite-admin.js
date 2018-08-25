@@ -2386,6 +2386,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["a"] = ({
 	props: ['graphData', 'graphIndex'],
@@ -2399,11 +2402,15 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 			showTitle: false,
 			showLegend: true,
 			beginAtZero: false,
+			ifxAxesLabelEmpty: false,
+			fieldsRequired: false,
 			datasets: [{
 				label: '',
 				chartDatasetDataString: '',
 				data: [],
-				backgroundColor: ''
+				backgroundColor: '',
+				ifDataEmpty: false,
+				ifBackgroundEmpty: false
 			}]
 		};
 	},
@@ -2413,7 +2420,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 				label: '',
 				chartDatasetDataString: '',
 				data: [],
-				backgroundColor: ''
+				backgroundColor: '',
+				ifDataEmpty: false,
+				ifBackgroundEmpty: false
 			});
 			this.theChart.data.datasets.push({
 				label: '',
@@ -2423,6 +2432,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 			this.theChart.update();
 		},
 		addLabels() {
+			if (this.ifxAxesLabelEmpty) {
+				this.ifxAxesLabelEmpty = false;
+			}
 			this.labels = this.chartlabelsString.split(',');
 			this.theChart.data.labels = this.labels;
 			this.theChart.update();
@@ -2432,11 +2444,17 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 			this.theChart.update();
 		},
 		addDatasetData(index) {
+			if (this.datasets[index].ifDataEmpty) {
+				this.datasets[index].ifDataEmpty = false;
+			}
 			this.datasets[index].data = this.datasets[index].chartDatasetDataString.split(',');
 			this.theChart.data.datasets[index].data = this.datasets[index].data;
 			this.theChart.update();
 		},
 		addDatasetBgColor(index) {
+			if (this.datasets[index].ifBackgroundEmpty) {
+				this.datasets[index].ifBackgroundEmpty = false;
+			}
 			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
 			this.theChart.update();
 		},
@@ -2465,77 +2483,123 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 		},
 		saveGraphData() {
 			let outerThis = this;
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					labels: this.labels,
-					datasets: this.datasets
-				},
-				options: {
-					maintainAspectRatio: false,
-					scales: {
-						yAxes: [{
-							ticks: {
-								beginAtZero: this.beginAtZero
-							}
-						}]
-					},
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
+			let DatasetHasEmptyValue = true;
 
-			this.$store.dispatch('addNewGraph', chartDatas).then(function () {
-				setTimeout(function () {
-					outerThis.$emit("saved");
-				}, 1000);
+			this.datasets.forEach(function (value) {
+				if (value.chartDatasetDataString === '') {
+					value.ifDataEmpty = true;
+					DatasetHasEmptyValue = false;
+					outerThis.fieldsRequired = true;
+				}
+				if (value.backgroundColor === '') {
+					value.ifBackgroundEmpty = true;
+					DatasetHasEmptyValue = false;
+					outerThis.fieldsRequired = true;
+				}
 			});
+
+			if (this.chartlabelsString === '') {
+				this.fieldsRequired = true;
+				this.ifxAxesLabelEmpty = true;
+			}
+
+			if (this.chartlabelsString !== '' && DatasetHasEmptyValue) {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: this.datasets
+					},
+					options: {
+						maintainAspectRatio: false,
+						scales: {
+							yAxes: [{
+								ticks: {
+									beginAtZero: this.beginAtZero
+								}
+							}]
+						},
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.$store.dispatch('addNewGraph', chartDatas).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("saved");
+					}, 1500);
+				});
+			}
 		},
 		updateGraphData() {
 			let outerThis = this;
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					labels: this.labels,
-					datasets: []
-				},
-				options: {
-					maintainAspectRatio: false,
-					scales: {
-						yAxes: [{
-							ticks: {
-								beginAtZero: this.beginAtZero
-							}
-						}]
-					},
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
+			let DatasetHasEmptyValue = true;
 
 			this.datasets.forEach(function (value) {
-				chartDatas.data.datasets.push({ label: value.label, data: value.data, chartDatasetDataString: value.chartDatasetDataString, backgroundColor: value.backgroundColor });
+				if (value.chartDatasetDataString === '') {
+					value.ifDataEmpty = true;
+					DatasetHasEmptyValue = false;
+					outerThis.fieldsRequired = true;
+				}
+				if (value.backgroundColor === '') {
+					value.ifBackgroundEmpty = true;
+					DatasetHasEmptyValue = false;
+					outerThis.fieldsRequired = true;
+				}
 			});
 
-			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+			if (this.chartlabelsString === '') {
+				this.fieldsRequired = true;
+				if (this.chartlabelsString === '') {
+					this.ifxAxesLabelEmpty = true;
+				}
+			}
 
-			this.$store.dispatch('updateGraph', payload).then(function () {
-				setTimeout(function () {
-					outerThis.$emit("updated");
-				}, 2000);
-			});
+			if (this.chartlabelsString !== '' && DatasetHasEmptyValue) {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: []
+					},
+					options: {
+						maintainAspectRatio: false,
+						scales: {
+							yAxes: [{
+								ticks: {
+									beginAtZero: this.beginAtZero
+								}
+							}]
+						},
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.datasets.forEach(function (value) {
+					chartDatas.data.datasets.push({ label: value.label, data: value.data, chartDatasetDataString: value.chartDatasetDataString, backgroundColor: value.backgroundColor });
+				});
+
+				let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+
+				this.$store.dispatch('updateGraph', payload).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("updated");
+					}, 2000);
+				});
+			}
 		},
 		onLoad() {
 			let ctx = document.getElementById("barChart");
@@ -2575,7 +2639,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 			this.theChart.data.labels = this.labels = this.graphData.data.labels;
 			this.graphData.data.datasets.forEach(function (value, key) {
 				if (key) {
-					outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor: '' });
+					outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor: '', ifDataEmpty: false, ifBackgroundEmpty: false });
 					outerThis.theChart.data.datasets.push({ label: '', data: [], backgroundColor: '' });
 				}
 				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = outerThis.graphData.data.datasets[key].label;
@@ -2703,6 +2767,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["a"] = ({
 	props: ['graphData', 'graphIndex'],
@@ -2716,6 +2783,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 			showTitle: false,
 			showLegend: true,
 			beginAtZero: false,
+			ifxAxesLabelEmpty: false,
+			fieldsRequired: false,
 			datasets: [{
 				label: '',
 				chartDatasetDataString: '',
@@ -2723,7 +2792,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 				backgroundColor: '',
 				borderColor: '',
 				fill: false,
-				straightLine: false
+				straightLine: false,
+				ifDataEmpty: false,
+				ifFillColorEmpty: false,
+				ifLineColorEmpty: false
 			}]
 		};
 	},
@@ -2736,7 +2808,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 				backgroundColor: '',
 				borderColor: '',
 				fill: false,
-				straightLine: false
+				straightLine: false,
+				ifDataEmpty: false,
+				ifFillColorEmpty: false,
+				ifLineColorEmpty: false
 			});
 			this.theChart.data.datasets.push({
 				label: '',
@@ -2748,6 +2823,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 			this.theChart.update();
 		},
 		addLabels() {
+			if (this.ifxAxesLabelEmpty) {
+				this.ifxAxesLabelEmpty = false;
+			}
 			this.labels = this.chartlabelsString.split(',');
 			this.theChart.data.labels = this.labels;
 			this.theChart.update();
@@ -2757,15 +2835,24 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 			this.theChart.update();
 		},
 		addDatasetData(index) {
+			if (this.datasets[index].ifDataEmpty) {
+				this.datasets[index].ifDataEmpty = false;
+			}
 			this.datasets[index].data = this.datasets[index].chartDatasetDataString.split(',');
 			this.theChart.data.datasets[index].data = this.datasets[index].data;
 			this.theChart.update();
 		},
 		addDatasetBgColor(index) {
+			if (this.datasets[index].ifFillColorEmpty) {
+				this.datasets[index].ifFillColorEmpty = false;
+			}
 			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
 			this.theChart.update();
 		},
 		addDatasetborderColor(index) {
+			if (this.datasets[index].ifLineColorEmpty) {
+				this.datasets[index].ifLineColorEmpty = false;
+			}
 			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
 			this.theChart.update();
 		},
@@ -2809,88 +2896,142 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 		},
 		saveGraphData() {
 			let outerThis = this;
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					labels: this.labels,
-					datasets: this.datasets
-				},
-				options: {
-					maintainAspectRatio: false,
-					scales: {
-						yAxes: [{
-							ticks: {
-								beginAtZero: this.beginAtZero
-							}
-						}]
-					},
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
+			let DatasetHasEmptyValue = true;
 
-			this.$store.dispatch('addNewGraph', chartDatas).then(function () {
-				setTimeout(function () {
-					outerThis.$emit("saved");
-				}, 1000);
+			this.datasets.forEach(function (value) {
+				if (value.chartDatasetDataString === '') {
+					value.ifDataEmpty = true;
+					DatasetHasEmptyValue = false;
+					outerThis.fieldsRequired = true;
+				}
+				if (value.backgroundColor === '') {
+					value.ifFillColorEmpty = true;
+					DatasetHasEmptyValue = false;
+					outerThis.fieldsRequired = true;
+				}
+				if (value.borderColor === '') {
+					value.ifLineColorEmpty = true;
+					DatasetHasEmptyValue = false;
+					outerThis.fieldsRequired = true;
+				}
 			});
+
+			if (this.chartlabelsString === '') {
+				this.fieldsRequired = true;
+				this.ifxAxesLabelEmpty = true;
+			}
+
+			if (this.chartlabelsString !== '' && DatasetHasEmptyValue) {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: this.datasets
+					},
+					options: {
+						maintainAspectRatio: false,
+						scales: {
+							yAxes: [{
+								ticks: {
+									beginAtZero: this.beginAtZero
+								}
+							}]
+						},
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.$store.dispatch('addNewGraph', chartDatas).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("saved");
+					}, 1500);
+				});
+			}
 		},
 		updateGraphData() {
 			let outerThis = this;
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					labels: this.labels,
-					datasets: []
-				},
-				options: {
-					maintainAspectRatio: false,
-					scales: {
-						yAxes: [{
-							ticks: {
-								beginAtZero: this.beginAtZero
-							}
-						}]
+			let DatasetHasEmptyValue = true;
+
+			this.datasets.forEach(function (value) {
+				if (value.chartDatasetDataString === '') {
+					value.ifDataEmpty = true;
+					DatasetHasEmptyValue = false;
+					outerThis.fieldsRequired = true;
+				}
+				if (value.backgroundColor === '') {
+					value.ifFillColorEmpty = true;
+					DatasetHasEmptyValue = false;
+					outerThis.fieldsRequired = true;
+				}
+				if (value.borderColor === '') {
+					value.ifLineColorEmpty = true;
+					DatasetHasEmptyValue = false;
+					outerThis.fieldsRequired = true;
+				}
+			});
+
+			if (this.chartlabelsString === '') {
+				this.fieldsRequired = true;
+				this.ifxAxesLabelEmpty = true;
+			}
+
+			if (this.chartlabelsString !== '' && DatasetHasEmptyValue) {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: []
 					},
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
+					options: {
+						maintainAspectRatio: false,
+						scales: {
+							yAxes: [{
+								ticks: {
+									beginAtZero: this.beginAtZero
+								}
+							}]
+						},
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
 					}
-				}
-			};
+				};
 
-			this.datasets.forEach(function (value, key) {
-				chartDatas.data.datasets.push({
-					label: value.label,
-					data: value.data,
-					chartDatasetDataString: value.chartDatasetDataString,
-					backgroundColor: value.backgroundColor,
-					borderColor: value.borderColor,
-					fill: value.fill,
-					straightLine: value.straightLine
+				this.datasets.forEach(function (value, key) {
+					chartDatas.data.datasets.push({
+						label: value.label,
+						data: value.data,
+						chartDatasetDataString: value.chartDatasetDataString,
+						backgroundColor: value.backgroundColor,
+						borderColor: value.borderColor,
+						fill: value.fill,
+						straightLine: value.straightLine
+					});
+					if (value.straightLine) {
+						chartDatas.data.datasets[key].lineTension = 0;
+					}
 				});
-				if (value.straightLine) {
-					chartDatas.data.datasets[key].lineTension = 0;
-				}
-			});
 
-			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+				let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
 
-			this.$store.dispatch('updateGraph', payload).then(function () {
-				setTimeout(function () {
-					outerThis.$emit("updated");
-				}, 2000);
-			});
+				this.$store.dispatch('updateGraph', payload).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("updated");
+					}, 2000);
+				});
+			}
 		},
 		onLoad() {
 			let ctx = document.getElementById("lineChart");
@@ -2932,7 +3073,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 			this.theChart.data.labels = this.labels = this.graphData.data.labels;
 			this.graphData.data.datasets.forEach(function (value, key) {
 				if (key) {
-					outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor: '' });
+					outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor: '', ifDataEmpty: false, ifFillColorEmpty: false, ifLineColorEmpty: false });
 					outerThis.theChart.data.datasets.push({ label: '', data: [], backgroundColor: '' });
 				}
 				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = outerThis.graphData.data.datasets[key].label;
@@ -3034,6 +3175,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
 
 
 
@@ -3055,21 +3199,34 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 				backgroundColor: []
 			}],
 			showTitle: false,
-			showLegend: true
+			showLegend: true,
+			ifLabelEmpty: false,
+			ifDataEmpty: false,
+			ifBackgroundEmpty: false,
+			fieldsRequired: false
 		};
 	},
 	methods: {
 		addLabels() {
+			if (this.ifLabelEmpty) {
+				this.ifLabelEmpty = false;
+			}
 			this.labels = this.chartlabelString.split(',');
 			this.theChart.data.labels = this.labels;
 			this.theChart.update();
 		},
 		addDatasetData() {
+			if (this.ifDataEmpty) {
+				this.ifDataEmpty = false;
+			}
 			this.datasets[0].data = this.chartDatasetDataString.split(',');
 			this.theChart.data.datasets[0].data = this.datasets[0].data;
 			this.theChart.update();
 		},
 		addDatasetBgColor() {
+			if (this.ifBackgroundEmpty) {
+				this.ifBackgroundEmpty = false;
+			}
 			this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
 			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor;
 			this.theChart.update();
@@ -3090,62 +3247,94 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 		},
 		saveGraphData() {
 			let outerThis = this;
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					labels: this.labels,
-					datasets: this.datasets
-				},
-				options: {
-					maintainAspectRatio: false,
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
 
-			this.$store.dispatch('addNewGraph', chartDatas).then(function () {
-				setTimeout(function () {
-					outerThis.$emit("saved");
-				}, 1000);
-			});
+			if (this.chartlabelString === '' || this.chartDatasetDataString === '' || this.chartDatasetBgColorString === '') {
+				this.fieldsRequired = true;
+				if (this.chartlabelString === '') {
+					this.ifLabelEmpty = true;
+				}
+				if (this.chartDatasetDataString === '') {
+					this.ifDataEmpty = true;
+				}
+				if (this.chartDatasetBgColorString === '') {
+					this.ifBackgroundEmpty = true;
+				}
+			}
+
+			if (this.chartlabelString !== '' && this.chartDatasetDataString !== '' && this.chartDatasetBgColorString !== '') {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: this.datasets
+					},
+					options: {
+						maintainAspectRatio: false,
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.$store.dispatch('addNewGraph', chartDatas).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("saved");
+					}, 1500);
+				});
+			}
 		},
 		updateGraphData() {
 			let outerThis = this;
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					labels: this.labels,
-					datasets: [{
-						data: this.datasets[0].data,
-						backgroundColor: this.datasets[0].backgroundColor
-					}]
-				},
-				options: {
-					maintainAspectRatio: false,
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
+
+			if (this.chartlabelString === '' || this.chartDatasetDataString === '' || this.chartDatasetBgColorString === '') {
+				this.fieldsRequired = true;
+				if (this.chartlabelString === '') {
+					this.ifLabelEmpty = true;
 				}
-			};
+				if (this.chartDatasetDataString === '') {
+					this.ifDataEmpty = true;
+				}
+				if (this.chartDatasetBgColorString === '') {
+					this.ifBackgroundEmpty = true;
+				}
+			}
 
-			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+			if (this.chartlabelString !== '' && this.chartDatasetDataString !== '' && this.chartDatasetBgColorString !== '') {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: [{
+							data: this.datasets[0].data,
+							backgroundColor: this.datasets[0].backgroundColor
+						}]
+					},
+					options: {
+						maintainAspectRatio: false,
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
 
-			this.$store.dispatch('updateGraph', payload).then(function () {
-				setTimeout(function () {
-					outerThis.$emit("updated");
-				}, 2000);
-			});
+				let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+
+				this.$store.dispatch('updateGraph', payload).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("updated");
+					}, 2000);
+				});
+			}
 		},
 		onLoad() {
 			let ctx = document.getElementById("pieChart");
@@ -3530,6 +3719,9 @@ module.exports = Cancel;
 //
 //
 //
+//
+//
+//
 
 
 
@@ -3550,21 +3742,34 @@ module.exports = Cancel;
 				backgroundColor: []
 			}],
 			showTitle: false,
-			showLegend: true
+			showLegend: true,
+			ifLabelEmpty: false,
+			ifDataEmpty: false,
+			ifBackgroundEmpty: false,
+			fieldsRequired: false
 		};
 	},
 	methods: {
 		addLabels() {
+			if (this.ifLabelEmpty) {
+				this.ifLabelEmpty = false;
+			}
 			this.labels = this.chartlabelString.split(',');
 			this.theChart.data.labels = this.labels;
 			this.theChart.update();
 		},
 		addDatasetData() {
+			if (this.ifDataEmpty) {
+				this.ifDataEmpty = false;
+			}
 			this.datasets[0].data = this.chartDatasetDataString.split(',');
 			this.theChart.data.datasets[0].data = this.datasets[0].data;
 			this.theChart.update();
 		},
 		addDatasetBgColor() {
+			if (this.ifBackgroundEmpty) {
+				this.ifBackgroundEmpty = false;
+			}
 			this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
 			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor;
 			this.theChart.update();
@@ -3585,62 +3790,94 @@ module.exports = Cancel;
 		},
 		saveGraphData() {
 			let outerThis = this;
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					labels: this.labels,
-					datasets: this.datasets
-				},
-				options: {
-					maintainAspectRatio: false,
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
 
-			this.$store.dispatch('addNewGraph', chartDatas).then(function () {
-				setTimeout(function () {
-					outerThis.$emit("saved");
-				}, 1000);
-			});
+			if (this.chartlabelString === '' || this.chartDatasetDataString === '' || this.chartDatasetBgColorString === '') {
+				this.fieldsRequired = true;
+				if (this.chartlabelString === '') {
+					this.ifLabelEmpty = true;
+				}
+				if (this.chartDatasetDataString === '') {
+					this.ifDataEmpty = true;
+				}
+				if (this.chartDatasetBgColorString === '') {
+					this.ifBackgroundEmpty = true;
+				}
+			}
+
+			if (this.chartlabelString !== '' && this.chartDatasetDataString !== '' && this.chartDatasetBgColorString !== '') {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: this.datasets
+					},
+					options: {
+						maintainAspectRatio: false,
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.$store.dispatch('addNewGraph', chartDatas).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("saved");
+					}, 1500);
+				});
+			}
 		},
 		updateGraphData() {
 			let outerThis = this;
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					labels: this.labels,
-					datasets: [{
-						data: this.datasets[0].data,
-						backgroundColor: this.datasets[0].backgroundColor
-					}]
-				},
-				options: {
-					maintainAspectRatio: false,
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
+
+			if (this.chartlabelString === '' || this.chartDatasetDataString === '' || this.chartDatasetBgColorString === '') {
+				this.fieldsRequired = true;
+				if (this.chartlabelString === '') {
+					this.ifLabelEmpty = true;
 				}
-			};
+				if (this.chartDatasetDataString === '') {
+					this.ifDataEmpty = true;
+				}
+				if (this.chartDatasetBgColorString === '') {
+					this.ifBackgroundEmpty = true;
+				}
+			}
 
-			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+			if (this.chartlabelString !== '' && this.chartDatasetDataString !== '' && this.chartDatasetBgColorString !== '') {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: [{
+							data: this.datasets[0].data,
+							backgroundColor: this.datasets[0].backgroundColor
+						}]
+					},
+					options: {
+						maintainAspectRatio: false,
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
 
-			this.$store.dispatch('updateGraph', payload).then(function () {
-				setTimeout(function () {
-					outerThis.$emit("updated");
-				}, 2000);
-			});
+				let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+
+				this.$store.dispatch('updateGraph', payload).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("updated");
+					}, 2000);
+				});
+			}
 		},
 		onLoad() {
 			let ctx = document.getElementById("DoughnutChart");
@@ -3782,6 +4019,9 @@ module.exports = Cancel;
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["a"] = ({
 	props: ['graphData', 'graphIndex'],
@@ -3794,13 +4034,18 @@ module.exports = Cancel;
 			labels: [],
 			showTitle: false,
 			showLegend: true,
+			ifLabelsEmpty: false,
+			fieldsRequired: false,
 			datasets: [{
 				label: '',
 				chartDatasetDataString: '',
 				data: [],
 				backgroundColor: '',
 				borderColor: '',
-				fill: false
+				fill: false,
+				ifDataEmpty: false,
+				ifFillColorEmpty: false,
+				ifLineColorEmpty: false
 			}]
 		};
 	},
@@ -3812,7 +4057,10 @@ module.exports = Cancel;
 				data: [],
 				backgroundColor: '',
 				borderColor: '',
-				fill: false
+				fill: false,
+				ifDataEmpty: false,
+				ifFillColorEmpty: false,
+				ifLineColorEmpty: false
 			});
 			this.theChart.data.datasets.push({
 				label: '',
@@ -3824,6 +4072,9 @@ module.exports = Cancel;
 			this.theChart.update();
 		},
 		addLabels() {
+			if (this.ifLabelsEmpty) {
+				this.ifLabelsEmpty = false;
+			}
 			this.labels = this.chartlabelsString.split(',');
 			this.theChart.data.labels = this.labels;
 			this.theChart.update();
@@ -3833,20 +4084,29 @@ module.exports = Cancel;
 			this.theChart.update();
 		},
 		addDatasetData(index) {
+			if (this.datasets[index].ifDataEmpty) {
+				this.datasets[index].ifDataEmpty = false;
+			}
 			this.datasets[index].data = this.datasets[index].chartDatasetDataString.split(',');
 			this.theChart.data.datasets[index].data = this.datasets[index].data;
 			this.theChart.update();
 		},
 		addDatasetBgColor(index) {
+			if (this.datasets[index].ifFillColorEmpty) {
+				this.datasets[index].ifFillColorEmpty = false;
+			}
 			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
+			this.theChart.update();
+		},
+		addDatasetborderColor(index) {
+			if (this.datasets[index].ifLineColorEmpty) {
+				this.datasets[index].ifLineColorEmpty = false;
+			}
+			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
 			this.theChart.update();
 		},
 		fillColor(index) {
 			this.theChart.data.datasets[index].fill = this.datasets[index].fill;
-			this.theChart.update();
-		},
-		addDatasetborderColor(index) {
-			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
 			this.theChart.update();
 		},
 		addTitleText() {
@@ -3870,73 +4130,127 @@ module.exports = Cancel;
 		},
 		saveGraphData() {
 			let outerThis = this;
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					labels: this.labels,
-					datasets: this.datasets
-				},
-				options: {
-					maintainAspectRatio: false,
-					scale: {
-						ticks: {
-							beginAtZero: true
-						}
-					},
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
+			let DatasetHasEmptyValue = true;
 
-			this.$store.dispatch('addNewGraph', chartDatas).then(function () {
-				setTimeout(function () {
-					outerThis.$emit("saved");
-				}, 1000);
+			this.datasets.forEach(function (value) {
+				if (value.chartDatasetDataString === '') {
+					value.ifDataEmpty = true;
+					DatasetHasEmptyValue = false;
+					outerThis.fieldsRequired = true;
+				}
+				if (value.backgroundColor === '') {
+					value.ifFillColorEmpty = true;
+					DatasetHasEmptyValue = false;
+					outerThis.fieldsRequired = true;
+				}
+				if (value.borderColor === '') {
+					value.ifLineColorEmpty = true;
+					DatasetHasEmptyValue = false;
+					outerThis.fieldsRequired = true;
+				}
 			});
+
+			if (this.chartlabelsString === '') {
+				this.fieldsRequired = true;
+				this.ifLabelsEmpty = true;
+			}
+
+			if (this.chartlabelsString !== '' && DatasetHasEmptyValue) {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: this.datasets
+					},
+					options: {
+						maintainAspectRatio: false,
+						scale: {
+							ticks: {
+								beginAtZero: true
+							}
+						},
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.$store.dispatch('addNewGraph', chartDatas).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("saved");
+					}, 1500);
+				});
+			}
 		},
 		updateGraphData() {
 			let outerThis = this;
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					labels: this.labels,
-					datasets: []
-				},
-				options: {
-					maintainAspectRatio: false,
-					scale: {
-						ticks: {
-							beginAtZero: true
-						}
-					},
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
+			let DatasetHasEmptyValue = true;
 
 			this.datasets.forEach(function (value) {
-				chartDatas.data.datasets.push({ label: value.label, data: value.data, chartDatasetDataString: value.chartDatasetDataString, backgroundColor: value.backgroundColor, borderColor: value.borderColor, fill: value.fill });
+				if (value.chartDatasetDataString === '') {
+					value.ifDataEmpty = true;
+					DatasetHasEmptyValue = false;
+					outerThis.fieldsRequired = true;
+				}
+				if (value.backgroundColor === '') {
+					value.ifFillColorEmpty = true;
+					DatasetHasEmptyValue = false;
+					outerThis.fieldsRequired = true;
+				}
+				if (value.borderColor === '') {
+					value.ifLineColorEmpty = true;
+					DatasetHasEmptyValue = false;
+					outerThis.fieldsRequired = true;
+				}
 			});
 
-			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+			if (this.chartlabelsString === '') {
+				this.fieldsRequired = true;
+				this.ifLabelsEmpty = true;
+			}
 
-			this.$store.dispatch('updateGraph', payload).then(function () {
-				setTimeout(function () {
-					outerThis.$emit("updated");
-				}, 2000);
-			});
+			if (this.chartlabelsString !== '' && DatasetHasEmptyValue) {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: []
+					},
+					options: {
+						maintainAspectRatio: false,
+						scale: {
+							ticks: {
+								beginAtZero: true
+							}
+						},
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.datasets.forEach(function (value) {
+					chartDatas.data.datasets.push({ label: value.label, data: value.data, chartDatasetDataString: value.chartDatasetDataString, backgroundColor: value.backgroundColor, borderColor: value.borderColor, fill: value.fill });
+				});
+
+				let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+
+				this.$store.dispatch('updateGraph', payload).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("updated");
+					}, 2000);
+				});
+			}
 		},
 		onLoad() {
 			let ctx = document.getElementById("radarChart");
@@ -3976,7 +4290,7 @@ module.exports = Cancel;
 			this.theChart.data.labels = this.labels = this.graphData.data.labels;
 			this.graphData.data.datasets.forEach(function (value, key) {
 				if (key) {
-					outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor: '' });
+					outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor: '', ifDataEmpty: false, ifFillColorEmpty: false, ifLineColorEmpty: false });
 					outerThis.theChart.data.datasets.push({ label: '', data: [], backgroundColor: '' });
 				}
 				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = outerThis.graphData.data.datasets[key].label;
@@ -4073,6 +4387,9 @@ module.exports = Cancel;
 //
 //
 //
+//
+//
+//
 
 
 
@@ -4093,21 +4410,34 @@ module.exports = Cancel;
 				backgroundColor: []
 			}],
 			showTitle: false,
-			showLegend: true
+			showLegend: true,
+			ifLabelEmpty: false,
+			ifDataEmpty: false,
+			ifBackgroundEmpty: false,
+			fieldsRequired: false
 		};
 	},
 	methods: {
 		addLabels() {
+			if (this.ifLabelEmpty) {
+				this.ifLabelEmpty = false;
+			}
 			this.labels = this.chartlabelString.split(',');
 			this.theChart.data.labels = this.labels;
 			this.theChart.update();
 		},
 		addDatasetData() {
+			if (this.ifDataEmpty) {
+				this.ifDataEmpty = false;
+			}
 			this.datasets[0].data = this.chartDatasetDataString.split(',');
 			this.theChart.data.datasets[0].data = this.datasets[0].data;
 			this.theChart.update();
 		},
 		addDatasetBgColor() {
+			if (this.ifBackgroundEmpty) {
+				this.ifBackgroundEmpty = false;
+			}
 			this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
 			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor;
 			this.theChart.update();
@@ -4128,62 +4458,94 @@ module.exports = Cancel;
 		},
 		saveGraphData() {
 			let outerThis = this;
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					labels: this.labels,
-					datasets: this.datasets
-				},
-				options: {
-					maintainAspectRatio: false,
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
 
-			this.$store.dispatch('addNewGraph', chartDatas).then(function () {
-				setTimeout(function () {
-					outerThis.$emit("saved");
-				}, 1000);
-			});
+			if (this.chartlabelString === '' || this.chartDatasetDataString === '' || this.chartDatasetBgColorString === '') {
+				this.fieldsRequired = true;
+				if (this.chartlabelString === '') {
+					this.ifLabelEmpty = true;
+				}
+				if (this.chartDatasetDataString === '') {
+					this.ifDataEmpty = true;
+				}
+				if (this.chartDatasetBgColorString === '') {
+					this.ifBackgroundEmpty = true;
+				}
+			}
+
+			if (this.chartlabelString !== '' && this.chartDatasetDataString !== '' && this.chartDatasetBgColorString !== '') {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: this.datasets
+					},
+					options: {
+						maintainAspectRatio: false,
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.$store.dispatch('addNewGraph', chartDatas).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("saved");
+					}, 1500);
+				});
+			}
 		},
 		updateGraphData() {
 			let outerThis = this;
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					labels: this.labels,
-					datasets: [{
-						data: this.datasets[0].data,
-						backgroundColor: this.datasets[0].backgroundColor
-					}]
-				},
-				options: {
-					maintainAspectRatio: false,
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
+
+			if (this.chartlabelString === '' || this.chartDatasetDataString === '' || this.chartDatasetBgColorString === '') {
+				this.fieldsRequired = true;
+				if (this.chartlabelString === '') {
+					this.ifLabelEmpty = true;
 				}
-			};
+				if (this.chartDatasetDataString === '') {
+					this.ifDataEmpty = true;
+				}
+				if (this.chartDatasetBgColorString === '') {
+					this.ifBackgroundEmpty = true;
+				}
+			}
 
-			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+			if (this.chartlabelString !== '' && this.chartDatasetDataString !== '' && this.chartDatasetBgColorString !== '') {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: [{
+							data: this.datasets[0].data,
+							backgroundColor: this.datasets[0].backgroundColor
+						}]
+					},
+					options: {
+						maintainAspectRatio: false,
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
 
-			this.$store.dispatch('updateGraph', payload).then(function () {
-				setTimeout(function () {
-					outerThis.$emit("updated");
-				}, 2000);
-			});
+				let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+
+				this.$store.dispatch('updateGraph', payload).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("updated");
+					}, 2000);
+				});
+			}
 		},
 		onLoad() {
 			let ctx = document.getElementById("PolarAreaChart");
@@ -4336,6 +4698,12 @@ module.exports = Cancel;
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["a"] = ({
 	props: ['graphData', 'graphIndex'],
@@ -4346,12 +4714,22 @@ module.exports = Cancel;
 			legendPosition: 'top',
 			showTitle: false,
 			showLegend: true,
+			fieldsRequired: false,
 			datasets: [{
 				label: '',
-				data: [{ x: '', y: '', r: '' }],
+				data: [{
+					x: '',
+					y: '',
+					r: '',
+					ifxPointEmpty: false,
+					ifyPointEmpty: false,
+					ifrPointEmpty: false
+				}],
 				backgroundColor: '',
 				borderColor: '',
-				hoverRadius: 0
+				hoverRadius: 0,
+				ifCircleBackgroundEmpty: false,
+				ifCicleBorderColorEmpty: false
 			}]
 		};
 	},
@@ -4359,10 +4737,19 @@ module.exports = Cancel;
 		addDataset() {
 			this.datasets.push({
 				label: '',
-				data: [{ x: '', y: '', r: '' }],
+				data: [{
+					x: '',
+					y: '',
+					r: '',
+					ifxPointEmpty: false,
+					ifyPointEmpty: false,
+					ifrPointEmpty: false
+				}],
 				backgroundColor: '',
 				borderColor: '',
-				hoverRadius: 0
+				hoverRadius: 0,
+				ifCircleBackgroundEmpty: false,
+				ifCicleBorderColorEmpty: false
 			});
 			this.theChart.data.datasets.push({
 				label: '',
@@ -4374,7 +4761,14 @@ module.exports = Cancel;
 			this.theChart.update();
 		},
 		addBubblePoint(index) {
-			this.datasets[index].data.push({ x: '', y: '', r: '' });
+			this.datasets[index].data.push({
+				x: '',
+				y: '',
+				r: '',
+				ifxPointEmpty: false,
+				ifyPointEmpty: false,
+				ifrPointEmpty: false
+			});
 			this.theChart.data.datasets[index].data.push({ x: '', y: '', r: '' });
 			this.theChart.update();
 		},
@@ -4383,14 +4777,24 @@ module.exports = Cancel;
 			this.theChart.update();
 		},
 		addDatasetDataPoints(index, pIndex, point) {
+			let gettingErrorPoint = 'if' + point + 'PointEmpty';
+			if (this.datasets[index].data[pIndex][gettingErrorPoint]) {
+				this.datasets[index].data[pIndex][gettingErrorPoint] = false;
+			}
 			this.theChart.data.datasets[index].data[pIndex][point] = this.datasets[index].data[pIndex][point];
 			this.theChart.update();
 		},
 		addDatasetBgColor(index) {
+			if (this.datasets[index].ifCircleBackgroundEmpty) {
+				this.datasets[index].ifCircleBackgroundEmpty = false;
+			}
 			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
 			this.theChart.update();
 		},
 		addDatasetborderColor(index) {
+			if (this.datasets[index].ifCicleBorderColorEmpty) {
+				this.datasets[index].ifCicleBorderColorEmpty = false;
+			}
 			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
 			this.theChart.update();
 		},
@@ -4420,67 +4824,137 @@ module.exports = Cancel;
 		},
 		saveGraphData() {
 			let outerThis = this;
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					datasets: this.datasets
-				},
-				options: {
-					maintainAspectRatio: false,
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
+			let DatasetHasEmptyValue = true;
 
-			this.$store.dispatch('addNewGraph', chartDatas).then(function () {
-				setTimeout(function () {
-					outerThis.$emit("saved");
-				}, 1000);
-			});
-		},
-		updateGraphData() {
-			let outerThis = this;
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					datasets: []
-				},
-				options: {
-					maintainAspectRatio: false,
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
+			this.datasets.forEach(function (value) {
+				if (value.backgroundColor === '') {
+					value.ifCircleBackgroundEmpty = true;
+					DatasetHasEmptyValue = false;
+					outerThis.fieldsRequired = true;
 				}
-			};
+				if (value.borderColor === '') {
+					value.ifCicleBorderColorEmpty = true;
+					DatasetHasEmptyValue = false;
+					outerThis.fieldsRequired = true;
+				}
 
-			this.datasets.forEach(function (value, key) {
-				chartDatas.data.datasets.push({
-					label: value.label,
-					data: value.data,
-					backgroundColor: value.backgroundColor,
-					borderColor: value.borderColor,
-					hoverRadius: 0
+				value.data.forEach(function (data) {
+					if (data.x === '') {
+						data.ifxPointEmpty = true;
+						DatasetHasEmptyValue = false;
+						outerThis.fieldsRequired = true;
+					}
+					if (data.y === '') {
+						data.ifyPointEmpty = true;
+						DatasetHasEmptyValue = false;
+						outerThis.fieldsRequired = true;
+					}
+					if (data.r === '') {
+						data.ifrPointEmpty = true;
+						DatasetHasEmptyValue = false;
+						outerThis.fieldsRequired = true;
+					}
 				});
 			});
 
-			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+			if (DatasetHasEmptyValue) {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						datasets: this.datasets
+					},
+					options: {
+						maintainAspectRatio: false,
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
 
-			this.$store.dispatch('updateGraph', payload).then(function () {
-				setTimeout(function () {
-					outerThis.$emit("updated");
-				}, 2000);
+				this.$store.dispatch('addNewGraph', chartDatas).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("saved");
+					}, 1500);
+				});
+			}
+		},
+		updateGraphData() {
+			let outerThis = this;
+			let DatasetHasEmptyValue = true;
+
+			this.datasets.forEach(function (value) {
+				if (value.backgroundColor === '') {
+					value.ifCircleBackgroundEmpty = true;
+					DatasetHasEmptyValue = false;
+					outerThis.fieldsRequired = true;
+				}
+				if (value.borderColor === '') {
+					value.ifCicleBorderColorEmpty = true;
+					DatasetHasEmptyValue = false;
+					outerThis.fieldsRequired = true;
+				}
+
+				value.data.forEach(function (data) {
+					if (data.x === '') {
+						data.ifxPointEmpty = true;
+						DatasetHasEmptyValue = false;
+						outerThis.fieldsRequired = true;
+					}
+					if (data.y === '') {
+						data.ifyPointEmpty = true;
+						DatasetHasEmptyValue = false;
+						outerThis.fieldsRequired = true;
+					}
+					if (data.r === '') {
+						data.ifrPointEmpty = true;
+						DatasetHasEmptyValue = false;
+						outerThis.fieldsRequired = true;
+					}
+				});
 			});
+
+			if (DatasetHasEmptyValue) {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						datasets: []
+					},
+					options: {
+						maintainAspectRatio: false,
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.datasets.forEach(function (value, key) {
+					chartDatas.data.datasets.push({
+						label: value.label,
+						data: value.data,
+						backgroundColor: value.backgroundColor,
+						borderColor: value.borderColor,
+						hoverRadius: 0
+					});
+				});
+
+				let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+
+				this.$store.dispatch('updateGraph', payload).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("updated");
+					}, 2000);
+				});
+			}
 		},
 		onLoad() {
 			let ctx = document.getElementById("bubbleChart");
@@ -4512,7 +4986,7 @@ module.exports = Cancel;
 			let outerThis = this;
 			this.graphData.data.datasets.forEach(function (value, key) {
 				if (key) {
-					outerThis.datasets.push({ label: '', data: [{ x: '', y: '', r: '' }], backgroundColor: '' });
+					outerThis.datasets.push({ label: '', data: [{ x: '', y: '', r: '', ifxPointEmpty: false, ifyPointEmpty: false, ifrPointEmpty: false }], backgroundColor: '', ifCircleBackgroundEmpty: false, ifCicleBorderColorEmpty: false });
 					outerThis.theChart.data.datasets.push({ label: '', data: [{ x: '', y: '', r: '' }], backgroundColor: '' });
 				}
 				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = value.label;
@@ -4644,6 +5118,11 @@ module.exports = Cancel;
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["a"] = ({
 	props: ['graphData', 'graphIndex'],
@@ -4654,13 +5133,21 @@ module.exports = Cancel;
 			legendPosition: 'top',
 			showTitle: false,
 			showLegend: true,
+			fieldsRequired: false,
 			datasets: [{
 				label: '',
-				data: [{ x: '', y: '' }],
+				data: [{
+					x: '',
+					y: '',
+					ifxPointEmpty: false,
+					ifyPointEmpty: false
+				}],
 				backgroundColor: '',
 				borderColor: '',
 				fill: false,
-				showLine: false
+				showLine: false,
+				ifCircleBackgroundEmpty: false,
+				ifCicleBorderColorEmpty: false
 			}]
 		};
 	},
@@ -4668,11 +5155,18 @@ module.exports = Cancel;
 		addDataset() {
 			this.datasets.push({
 				label: '',
-				data: [{ x: '', y: '' }],
+				data: [{
+					x: '',
+					y: '',
+					fxPointEmpty: false,
+					ifyPointEmpty: false
+				}],
 				backgroundColor: '',
 				borderColor: '',
 				fill: false,
-				showLine: false
+				showLine: false,
+				ifCircleBackgroundEmpty: false,
+				ifCicleBorderColorEmpty: false
 			});
 			this.theChart.data.datasets.push({
 				label: '',
@@ -4685,7 +5179,7 @@ module.exports = Cancel;
 			this.theChart.update();
 		},
 		addBubblePoint(index) {
-			this.datasets[index].data.push({ x: '', y: '' });
+			this.datasets[index].data.push({ x: '', y: '', ifxPointEmpty: false, ifyPointEmpty: false });
 			this.theChart.data.datasets[index].data.push({ x: '', y: '' });
 			this.theChart.update();
 		},
@@ -4694,14 +5188,24 @@ module.exports = Cancel;
 			this.theChart.update();
 		},
 		addDatasetDataPoints(index, pIndex, point) {
+			let gettingErrorPoint = 'if' + point + 'PointEmpty';
+			if (this.datasets[index].data[pIndex][gettingErrorPoint]) {
+				this.datasets[index].data[pIndex][gettingErrorPoint] = false;
+			}
 			this.theChart.data.datasets[index].data[pIndex][point] = this.datasets[index].data[pIndex][point];
 			this.theChart.update();
 		},
 		addDatasetBgColor(index) {
+			if (this.datasets[index].ifCircleBackgroundEmpty) {
+				this.datasets[index].ifCircleBackgroundEmpty = false;
+			}
 			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
 			this.theChart.update();
 		},
 		addDatasetborderColor(index) {
+			if (this.datasets[index].ifCicleBorderColorEmpty) {
+				this.datasets[index].ifCicleBorderColorEmpty = false;
+			}
 			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
 			this.theChart.update();
 		},
@@ -4731,68 +5235,128 @@ module.exports = Cancel;
 		},
 		saveGraphData() {
 			let outerThis = this;
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					datasets: this.datasets
-				},
-				options: {
-					maintainAspectRatio: false,
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
-				}
-			};
+			let DatasetHasEmptyValue = true;
 
-			this.$store.dispatch('addNewGraph', chartDatas).then(function () {
-				setTimeout(function () {
-					outerThis.$emit("saved");
-				}, 1000);
-			});
-		},
-		updateGraphData() {
-			let outerThis = this;
-			let chartDatas = {
-				type: this.chartType,
-				data: {
-					datasets: []
-				},
-				options: {
-					maintainAspectRatio: false,
-					title: {
-						display: this.showTitle,
-						text: this.titleText
-					},
-					legend: {
-						display: this.showLegend,
-						position: this.legendPosition
-					}
+			this.datasets.forEach(function (value) {
+				if (value.backgroundColor === '') {
+					value.ifCircleBackgroundEmpty = true;
+					DatasetHasEmptyValue = false;
+					outerThis.fieldsRequired = true;
 				}
-			};
+				if (value.borderColor === '') {
+					value.ifCicleBorderColorEmpty = true;
+					DatasetHasEmptyValue = false;
+					outerThis.fieldsRequired = true;
+				}
 
-			this.datasets.forEach(function (value, key) {
-				chartDatas.data.datasets.push({
-					label: value.label,
-					data: value.data,
-					backgroundColor: value.backgroundColor,
-					borderColor: value.borderColor,
-					fill: value.fill,
-					showLine: value.showLine
+				value.data.forEach(function (data) {
+					if (data.x === '') {
+						data.ifxPointEmpty = true;
+						DatasetHasEmptyValue = false;
+						outerThis.fieldsRequired = true;
+					}
+					if (data.y === '') {
+						data.ifyPointEmpty = true;
+						DatasetHasEmptyValue = false;
+						outerThis.fieldsRequired = true;
+					}
 				});
 			});
 
-			let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+			if (DatasetHasEmptyValue) {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						datasets: this.datasets
+					},
+					options: {
+						maintainAspectRatio: false,
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
 
-			this.$store.dispatch('updateGraph', payload).then(function () {
-				setTimeout(function () {
-					outerThis.$emit("updated");
-				}, 2000);
+				this.$store.dispatch('addNewGraph', chartDatas).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("saved");
+					}, 1500);
+				});
+			}
+		},
+		updateGraphData() {
+			let outerThis = this;
+			let DatasetHasEmptyValue = true;
+
+			this.datasets.forEach(function (value) {
+				if (value.backgroundColor === '') {
+					value.ifCircleBackgroundEmpty = true;
+					DatasetHasEmptyValue = false;
+					outerThis.fieldsRequired = true;
+				}
+				if (value.borderColor === '') {
+					value.ifCicleBorderColorEmpty = true;
+					DatasetHasEmptyValue = false;
+					outerThis.fieldsRequired = true;
+				}
+
+				value.data.forEach(function (data) {
+					if (data.x === '') {
+						data.ifxPointEmpty = true;
+						DatasetHasEmptyValue = false;
+						outerThis.fieldsRequired = true;
+					}
+					if (data.y === '') {
+						data.ifyPointEmpty = true;
+						DatasetHasEmptyValue = false;
+						outerThis.fieldsRequired = true;
+					}
+				});
 			});
+
+			if (DatasetHasEmptyValue) {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						datasets: []
+					},
+					options: {
+						maintainAspectRatio: false,
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.datasets.forEach(function (value, key) {
+					chartDatas.data.datasets.push({
+						label: value.label,
+						data: value.data,
+						backgroundColor: value.backgroundColor,
+						borderColor: value.borderColor,
+						fill: value.fill,
+						showLine: value.showLine
+					});
+				});
+
+				let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+
+				this.$store.dispatch('updateGraph', payload).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("updated");
+					}, 2000);
+				});
+			}
 		},
 		onLoad() {
 			let ctx = document.getElementById("scatterChart");
@@ -4825,7 +5389,7 @@ module.exports = Cancel;
 			let outerThis = this;
 			this.graphData.data.datasets.forEach(function (value, key) {
 				if (key) {
-					outerThis.datasets.push({ label: '', data: [{ x: '', y: '' }], backgroundColor: '', fill: false, showLine: false });
+					outerThis.datasets.push({ label: '', data: [{ x: '', y: '', ifxPointEmpty: false, ifyPointEmpty: false }], backgroundColor: '', fill: false, showLine: false, ifCircleBackgroundEmpty: false, ifCicleBorderColorEmpty: false });
 					outerThis.theChart.data.datasets.push({ label: '', data: [{ x: '', y: '' }], backgroundColor: '', fill: false, showLine: false });
 				}
 				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = value.label;
@@ -4893,7 +5457,7 @@ new __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */]({
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global, setImmediate) {/*!
- * Vue.js v2.5.16
+ * Vue.js v2.5.17
  * (c) 2014-2018 Evan You
  * Released under the MIT License.
  */
@@ -9975,7 +10539,7 @@ Object.defineProperty(Vue, 'FunctionalRenderContext', {
   value: FunctionalRenderContext
 });
 
-Vue.version = '2.5.16';
+Vue.version = '2.5.17';
 
 /*  */
 
@@ -16362,7 +16926,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BarChartTemplate_vue__ = __webpack_require__(12);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_d9767050_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_d02361ee_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__ = __webpack_require__(41);
 function injectStyle (ssrContext) {
   __webpack_require__(39)
 }
@@ -16382,7 +16946,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BarChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_d9767050_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_d02361ee_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -16403,7 +16967,7 @@ var content = __webpack_require__(40);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("6893bdd8", content, true, {});
+var update = __webpack_require__(2)("2461b294", content, true, {});
 
 /***/ }),
 /* 40 */
@@ -16424,8 +16988,8 @@ exports.push([module.i, ".barChart{width:100%;height:100%;display:flex;flex-dire
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"barChart gl_chart_template",attrs:{"id":"bar"}},[_c('div',{staticClass:"graphOptions"},[_c('div',[_c('button',{staticStyle:{"margin-right":"10px"},attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelsString),expression:"chartlabelsString"}],staticClass:"regular-text",attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelsString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelsString=$event.target.value}}})])])]),_vm._v(" "),_vm._l((_vm.datasets),function(data,index){return _c('fieldset',{key:data},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.label),expression:"data.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(data.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.chartDatasetDataString),expression:"data.chartDatasetDataString"}],staticClass:"regular-text",attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(data.chartDatasetDataString)},on:{"keyup":function($event){_vm.addDatasetData(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "chartDatasetDataString", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.backgroundColor),expression:"data.backgroundColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"colors","placeholder":"Color value for bar. Eg. red"},domProps:{"value":(data.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.beginAtZero),expression:"beginAtZero"}],attrs:{"type":"checkbox","id":"beginAtZero"},domProps:{"checked":Array.isArray(_vm.beginAtZero)?_vm._i(_vm.beginAtZero,null)>-1:(_vm.beginAtZero)},on:{"change":[function($event){var $$a=_vm.beginAtZero,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.beginAtZero=$$a.concat([$$v]))}else{$$i>-1&&(_vm.beginAtZero=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.beginAtZero=$$c}},_vm.yAxesRange]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_vm._m(10)])}
-var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("xAsis Labels")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Color")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"beginAtZero"}},[_vm._v("yAxes Range (Begin at 0)")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"barChart"}})])])}]
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"barChart gl_chart_template",attrs:{"id":"bar"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td',{staticClass:"gl_backButotnTh"},[(_vm.fieldsRequired)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("Field(s) required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelsString),expression:"chartlabelsString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifxAxesLabelEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelsString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelsString=$event.target.value}}})])])]),_vm._v(" "),_vm._l((_vm.datasets),function(data,index){return _c('fieldset',{key:data},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.label),expression:"data.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(data.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.chartDatasetDataString),expression:"data.chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(data.chartDatasetDataString)},on:{"keyup":function($event){_vm.addDatasetData(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "chartDatasetDataString", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.backgroundColor),expression:"data.backgroundColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifBackgroundEmpty},attrs:{"type":"text","id":"colors","placeholder":"Color value for bar. Eg. red"},domProps:{"value":(data.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.beginAtZero),expression:"beginAtZero"}],attrs:{"type":"checkbox","id":"beginAtZero"},domProps:{"checked":Array.isArray(_vm.beginAtZero)?_vm._i(_vm.beginAtZero,null)>-1:(_vm.beginAtZero)},on:{"change":[function($event){var $$a=_vm.beginAtZero,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.beginAtZero=$$a.concat([$$v]))}else{$$i>-1&&(_vm.beginAtZero=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.beginAtZero=$$c}},_vm.yAxesRange]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_vm._m(10)])}
+var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("xAsis Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"beginAtZero"}},[_vm._v("yAxes Range (Begin at 0)")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"barChart"}})])])}]
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
 
@@ -16436,7 +17000,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_LineChartTemplate_vue__ = __webpack_require__(13);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_a339f062_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__ = __webpack_require__(45);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_75df8eea_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__ = __webpack_require__(45);
 function injectStyle (ssrContext) {
   __webpack_require__(43)
 }
@@ -16456,7 +17020,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_LineChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_a339f062_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_75df8eea_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -16477,7 +17041,7 @@ var content = __webpack_require__(44);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("209935b8", content, true, {});
+var update = __webpack_require__(2)("eb707ae6", content, true, {});
 
 /***/ }),
 /* 44 */
@@ -16498,8 +17062,8 @@ exports.push([module.i, ".lineChart{width:100%;height:100%;display:flex;flex-dir
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"lineChart gl_chart_template",attrs:{"id":"line"}},[_c('div',{staticClass:"graphOptions"},[_c('div',[_c('button',{staticStyle:{"margin-right":"10px"},attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelsString),expression:"chartlabelsString"}],staticClass:"regular-text",attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelsString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelsString=$event.target.value}}})])])]),_vm._v(" "),_vm._l((_vm.datasets),function(data,index){return _c('fieldset',{key:data},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.label),expression:"data.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(data.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.chartDatasetDataString),expression:"data.chartDatasetDataString"}],staticClass:"regular-text",attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(data.chartDatasetDataString)},on:{"keyup":function($event){_vm.addDatasetData(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "chartDatasetDataString", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.backgroundColor),expression:"data.backgroundColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"colors"},domProps:{"value":(data.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.borderColor),expression:"data.borderColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"line_color"},domProps:{"value":(data.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "borderColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(5,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.straightLine),expression:"data.straightLine"}],attrs:{"type":"checkbox","id":"straight_line"},domProps:{"checked":Array.isArray(data.straightLine)?_vm._i(data.straightLine,null)>-1:(data.straightLine)},on:{"change":[function($event){var $$a=data.straightLine,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.$set(data, "straightLine", $$a.concat([$$v])))}else{$$i>-1&&(_vm.$set(data, "straightLine", $$a.slice(0,$$i).concat($$a.slice($$i+1))))}}else{_vm.$set(data, "straightLine", $$c)}},function($event){_vm.makeLineStraight(index)}]}})])]),_vm._v(" "),_c('tr',[_vm._m(6,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.fill),expression:"data.fill"}],attrs:{"type":"checkbox","id":"fill"},domProps:{"checked":Array.isArray(data.fill)?_vm._i(data.fill,null)>-1:(data.fill)},on:{"change":[function($event){var $$a=data.fill,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.$set(data, "fill", $$a.concat([$$v])))}else{$$i>-1&&(_vm.$set(data, "fill", $$a.slice(0,$$i).concat($$a.slice($$i+1))))}}else{_vm.$set(data, "fill", $$c)}},function($event){_vm.fillColor(index)}]}})])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(7,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.beginAtZero),expression:"beginAtZero"}],attrs:{"type":"checkbox","id":"beginAtZero"},domProps:{"checked":Array.isArray(_vm.beginAtZero)?_vm._i(_vm.beginAtZero,null)>-1:(_vm.beginAtZero)},on:{"change":[function($event){var $$a=_vm.beginAtZero,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.beginAtZero=$$a.concat([$$v]))}else{$$i>-1&&(_vm.beginAtZero=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.beginAtZero=$$c}},_vm.yAxesRange]}})])]),_vm._v(" "),_c('tr',[_vm._m(10),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(11),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(12),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_vm._m(13)])}
-var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("xAsis Labels")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Fill Color")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"line_color"}},[_vm._v("Line Color")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"straight_line"}},[_vm._v("Straight Line")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"fill"}},[_vm._v("Fill Color Under the line")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"beginAtZero"}},[_vm._v("yAxes Range (Begin at 0)")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"lineChart"}})])])}]
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"lineChart gl_chart_template",attrs:{"id":"line"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td',{staticClass:"gl_backButotnTh"},[(_vm.fieldsRequired)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("Field(s) required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelsString),expression:"chartlabelsString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifxAxesLabelEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelsString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelsString=$event.target.value}}})])])]),_vm._v(" "),_vm._l((_vm.datasets),function(data,index){return _c('fieldset',{key:data},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.label),expression:"data.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(data.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.chartDatasetDataString),expression:"data.chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(data.chartDatasetDataString)},on:{"keyup":function($event){_vm.addDatasetData(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "chartDatasetDataString", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.backgroundColor),expression:"data.backgroundColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifFillColorEmpty},attrs:{"type":"text","id":"colors"},domProps:{"value":(data.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.borderColor),expression:"data.borderColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifLineColorEmpty},attrs:{"type":"text","id":"line_color"},domProps:{"value":(data.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "borderColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(5,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.straightLine),expression:"data.straightLine"}],attrs:{"type":"checkbox","id":"straight_line"},domProps:{"checked":Array.isArray(data.straightLine)?_vm._i(data.straightLine,null)>-1:(data.straightLine)},on:{"change":[function($event){var $$a=data.straightLine,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.$set(data, "straightLine", $$a.concat([$$v])))}else{$$i>-1&&(_vm.$set(data, "straightLine", $$a.slice(0,$$i).concat($$a.slice($$i+1))))}}else{_vm.$set(data, "straightLine", $$c)}},function($event){_vm.makeLineStraight(index)}]}})])]),_vm._v(" "),_c('tr',[_vm._m(6,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.fill),expression:"data.fill"}],attrs:{"type":"checkbox","id":"fill"},domProps:{"checked":Array.isArray(data.fill)?_vm._i(data.fill,null)>-1:(data.fill)},on:{"change":[function($event){var $$a=data.fill,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.$set(data, "fill", $$a.concat([$$v])))}else{$$i>-1&&(_vm.$set(data, "fill", $$a.slice(0,$$i).concat($$a.slice($$i+1))))}}else{_vm.$set(data, "fill", $$c)}},function($event){_vm.fillColor(index)}]}})])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(7,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.beginAtZero),expression:"beginAtZero"}],attrs:{"type":"checkbox","id":"beginAtZero"},domProps:{"checked":Array.isArray(_vm.beginAtZero)?_vm._i(_vm.beginAtZero,null)>-1:(_vm.beginAtZero)},on:{"change":[function($event){var $$a=_vm.beginAtZero,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.beginAtZero=$$a.concat([$$v]))}else{$$i>-1&&(_vm.beginAtZero=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.beginAtZero=$$c}},_vm.yAxesRange]}})])]),_vm._v(" "),_c('tr',[_vm._m(10),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(11),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(12),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_vm._m(13)])}
+var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("xAsis Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Fill Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"line_color"}},[_vm._v("Line Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"straight_line"}},[_vm._v("Straight Line")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"fill"}},[_vm._v("Fill Color Under the line")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"beginAtZero"}},[_vm._v("yAxes Range (Begin at 0)")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"lineChart"}})])])}]
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
 
@@ -16510,7 +17074,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__ = __webpack_require__(14);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_9a07d3ae_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(69);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6d5b2c0a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(69);
 function injectStyle (ssrContext) {
   __webpack_require__(47)
 }
@@ -16530,7 +17094,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_9a07d3ae_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6d5b2c0a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -16551,7 +17115,7 @@ var content = __webpack_require__(48);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("7e65eacc", content, true, {});
+var update = __webpack_require__(2)("99b4f842", content, true, {});
 
 /***/ }),
 /* 48 */
@@ -16633,7 +17197,7 @@ module.exports.default = axios;
 /*!
  * Determine if an object is a Buffer
  *
- * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
+ * @author   Feross Aboukhadijeh <https://feross.org>
  * @license  MIT
  */
 
@@ -17637,8 +18201,8 @@ var objectKeys = Object.keys || function (obj) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"pieChart gl_chart_template",attrs:{"id":"pie"}},[_c('div',{staticClass:"graphOptions"},[_c('div',[_c('button',{staticStyle:{"margin-right":"10px"},attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelString),expression:"chartlabelString"}],staticClass:"regular-text",attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(1),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetDataString),expression:"chartDatasetDataString"}],staticClass:"regular-text",attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(_vm.chartDatasetDataString)},on:{"keyup":_vm.addDatasetData,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetDataString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(2),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetBgColorString),expression:"chartDatasetBgColorString"}],staticClass:"regular-text",attrs:{"type":"text","id":"colors","placeholder":"Color value for each label. Eg. red, green, blue"},domProps:{"value":(_vm.chartDatasetBgColorString)},on:{"keyup":_vm.addDatasetBgColor,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetBgColorString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(3),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(4),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])]),_vm._v(" "),_vm._m(7)])}
-var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("Labels")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Color")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"pieChart"}})])])}]
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"pieChart gl_chart_template",attrs:{"id":"pie"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td',{staticClass:"gl_backButotnTh"},[(_vm.fieldsRequired)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("Field(s) required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelString),expression:"chartlabelString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifLabelEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(1),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetDataString),expression:"chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(_vm.chartDatasetDataString)},on:{"keyup":_vm.addDatasetData,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetDataString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(2),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetBgColorString),expression:"chartDatasetBgColorString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifBackgroundEmpty},attrs:{"type":"text","id":"colors","placeholder":"Color value for each label. Eg. red, green, blue"},domProps:{"value":(_vm.chartDatasetBgColorString)},on:{"keyup":_vm.addDatasetBgColor,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetBgColorString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(3),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(4),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])]),_vm._v(" "),_vm._m(7)])}
+var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"pieChart"}})])])}]
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
 
@@ -17649,7 +18213,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(20);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6f098894_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(73);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_729547eb_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(73);
 function injectStyle (ssrContext) {
   __webpack_require__(71)
 }
@@ -17669,7 +18233,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DoughnutChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6f098894_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_729547eb_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -17690,7 +18254,7 @@ var content = __webpack_require__(72);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("17ab1634", content, true, {});
+var update = __webpack_require__(2)("f7977ffa", content, true, {});
 
 /***/ }),
 /* 72 */
@@ -17711,8 +18275,8 @@ exports.push([module.i, ".DoughnutChart{width:100%;height:100%;display:flex;flex
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"DoughnutChart gl_chart_template",attrs:{"id":"Doughnut"}},[_c('div',{staticClass:"graphOptions"},[_c('div',[_c('button',{staticStyle:{"margin-right":"10px"},attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelString),expression:"chartlabelString"}],staticClass:"regular-text",attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(1),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetDataString),expression:"chartDatasetDataString"}],staticClass:"regular-text",attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(_vm.chartDatasetDataString)},on:{"keyup":_vm.addDatasetData,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetDataString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(2),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetBgColorString),expression:"chartDatasetBgColorString"}],staticClass:"regular-text",attrs:{"type":"text","id":"colors","placeholder":"Color value for each label. Eg. red, green, blue"},domProps:{"value":(_vm.chartDatasetBgColorString)},on:{"keyup":_vm.addDatasetBgColor,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetBgColorString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(3),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(4),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])]),_vm._v(" "),_vm._m(7)])}
-var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("Labels")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Color")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"DoughnutChart"}})])])}]
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"DoughnutChart gl_chart_template",attrs:{"id":"Doughnut"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td',{staticClass:"gl_backButotnTh"},[(_vm.fieldsRequired)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("Field(s) required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelString),expression:"chartlabelString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifLabelEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(1),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetDataString),expression:"chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(_vm.chartDatasetDataString)},on:{"keyup":_vm.addDatasetData,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetDataString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(2),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetBgColorString),expression:"chartDatasetBgColorString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifBackgroundEmpty},attrs:{"type":"text","id":"colors","placeholder":"Color value for each label. Eg. red, green, blue"},domProps:{"value":(_vm.chartDatasetBgColorString)},on:{"keyup":_vm.addDatasetBgColor,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetBgColorString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(3),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(4),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])]),_vm._v(" "),_vm._m(7)])}
+var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"DoughnutChart"}})])])}]
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
 
@@ -17723,7 +18287,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_RadarChartTemplate_vue__ = __webpack_require__(21);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_76154e7d_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__ = __webpack_require__(77);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6411737e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__ = __webpack_require__(77);
 function injectStyle (ssrContext) {
   __webpack_require__(75)
 }
@@ -17743,7 +18307,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_RadarChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_76154e7d_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6411737e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -17764,7 +18328,7 @@ var content = __webpack_require__(76);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("0c6bd58a", content, true, {});
+var update = __webpack_require__(2)("e2acc3d8", content, true, {});
 
 /***/ }),
 /* 76 */
@@ -17785,8 +18349,8 @@ exports.push([module.i, ".radarChart{width:100%;height:100%;display:flex;flex-di
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"radarChart gl_chart_template",attrs:{"id":"line"}},[_c('div',{staticClass:"graphOptions"},[_c('div',[_c('button',{staticStyle:{"margin-right":"10px"},attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelsString),expression:"chartlabelsString"}],staticClass:"regular-text",attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelsString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelsString=$event.target.value}}})])])]),_vm._v(" "),_vm._l((_vm.datasets),function(data,index){return _c('fieldset',{key:data},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.label),expression:"data.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(data.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.chartDatasetDataString),expression:"data.chartDatasetDataString"}],staticClass:"regular-text",attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(data.chartDatasetDataString)},on:{"keyup":function($event){_vm.addDatasetData(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "chartDatasetDataString", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.backgroundColor),expression:"data.backgroundColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"colors"},domProps:{"value":(data.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.borderColor),expression:"data.borderColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"line_color"},domProps:{"value":(data.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "borderColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(5,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.fill),expression:"data.fill"}],attrs:{"type":"checkbox","id":"fill"},domProps:{"checked":Array.isArray(data.fill)?_vm._i(data.fill,null)>-1:(data.fill)},on:{"change":[function($event){var $$a=data.fill,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.$set(data, "fill", $$a.concat([$$v])))}else{$$i>-1&&(_vm.$set(data, "fill", $$a.slice(0,$$i).concat($$a.slice($$i+1))))}}else{_vm.$set(data, "fill", $$c)}},function($event){_vm.fillColor(index)}]}})])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(6,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(10),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_vm._m(11)])}
-var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("Labels")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Fill Color")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"line_color"}},[_vm._v("Line Color")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"fill"}},[_vm._v("Fill Color Under the line")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"radarChart"}})])])}]
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"radarChart gl_chart_template",attrs:{"id":"line"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td',{staticClass:"gl_backButotnTh"},[(_vm.fieldsRequired)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("Field(s) required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelsString),expression:"chartlabelsString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifLabelsEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelsString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelsString=$event.target.value}}})])])]),_vm._v(" "),_vm._l((_vm.datasets),function(data,index){return _c('fieldset',{key:data},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.label),expression:"data.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(data.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.chartDatasetDataString),expression:"data.chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(data.chartDatasetDataString)},on:{"keyup":function($event){_vm.addDatasetData(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "chartDatasetDataString", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.backgroundColor),expression:"data.backgroundColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifFillColorEmpty},attrs:{"type":"text","id":"colors"},domProps:{"value":(data.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.borderColor),expression:"data.borderColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifLineColorEmpty},attrs:{"type":"text","id":"line_color"},domProps:{"value":(data.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "borderColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(5,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.fill),expression:"data.fill"}],attrs:{"type":"checkbox","id":"fill"},domProps:{"checked":Array.isArray(data.fill)?_vm._i(data.fill,null)>-1:(data.fill)},on:{"change":[function($event){var $$a=data.fill,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.$set(data, "fill", $$a.concat([$$v])))}else{$$i>-1&&(_vm.$set(data, "fill", $$a.slice(0,$$i).concat($$a.slice($$i+1))))}}else{_vm.$set(data, "fill", $$c)}},function($event){_vm.fillColor(index)}]}})])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(6,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(10),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_vm._m(11)])}
+var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Fill Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"line_color"}},[_vm._v("Line Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"fill"}},[_vm._v("Fill Color Under the line")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"radarChart"}})])])}]
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
 
@@ -17797,7 +18361,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(22);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_36e9418d_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(81);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2a261764_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(81);
 function injectStyle (ssrContext) {
   __webpack_require__(79)
 }
@@ -17817,7 +18381,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PolarAreaChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_36e9418d_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2a261764_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -17838,7 +18402,7 @@ var content = __webpack_require__(80);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("209a6b88", content, true, {});
+var update = __webpack_require__(2)("41bd8245", content, true, {});
 
 /***/ }),
 /* 80 */
@@ -17859,8 +18423,8 @@ exports.push([module.i, ".PolarAreaChart{width:100%;height:100%;display:flex;fle
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"PolarAreaChart gl_chart_template",attrs:{"id":"PolarArea"}},[_c('div',{staticClass:"graphOptions"},[_c('div',[_c('button',{staticStyle:{"margin-right":"10px"},attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetDataString),expression:"chartDatasetDataString"}],staticClass:"regular-text",attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(_vm.chartDatasetDataString)},on:{"keyup":_vm.addDatasetData,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetDataString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(1),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetBgColorString),expression:"chartDatasetBgColorString"}],staticClass:"regular-text",attrs:{"type":"text","id":"colors","placeholder":"Color value for each label. Eg. red, green, blue"},domProps:{"value":(_vm.chartDatasetBgColorString)},on:{"keyup":_vm.addDatasetBgColor,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetBgColorString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(2),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelString),expression:"chartlabelString"}],staticClass:"regular-text",attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(3),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(4),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])]),_vm._v(" "),_vm._m(7)])}
-var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Color")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("Labels")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"PolarAreaChart"}})])])}]
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"PolarAreaChart gl_chart_template",attrs:{"id":"PolarArea"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td',{staticClass:"gl_backButotnTh"},[(_vm.fieldsRequired)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("Field(s) required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetDataString),expression:"chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(_vm.chartDatasetDataString)},on:{"keyup":_vm.addDatasetData,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetDataString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(1),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetBgColorString),expression:"chartDatasetBgColorString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifBackgroundEmpty},attrs:{"type":"text","id":"colors","placeholder":"Color value for each label. Eg. red, green, blue"},domProps:{"value":(_vm.chartDatasetBgColorString)},on:{"keyup":_vm.addDatasetBgColor,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetBgColorString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(2),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelString),expression:"chartlabelString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifLabelEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(3),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(4),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])]),_vm._v(" "),_vm._m(7)])}
+var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"PolarAreaChart"}})])])}]
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
 
@@ -17871,7 +18435,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BubbleChartTemplate_vue__ = __webpack_require__(23);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2208243c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__ = __webpack_require__(85);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_a2eae0e2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__ = __webpack_require__(85);
 function injectStyle (ssrContext) {
   __webpack_require__(83)
 }
@@ -17891,7 +18455,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BubbleChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2208243c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_a2eae0e2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -17912,7 +18476,7 @@ var content = __webpack_require__(84);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("24bdab68", content, true, {});
+var update = __webpack_require__(2)("41fa6b21", content, true, {});
 
 /***/ }),
 /* 84 */
@@ -17933,8 +18497,8 @@ exports.push([module.i, ".bubbleChart{width:100%;height:100%;display:flex;flex-d
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"bubbleChart gl_chart_template",attrs:{"id":"bubble"}},[_c('div',{staticClass:"graphOptions"},[_c('div',[_c('button',{staticStyle:{"margin-right":"10px"},attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_vm._l((_vm.datasets),function(dataset,index){return _c('fieldset',{key:dataset},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(0,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.label),expression:"dataset.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(dataset.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_vm._l((dataset.data),function(data,PIndex){return [_c('div',{staticClass:"gl_bb_point"},[_c('div',{staticClass:"button_input_fields"},[_c('div',{staticClass:"gl_bb_xp"},[_c('label',{attrs:{"for":"xPoint"}},[_vm._v("x-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].x),expression:"dataset.data[PIndex].x"}],staticClass:"bubblePoints",attrs:{"type":"number","id":"xPoint"},domProps:{"value":(dataset.data[PIndex].x)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "x", $event.target.value)}}})]),_vm._v(" "),_c('div',{staticClass:"gl_bb_yp"},[_c('label',{attrs:{"for":"yPoint"}},[_vm._v("y-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].y),expression:"dataset.data[PIndex].y"}],staticClass:"bubblePoints",attrs:{"type":"number","id":"yPoint"},domProps:{"value":(dataset.data[PIndex].y)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "y", $event.target.value)}}})]),_vm._v(" "),_c('div',{staticClass:"gl_bb_r"},[_c('label',{attrs:{"for":"radius"}},[_vm._v("Bubble Radius")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].r),expression:"dataset.data[PIndex].r"}],staticClass:"bubblePoints",attrs:{"type":"number","id":"radius"},domProps:{"value":(dataset.data[PIndex].r)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'r')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'r')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "r", $event.target.value)}}})])]),_vm._v(" "),(PIndex != 0)?_c('div',[_c('a',{staticClass:"deleteButtonPoint",attrs:{"href":"javascript:void(0)"},on:{"click":function($event){_vm.deleteButtonPoint(index, PIndex)}}},[_vm._v("X")])]):_vm._e()])]}),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.addBubblePoint(index)}}},[_vm._v("Add Bubble Point")])],2)]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.backgroundColor),expression:"dataset.backgroundColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"colors"},domProps:{"value":(dataset.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.borderColor),expression:"dataset.borderColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"line_color"},domProps:{"value":(dataset.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "borderColor", $event.target.value)}}})])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_vm._m(9)])}
-var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticStyle:{"padding-top":"5px","padding-bottom":"5px"},attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Circle Background Color")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticStyle:{"padding-top":"5px","padding-bottom":"5px"},attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"line_color"}},[_vm._v("Circle Border Color")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"bubbleChart"}})])])}]
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"bubbleChart gl_chart_template",attrs:{"id":"bubble"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td',{staticClass:"gl_backButotnTh"},[(_vm.fieldsRequired)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("Field(s) required")]):_vm._e()])])]),_vm._v(" "),_vm._l((_vm.datasets),function(dataset,index){return _c('fieldset',{key:dataset},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(0,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.label),expression:"dataset.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(dataset.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_vm._l((dataset.data),function(data,PIndex){return [_c('div',{staticClass:"gl_bb_point"},[_c('div',{staticClass:"button_input_fields"},[_c('div',{staticClass:"gl_bb_xp"},[_c('label',{attrs:{"for":"xPoint"}},[_vm._v("x-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].x),expression:"dataset.data[PIndex].x"}],staticClass:"bubblePoints",class:{'gl_fieldRequired': data.ifxPointEmpty},attrs:{"type":"number","id":"xPoint"},domProps:{"value":(dataset.data[PIndex].x)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "x", $event.target.value)}}})]),_vm._v(" "),_c('div',{staticClass:"gl_bb_yp"},[_c('label',{attrs:{"for":"yPoint"}},[_vm._v("y-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].y),expression:"dataset.data[PIndex].y"}],staticClass:"bubblePoints",class:{'gl_fieldRequired': data.ifyPointEmpty},attrs:{"type":"number","id":"yPoint"},domProps:{"value":(dataset.data[PIndex].y)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "y", $event.target.value)}}})]),_vm._v(" "),_c('div',{staticClass:"gl_bb_r"},[_c('label',{attrs:{"for":"radius"}},[_vm._v("Bubble Radius")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].r),expression:"dataset.data[PIndex].r"}],staticClass:"bubblePoints",class:{'gl_fieldRequired': data.ifrPointEmpty},attrs:{"type":"number","id":"radius"},domProps:{"value":(dataset.data[PIndex].r)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'r')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'r')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "r", $event.target.value)}}})])]),_vm._v(" "),(PIndex != 0)?_c('div',[_c('a',{staticClass:"deleteButtonPoint",attrs:{"href":"javascript:void(0)"},on:{"click":function($event){_vm.deleteButtonPoint(index, PIndex)}}},[_vm._v("X")])]):_vm._e()])]}),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.addBubblePoint(index)}}},[_vm._v("Add Bubble Point")])],2)]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.backgroundColor),expression:"dataset.backgroundColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': dataset.ifCircleBackgroundEmpty},attrs:{"type":"text","id":"colors"},domProps:{"value":(dataset.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.borderColor),expression:"dataset.borderColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': dataset.ifCicleBorderColorEmpty},attrs:{"type":"text","id":"line_color"},domProps:{"value":(dataset.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "borderColor", $event.target.value)}}})])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_vm._m(9)])}
+var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticStyle:{"padding-top":"5px","padding-bottom":"5px"},attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Circle Background Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticStyle:{"padding-top":"5px","padding-bottom":"5px"},attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"line_color"}},[_vm._v("Circle Border Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"bubbleChart"}})])])}]
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
 
@@ -17945,7 +18509,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ScatterChartTemplate_vue__ = __webpack_require__(24);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_37ba8926_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__ = __webpack_require__(89);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_086732d2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__ = __webpack_require__(89);
 function injectStyle (ssrContext) {
   __webpack_require__(87)
 }
@@ -17965,7 +18529,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ScatterChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_37ba8926_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_086732d2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -17986,7 +18550,7 @@ var content = __webpack_require__(88);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("c4142518", content, true, {});
+var update = __webpack_require__(2)("3b6d5226", content, true, {});
 
 /***/ }),
 /* 88 */
@@ -18007,8 +18571,8 @@ exports.push([module.i, ".scatterChart{width:100%;height:100%;display:flex;flex-
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"scatterChart gl_chart_template",attrs:{"id":"scatter"}},[_c('div',{staticClass:"graphOptions"},[_c('div',[_c('button',{staticStyle:{"margin-right":"10px"},attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_vm._l((_vm.datasets),function(dataset,index){return _c('fieldset',{key:dataset},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(0,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.label),expression:"dataset.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(dataset.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_vm._l((dataset.data),function(data,PIndex){return [_c('div',{staticClass:"gl_bb_point"},[_c('div',{staticClass:"button_input_fields"},[_c('div',{staticClass:"gl_bb_xp"},[_c('label',{attrs:{"for":"xPoint"}},[_vm._v("x-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].x),expression:"dataset.data[PIndex].x"}],staticClass:"bubblePoints",attrs:{"type":"number","id":"xPoint"},domProps:{"value":(dataset.data[PIndex].x)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "x", $event.target.value)}}})]),_vm._v(" "),_c('div',{staticClass:"gl_bb_yp"},[_c('label',{attrs:{"for":"yPoint"}},[_vm._v("y-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].y),expression:"dataset.data[PIndex].y"}],staticClass:"bubblePoints",attrs:{"type":"number","id":"yPoint"},domProps:{"value":(dataset.data[PIndex].y)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "y", $event.target.value)}}})])]),_vm._v(" "),(PIndex != 0)?_c('div',[_c('a',{staticClass:"deleteButtonPoint",attrs:{"href":"javascript:void(0)"},on:{"click":function($event){_vm.deleteButtonPoint(index, PIndex)}}},[_vm._v("X")])]):_vm._e()])]}),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.addBubblePoint(index)}}},[_vm._v("Add Bubble Point")])],2)]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.backgroundColor),expression:"dataset.backgroundColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"colors"},domProps:{"value":(dataset.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.borderColor),expression:"dataset.borderColor"}],staticClass:"regular-text",attrs:{"type":"text","id":"line_color"},domProps:{"value":(dataset.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "borderColor", $event.target.value)}}})])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_vm._m(9)])}
-var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticStyle:{"padding-top":"5px","padding-bottom":"5px"},attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Circle Background Color")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticStyle:{"padding-top":"5px","padding-bottom":"5px"},attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"line_color"}},[_vm._v("Circle Border Color")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"scatterChart"}})])])}]
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"scatterChart gl_chart_template",attrs:{"id":"scatter"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td',{staticClass:"gl_backButotnTh"},[(_vm.fieldsRequired)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("Field(s) required")]):_vm._e()])])]),_vm._v(" "),_vm._l((_vm.datasets),function(dataset,index){return _c('fieldset',{key:dataset},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(0,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.label),expression:"dataset.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(dataset.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_vm._l((dataset.data),function(data,PIndex){return [_c('div',{staticClass:"gl_bb_point"},[_c('div',{staticClass:"button_input_fields"},[_c('div',{staticClass:"gl_bb_xp"},[_c('label',{attrs:{"for":"xPoint"}},[_vm._v("x-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].x),expression:"dataset.data[PIndex].x"}],staticClass:"bubblePoints",class:{'gl_fieldRequired': data.ifxPointEmpty},attrs:{"type":"number","id":"xPoint"},domProps:{"value":(dataset.data[PIndex].x)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "x", $event.target.value)}}})]),_vm._v(" "),_c('div',{staticClass:"gl_bb_yp"},[_c('label',{attrs:{"for":"yPoint"}},[_vm._v("y-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].y),expression:"dataset.data[PIndex].y"}],staticClass:"bubblePoints",class:{'gl_fieldRequired': data.ifyPointEmpty},attrs:{"type":"number","id":"yPoint"},domProps:{"value":(dataset.data[PIndex].y)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "y", $event.target.value)}}})])]),_vm._v(" "),(PIndex != 0)?_c('div',[_c('a',{staticClass:"deleteButtonPoint",attrs:{"href":"javascript:void(0)"},on:{"click":function($event){_vm.deleteButtonPoint(index, PIndex)}}},[_vm._v("X")])]):_vm._e()])]}),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.addBubblePoint(index)}}},[_vm._v("Add Bubble Point")])],2)]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.backgroundColor),expression:"dataset.backgroundColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': dataset.ifCircleBackgroundEmpty},attrs:{"type":"text","id":"colors"},domProps:{"value":(dataset.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.borderColor),expression:"dataset.borderColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': dataset.ifCicleBorderColorEmpty},attrs:{"type":"text","id":"line_color"},domProps:{"value":(dataset.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "borderColor", $event.target.value)}}})])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_vm._m(9)])}
+var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticStyle:{"padding-top":"5px","padding-bottom":"5px"},attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Circle Background Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticStyle:{"padding-top":"5px","padding-bottom":"5px"},attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"line_color"}},[_vm._v("Circle Border Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"scatterChart"}})])])}]
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
 

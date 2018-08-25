@@ -1,21 +1,24 @@
 <template>
 	<div class="PolarAreaChart gl_chart_template" id="PolarArea">
 		<div class="graphOptions">
-			<div>
-				<button style="margin-right: 10px;" type="button" @click="goBacktoAllGraphPage">Go Back</button>
-			</div>
 			<table class="form-table">
 				<tr>
-					<th scope="row"><label for="datasets">Data</label></th>
-					<td><input class="regular-text" type="text" id="datasets" placeholder="Numeric data value for each label. Eg. 1,2,3 etc" v-model="chartDatasetDataString" @keyup="addDatasetData"></td>
+					<th scope="row" class="gl_backButotnTh"><button type="button" @click="goBacktoAllGraphPage">Go Back</button></th>
+					<td class="gl_backButotnTh">
+						<p class="gl_fieldRequiredError" v-if="fieldsRequired">Field(s) required</p>
+					</td>
 				</tr>
 				<tr>
-					<th scope="row"><label for="colors">Color</label></th>
-					<td><input class="regular-text" type="text" id="colors" placeholder="Color value for each label. Eg. red, green, blue" v-model="chartDatasetBgColorString" @keyup="addDatasetBgColor"></td>
+					<th scope="row"><label for="datasets">Data*</label></th>
+					<td><input class="regular-text" :class="{'gl_fieldRequired': ifDataEmpty}" type="text" id="datasets" placeholder="Numeric data value for each label. Eg. 1,2,3 etc" v-model="chartDatasetDataString" @keyup="addDatasetData"></td>
 				</tr>
 				<tr>
-					<th scope="row"><label for="labels">Labels</label></th>
-					<td><input class="regular-text" type="text" id="labels" placeholder="Comma separated list of labels" v-model="chartlabelString" @keyup="addLabels"></td>
+					<th scope="row"><label for="colors">Color*</label></th>
+					<td><input class="regular-text" :class="{'gl_fieldRequired': ifBackgroundEmpty}"  type="text" id="colors" placeholder="Color value for each label. Eg. red, green, blue" v-model="chartDatasetBgColorString" @keyup="addDatasetBgColor"></td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="labels">Labels*</label></th>
+					<td><input class="regular-text" :class="{'gl_fieldRequired': ifLabelEmpty}" type="text" id="labels" placeholder="Comma separated list of labels" v-model="chartlabelString" @keyup="addLabels"></td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="titleText">Chart Title</label></th>
@@ -73,21 +76,34 @@
 					}
 				],
 				showTitle: false,
-				showLegend: true
+				showLegend: true,
+				ifLabelEmpty: false,
+				ifDataEmpty: false,
+				ifBackgroundEmpty: false,
+				fieldsRequired: false
 			};
 		},
 		methods: {
 			addLabels() {
+				if(this.ifLabelEmpty) {
+					this.ifLabelEmpty = false;
+				}
 				this.labels = this.chartlabelString.split(',');
 				this.theChart.data.labels = this.labels;
 				this.theChart.update();
 			},
 			addDatasetData() {
+				if(this.ifDataEmpty) {
+					this.ifDataEmpty = false;
+				}
 				this.datasets[0].data = this.chartDatasetDataString.split(',');
 				this.theChart.data.datasets[0].data = this.datasets[0].data;
 				this.theChart.update();
 			},
 			addDatasetBgColor() {
+				if(this.ifBackgroundEmpty) {
+					this.ifBackgroundEmpty = false;
+				}
 				this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
 				this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor;
 				this.theChart.update();
@@ -108,64 +124,96 @@
 			},
 			saveGraphData() {
 				let outerThis = this;
-				let chartDatas = {
-					type: this.chartType,
-					data: {
-						labels: this.labels,
-						datasets: this.datasets
-					},
-					options: {
-						maintainAspectRatio: false,
-						title: {
-							display: this.showTitle,
-							text: this.titleText
-						},
-						legend: {
-							display: this.showLegend,
-							position: this.legendPosition
-						}
-					}
-				};
 
-				this.$store.dispatch('addNewGraph', chartDatas).then(function() {
-					setTimeout(function() {
-						outerThis.$emit("saved");
-					}, 1000);
-				});
+				if(this.chartlabelString === '' || this.chartDatasetDataString === '' || this.chartDatasetBgColorString === '') {
+					this.fieldsRequired = true;
+					if(this.chartlabelString === '') {
+						this.ifLabelEmpty = true;
+					}
+					if(this.chartDatasetDataString === '') {
+						this.ifDataEmpty = true;
+					}
+					if(this.chartDatasetBgColorString === '') {
+						this.ifBackgroundEmpty = true;
+					}
+				}
+
+				if(this.chartlabelString !== '' && this.chartDatasetDataString !== '' && this.chartDatasetBgColorString !== '') {
+					let chartDatas = {
+						type: this.chartType,
+						data: {
+							labels: this.labels,
+							datasets: this.datasets
+						},
+						options: {
+							maintainAspectRatio: false,
+							title: {
+								display: this.showTitle,
+								text: this.titleText
+							},
+							legend: {
+								display: this.showLegend,
+								position: this.legendPosition
+							}
+						}
+					};
+
+					this.$store.dispatch('addNewGraph', chartDatas).then(function() {
+						setTimeout(function() {
+							outerThis.$emit("saved");
+						}, 1500);
+					});
+				}
 			},
 			updateGraphData() {
 				let outerThis = this;
-				let chartDatas = {
-					type: this.chartType,
-					data: {
-						labels: this.labels,
-						datasets: [
-							{
-								data: this.datasets[0].data,
-								backgroundColor: this.datasets[0].backgroundColor
-							}
-						]
-					},
-					options: {
-						maintainAspectRatio: false,
-						title: {
-							display: this.showTitle,
-							text: this.titleText
-						},
-						legend: {
-							display: this.showLegend,
-							position: this.legendPosition
-						}
+
+				if(this.chartlabelString === '' || this.chartDatasetDataString === '' || this.chartDatasetBgColorString === '') {
+					this.fieldsRequired = true;
+					if(this.chartlabelString === '') {
+						this.ifLabelEmpty = true;
 					}
-				};
+					if(this.chartDatasetDataString === '') {
+						this.ifDataEmpty = true;
+					}
+					if(this.chartDatasetBgColorString === '') {
+						this.ifBackgroundEmpty = true;
+					}
+				}
 
-				let payload = {'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id};
+				if(this.chartlabelString !== '' && this.chartDatasetDataString !== '' && this.chartDatasetBgColorString !== '') {
+					let chartDatas = {
+						type: this.chartType,
+						data: {
+							labels: this.labels,
+							datasets: [
+								{
+									data: this.datasets[0].data,
+									backgroundColor: this.datasets[0].backgroundColor
+								}
+							]
+						},
+						options: {
+							maintainAspectRatio: false,
+							title: {
+								display: this.showTitle,
+								text: this.titleText
+							},
+							legend: {
+								display: this.showLegend,
+								position: this.legendPosition
+							}
+						}
+					};
 
-				this.$store.dispatch('updateGraph', payload).then(function() {
-					setTimeout(function() {
-						outerThis.$emit("updated");
-					}, 2000);
-				});
+					let payload = {'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id};
+
+					this.$store.dispatch('updateGraph', payload).then(function() {
+						setTimeout(function() {
+							outerThis.$emit("updated");
+						}, 2000);
+					});
+				}
 			},
 			onLoad() {
 				let ctx = document.getElementById("PolarAreaChart");
