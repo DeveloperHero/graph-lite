@@ -1,3 +1,1 @@
-<div id="app">
-	<component v-bind:is="currentTabComponent"></component>
-</div>
+<div id="app"></div>
