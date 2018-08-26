@@ -3,7 +3,9 @@
 		<div class="graphOptions">
 			<table class="form-table">
 				<tr>
-					<th scope="row" class="gl_backButotnTh"><button type="button" @click="goBacktoAllGraphPage">Go Back</button></th>
+					<th scope="row" class="gl_backButotnTh">
+						<img src="./../../images/back-arrow.png" @click="goBacktoAllGraphPage" class="gl_backButtonImage">
+					</th>
 					<td class="gl_backButotnTh">
 						<p class="gl_fieldRequiredError" v-if="fieldsRequired">Field(s) required</p>
 					</td>
@@ -55,9 +57,6 @@
 </template>
 
 <script type="text/javascript">
-	import axios from 'axios';
-	import querystring from 'querystring';
-
 	export default {
 		props: ['graphData', 'graphIndex'],
 		data() {

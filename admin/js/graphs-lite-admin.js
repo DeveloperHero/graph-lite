@@ -60,321 +60,11 @@
 /******/ 	__webpack_require__.p = "/js/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 25);
+/******/ 	return __webpack_require__(__webpack_require__.s = 16);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var bind = __webpack_require__(15);
-var isBuffer = __webpack_require__(50);
-
-/*global toString:true*/
-
-// utils is a library of generic helper functions non-specific to axios
-
-var toString = Object.prototype.toString;
-
-/**
- * Determine if a value is an Array
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is an Array, otherwise false
- */
-function isArray(val) {
-  return toString.call(val) === '[object Array]';
-}
-
-/**
- * Determine if a value is an ArrayBuffer
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is an ArrayBuffer, otherwise false
- */
-function isArrayBuffer(val) {
-  return toString.call(val) === '[object ArrayBuffer]';
-}
-
-/**
- * Determine if a value is a FormData
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is an FormData, otherwise false
- */
-function isFormData(val) {
-  return (typeof FormData !== 'undefined') && (val instanceof FormData);
-}
-
-/**
- * Determine if a value is a view on an ArrayBuffer
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a view on an ArrayBuffer, otherwise false
- */
-function isArrayBufferView(val) {
-  var result;
-  if ((typeof ArrayBuffer !== 'undefined') && (ArrayBuffer.isView)) {
-    result = ArrayBuffer.isView(val);
-  } else {
-    result = (val) && (val.buffer) && (val.buffer instanceof ArrayBuffer);
-  }
-  return result;
-}
-
-/**
- * Determine if a value is a String
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a String, otherwise false
- */
-function isString(val) {
-  return typeof val === 'string';
-}
-
-/**
- * Determine if a value is a Number
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a Number, otherwise false
- */
-function isNumber(val) {
-  return typeof val === 'number';
-}
-
-/**
- * Determine if a value is undefined
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if the value is undefined, otherwise false
- */
-function isUndefined(val) {
-  return typeof val === 'undefined';
-}
-
-/**
- * Determine if a value is an Object
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is an Object, otherwise false
- */
-function isObject(val) {
-  return val !== null && typeof val === 'object';
-}
-
-/**
- * Determine if a value is a Date
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a Date, otherwise false
- */
-function isDate(val) {
-  return toString.call(val) === '[object Date]';
-}
-
-/**
- * Determine if a value is a File
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a File, otherwise false
- */
-function isFile(val) {
-  return toString.call(val) === '[object File]';
-}
-
-/**
- * Determine if a value is a Blob
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a Blob, otherwise false
- */
-function isBlob(val) {
-  return toString.call(val) === '[object Blob]';
-}
-
-/**
- * Determine if a value is a Function
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a Function, otherwise false
- */
-function isFunction(val) {
-  return toString.call(val) === '[object Function]';
-}
-
-/**
- * Determine if a value is a Stream
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a Stream, otherwise false
- */
-function isStream(val) {
-  return isObject(val) && isFunction(val.pipe);
-}
-
-/**
- * Determine if a value is a URLSearchParams object
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a URLSearchParams object, otherwise false
- */
-function isURLSearchParams(val) {
-  return typeof URLSearchParams !== 'undefined' && val instanceof URLSearchParams;
-}
-
-/**
- * Trim excess whitespace off the beginning and end of a string
- *
- * @param {String} str The String to trim
- * @returns {String} The String freed of excess whitespace
- */
-function trim(str) {
-  return str.replace(/^\s*/, '').replace(/\s*$/, '');
-}
-
-/**
- * Determine if we're running in a standard browser environment
- *
- * This allows axios to run in a web worker, and react-native.
- * Both environments support XMLHttpRequest, but not fully standard globals.
- *
- * web workers:
- *  typeof window -> undefined
- *  typeof document -> undefined
- *
- * react-native:
- *  navigator.product -> 'ReactNative'
- */
-function isStandardBrowserEnv() {
-  if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
-    return false;
-  }
-  return (
-    typeof window !== 'undefined' &&
-    typeof document !== 'undefined'
-  );
-}
-
-/**
- * Iterate over an Array or an Object invoking a function for each item.
- *
- * If `obj` is an Array callback will be called passing
- * the value, index, and complete array for each item.
- *
- * If 'obj' is an Object callback will be called passing
- * the value, key, and complete object for each property.
- *
- * @param {Object|Array} obj The object to iterate
- * @param {Function} fn The callback to invoke for each item
- */
-function forEach(obj, fn) {
-  // Don't bother if no value provided
-  if (obj === null || typeof obj === 'undefined') {
-    return;
-  }
-
-  // Force an array if not already something iterable
-  if (typeof obj !== 'object') {
-    /*eslint no-param-reassign:0*/
-    obj = [obj];
-  }
-
-  if (isArray(obj)) {
-    // Iterate over array values
-    for (var i = 0, l = obj.length; i < l; i++) {
-      fn.call(null, obj[i], i, obj);
-    }
-  } else {
-    // Iterate over object keys
-    for (var key in obj) {
-      if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        fn.call(null, obj[key], key, obj);
-      }
-    }
-  }
-}
-
-/**
- * Accepts varargs expecting each argument to be an object, then
- * immutably merges the properties of each object and returns result.
- *
- * When multiple objects contain the same key the later object in
- * the arguments list will take precedence.
- *
- * Example:
- *
- * ```js
- * var result = merge({foo: 123}, {foo: 456});
- * console.log(result.foo); // outputs 456
- * ```
- *
- * @param {Object} obj1 Object to merge
- * @returns {Object} Result of all merge properties
- */
-function merge(/* obj1, obj2, obj3, ... */) {
-  var result = {};
-  function assignValue(val, key) {
-    if (typeof result[key] === 'object' && typeof val === 'object') {
-      result[key] = merge(result[key], val);
-    } else {
-      result[key] = val;
-    }
-  }
-
-  for (var i = 0, l = arguments.length; i < l; i++) {
-    forEach(arguments[i], assignValue);
-  }
-  return result;
-}
-
-/**
- * Extends object a by mutably adding to it the properties of object b.
- *
- * @param {Object} a The object to be extended
- * @param {Object} b The object to copy properties from
- * @param {Object} thisArg The object to bind function to
- * @return {Object} The resulting value of object a
- */
-function extend(a, b, thisArg) {
-  forEach(b, function assignValue(val, key) {
-    if (thisArg && typeof val === 'function') {
-      a[key] = bind(val, thisArg);
-    } else {
-      a[key] = val;
-    }
-  });
-  return a;
-}
-
-module.exports = {
-  isArray: isArray,
-  isArrayBuffer: isArrayBuffer,
-  isBuffer: isBuffer,
-  isFormData: isFormData,
-  isArrayBufferView: isArrayBufferView,
-  isString: isString,
-  isNumber: isNumber,
-  isObject: isObject,
-  isUndefined: isUndefined,
-  isDate: isDate,
-  isFile: isFile,
-  isBlob: isBlob,
-  isFunction: isFunction,
-  isStream: isStream,
-  isURLSearchParams: isURLSearchParams,
-  isStandardBrowserEnv: isStandardBrowserEnv,
-  forEach: forEach,
-  merge: merge,
-  extend: extend,
-  trim: trim
-};
-
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports) {
 
 /*
@@ -456,7 +146,7 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 2 */
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -475,7 +165,7 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
   ) }
 }
 
-var listToStyles = __webpack_require__(33)
+var listToStyles = __webpack_require__(25)
 
 /*
 type StyleObject = {
@@ -684,7 +374,7 @@ function applyToTag (styleElement, obj) {
 
 
 /***/ }),
-/* 3 */
+/* 2 */
 /***/ (function(module, exports) {
 
 /* globals __VUE_SSR_CONTEXT__ */
@@ -793,6 +483,12 @@ module.exports = function normalizeComponent (
 
 
 /***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAQAAABpN6lAAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QAAKqNIzIAAAAJcEhZcwAADdcAAA3XAUIom3gAAAAHdElNRQfiCA8WHyloCAKOAAAELklEQVR42u2cS0gVURjHf2YvtQeV0A16EoYU0UMCI2hRQWQFFUVB9NxVBNEidFOLiKBNEbUIgoqgoBa2TEg0FCp6F2VUixCpoAdFL81sWox2r169986cM/PdmXP+H8IFwe/8ftfRmTN3PrCxsbGxsbGxsbEJKqOlFyCbcmqllyCL/47b0ouQxXfMFeDiGyugB99QAUl8IwWk4hsooDe+cQL64hsmIB0/zwUM0ozfQEIaSU5ABPF1Cogkvj4BEcXXJSCy+HoERBhfh4BI46sLiDi+qoDI46sJiAG+ioBY4PsXEBN8vwJig+9PQIzw/QiIFb53ATHD9yogdvjeBMQQHwpDwC9lKXNJUMBnuqSB+6YgcPzUdPKCxzzmEbf4IY3uJf1tdapVBw3UUJHzGxAz/GR94DI7mCiNKIWfrHvspVQaVQ7frd/UsoYh0shS+MmD4iQV0uBy+D3VxAqT8d16wHrNd64ihe9WC9sYbC6+W2/YbDK+WzeZbTK+g0MnJxhlLr5b79liMr5bjUwyGd/B4RNrTMZ36zTDTcZ3cHjCTJPxHRx+ssNkfLeOqG+pRBnfweEiQ9UENIgjqFa92jMpCVrEEVTrqdqmWhwUtDHDdAWtTDFdwWsmmK7gmdrOchwU3Lf/EZrVrhLioOCCioB4KNhnuoI/LDFdwUemmq7gEcWmKzirJiAOClaaruAtY01XcFlVQPQVbDBdwUfGm67gjLqAaCvopGxgsNw3lRM0UO5L3j1WUUJx91fqqxFMZjpTVfd1s+YKG9UF+Fdwh8qM3x/EJKanlP6b4A4LuK/jB/k7ELw+Pl/KIqq5zjeNh0GdLpd+FPidHzCYSqqp47sWBYrXhyoKVAcoDGEhNcoi7ugS4F2BrgkSxWzlpoKCdVIK9I7QKOMob30JaPHwdIRWBfpniBSymmt0elawU+ciclcQ1BCVBAd46UlAq97PleSqIMgpMoXspM2Dgv2634NcFAQ9RqeIGr7kKOCd7g/e5qIgjDlC4zhOR04KlHeJvCsIa5DSNC7xN6uAq/obZ1MQ5iSp+dRnEdChvk3mVUHYo7R28Sujgj1BNM2kIPxZYnN4kUHA3WCaDqxAYphaCeczKJgVrgKpaXJbBrygPhZUy/4VyI3Tm8HDAc4GNF4VZFcgOU9wGKf6VVAVXMt0BdIDFbfTlSbgSpAN+yqQFgCb0q4c2xkTngJ5AbA27UR5d7ANUxXkgwBYSXsvATeCbphUkB8CYBk/UgT8DPxuxH8F+SIAFvc6M1gcfENXQf4IgIUpOweHwmiYoCWvBEAFX7sFNIbTMME5aeY+Wd29a9BOUTgNA/9j4zkHu38HtN0tiloKqMXB4bD0QuQykuc4NEsvQzJlfOE3JdLLkEwVXSwP7Lo4AnnFH8pNFgBNzJNegnQ0P4NuY2NjY2NjY2MTnfwDKlzr7hINEv8AAAAldEVYdGRhdGU6Y3JlYXRlADIwMTgtMDgtMTVUMjI6MzE6NDErMDI6MDBIQsMDAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE4LTA4LTE1VDIyOjMxOjQxKzAyOjAwOR97vwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAAASUVORK5CYII="
+
+/***/ }),
 /* 4 */
 /***/ (function(module, exports) {
 
@@ -821,317 +517,6 @@ module.exports = g;
 
 /***/ }),
 /* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(49);
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {
-
-var utils = __webpack_require__(0);
-var normalizeHeaderName = __webpack_require__(52);
-
-var DEFAULT_CONTENT_TYPE = {
-  'Content-Type': 'application/x-www-form-urlencoded'
-};
-
-function setContentTypeIfUnset(headers, value) {
-  if (!utils.isUndefined(headers) && utils.isUndefined(headers['Content-Type'])) {
-    headers['Content-Type'] = value;
-  }
-}
-
-function getDefaultAdapter() {
-  var adapter;
-  if (typeof XMLHttpRequest !== 'undefined') {
-    // For browsers use XHR adapter
-    adapter = __webpack_require__(16);
-  } else if (typeof process !== 'undefined') {
-    // For node use HTTP adapter
-    adapter = __webpack_require__(16);
-  }
-  return adapter;
-}
-
-var defaults = {
-  adapter: getDefaultAdapter(),
-
-  transformRequest: [function transformRequest(data, headers) {
-    normalizeHeaderName(headers, 'Content-Type');
-    if (utils.isFormData(data) ||
-      utils.isArrayBuffer(data) ||
-      utils.isBuffer(data) ||
-      utils.isStream(data) ||
-      utils.isFile(data) ||
-      utils.isBlob(data)
-    ) {
-      return data;
-    }
-    if (utils.isArrayBufferView(data)) {
-      return data.buffer;
-    }
-    if (utils.isURLSearchParams(data)) {
-      setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
-      return data.toString();
-    }
-    if (utils.isObject(data)) {
-      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
-      return JSON.stringify(data);
-    }
-    return data;
-  }],
-
-  transformResponse: [function transformResponse(data) {
-    /*eslint no-param-reassign:0*/
-    if (typeof data === 'string') {
-      try {
-        data = JSON.parse(data);
-      } catch (e) { /* Ignore */ }
-    }
-    return data;
-  }],
-
-  /**
-   * A timeout in milliseconds to abort a request. If set to 0 (default) a
-   * timeout is not created.
-   */
-  timeout: 0,
-
-  xsrfCookieName: 'XSRF-TOKEN',
-  xsrfHeaderName: 'X-XSRF-TOKEN',
-
-  maxContentLength: -1,
-
-  validateStatus: function validateStatus(status) {
-    return status >= 200 && status < 300;
-  }
-};
-
-defaults.headers = {
-  common: {
-    'Accept': 'application/json, text/plain, */*'
-  }
-};
-
-utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
-  defaults.headers[method] = {};
-});
-
-utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
-  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
-});
-
-module.exports = defaults;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.decode = exports.parse = __webpack_require__(67);
-exports.encode = exports.stringify = __webpack_require__(68);
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports) {
-
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-
-/***/ }),
-/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2075,19 +1460,19 @@ var index_esm = {
 
 
 /***/ }),
-/* 10 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_allSavedChartsTemplate__ = __webpack_require__(34);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_BarChartTemplate__ = __webpack_require__(38);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_LineChartTemplate__ = __webpack_require__(42);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_PieChartTemplate__ = __webpack_require__(46);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_DoughnutChartTemplate__ = __webpack_require__(70);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_RadarChartTemplate__ = __webpack_require__(74);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_PolarAreaChartTemplate__ = __webpack_require__(78);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_BubbleChartTemplate__ = __webpack_require__(82);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__components_ScatterChartTemplate__ = __webpack_require__(86);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_allSavedChartsTemplate__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_BarChartTemplate__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_LineChartTemplate__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_PieChartTemplate__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_DoughnutChartTemplate__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_RadarChartTemplate__ = __webpack_require__(46);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_PolarAreaChartTemplate__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_BubbleChartTemplate__ = __webpack_require__(54);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__components_ScatterChartTemplate__ = __webpack_require__(58);
 //
 //
 //
@@ -2158,11 +1543,11 @@ var index_esm = {
 });
 
 /***/ }),
-/* 11 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(5);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -2304,10 +1689,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 });
 
 /***/ }),
-/* 12 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+//
+//
 //
 //
 //
@@ -2673,10 +2060,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 });
 
 /***/ }),
-/* 13 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+//
+//
 //
 //
 //
@@ -3114,14 +2503,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 });
 
 /***/ }),
-/* 14 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_querystring__);
 //
 //
 //
@@ -3178,9 +2563,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
-
-
-
+//
+//
 
 /* harmony default export */ __webpack_exports__["a"] = ({
 	props: ['graphData', 'graphIndex'],
@@ -3390,282 +2774,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 });
 
 /***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = function bind(fn, thisArg) {
-  return function wrap() {
-    var args = new Array(arguments.length);
-    for (var i = 0; i < args.length; i++) {
-      args[i] = arguments[i];
-    }
-    return fn.apply(thisArg, args);
-  };
-};
-
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-var settle = __webpack_require__(53);
-var buildURL = __webpack_require__(55);
-var parseHeaders = __webpack_require__(56);
-var isURLSameOrigin = __webpack_require__(57);
-var createError = __webpack_require__(17);
-var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(58);
-
-module.exports = function xhrAdapter(config) {
-  return new Promise(function dispatchXhrRequest(resolve, reject) {
-    var requestData = config.data;
-    var requestHeaders = config.headers;
-
-    if (utils.isFormData(requestData)) {
-      delete requestHeaders['Content-Type']; // Let the browser set it
-    }
-
-    var request = new XMLHttpRequest();
-    var loadEvent = 'onreadystatechange';
-    var xDomain = false;
-
-    // For IE 8/9 CORS support
-    // Only supports POST and GET calls and doesn't returns the response headers.
-    // DON'T do this for testing b/c XMLHttpRequest is mocked, not XDomainRequest.
-    if ("production" !== 'test' &&
-        typeof window !== 'undefined' &&
-        window.XDomainRequest && !('withCredentials' in request) &&
-        !isURLSameOrigin(config.url)) {
-      request = new window.XDomainRequest();
-      loadEvent = 'onload';
-      xDomain = true;
-      request.onprogress = function handleProgress() {};
-      request.ontimeout = function handleTimeout() {};
-    }
-
-    // HTTP basic authentication
-    if (config.auth) {
-      var username = config.auth.username || '';
-      var password = config.auth.password || '';
-      requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
-    }
-
-    request.open(config.method.toUpperCase(), buildURL(config.url, config.params, config.paramsSerializer), true);
-
-    // Set the request timeout in MS
-    request.timeout = config.timeout;
-
-    // Listen for ready state
-    request[loadEvent] = function handleLoad() {
-      if (!request || (request.readyState !== 4 && !xDomain)) {
-        return;
-      }
-
-      // The request errored out and we didn't get a response, this will be
-      // handled by onerror instead
-      // With one exception: request that using file: protocol, most browsers
-      // will return status as 0 even though it's a successful request
-      if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
-        return;
-      }
-
-      // Prepare the response
-      var responseHeaders = 'getAllResponseHeaders' in request ? parseHeaders(request.getAllResponseHeaders()) : null;
-      var responseData = !config.responseType || config.responseType === 'text' ? request.responseText : request.response;
-      var response = {
-        data: responseData,
-        // IE sends 1223 instead of 204 (https://github.com/axios/axios/issues/201)
-        status: request.status === 1223 ? 204 : request.status,
-        statusText: request.status === 1223 ? 'No Content' : request.statusText,
-        headers: responseHeaders,
-        config: config,
-        request: request
-      };
-
-      settle(resolve, reject, response);
-
-      // Clean up request
-      request = null;
-    };
-
-    // Handle low level network errors
-    request.onerror = function handleError() {
-      // Real errors are hidden from us by the browser
-      // onerror should only fire if it's a network error
-      reject(createError('Network Error', config, null, request));
-
-      // Clean up request
-      request = null;
-    };
-
-    // Handle timeout
-    request.ontimeout = function handleTimeout() {
-      reject(createError('timeout of ' + config.timeout + 'ms exceeded', config, 'ECONNABORTED',
-        request));
-
-      // Clean up request
-      request = null;
-    };
-
-    // Add xsrf header
-    // This is only done if running in a standard browser environment.
-    // Specifically not if we're in a web worker, or react-native.
-    if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(59);
-
-      // Add xsrf header
-      var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
-          cookies.read(config.xsrfCookieName) :
-          undefined;
-
-      if (xsrfValue) {
-        requestHeaders[config.xsrfHeaderName] = xsrfValue;
-      }
-    }
-
-    // Add headers to the request
-    if ('setRequestHeader' in request) {
-      utils.forEach(requestHeaders, function setRequestHeader(val, key) {
-        if (typeof requestData === 'undefined' && key.toLowerCase() === 'content-type') {
-          // Remove Content-Type if data is undefined
-          delete requestHeaders[key];
-        } else {
-          // Otherwise add header to the request
-          request.setRequestHeader(key, val);
-        }
-      });
-    }
-
-    // Add withCredentials to request if needed
-    if (config.withCredentials) {
-      request.withCredentials = true;
-    }
-
-    // Add responseType to request if needed
-    if (config.responseType) {
-      try {
-        request.responseType = config.responseType;
-      } catch (e) {
-        // Expected DOMException thrown by browsers not compatible XMLHttpRequest Level 2.
-        // But, this can be suppressed for 'json' type as it can be parsed by default 'transformResponse' function.
-        if (config.responseType !== 'json') {
-          throw e;
-        }
-      }
-    }
-
-    // Handle progress if needed
-    if (typeof config.onDownloadProgress === 'function') {
-      request.addEventListener('progress', config.onDownloadProgress);
-    }
-
-    // Not all browsers support upload events
-    if (typeof config.onUploadProgress === 'function' && request.upload) {
-      request.upload.addEventListener('progress', config.onUploadProgress);
-    }
-
-    if (config.cancelToken) {
-      // Handle cancellation
-      config.cancelToken.promise.then(function onCanceled(cancel) {
-        if (!request) {
-          return;
-        }
-
-        request.abort();
-        reject(cancel);
-        // Clean up request
-        request = null;
-      });
-    }
-
-    if (requestData === undefined) {
-      requestData = null;
-    }
-
-    // Send the request
-    request.send(requestData);
-  });
-};
-
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var enhanceError = __webpack_require__(54);
-
-/**
- * Create an Error with the specified message, config, error code, request and response.
- *
- * @param {string} message The error message.
- * @param {Object} config The config.
- * @param {string} [code] The error code (for example, 'ECONNABORTED').
- * @param {Object} [request] The request.
- * @param {Object} [response] The response.
- * @returns {Error} The created error.
- */
-module.exports = function createError(message, config, code, request, response) {
-  var error = new Error(message);
-  return enhanceError(error, config, code, request, response);
-};
-
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = function isCancel(value) {
-  return !!(value && value.__CANCEL__);
-};
-
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * A `Cancel` is an object that is thrown when an operation is canceled.
- *
- * @class
- * @param {string=} message The message.
- */
-function Cancel(message) {
-  this.message = message;
-}
-
-Cancel.prototype.toString = function toString() {
-  return 'Cancel' + (this.message ? ': ' + this.message : '');
-};
-
-Cancel.prototype.__CANCEL__ = true;
-
-module.exports = Cancel;
-
-
-/***/ }),
-/* 20 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_querystring__);
 //
 //
 //
@@ -3722,9 +2834,8 @@ module.exports = Cancel;
 //
 //
 //
-
-
-
+//
+//
 
 /* harmony default export */ __webpack_exports__["a"] = ({
 	props: ['graphData', 'graphIndex'],
@@ -3933,10 +3044,12 @@ module.exports = Cancel;
 });
 
 /***/ }),
-/* 21 */
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+//
+//
 //
 //
 //
@@ -4326,14 +3439,10 @@ module.exports = Cancel;
 });
 
 /***/ }),
-/* 22 */
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_querystring___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_querystring__);
 //
 //
 //
@@ -4390,9 +3499,8 @@ module.exports = Cancel;
 //
 //
 //
-
-
-
+//
+//
 
 /* harmony default export */ __webpack_exports__["a"] = ({
 	props: ['graphData', 'graphIndex'],
@@ -4601,10 +3709,12 @@ module.exports = Cancel;
 });
 
 /***/ }),
-/* 23 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+//
+//
 //
 //
 //
@@ -5023,10 +4133,12 @@ module.exports = Cancel;
 });
 
 /***/ }),
-/* 24 */
+/* 15 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+//
+//
 //
 //
 //
@@ -5424,15 +4536,15 @@ module.exports = Cancel;
 });
 
 /***/ }),
-/* 25 */
+/* 16 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(26);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__store__ = __webpack_require__(29);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__App_vue__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__store__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__App_vue__ = __webpack_require__(22);
 
 
 
@@ -5452,7 +4564,7 @@ new __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */]({
 });
 
 /***/ }),
-/* 26 */
+/* 17 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -16388,10 +15500,10 @@ Vue.compile = compileToFunctions;
 
 /* harmony default export */ __webpack_exports__["a"] = (Vue);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(4), __webpack_require__(27).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(4), __webpack_require__(18).setImmediate))
 
 /***/ }),
-/* 27 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
@@ -16447,7 +15559,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(28);
+__webpack_require__(19);
 // On some exotic environments, it's not clear which object `setimmediate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -16461,7 +15573,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 28 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -16651,10 +15763,200 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(20)))
 
 /***/ }),
-/* 29 */
+/* 20 */
+/***/ (function(module, exports) {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+
+/***/ }),
+/* 21 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -16749,17 +16051,17 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 });
 
 /***/ }),
-/* 30 */
+/* 22 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(6);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_d7c62d18_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(90);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_d7c62d18_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(62);
 function injectStyle (ssrContext) {
-  __webpack_require__(31)
+  __webpack_require__(23)
 }
-var normalizeComponent = __webpack_require__(3)
+var normalizeComponent = __webpack_require__(2)
 /* script */
 
 
@@ -16786,23 +16088,23 @@ var Component = normalizeComponent(
 
 
 /***/ }),
-/* 31 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(32);
+var content = __webpack_require__(24);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("f1b5f576", content, true, {});
+var update = __webpack_require__(1)("f1b5f576", content, true, {});
 
 /***/ }),
-/* 32 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(false);
+exports = module.exports = __webpack_require__(0)(false);
 // imports
 
 
@@ -16813,7 +16115,7 @@ exports.push([module.i, ".gl_heading div,.gl_heading p{display:inline-block}.gl_
 
 
 /***/ }),
-/* 33 */
+/* 25 */
 /***/ (function(module, exports) {
 
 /**
@@ -16846,17 +16148,17 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 34 */
+/* 26 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(7);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4ab04d48_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(37);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4ab04d48_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(29);
 function injectStyle (ssrContext) {
-  __webpack_require__(35)
+  __webpack_require__(27)
 }
-var normalizeComponent = __webpack_require__(3)
+var normalizeComponent = __webpack_require__(2)
 /* script */
 
 
@@ -16883,23 +16185,23 @@ var Component = normalizeComponent(
 
 
 /***/ }),
-/* 35 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(36);
+var content = __webpack_require__(28);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("92e74426", content, true, {});
+var update = __webpack_require__(1)("92e74426", content, true, {});
 
 /***/ }),
-/* 36 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(false);
+exports = module.exports = __webpack_require__(0)(false);
 // imports
 
 
@@ -16910,7 +16212,7 @@ exports.push([module.i, ".gl_chart_dropdown_area{margin-bottom:10px}.plusIcon{fo
 
 
 /***/ }),
-/* 37 */
+/* 29 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -16920,17 +16222,17 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
 
 /***/ }),
-/* 38 */
+/* 30 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BarChartTemplate_vue__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BarChartTemplate_vue__ = __webpack_require__(8);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_d02361ee_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_34d8bf58_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__ = __webpack_require__(33);
 function injectStyle (ssrContext) {
-  __webpack_require__(39)
+  __webpack_require__(31)
 }
-var normalizeComponent = __webpack_require__(3)
+var normalizeComponent = __webpack_require__(2)
 /* script */
 
 
@@ -16946,7 +16248,155 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BarChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_d02361ee_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_34d8bf58_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__["a" /* default */],
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+
+/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
+
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(32);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(1)("edff7a40", content, true, {});
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(false);
+// imports
+
+
+// module
+exports.push([module.i, ".barChart{width:100%;height:100%;display:flex;flex-direction:row}.graphOptions{width:50%;padding-top:20px}.graphDiv{width:50%}.gl_graphChildDiv{position:fixed;width:46%;height:50%;right:40px;top:150px}.saveGraphData{float:right}input[type=text]{height:35px}.form-table th{width:25%}.gl_deleteButtonTd,.gl_deleteButtonTh{padding:0!important}.delete_dataset{float:right;background-color:#dc3545!important;border-color:#dc3545!important;color:#fff!important;margin-bottom:8px!important;margin-right:10px!important}fieldset{width:100%;border:1px solid #32373c;padding-left:10px;margin-bottom:7px}legend{font-weight:700}fieldset table{margin-top:0!important}", ""]);
+
+// exports
+
+
+/***/ }),
+/* 33 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"barChart gl_chart_template",attrs:{"id":"bar"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('img',{staticClass:"gl_backButtonImage",attrs:{"src":__webpack_require__(3)},on:{"click":_vm.goBacktoAllGraphPage}})]),_vm._v(" "),_c('td',{staticClass:"gl_backButotnTh"},[(_vm.fieldsRequired)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("Field(s) required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelsString),expression:"chartlabelsString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifxAxesLabelEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelsString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelsString=$event.target.value}}})])])]),_vm._v(" "),_vm._l((_vm.datasets),function(data,index){return _c('fieldset',{key:data},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.label),expression:"data.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(data.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.chartDatasetDataString),expression:"data.chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(data.chartDatasetDataString)},on:{"keyup":function($event){_vm.addDatasetData(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "chartDatasetDataString", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.backgroundColor),expression:"data.backgroundColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifBackgroundEmpty},attrs:{"type":"text","id":"colors","placeholder":"Color value for bar. Eg. red"},domProps:{"value":(data.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.beginAtZero),expression:"beginAtZero"}],attrs:{"type":"checkbox","id":"beginAtZero"},domProps:{"checked":Array.isArray(_vm.beginAtZero)?_vm._i(_vm.beginAtZero,null)>-1:(_vm.beginAtZero)},on:{"change":[function($event){var $$a=_vm.beginAtZero,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.beginAtZero=$$a.concat([$$v]))}else{$$i>-1&&(_vm.beginAtZero=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.beginAtZero=$$c}},_vm.yAxesRange]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_vm._m(10)])}
+var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("xAsis Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"beginAtZero"}},[_vm._v("yAxes Range (Begin at 0)")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"barChart"}})])])}]
+var esExports = { render: render, staticRenderFns: staticRenderFns }
+/* harmony default export */ __webpack_exports__["a"] = (esExports);
+
+/***/ }),
+/* 34 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_LineChartTemplate_vue__ = __webpack_require__(9);
+/* unused harmony namespace reexport */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_23092322_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__ = __webpack_require__(37);
+function injectStyle (ssrContext) {
+  __webpack_require__(35)
+}
+var normalizeComponent = __webpack_require__(2)
+/* script */
+
+
+/* template */
+
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_LineChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_23092322_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__["a" /* default */],
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+
+/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
+
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(36);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(1)("6d94036b", content, true, {});
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(false);
+// imports
+
+
+// module
+exports.push([module.i, ".lineChart{width:100%;height:100%;display:flex;flex-direction:row}.graphOptions{width:50%;padding-top:20px}.graphDiv{width:50%}.gl_graphChildDiv{position:fixed;width:46%;height:50%;right:40px;top:150px}.saveGraphData{float:right}input[type=text]{height:35px}.form-table th{width:25%}.gl_deleteButtonTd,.gl_deleteButtonTh{padding:0!important}.delete_dataset{float:right;background-color:#dc3545!important;border-color:#dc3545!important;color:#fff!important;margin-bottom:8px!important;margin-right:10px!important}fieldset{width:100%;border:1px solid #32373c;padding-left:10px;margin-bottom:7px}legend{font-weight:700}fieldset table{margin-top:0!important}", ""]);
+
+// exports
+
+
+/***/ }),
+/* 37 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"lineChart gl_chart_template",attrs:{"id":"line"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('img',{staticClass:"gl_backButtonImage",attrs:{"src":__webpack_require__(3)},on:{"click":_vm.goBacktoAllGraphPage}})]),_vm._v(" "),_c('td',{staticClass:"gl_backButotnTh"},[(_vm.fieldsRequired)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("Field(s) required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelsString),expression:"chartlabelsString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifxAxesLabelEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelsString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelsString=$event.target.value}}})])])]),_vm._v(" "),_vm._l((_vm.datasets),function(data,index){return _c('fieldset',{key:data},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.label),expression:"data.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(data.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.chartDatasetDataString),expression:"data.chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(data.chartDatasetDataString)},on:{"keyup":function($event){_vm.addDatasetData(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "chartDatasetDataString", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.backgroundColor),expression:"data.backgroundColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifFillColorEmpty},attrs:{"type":"text","id":"colors"},domProps:{"value":(data.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.borderColor),expression:"data.borderColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifLineColorEmpty},attrs:{"type":"text","id":"line_color"},domProps:{"value":(data.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "borderColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(5,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.straightLine),expression:"data.straightLine"}],attrs:{"type":"checkbox","id":"straight_line"},domProps:{"checked":Array.isArray(data.straightLine)?_vm._i(data.straightLine,null)>-1:(data.straightLine)},on:{"change":[function($event){var $$a=data.straightLine,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.$set(data, "straightLine", $$a.concat([$$v])))}else{$$i>-1&&(_vm.$set(data, "straightLine", $$a.slice(0,$$i).concat($$a.slice($$i+1))))}}else{_vm.$set(data, "straightLine", $$c)}},function($event){_vm.makeLineStraight(index)}]}})])]),_vm._v(" "),_c('tr',[_vm._m(6,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.fill),expression:"data.fill"}],attrs:{"type":"checkbox","id":"fill"},domProps:{"checked":Array.isArray(data.fill)?_vm._i(data.fill,null)>-1:(data.fill)},on:{"change":[function($event){var $$a=data.fill,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.$set(data, "fill", $$a.concat([$$v])))}else{$$i>-1&&(_vm.$set(data, "fill", $$a.slice(0,$$i).concat($$a.slice($$i+1))))}}else{_vm.$set(data, "fill", $$c)}},function($event){_vm.fillColor(index)}]}})])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(7,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.beginAtZero),expression:"beginAtZero"}],attrs:{"type":"checkbox","id":"beginAtZero"},domProps:{"checked":Array.isArray(_vm.beginAtZero)?_vm._i(_vm.beginAtZero,null)>-1:(_vm.beginAtZero)},on:{"change":[function($event){var $$a=_vm.beginAtZero,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.beginAtZero=$$a.concat([$$v]))}else{$$i>-1&&(_vm.beginAtZero=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.beginAtZero=$$c}},_vm.yAxesRange]}})])]),_vm._v(" "),_c('tr',[_vm._m(10),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(11),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(12),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_vm._m(13)])}
+var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("xAsis Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Fill Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"line_color"}},[_vm._v("Line Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"straight_line"}},[_vm._v("Straight Line")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"fill"}},[_vm._v("Fill Color Under the line")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"beginAtZero"}},[_vm._v("yAxes Range (Begin at 0)")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"lineChart"}})])])}]
+var esExports = { render: render, staticRenderFns: staticRenderFns }
+/* harmony default export */ __webpack_exports__["a"] = (esExports);
+
+/***/ }),
+/* 38 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__ = __webpack_require__(10);
+/* unused harmony namespace reexport */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0db4fc43_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(41);
+function injectStyle (ssrContext) {
+  __webpack_require__(39)
+}
+var normalizeComponent = __webpack_require__(2)
+/* script */
+
+
+/* template */
+
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0db4fc43_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -16967,18 +16417,18 @@ var content = __webpack_require__(40);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("2461b294", content, true, {});
+var update = __webpack_require__(1)("1657b64c", content, true, {});
 
 /***/ }),
 /* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(false);
+exports = module.exports = __webpack_require__(0)(false);
 // imports
 
 
 // module
-exports.push([module.i, ".barChart{width:100%;height:100%;display:flex;flex-direction:row}.graphOptions{width:50%;padding-top:20px}.graphDiv{width:50%}.gl_graphChildDiv{position:fixed;width:46%;height:50%;right:40px;top:150px}.saveGraphData{float:right}input[type=text]{height:35px}.form-table th{width:25%}.gl_deleteButtonTd,.gl_deleteButtonTh{padding:0!important}.delete_dataset{float:right;background-color:#dc3545!important;border-color:#dc3545!important;color:#fff!important;margin-bottom:8px!important;margin-right:10px!important}fieldset{width:100%;border:1px solid #32373c;padding-left:10px;margin-bottom:7px}legend{font-weight:700}fieldset table{margin-top:0!important}", ""]);
+exports.push([module.i, ".pieChart{width:100%;height:100%;display:flex;flex-direction:row}.graphOptions{width:50%;padding-top:20px}.pieChart .graphDiv{width:50%}.pieChart .graphDiv .gl_graphChildDiv{position:fixed;width:40%;height:60%;right:5%;top:150px}.saveGraphDataButton{display:block}.saveGraphData{float:right}input[type=text]{height:35px}.form-table th{width:25%}", ""]);
 
 // exports
 
@@ -16988,8 +16438,8 @@ exports.push([module.i, ".barChart{width:100%;height:100%;display:flex;flex-dire
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"barChart gl_chart_template",attrs:{"id":"bar"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td',{staticClass:"gl_backButotnTh"},[(_vm.fieldsRequired)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("Field(s) required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelsString),expression:"chartlabelsString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifxAxesLabelEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelsString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelsString=$event.target.value}}})])])]),_vm._v(" "),_vm._l((_vm.datasets),function(data,index){return _c('fieldset',{key:data},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.label),expression:"data.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(data.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.chartDatasetDataString),expression:"data.chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(data.chartDatasetDataString)},on:{"keyup":function($event){_vm.addDatasetData(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "chartDatasetDataString", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.backgroundColor),expression:"data.backgroundColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifBackgroundEmpty},attrs:{"type":"text","id":"colors","placeholder":"Color value for bar. Eg. red"},domProps:{"value":(data.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.beginAtZero),expression:"beginAtZero"}],attrs:{"type":"checkbox","id":"beginAtZero"},domProps:{"checked":Array.isArray(_vm.beginAtZero)?_vm._i(_vm.beginAtZero,null)>-1:(_vm.beginAtZero)},on:{"change":[function($event){var $$a=_vm.beginAtZero,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.beginAtZero=$$a.concat([$$v]))}else{$$i>-1&&(_vm.beginAtZero=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.beginAtZero=$$c}},_vm.yAxesRange]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_vm._m(10)])}
-var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("xAsis Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"beginAtZero"}},[_vm._v("yAxes Range (Begin at 0)")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"barChart"}})])])}]
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"pieChart gl_chart_template",attrs:{"id":"pie"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('img',{staticClass:"gl_backButtonImage",attrs:{"src":__webpack_require__(3)},on:{"click":_vm.goBacktoAllGraphPage}})]),_vm._v(" "),_c('td',{staticClass:"gl_backButotnTh"},[(_vm.fieldsRequired)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("Field(s) required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelString),expression:"chartlabelString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifLabelEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(1),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetDataString),expression:"chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(_vm.chartDatasetDataString)},on:{"keyup":_vm.addDatasetData,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetDataString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(2),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetBgColorString),expression:"chartDatasetBgColorString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifBackgroundEmpty},attrs:{"type":"text","id":"colors","placeholder":"Color value for each label. Eg. red, green, blue"},domProps:{"value":(_vm.chartDatasetBgColorString)},on:{"keyup":_vm.addDatasetBgColor,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetBgColorString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(3),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(4),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])]),_vm._v(" "),_vm._m(7)])}
+var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"pieChart"}})])])}]
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
 
@@ -16998,13 +16448,13 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_LineChartTemplate_vue__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(11);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_75df8eea_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__ = __webpack_require__(45);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_36c399d0_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(45);
 function injectStyle (ssrContext) {
   __webpack_require__(43)
 }
-var normalizeComponent = __webpack_require__(3)
+var normalizeComponent = __webpack_require__(2)
 /* script */
 
 
@@ -17019,8 +16469,8 @@ var __vue_scopeId__ = null
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
-  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_LineChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_75df8eea_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DoughnutChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_36c399d0_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -17041,18 +16491,18 @@ var content = __webpack_require__(44);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("eb707ae6", content, true, {});
+var update = __webpack_require__(1)("2480715b", content, true, {});
 
 /***/ }),
 /* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(false);
+exports = module.exports = __webpack_require__(0)(false);
 // imports
 
 
 // module
-exports.push([module.i, ".lineChart{width:100%;height:100%;display:flex;flex-direction:row}.graphOptions{width:50%;padding-top:20px}.graphDiv{width:50%}.gl_graphChildDiv{position:fixed;width:46%;height:50%;right:40px;top:150px}.saveGraphData{float:right}input[type=text]{height:35px}.form-table th{width:25%}.gl_deleteButtonTd,.gl_deleteButtonTh{padding:0!important}.delete_dataset{float:right;background-color:#dc3545!important;border-color:#dc3545!important;color:#fff!important;margin-bottom:8px!important;margin-right:10px!important}fieldset{width:100%;border:1px solid #32373c;padding-left:10px;margin-bottom:7px}legend{font-weight:700}fieldset table{margin-top:0!important}", ""]);
+exports.push([module.i, ".DoughnutChart{width:100%;height:100%;display:flex;flex-direction:row}.graphOptions{width:50%;padding-top:20px}.DoughnutChart .graphDiv{width:50%}.DoughnutChart .graphDiv .gl_graphChildDiv{position:fixed;width:40%;height:65%;right:5%;top:150px}.saveGraphDataButton{display:block}.saveGraphData{float:right}input[type=text]{height:35px}.form-table th{width:25%}", ""]);
 
 // exports
 
@@ -17062,8 +16512,8 @@ exports.push([module.i, ".lineChart{width:100%;height:100%;display:flex;flex-dir
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"lineChart gl_chart_template",attrs:{"id":"line"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td',{staticClass:"gl_backButotnTh"},[(_vm.fieldsRequired)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("Field(s) required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelsString),expression:"chartlabelsString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifxAxesLabelEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelsString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelsString=$event.target.value}}})])])]),_vm._v(" "),_vm._l((_vm.datasets),function(data,index){return _c('fieldset',{key:data},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.label),expression:"data.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(data.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.chartDatasetDataString),expression:"data.chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(data.chartDatasetDataString)},on:{"keyup":function($event){_vm.addDatasetData(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "chartDatasetDataString", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.backgroundColor),expression:"data.backgroundColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifFillColorEmpty},attrs:{"type":"text","id":"colors"},domProps:{"value":(data.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.borderColor),expression:"data.borderColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifLineColorEmpty},attrs:{"type":"text","id":"line_color"},domProps:{"value":(data.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "borderColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(5,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.straightLine),expression:"data.straightLine"}],attrs:{"type":"checkbox","id":"straight_line"},domProps:{"checked":Array.isArray(data.straightLine)?_vm._i(data.straightLine,null)>-1:(data.straightLine)},on:{"change":[function($event){var $$a=data.straightLine,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.$set(data, "straightLine", $$a.concat([$$v])))}else{$$i>-1&&(_vm.$set(data, "straightLine", $$a.slice(0,$$i).concat($$a.slice($$i+1))))}}else{_vm.$set(data, "straightLine", $$c)}},function($event){_vm.makeLineStraight(index)}]}})])]),_vm._v(" "),_c('tr',[_vm._m(6,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.fill),expression:"data.fill"}],attrs:{"type":"checkbox","id":"fill"},domProps:{"checked":Array.isArray(data.fill)?_vm._i(data.fill,null)>-1:(data.fill)},on:{"change":[function($event){var $$a=data.fill,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.$set(data, "fill", $$a.concat([$$v])))}else{$$i>-1&&(_vm.$set(data, "fill", $$a.slice(0,$$i).concat($$a.slice($$i+1))))}}else{_vm.$set(data, "fill", $$c)}},function($event){_vm.fillColor(index)}]}})])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(7,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.beginAtZero),expression:"beginAtZero"}],attrs:{"type":"checkbox","id":"beginAtZero"},domProps:{"checked":Array.isArray(_vm.beginAtZero)?_vm._i(_vm.beginAtZero,null)>-1:(_vm.beginAtZero)},on:{"change":[function($event){var $$a=_vm.beginAtZero,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.beginAtZero=$$a.concat([$$v]))}else{$$i>-1&&(_vm.beginAtZero=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.beginAtZero=$$c}},_vm.yAxesRange]}})])]),_vm._v(" "),_c('tr',[_vm._m(10),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(11),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(12),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_vm._m(13)])}
-var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("xAsis Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Fill Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"line_color"}},[_vm._v("Line Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"straight_line"}},[_vm._v("Straight Line")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"fill"}},[_vm._v("Fill Color Under the line")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"beginAtZero"}},[_vm._v("yAxes Range (Begin at 0)")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"lineChart"}})])])}]
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"DoughnutChart gl_chart_template",attrs:{"id":"Doughnut"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('img',{staticClass:"gl_backButtonImage",attrs:{"src":__webpack_require__(3)},on:{"click":_vm.goBacktoAllGraphPage}})]),_vm._v(" "),_c('td',{staticClass:"gl_backButotnTh"},[(_vm.fieldsRequired)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("Field(s) required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelString),expression:"chartlabelString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifLabelEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(1),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetDataString),expression:"chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(_vm.chartDatasetDataString)},on:{"keyup":_vm.addDatasetData,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetDataString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(2),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetBgColorString),expression:"chartDatasetBgColorString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifBackgroundEmpty},attrs:{"type":"text","id":"colors","placeholder":"Color value for each label. Eg. red, green, blue"},domProps:{"value":(_vm.chartDatasetBgColorString)},on:{"keyup":_vm.addDatasetBgColor,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetBgColorString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(3),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(4),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])]),_vm._v(" "),_vm._m(7)])}
+var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"DoughnutChart"}})])])}]
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
 
@@ -17072,13 +16522,13 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_RadarChartTemplate_vue__ = __webpack_require__(12);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6d5b2c0a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(69);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_31ff07e7_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__ = __webpack_require__(49);
 function injectStyle (ssrContext) {
   __webpack_require__(47)
 }
-var normalizeComponent = __webpack_require__(3)
+var normalizeComponent = __webpack_require__(2)
 /* script */
 
 
@@ -17093,8 +16543,8 @@ var __vue_scopeId__ = null
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
-  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6d5b2c0a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_RadarChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_31ff07e7_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -17115,1226 +16565,13 @@ var content = __webpack_require__(48);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("99b4f842", content, true, {});
+var update = __webpack_require__(1)("2a6ea3e5", content, true, {});
 
 /***/ }),
 /* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(false);
-// imports
-
-
-// module
-exports.push([module.i, ".pieChart{width:100%;height:100%;display:flex;flex-direction:row}.graphOptions{width:50%;padding-top:20px}.pieChart .graphDiv{width:50%}.pieChart .graphDiv .gl_graphChildDiv{position:fixed;width:40%;height:60%;right:5%;top:150px}.saveGraphDataButton{display:block}.saveGraphData{float:right}input[type=text]{height:35px}.form-table th{width:25%}", ""]);
-
-// exports
-
-
-/***/ }),
-/* 49 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-var bind = __webpack_require__(15);
-var Axios = __webpack_require__(51);
-var defaults = __webpack_require__(6);
-
-/**
- * Create an instance of Axios
- *
- * @param {Object} defaultConfig The default config for the instance
- * @return {Axios} A new instance of Axios
- */
-function createInstance(defaultConfig) {
-  var context = new Axios(defaultConfig);
-  var instance = bind(Axios.prototype.request, context);
-
-  // Copy axios.prototype to instance
-  utils.extend(instance, Axios.prototype, context);
-
-  // Copy context to instance
-  utils.extend(instance, context);
-
-  return instance;
-}
-
-// Create the default instance to be exported
-var axios = createInstance(defaults);
-
-// Expose Axios class to allow class inheritance
-axios.Axios = Axios;
-
-// Factory for creating new instances
-axios.create = function create(instanceConfig) {
-  return createInstance(utils.merge(defaults, instanceConfig));
-};
-
-// Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(19);
-axios.CancelToken = __webpack_require__(65);
-axios.isCancel = __webpack_require__(18);
-
-// Expose all/spread
-axios.all = function all(promises) {
-  return Promise.all(promises);
-};
-axios.spread = __webpack_require__(66);
-
-module.exports = axios;
-
-// Allow use of default import syntax in TypeScript
-module.exports.default = axios;
-
-
-/***/ }),
-/* 50 */
-/***/ (function(module, exports) {
-
-/*!
- * Determine if an object is a Buffer
- *
- * @author   Feross Aboukhadijeh <https://feross.org>
- * @license  MIT
- */
-
-// The _isBuffer check is for Safari 5-7 support, because it's missing
-// Object.prototype.constructor. Remove this eventually
-module.exports = function (obj) {
-  return obj != null && (isBuffer(obj) || isSlowBuffer(obj) || !!obj._isBuffer)
-}
-
-function isBuffer (obj) {
-  return !!obj.constructor && typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
-}
-
-// For Node v0.10 support. Remove this eventually.
-function isSlowBuffer (obj) {
-  return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
-}
-
-
-/***/ }),
-/* 51 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var defaults = __webpack_require__(6);
-var utils = __webpack_require__(0);
-var InterceptorManager = __webpack_require__(60);
-var dispatchRequest = __webpack_require__(61);
-
-/**
- * Create a new instance of Axios
- *
- * @param {Object} instanceConfig The default config for the instance
- */
-function Axios(instanceConfig) {
-  this.defaults = instanceConfig;
-  this.interceptors = {
-    request: new InterceptorManager(),
-    response: new InterceptorManager()
-  };
-}
-
-/**
- * Dispatch a request
- *
- * @param {Object} config The config specific for this request (merged with this.defaults)
- */
-Axios.prototype.request = function request(config) {
-  /*eslint no-param-reassign:0*/
-  // Allow for axios('example/url'[, config]) a la fetch API
-  if (typeof config === 'string') {
-    config = utils.merge({
-      url: arguments[0]
-    }, arguments[1]);
-  }
-
-  config = utils.merge(defaults, {method: 'get'}, this.defaults, config);
-  config.method = config.method.toLowerCase();
-
-  // Hook up interceptors middleware
-  var chain = [dispatchRequest, undefined];
-  var promise = Promise.resolve(config);
-
-  this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {
-    chain.unshift(interceptor.fulfilled, interceptor.rejected);
-  });
-
-  this.interceptors.response.forEach(function pushResponseInterceptors(interceptor) {
-    chain.push(interceptor.fulfilled, interceptor.rejected);
-  });
-
-  while (chain.length) {
-    promise = promise.then(chain.shift(), chain.shift());
-  }
-
-  return promise;
-};
-
-// Provide aliases for supported request methods
-utils.forEach(['delete', 'get', 'head', 'options'], function forEachMethodNoData(method) {
-  /*eslint func-names:0*/
-  Axios.prototype[method] = function(url, config) {
-    return this.request(utils.merge(config || {}, {
-      method: method,
-      url: url
-    }));
-  };
-});
-
-utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
-  /*eslint func-names:0*/
-  Axios.prototype[method] = function(url, data, config) {
-    return this.request(utils.merge(config || {}, {
-      method: method,
-      url: url,
-      data: data
-    }));
-  };
-});
-
-module.exports = Axios;
-
-
-/***/ }),
-/* 52 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-
-module.exports = function normalizeHeaderName(headers, normalizedName) {
-  utils.forEach(headers, function processHeader(value, name) {
-    if (name !== normalizedName && name.toUpperCase() === normalizedName.toUpperCase()) {
-      headers[normalizedName] = value;
-      delete headers[name];
-    }
-  });
-};
-
-
-/***/ }),
-/* 53 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var createError = __webpack_require__(17);
-
-/**
- * Resolve or reject a Promise based on response status.
- *
- * @param {Function} resolve A function that resolves the promise.
- * @param {Function} reject A function that rejects the promise.
- * @param {object} response The response.
- */
-module.exports = function settle(resolve, reject, response) {
-  var validateStatus = response.config.validateStatus;
-  // Note: status is not exposed by XDomainRequest
-  if (!response.status || !validateStatus || validateStatus(response.status)) {
-    resolve(response);
-  } else {
-    reject(createError(
-      'Request failed with status code ' + response.status,
-      response.config,
-      null,
-      response.request,
-      response
-    ));
-  }
-};
-
-
-/***/ }),
-/* 54 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * Update an Error with the specified config, error code, and response.
- *
- * @param {Error} error The error to update.
- * @param {Object} config The config.
- * @param {string} [code] The error code (for example, 'ECONNABORTED').
- * @param {Object} [request] The request.
- * @param {Object} [response] The response.
- * @returns {Error} The error.
- */
-module.exports = function enhanceError(error, config, code, request, response) {
-  error.config = config;
-  if (code) {
-    error.code = code;
-  }
-  error.request = request;
-  error.response = response;
-  return error;
-};
-
-
-/***/ }),
-/* 55 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-
-function encode(val) {
-  return encodeURIComponent(val).
-    replace(/%40/gi, '@').
-    replace(/%3A/gi, ':').
-    replace(/%24/g, '$').
-    replace(/%2C/gi, ',').
-    replace(/%20/g, '+').
-    replace(/%5B/gi, '[').
-    replace(/%5D/gi, ']');
-}
-
-/**
- * Build a URL by appending params to the end
- *
- * @param {string} url The base of the url (e.g., http://www.google.com)
- * @param {object} [params] The params to be appended
- * @returns {string} The formatted url
- */
-module.exports = function buildURL(url, params, paramsSerializer) {
-  /*eslint no-param-reassign:0*/
-  if (!params) {
-    return url;
-  }
-
-  var serializedParams;
-  if (paramsSerializer) {
-    serializedParams = paramsSerializer(params);
-  } else if (utils.isURLSearchParams(params)) {
-    serializedParams = params.toString();
-  } else {
-    var parts = [];
-
-    utils.forEach(params, function serialize(val, key) {
-      if (val === null || typeof val === 'undefined') {
-        return;
-      }
-
-      if (utils.isArray(val)) {
-        key = key + '[]';
-      } else {
-        val = [val];
-      }
-
-      utils.forEach(val, function parseValue(v) {
-        if (utils.isDate(v)) {
-          v = v.toISOString();
-        } else if (utils.isObject(v)) {
-          v = JSON.stringify(v);
-        }
-        parts.push(encode(key) + '=' + encode(v));
-      });
-    });
-
-    serializedParams = parts.join('&');
-  }
-
-  if (serializedParams) {
-    url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams;
-  }
-
-  return url;
-};
-
-
-/***/ }),
-/* 56 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-
-// Headers whose duplicates are ignored by node
-// c.f. https://nodejs.org/api/http.html#http_message_headers
-var ignoreDuplicateOf = [
-  'age', 'authorization', 'content-length', 'content-type', 'etag',
-  'expires', 'from', 'host', 'if-modified-since', 'if-unmodified-since',
-  'last-modified', 'location', 'max-forwards', 'proxy-authorization',
-  'referer', 'retry-after', 'user-agent'
-];
-
-/**
- * Parse headers into an object
- *
- * ```
- * Date: Wed, 27 Aug 2014 08:58:49 GMT
- * Content-Type: application/json
- * Connection: keep-alive
- * Transfer-Encoding: chunked
- * ```
- *
- * @param {String} headers Headers needing to be parsed
- * @returns {Object} Headers parsed into an object
- */
-module.exports = function parseHeaders(headers) {
-  var parsed = {};
-  var key;
-  var val;
-  var i;
-
-  if (!headers) { return parsed; }
-
-  utils.forEach(headers.split('\n'), function parser(line) {
-    i = line.indexOf(':');
-    key = utils.trim(line.substr(0, i)).toLowerCase();
-    val = utils.trim(line.substr(i + 1));
-
-    if (key) {
-      if (parsed[key] && ignoreDuplicateOf.indexOf(key) >= 0) {
-        return;
-      }
-      if (key === 'set-cookie') {
-        parsed[key] = (parsed[key] ? parsed[key] : []).concat([val]);
-      } else {
-        parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
-      }
-    }
-  });
-
-  return parsed;
-};
-
-
-/***/ }),
-/* 57 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-
-module.exports = (
-  utils.isStandardBrowserEnv() ?
-
-  // Standard browser envs have full support of the APIs needed to test
-  // whether the request URL is of the same origin as current location.
-  (function standardBrowserEnv() {
-    var msie = /(msie|trident)/i.test(navigator.userAgent);
-    var urlParsingNode = document.createElement('a');
-    var originURL;
-
-    /**
-    * Parse a URL to discover it's components
-    *
-    * @param {String} url The URL to be parsed
-    * @returns {Object}
-    */
-    function resolveURL(url) {
-      var href = url;
-
-      if (msie) {
-        // IE needs attribute set twice to normalize properties
-        urlParsingNode.setAttribute('href', href);
-        href = urlParsingNode.href;
-      }
-
-      urlParsingNode.setAttribute('href', href);
-
-      // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils
-      return {
-        href: urlParsingNode.href,
-        protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',
-        host: urlParsingNode.host,
-        search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, '') : '',
-        hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, '') : '',
-        hostname: urlParsingNode.hostname,
-        port: urlParsingNode.port,
-        pathname: (urlParsingNode.pathname.charAt(0) === '/') ?
-                  urlParsingNode.pathname :
-                  '/' + urlParsingNode.pathname
-      };
-    }
-
-    originURL = resolveURL(window.location.href);
-
-    /**
-    * Determine if a URL shares the same origin as the current location
-    *
-    * @param {String} requestURL The URL to test
-    * @returns {boolean} True if URL shares the same origin, otherwise false
-    */
-    return function isURLSameOrigin(requestURL) {
-      var parsed = (utils.isString(requestURL)) ? resolveURL(requestURL) : requestURL;
-      return (parsed.protocol === originURL.protocol &&
-            parsed.host === originURL.host);
-    };
-  })() :
-
-  // Non standard browser envs (web workers, react-native) lack needed support.
-  (function nonStandardBrowserEnv() {
-    return function isURLSameOrigin() {
-      return true;
-    };
-  })()
-);
-
-
-/***/ }),
-/* 58 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-// btoa polyfill for IE<10 courtesy https://github.com/davidchambers/Base64.js
-
-var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-
-function E() {
-  this.message = 'String contains an invalid character';
-}
-E.prototype = new Error;
-E.prototype.code = 5;
-E.prototype.name = 'InvalidCharacterError';
-
-function btoa(input) {
-  var str = String(input);
-  var output = '';
-  for (
-    // initialize result and counter
-    var block, charCode, idx = 0, map = chars;
-    // if the next str index does not exist:
-    //   change the mapping table to "="
-    //   check if d has no fractional digits
-    str.charAt(idx | 0) || (map = '=', idx % 1);
-    // "8 - idx % 1 * 8" generates the sequence 2, 4, 6, 8
-    output += map.charAt(63 & block >> 8 - idx % 1 * 8)
-  ) {
-    charCode = str.charCodeAt(idx += 3 / 4);
-    if (charCode > 0xFF) {
-      throw new E();
-    }
-    block = block << 8 | charCode;
-  }
-  return output;
-}
-
-module.exports = btoa;
-
-
-/***/ }),
-/* 59 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-
-module.exports = (
-  utils.isStandardBrowserEnv() ?
-
-  // Standard browser envs support document.cookie
-  (function standardBrowserEnv() {
-    return {
-      write: function write(name, value, expires, path, domain, secure) {
-        var cookie = [];
-        cookie.push(name + '=' + encodeURIComponent(value));
-
-        if (utils.isNumber(expires)) {
-          cookie.push('expires=' + new Date(expires).toGMTString());
-        }
-
-        if (utils.isString(path)) {
-          cookie.push('path=' + path);
-        }
-
-        if (utils.isString(domain)) {
-          cookie.push('domain=' + domain);
-        }
-
-        if (secure === true) {
-          cookie.push('secure');
-        }
-
-        document.cookie = cookie.join('; ');
-      },
-
-      read: function read(name) {
-        var match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
-        return (match ? decodeURIComponent(match[3]) : null);
-      },
-
-      remove: function remove(name) {
-        this.write(name, '', Date.now() - 86400000);
-      }
-    };
-  })() :
-
-  // Non standard browser env (web workers, react-native) lack needed support.
-  (function nonStandardBrowserEnv() {
-    return {
-      write: function write() {},
-      read: function read() { return null; },
-      remove: function remove() {}
-    };
-  })()
-);
-
-
-/***/ }),
-/* 60 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-
-function InterceptorManager() {
-  this.handlers = [];
-}
-
-/**
- * Add a new interceptor to the stack
- *
- * @param {Function} fulfilled The function to handle `then` for a `Promise`
- * @param {Function} rejected The function to handle `reject` for a `Promise`
- *
- * @return {Number} An ID used to remove interceptor later
- */
-InterceptorManager.prototype.use = function use(fulfilled, rejected) {
-  this.handlers.push({
-    fulfilled: fulfilled,
-    rejected: rejected
-  });
-  return this.handlers.length - 1;
-};
-
-/**
- * Remove an interceptor from the stack
- *
- * @param {Number} id The ID that was returned by `use`
- */
-InterceptorManager.prototype.eject = function eject(id) {
-  if (this.handlers[id]) {
-    this.handlers[id] = null;
-  }
-};
-
-/**
- * Iterate over all the registered interceptors
- *
- * This method is particularly useful for skipping over any
- * interceptors that may have become `null` calling `eject`.
- *
- * @param {Function} fn The function to call for each interceptor
- */
-InterceptorManager.prototype.forEach = function forEach(fn) {
-  utils.forEach(this.handlers, function forEachHandler(h) {
-    if (h !== null) {
-      fn(h);
-    }
-  });
-};
-
-module.exports = InterceptorManager;
-
-
-/***/ }),
-/* 61 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-var transformData = __webpack_require__(62);
-var isCancel = __webpack_require__(18);
-var defaults = __webpack_require__(6);
-var isAbsoluteURL = __webpack_require__(63);
-var combineURLs = __webpack_require__(64);
-
-/**
- * Throws a `Cancel` if cancellation has been requested.
- */
-function throwIfCancellationRequested(config) {
-  if (config.cancelToken) {
-    config.cancelToken.throwIfRequested();
-  }
-}
-
-/**
- * Dispatch a request to the server using the configured adapter.
- *
- * @param {object} config The config that is to be used for the request
- * @returns {Promise} The Promise to be fulfilled
- */
-module.exports = function dispatchRequest(config) {
-  throwIfCancellationRequested(config);
-
-  // Support baseURL config
-  if (config.baseURL && !isAbsoluteURL(config.url)) {
-    config.url = combineURLs(config.baseURL, config.url);
-  }
-
-  // Ensure headers exist
-  config.headers = config.headers || {};
-
-  // Transform request data
-  config.data = transformData(
-    config.data,
-    config.headers,
-    config.transformRequest
-  );
-
-  // Flatten headers
-  config.headers = utils.merge(
-    config.headers.common || {},
-    config.headers[config.method] || {},
-    config.headers || {}
-  );
-
-  utils.forEach(
-    ['delete', 'get', 'head', 'post', 'put', 'patch', 'common'],
-    function cleanHeaderConfig(method) {
-      delete config.headers[method];
-    }
-  );
-
-  var adapter = config.adapter || defaults.adapter;
-
-  return adapter(config).then(function onAdapterResolution(response) {
-    throwIfCancellationRequested(config);
-
-    // Transform response data
-    response.data = transformData(
-      response.data,
-      response.headers,
-      config.transformResponse
-    );
-
-    return response;
-  }, function onAdapterRejection(reason) {
-    if (!isCancel(reason)) {
-      throwIfCancellationRequested(config);
-
-      // Transform response data
-      if (reason && reason.response) {
-        reason.response.data = transformData(
-          reason.response.data,
-          reason.response.headers,
-          config.transformResponse
-        );
-      }
-    }
-
-    return Promise.reject(reason);
-  });
-};
-
-
-/***/ }),
-/* 62 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-
-/**
- * Transform the data for a request or a response
- *
- * @param {Object|String} data The data to be transformed
- * @param {Array} headers The headers for the request or response
- * @param {Array|Function} fns A single function or Array of functions
- * @returns {*} The resulting transformed data
- */
-module.exports = function transformData(data, headers, fns) {
-  /*eslint no-param-reassign:0*/
-  utils.forEach(fns, function transform(fn) {
-    data = fn(data, headers);
-  });
-
-  return data;
-};
-
-
-/***/ }),
-/* 63 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * Determines whether the specified URL is absolute
- *
- * @param {string} url The URL to test
- * @returns {boolean} True if the specified URL is absolute, otherwise false
- */
-module.exports = function isAbsoluteURL(url) {
-  // A URL is considered absolute if it begins with "<scheme>://" or "//" (protocol-relative URL).
-  // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
-  // by any combination of letters, digits, plus, period, or hyphen.
-  return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
-};
-
-
-/***/ }),
-/* 64 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * Creates a new URL by combining the specified URLs
- *
- * @param {string} baseURL The base URL
- * @param {string} relativeURL The relative URL
- * @returns {string} The combined URL
- */
-module.exports = function combineURLs(baseURL, relativeURL) {
-  return relativeURL
-    ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '')
-    : baseURL;
-};
-
-
-/***/ }),
-/* 65 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var Cancel = __webpack_require__(19);
-
-/**
- * A `CancelToken` is an object that can be used to request cancellation of an operation.
- *
- * @class
- * @param {Function} executor The executor function.
- */
-function CancelToken(executor) {
-  if (typeof executor !== 'function') {
-    throw new TypeError('executor must be a function.');
-  }
-
-  var resolvePromise;
-  this.promise = new Promise(function promiseExecutor(resolve) {
-    resolvePromise = resolve;
-  });
-
-  var token = this;
-  executor(function cancel(message) {
-    if (token.reason) {
-      // Cancellation has already been requested
-      return;
-    }
-
-    token.reason = new Cancel(message);
-    resolvePromise(token.reason);
-  });
-}
-
-/**
- * Throws a `Cancel` if cancellation has been requested.
- */
-CancelToken.prototype.throwIfRequested = function throwIfRequested() {
-  if (this.reason) {
-    throw this.reason;
-  }
-};
-
-/**
- * Returns an object that contains a new `CancelToken` and a function that, when called,
- * cancels the `CancelToken`.
- */
-CancelToken.source = function source() {
-  var cancel;
-  var token = new CancelToken(function executor(c) {
-    cancel = c;
-  });
-  return {
-    token: token,
-    cancel: cancel
-  };
-};
-
-module.exports = CancelToken;
-
-
-/***/ }),
-/* 66 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * Syntactic sugar for invoking a function and expanding an array for arguments.
- *
- * Common use case would be to use `Function.prototype.apply`.
- *
- *  ```js
- *  function f(x, y, z) {}
- *  var args = [1, 2, 3];
- *  f.apply(null, args);
- *  ```
- *
- * With `spread` this example can be re-written.
- *
- *  ```js
- *  spread(function(x, y, z) {})([1, 2, 3]);
- *  ```
- *
- * @param {Function} callback
- * @returns {Function}
- */
-module.exports = function spread(callback) {
-  return function wrap(arr) {
-    return callback.apply(null, arr);
-  };
-};
-
-
-/***/ }),
-/* 67 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-
-// If obj.hasOwnProperty has been overridden, then calling
-// obj.hasOwnProperty(prop) will break.
-// See: https://github.com/joyent/node/issues/1707
-function hasOwnProperty(obj, prop) {
-  return Object.prototype.hasOwnProperty.call(obj, prop);
-}
-
-module.exports = function(qs, sep, eq, options) {
-  sep = sep || '&';
-  eq = eq || '=';
-  var obj = {};
-
-  if (typeof qs !== 'string' || qs.length === 0) {
-    return obj;
-  }
-
-  var regexp = /\+/g;
-  qs = qs.split(sep);
-
-  var maxKeys = 1000;
-  if (options && typeof options.maxKeys === 'number') {
-    maxKeys = options.maxKeys;
-  }
-
-  var len = qs.length;
-  // maxKeys <= 0 means that we should not limit keys count
-  if (maxKeys > 0 && len > maxKeys) {
-    len = maxKeys;
-  }
-
-  for (var i = 0; i < len; ++i) {
-    var x = qs[i].replace(regexp, '%20'),
-        idx = x.indexOf(eq),
-        kstr, vstr, k, v;
-
-    if (idx >= 0) {
-      kstr = x.substr(0, idx);
-      vstr = x.substr(idx + 1);
-    } else {
-      kstr = x;
-      vstr = '';
-    }
-
-    k = decodeURIComponent(kstr);
-    v = decodeURIComponent(vstr);
-
-    if (!hasOwnProperty(obj, k)) {
-      obj[k] = v;
-    } else if (isArray(obj[k])) {
-      obj[k].push(v);
-    } else {
-      obj[k] = [obj[k], v];
-    }
-  }
-
-  return obj;
-};
-
-var isArray = Array.isArray || function (xs) {
-  return Object.prototype.toString.call(xs) === '[object Array]';
-};
-
-
-/***/ }),
-/* 68 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-
-var stringifyPrimitive = function(v) {
-  switch (typeof v) {
-    case 'string':
-      return v;
-
-    case 'boolean':
-      return v ? 'true' : 'false';
-
-    case 'number':
-      return isFinite(v) ? v : '';
-
-    default:
-      return '';
-  }
-};
-
-module.exports = function(obj, sep, eq, name) {
-  sep = sep || '&';
-  eq = eq || '=';
-  if (obj === null) {
-    obj = undefined;
-  }
-
-  if (typeof obj === 'object') {
-    return map(objectKeys(obj), function(k) {
-      var ks = encodeURIComponent(stringifyPrimitive(k)) + eq;
-      if (isArray(obj[k])) {
-        return map(obj[k], function(v) {
-          return ks + encodeURIComponent(stringifyPrimitive(v));
-        }).join(sep);
-      } else {
-        return ks + encodeURIComponent(stringifyPrimitive(obj[k]));
-      }
-    }).join(sep);
-
-  }
-
-  if (!name) return '';
-  return encodeURIComponent(stringifyPrimitive(name)) + eq +
-         encodeURIComponent(stringifyPrimitive(obj));
-};
-
-var isArray = Array.isArray || function (xs) {
-  return Object.prototype.toString.call(xs) === '[object Array]';
-};
-
-function map (xs, f) {
-  if (xs.map) return xs.map(f);
-  var res = [];
-  for (var i = 0; i < xs.length; i++) {
-    res.push(f(xs[i], i));
-  }
-  return res;
-}
-
-var objectKeys = Object.keys || function (obj) {
-  var res = [];
-  for (var key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) res.push(key);
-  }
-  return res;
-};
-
-
-/***/ }),
-/* 69 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"pieChart gl_chart_template",attrs:{"id":"pie"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td',{staticClass:"gl_backButotnTh"},[(_vm.fieldsRequired)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("Field(s) required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelString),expression:"chartlabelString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifLabelEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(1),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetDataString),expression:"chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(_vm.chartDatasetDataString)},on:{"keyup":_vm.addDatasetData,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetDataString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(2),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetBgColorString),expression:"chartDatasetBgColorString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifBackgroundEmpty},attrs:{"type":"text","id":"colors","placeholder":"Color value for each label. Eg. red, green, blue"},domProps:{"value":(_vm.chartDatasetBgColorString)},on:{"keyup":_vm.addDatasetBgColor,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetBgColorString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(3),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(4),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])]),_vm._v(" "),_vm._m(7)])}
-var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"pieChart"}})])])}]
-var esExports = { render: render, staticRenderFns: staticRenderFns }
-/* harmony default export */ __webpack_exports__["a"] = (esExports);
-
-/***/ }),
-/* 70 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(20);
-/* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_729547eb_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(73);
-function injectStyle (ssrContext) {
-  __webpack_require__(71)
-}
-var normalizeComponent = __webpack_require__(3)
-/* script */
-
-
-/* template */
-
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = injectStyle
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DoughnutChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_729547eb_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__["a" /* default */],
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-
-/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
-
-
-/***/ }),
-/* 71 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(72);
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__(2)("f7977ffa", content, true, {});
-
-/***/ }),
-/* 72 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(1)(false);
-// imports
-
-
-// module
-exports.push([module.i, ".DoughnutChart{width:100%;height:100%;display:flex;flex-direction:row}.graphOptions{width:50%;padding-top:20px}.DoughnutChart .graphDiv{width:50%}.DoughnutChart .graphDiv .gl_graphChildDiv{position:fixed;width:40%;height:65%;right:5%;top:150px}.saveGraphDataButton{display:block}.saveGraphData{float:right}input[type=text]{height:35px}.form-table th{width:25%}", ""]);
-
-// exports
-
-
-/***/ }),
-/* 73 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"DoughnutChart gl_chart_template",attrs:{"id":"Doughnut"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td',{staticClass:"gl_backButotnTh"},[(_vm.fieldsRequired)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("Field(s) required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelString),expression:"chartlabelString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifLabelEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(1),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetDataString),expression:"chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(_vm.chartDatasetDataString)},on:{"keyup":_vm.addDatasetData,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetDataString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(2),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetBgColorString),expression:"chartDatasetBgColorString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifBackgroundEmpty},attrs:{"type":"text","id":"colors","placeholder":"Color value for each label. Eg. red, green, blue"},domProps:{"value":(_vm.chartDatasetBgColorString)},on:{"keyup":_vm.addDatasetBgColor,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetBgColorString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(3),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(4),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])]),_vm._v(" "),_vm._m(7)])}
-var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"DoughnutChart"}})])])}]
-var esExports = { render: render, staticRenderFns: staticRenderFns }
-/* harmony default export */ __webpack_exports__["a"] = (esExports);
-
-/***/ }),
-/* 74 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_RadarChartTemplate_vue__ = __webpack_require__(21);
-/* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6411737e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__ = __webpack_require__(77);
-function injectStyle (ssrContext) {
-  __webpack_require__(75)
-}
-var normalizeComponent = __webpack_require__(3)
-/* script */
-
-
-/* template */
-
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = injectStyle
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_RadarChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6411737e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__["a" /* default */],
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-
-/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
-
-
-/***/ }),
-/* 75 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(76);
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__(2)("e2acc3d8", content, true, {});
-
-/***/ }),
-/* 76 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(1)(false);
+exports = module.exports = __webpack_require__(0)(false);
 // imports
 
 
@@ -18345,27 +16582,27 @@ exports.push([module.i, ".radarChart{width:100%;height:100%;display:flex;flex-di
 
 
 /***/ }),
-/* 77 */
+/* 49 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"radarChart gl_chart_template",attrs:{"id":"line"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td',{staticClass:"gl_backButotnTh"},[(_vm.fieldsRequired)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("Field(s) required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelsString),expression:"chartlabelsString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifLabelsEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelsString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelsString=$event.target.value}}})])])]),_vm._v(" "),_vm._l((_vm.datasets),function(data,index){return _c('fieldset',{key:data},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.label),expression:"data.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(data.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.chartDatasetDataString),expression:"data.chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(data.chartDatasetDataString)},on:{"keyup":function($event){_vm.addDatasetData(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "chartDatasetDataString", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.backgroundColor),expression:"data.backgroundColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifFillColorEmpty},attrs:{"type":"text","id":"colors"},domProps:{"value":(data.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.borderColor),expression:"data.borderColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifLineColorEmpty},attrs:{"type":"text","id":"line_color"},domProps:{"value":(data.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "borderColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(5,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.fill),expression:"data.fill"}],attrs:{"type":"checkbox","id":"fill"},domProps:{"checked":Array.isArray(data.fill)?_vm._i(data.fill,null)>-1:(data.fill)},on:{"change":[function($event){var $$a=data.fill,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.$set(data, "fill", $$a.concat([$$v])))}else{$$i>-1&&(_vm.$set(data, "fill", $$a.slice(0,$$i).concat($$a.slice($$i+1))))}}else{_vm.$set(data, "fill", $$c)}},function($event){_vm.fillColor(index)}]}})])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(6,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(10),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_vm._m(11)])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"radarChart gl_chart_template",attrs:{"id":"line"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('img',{staticClass:"gl_backButtonImage",attrs:{"src":__webpack_require__(3)},on:{"click":_vm.goBacktoAllGraphPage}})]),_vm._v(" "),_c('td',{staticClass:"gl_backButotnTh"},[(_vm.fieldsRequired)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("Field(s) required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelsString),expression:"chartlabelsString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifLabelsEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelsString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelsString=$event.target.value}}})])])]),_vm._v(" "),_vm._l((_vm.datasets),function(data,index){return _c('fieldset',{key:data},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.label),expression:"data.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(data.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.chartDatasetDataString),expression:"data.chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(data.chartDatasetDataString)},on:{"keyup":function($event){_vm.addDatasetData(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "chartDatasetDataString", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.backgroundColor),expression:"data.backgroundColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifFillColorEmpty},attrs:{"type":"text","id":"colors"},domProps:{"value":(data.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.borderColor),expression:"data.borderColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifLineColorEmpty},attrs:{"type":"text","id":"line_color"},domProps:{"value":(data.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "borderColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(5,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.fill),expression:"data.fill"}],attrs:{"type":"checkbox","id":"fill"},domProps:{"checked":Array.isArray(data.fill)?_vm._i(data.fill,null)>-1:(data.fill)},on:{"change":[function($event){var $$a=data.fill,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.$set(data, "fill", $$a.concat([$$v])))}else{$$i>-1&&(_vm.$set(data, "fill", $$a.slice(0,$$i).concat($$a.slice($$i+1))))}}else{_vm.$set(data, "fill", $$c)}},function($event){_vm.fillColor(index)}]}})])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(6,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(10),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_vm._m(11)])}
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Fill Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"line_color"}},[_vm._v("Line Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"fill"}},[_vm._v("Fill Color Under the line")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"radarChart"}})])])}]
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
 
 /***/ }),
-/* 78 */
+/* 50 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(13);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2a261764_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(81);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_5269f641_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(53);
 function injectStyle (ssrContext) {
-  __webpack_require__(79)
+  __webpack_require__(51)
 }
-var normalizeComponent = __webpack_require__(3)
+var normalizeComponent = __webpack_require__(2)
 /* script */
 
 
@@ -18381,7 +16618,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PolarAreaChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2a261764_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_5269f641_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -18392,23 +16629,23 @@ var Component = normalizeComponent(
 
 
 /***/ }),
-/* 79 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(80);
+var content = __webpack_require__(52);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("41bd8245", content, true, {});
+var update = __webpack_require__(1)("234a70af", content, true, {});
 
 /***/ }),
-/* 80 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(false);
+exports = module.exports = __webpack_require__(0)(false);
 // imports
 
 
@@ -18419,27 +16656,27 @@ exports.push([module.i, ".PolarAreaChart{width:100%;height:100%;display:flex;fle
 
 
 /***/ }),
-/* 81 */
+/* 53 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"PolarAreaChart gl_chart_template",attrs:{"id":"PolarArea"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td',{staticClass:"gl_backButotnTh"},[(_vm.fieldsRequired)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("Field(s) required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetDataString),expression:"chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(_vm.chartDatasetDataString)},on:{"keyup":_vm.addDatasetData,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetDataString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(1),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetBgColorString),expression:"chartDatasetBgColorString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifBackgroundEmpty},attrs:{"type":"text","id":"colors","placeholder":"Color value for each label. Eg. red, green, blue"},domProps:{"value":(_vm.chartDatasetBgColorString)},on:{"keyup":_vm.addDatasetBgColor,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetBgColorString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(2),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelString),expression:"chartlabelString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifLabelEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(3),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(4),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])]),_vm._v(" "),_vm._m(7)])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"PolarAreaChart gl_chart_template",attrs:{"id":"PolarArea"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('img',{staticClass:"gl_backButtonImage",attrs:{"src":__webpack_require__(3)},on:{"click":_vm.goBacktoAllGraphPage}})]),_vm._v(" "),_c('td',{staticClass:"gl_backButotnTh"},[(_vm.fieldsRequired)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("Field(s) required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetDataString),expression:"chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(_vm.chartDatasetDataString)},on:{"keyup":_vm.addDatasetData,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetDataString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(1),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetBgColorString),expression:"chartDatasetBgColorString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifBackgroundEmpty},attrs:{"type":"text","id":"colors","placeholder":"Color value for each label. Eg. red, green, blue"},domProps:{"value":(_vm.chartDatasetBgColorString)},on:{"keyup":_vm.addDatasetBgColor,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetBgColorString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(2),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelString),expression:"chartlabelString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifLabelEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelString=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(3),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(4),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])]),_vm._v(" "),_vm._m(7)])}
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"PolarAreaChart"}})])])}]
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
 
 /***/ }),
-/* 82 */
+/* 54 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BubbleChartTemplate_vue__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BubbleChartTemplate_vue__ = __webpack_require__(14);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_a2eae0e2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__ = __webpack_require__(85);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6070b4fa_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__ = __webpack_require__(57);
 function injectStyle (ssrContext) {
-  __webpack_require__(83)
+  __webpack_require__(55)
 }
-var normalizeComponent = __webpack_require__(3)
+var normalizeComponent = __webpack_require__(2)
 /* script */
 
 
@@ -18455,7 +16692,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BubbleChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_a2eae0e2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6070b4fa_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -18466,23 +16703,23 @@ var Component = normalizeComponent(
 
 
 /***/ }),
-/* 83 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(84);
+var content = __webpack_require__(56);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("41fa6b21", content, true, {});
+var update = __webpack_require__(1)("e87db174", content, true, {});
 
 /***/ }),
-/* 84 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(false);
+exports = module.exports = __webpack_require__(0)(false);
 // imports
 
 
@@ -18493,27 +16730,27 @@ exports.push([module.i, ".bubbleChart{width:100%;height:100%;display:flex;flex-d
 
 
 /***/ }),
-/* 85 */
+/* 57 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"bubbleChart gl_chart_template",attrs:{"id":"bubble"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td',{staticClass:"gl_backButotnTh"},[(_vm.fieldsRequired)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("Field(s) required")]):_vm._e()])])]),_vm._v(" "),_vm._l((_vm.datasets),function(dataset,index){return _c('fieldset',{key:dataset},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(0,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.label),expression:"dataset.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(dataset.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_vm._l((dataset.data),function(data,PIndex){return [_c('div',{staticClass:"gl_bb_point"},[_c('div',{staticClass:"button_input_fields"},[_c('div',{staticClass:"gl_bb_xp"},[_c('label',{attrs:{"for":"xPoint"}},[_vm._v("x-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].x),expression:"dataset.data[PIndex].x"}],staticClass:"bubblePoints",class:{'gl_fieldRequired': data.ifxPointEmpty},attrs:{"type":"number","id":"xPoint"},domProps:{"value":(dataset.data[PIndex].x)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "x", $event.target.value)}}})]),_vm._v(" "),_c('div',{staticClass:"gl_bb_yp"},[_c('label',{attrs:{"for":"yPoint"}},[_vm._v("y-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].y),expression:"dataset.data[PIndex].y"}],staticClass:"bubblePoints",class:{'gl_fieldRequired': data.ifyPointEmpty},attrs:{"type":"number","id":"yPoint"},domProps:{"value":(dataset.data[PIndex].y)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "y", $event.target.value)}}})]),_vm._v(" "),_c('div',{staticClass:"gl_bb_r"},[_c('label',{attrs:{"for":"radius"}},[_vm._v("Bubble Radius")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].r),expression:"dataset.data[PIndex].r"}],staticClass:"bubblePoints",class:{'gl_fieldRequired': data.ifrPointEmpty},attrs:{"type":"number","id":"radius"},domProps:{"value":(dataset.data[PIndex].r)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'r')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'r')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "r", $event.target.value)}}})])]),_vm._v(" "),(PIndex != 0)?_c('div',[_c('a',{staticClass:"deleteButtonPoint",attrs:{"href":"javascript:void(0)"},on:{"click":function($event){_vm.deleteButtonPoint(index, PIndex)}}},[_vm._v("X")])]):_vm._e()])]}),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.addBubblePoint(index)}}},[_vm._v("Add Bubble Point")])],2)]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.backgroundColor),expression:"dataset.backgroundColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': dataset.ifCircleBackgroundEmpty},attrs:{"type":"text","id":"colors"},domProps:{"value":(dataset.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.borderColor),expression:"dataset.borderColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': dataset.ifCicleBorderColorEmpty},attrs:{"type":"text","id":"line_color"},domProps:{"value":(dataset.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "borderColor", $event.target.value)}}})])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_vm._m(9)])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"bubbleChart gl_chart_template",attrs:{"id":"bubble"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('img',{staticClass:"gl_backButtonImage",attrs:{"src":__webpack_require__(3)},on:{"click":_vm.goBacktoAllGraphPage}})]),_vm._v(" "),_c('td',{staticClass:"gl_backButotnTh"},[(_vm.fieldsRequired)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("Field(s) required")]):_vm._e()])])]),_vm._v(" "),_vm._l((_vm.datasets),function(dataset,index){return _c('fieldset',{key:dataset},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(0,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.label),expression:"dataset.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(dataset.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_vm._l((dataset.data),function(data,PIndex){return [_c('div',{staticClass:"gl_bb_point"},[_c('div',{staticClass:"button_input_fields"},[_c('div',{staticClass:"gl_bb_xp"},[_c('label',{attrs:{"for":"xPoint"}},[_vm._v("x-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].x),expression:"dataset.data[PIndex].x"}],staticClass:"bubblePoints",class:{'gl_fieldRequired': data.ifxPointEmpty},attrs:{"type":"number","id":"xPoint"},domProps:{"value":(dataset.data[PIndex].x)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "x", $event.target.value)}}})]),_vm._v(" "),_c('div',{staticClass:"gl_bb_yp"},[_c('label',{attrs:{"for":"yPoint"}},[_vm._v("y-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].y),expression:"dataset.data[PIndex].y"}],staticClass:"bubblePoints",class:{'gl_fieldRequired': data.ifyPointEmpty},attrs:{"type":"number","id":"yPoint"},domProps:{"value":(dataset.data[PIndex].y)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "y", $event.target.value)}}})]),_vm._v(" "),_c('div',{staticClass:"gl_bb_r"},[_c('label',{attrs:{"for":"radius"}},[_vm._v("Bubble Radius")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].r),expression:"dataset.data[PIndex].r"}],staticClass:"bubblePoints",class:{'gl_fieldRequired': data.ifrPointEmpty},attrs:{"type":"number","id":"radius"},domProps:{"value":(dataset.data[PIndex].r)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'r')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'r')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "r", $event.target.value)}}})])]),_vm._v(" "),(PIndex != 0)?_c('div',[_c('a',{staticClass:"deleteButtonPoint",attrs:{"href":"javascript:void(0)"},on:{"click":function($event){_vm.deleteButtonPoint(index, PIndex)}}},[_vm._v("X")])]):_vm._e()])]}),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.addBubblePoint(index)}}},[_vm._v("Add Bubble Point")])],2)]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.backgroundColor),expression:"dataset.backgroundColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': dataset.ifCircleBackgroundEmpty},attrs:{"type":"text","id":"colors"},domProps:{"value":(dataset.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.borderColor),expression:"dataset.borderColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': dataset.ifCicleBorderColorEmpty},attrs:{"type":"text","id":"line_color"},domProps:{"value":(dataset.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "borderColor", $event.target.value)}}})])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_vm._m(9)])}
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticStyle:{"padding-top":"5px","padding-bottom":"5px"},attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Circle Background Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticStyle:{"padding-top":"5px","padding-bottom":"5px"},attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"line_color"}},[_vm._v("Circle Border Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"bubbleChart"}})])])}]
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
 
 /***/ }),
-/* 86 */
+/* 58 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ScatterChartTemplate_vue__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ScatterChartTemplate_vue__ = __webpack_require__(15);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_086732d2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__ = __webpack_require__(89);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_c72e5bce_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__ = __webpack_require__(61);
 function injectStyle (ssrContext) {
-  __webpack_require__(87)
+  __webpack_require__(59)
 }
-var normalizeComponent = __webpack_require__(3)
+var normalizeComponent = __webpack_require__(2)
 /* script */
 
 
@@ -18529,7 +16766,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ScatterChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_086732d2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_c72e5bce_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -18540,23 +16777,23 @@ var Component = normalizeComponent(
 
 
 /***/ }),
-/* 87 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(88);
+var content = __webpack_require__(60);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("3b6d5226", content, true, {});
+var update = __webpack_require__(1)("7f469574", content, true, {});
 
 /***/ }),
-/* 88 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(false);
+exports = module.exports = __webpack_require__(0)(false);
 // imports
 
 
@@ -18567,17 +16804,17 @@ exports.push([module.i, ".scatterChart{width:100%;height:100%;display:flex;flex-
 
 
 /***/ }),
-/* 89 */
+/* 61 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"scatterChart gl_chart_template",attrs:{"id":"scatter"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td',{staticClass:"gl_backButotnTh"},[(_vm.fieldsRequired)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("Field(s) required")]):_vm._e()])])]),_vm._v(" "),_vm._l((_vm.datasets),function(dataset,index){return _c('fieldset',{key:dataset},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(0,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.label),expression:"dataset.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(dataset.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_vm._l((dataset.data),function(data,PIndex){return [_c('div',{staticClass:"gl_bb_point"},[_c('div',{staticClass:"button_input_fields"},[_c('div',{staticClass:"gl_bb_xp"},[_c('label',{attrs:{"for":"xPoint"}},[_vm._v("x-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].x),expression:"dataset.data[PIndex].x"}],staticClass:"bubblePoints",class:{'gl_fieldRequired': data.ifxPointEmpty},attrs:{"type":"number","id":"xPoint"},domProps:{"value":(dataset.data[PIndex].x)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "x", $event.target.value)}}})]),_vm._v(" "),_c('div',{staticClass:"gl_bb_yp"},[_c('label',{attrs:{"for":"yPoint"}},[_vm._v("y-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].y),expression:"dataset.data[PIndex].y"}],staticClass:"bubblePoints",class:{'gl_fieldRequired': data.ifyPointEmpty},attrs:{"type":"number","id":"yPoint"},domProps:{"value":(dataset.data[PIndex].y)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "y", $event.target.value)}}})])]),_vm._v(" "),(PIndex != 0)?_c('div',[_c('a',{staticClass:"deleteButtonPoint",attrs:{"href":"javascript:void(0)"},on:{"click":function($event){_vm.deleteButtonPoint(index, PIndex)}}},[_vm._v("X")])]):_vm._e()])]}),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.addBubblePoint(index)}}},[_vm._v("Add Bubble Point")])],2)]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.backgroundColor),expression:"dataset.backgroundColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': dataset.ifCircleBackgroundEmpty},attrs:{"type":"text","id":"colors"},domProps:{"value":(dataset.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.borderColor),expression:"dataset.borderColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': dataset.ifCicleBorderColorEmpty},attrs:{"type":"text","id":"line_color"},domProps:{"value":(dataset.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "borderColor", $event.target.value)}}})])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_vm._m(9)])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"scatterChart gl_chart_template",attrs:{"id":"scatter"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('img',{staticClass:"gl_backButtonImage",attrs:{"src":__webpack_require__(3)},on:{"click":_vm.goBacktoAllGraphPage}})]),_vm._v(" "),_c('td',{staticClass:"gl_backButotnTh"},[(_vm.fieldsRequired)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("Field(s) required")]):_vm._e()])])]),_vm._v(" "),_vm._l((_vm.datasets),function(dataset,index){return _c('fieldset',{key:dataset},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(0,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.label),expression:"dataset.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(dataset.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_vm._l((dataset.data),function(data,PIndex){return [_c('div',{staticClass:"gl_bb_point"},[_c('div',{staticClass:"button_input_fields"},[_c('div',{staticClass:"gl_bb_xp"},[_c('label',{attrs:{"for":"xPoint"}},[_vm._v("x-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].x),expression:"dataset.data[PIndex].x"}],staticClass:"bubblePoints",class:{'gl_fieldRequired': data.ifxPointEmpty},attrs:{"type":"number","id":"xPoint"},domProps:{"value":(dataset.data[PIndex].x)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "x", $event.target.value)}}})]),_vm._v(" "),_c('div',{staticClass:"gl_bb_yp"},[_c('label',{attrs:{"for":"yPoint"}},[_vm._v("y-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].y),expression:"dataset.data[PIndex].y"}],staticClass:"bubblePoints",class:{'gl_fieldRequired': data.ifyPointEmpty},attrs:{"type":"number","id":"yPoint"},domProps:{"value":(dataset.data[PIndex].y)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "y", $event.target.value)}}})])]),_vm._v(" "),(PIndex != 0)?_c('div',[_c('a',{staticClass:"deleteButtonPoint",attrs:{"href":"javascript:void(0)"},on:{"click":function($event){_vm.deleteButtonPoint(index, PIndex)}}},[_vm._v("X")])]):_vm._e()])]}),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.addBubblePoint(index)}}},[_vm._v("Add Bubble Point")])],2)]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.backgroundColor),expression:"dataset.backgroundColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': dataset.ifCircleBackgroundEmpty},attrs:{"type":"text","id":"colors"},domProps:{"value":(dataset.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "backgroundColor", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.borderColor),expression:"dataset.borderColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': dataset.ifCicleBorderColorEmpty},attrs:{"type":"text","id":"line_color"},domProps:{"value":(dataset.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "borderColor", $event.target.value)}}})])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_vm._m(9)])}
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticStyle:{"padding-top":"5px","padding-bottom":"5px"},attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Circle Background Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticStyle:{"padding-top":"5px","padding-bottom":"5px"},attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"line_color"}},[_vm._v("Circle Border Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"scatterChart"}})])])}]
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
 
 /***/ }),
-/* 90 */
+/* 62 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
