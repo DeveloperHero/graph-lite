@@ -6,21 +6,28 @@
 					<th scope="row" class="gl_backButotnTh">
 						<img src="./../../images/back-arrow.png" @click="goBacktoAllGraphPage" class="gl_backButtonImage">
 					</th>
-					<td class="gl_backButotnTh">
-						<p class="gl_fieldRequiredError" v-if="fieldsRequired">Field(s) required</p>
-					</td>
+					<td></td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="labels">Labels*</label></th>
-					<td><input class="regular-text" :class="{'gl_fieldRequired': ifLabelEmpty}" type="text" id="labels" placeholder="Comma separated list of labels" v-model="chartlabelString" @keyup="addLabels"></td>
+					<td>
+						<input class="regular-text" :class="{'gl_fieldRequired': ifLabelsEmpty}" type="text" id="labels" placeholder="Comma separated list of labels" v-model="chartlabelString" @keyup="addLabels">
+						<p class="gl_fieldRequiredError" v-if="ifLabelsEmpty">Field required</p>
+					</td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="datasets">Data*</label></th>
-					<td><input class="regular-text" :class="{'gl_fieldRequired': ifDataEmpty}" type="text" id="datasets" placeholder="Numeric data value for each label. Eg. 1,2,3 etc" v-model="chartDatasetDataString" @keyup="addDatasetData"></td>
+					<td>
+						<input class="regular-text" :class="{'gl_fieldRequired': ifDataEmpty}" type="text" id="datasets" placeholder="Numeric data value for each label. Eg. 1,2,3 etc" v-model="chartDatasetDataString" @keyup="addDatasetData">
+						<p class="gl_fieldRequiredError" v-if="ifDataEmpty">Field required</p>
+					</td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="colors">Color*</label></th>
-					<td><input class="regular-text" :class="{'gl_fieldRequired': ifBackgroundEmpty}" type="text" id="colors" placeholder="Color value for each label. Eg. red, green, blue" v-model="chartDatasetBgColorString" @keyup="addDatasetBgColor"></td>
+					<td>
+						<input class="regular-text" :class="{'gl_fieldRequired': ifBackgroundEmpty}" type="text" id="colors" placeholder="Color value for each label. Eg. red, green, blue" v-model="chartDatasetBgColorString" @keyup="addDatasetBgColor">
+						<p class="gl_fieldRequiredError" v-if="ifBackgroundEmpty">Field required</p>
+					</td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="titleText">Chart Title</label></th>
@@ -76,16 +83,15 @@
 				],
 				showTitle: false,
 				showLegend: true,
-				ifLabelEmpty: false,
+				ifLabelsEmpty: false,
 				ifDataEmpty: false,
-				ifBackgroundEmpty: false,
-				fieldsRequired: false
+				ifBackgroundEmpty: false
 			};
 		},
 		methods: {
 			addLabels() {
-				if(this.ifLabelEmpty) {
-					this.ifLabelEmpty = false;
+				if(this.ifLabelsEmpty) {
+					this.ifLabelsEmpty = false;
 				}
 				this.labels = this.chartlabelString.split(',');
 				this.theChart.data.labels = this.labels;
@@ -124,17 +130,14 @@
 			saveGraphData() {
 				let outerThis = this;
 
-				if(this.chartlabelString === '' || this.chartDatasetDataString === '' || this.chartDatasetBgColorString === '') {
-					this.fieldsRequired = true;
-					if(this.chartlabelString === '') {
-						this.ifLabelEmpty = true;
-					}
-					if(this.chartDatasetDataString === '') {
-						this.ifDataEmpty = true;
-					}
-					if(this.chartDatasetBgColorString === '') {
-						this.ifBackgroundEmpty = true;
-					}
+				if(this.chartlabelString === '') {
+					this.ifLabelsEmpty = true;
+				}
+				if(this.chartDatasetDataString === '') {
+					this.ifDataEmpty = true;
+				}
+				if(this.chartDatasetBgColorString === '') {
+					this.ifBackgroundEmpty = true;
 				}
 
 				if(this.chartlabelString !== '' && this.chartDatasetDataString !== '' && this.chartDatasetBgColorString !== '') {
@@ -167,17 +170,14 @@
 			updateGraphData() {
 				let outerThis = this;
 
-				if(this.chartlabelString === '' || this.chartDatasetDataString === '' || this.chartDatasetBgColorString === '') {
-					this.fieldsRequired = true;
-					if(this.chartlabelString === '') {
-						this.ifLabelEmpty = true;
-					}
-					if(this.chartDatasetDataString === '') {
-						this.ifDataEmpty = true;
-					}
-					if(this.chartDatasetBgColorString === '') {
-						this.ifBackgroundEmpty = true;
-					}
+				if(this.chartlabelString === '') {
+					this.ifLabelsEmpty = true;
+				}
+				if(this.chartDatasetDataString === '') {
+					this.ifDataEmpty = true;
+				}
+				if(this.chartDatasetBgColorString === '') {
+					this.ifBackgroundEmpty = true;
 				}
 
 				if(this.chartlabelString !== '' && this.chartDatasetDataString !== '' && this.chartDatasetBgColorString !== '') {

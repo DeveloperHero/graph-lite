@@ -6,13 +6,14 @@
 					<th scope="row" class="gl_backButotnTh">
 						<img src="./../../images/back-arrow.png" @click="goBacktoAllGraphPage" class="gl_backButtonImage">
 					</th>
-					<td class="gl_backButotnTh">
-						<p class="gl_fieldRequiredError" v-if="fieldsRequired">Field(s) required</p>
-					</td>
+					<td></td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="labels">xAsis Labels*</label></th>
-					<td><input class="regular-text" :class="{'gl_fieldRequired': ifxAxesLabelEmpty}" type="text" id="labels" placeholder="Comma separated list of labels" v-model="chartlabelsString" @keyup="addLabels"></td>
+					<td>
+						<input class="regular-text" :class="{'gl_fieldRequired': ifxAxesLabelEmpty}" type="text" id="labels" placeholder="Comma separated list of labels" v-model="chartlabelsString" @keyup="addLabels">
+						<p class="gl_fieldRequiredError" v-if="ifxAxesLabelEmpty">Field required</p>
+					</td>
 				</tr>
 			</table>
 
@@ -25,15 +26,24 @@
 					</tr>
 					<tr>
 						<th scope="row"><label for="datasets">Data*</label></th>
-						<td><input class="regular-text" :class="{'gl_fieldRequired': data.ifDataEmpty}" type="text" id="datasets" placeholder="Numeric data value for each label. Eg. 1,2,3 etc" v-model="data.chartDatasetDataString" @keyup="addDatasetData(index)"></td>
+						<td>
+							<input class="regular-text" :class="{'gl_fieldRequired': data.ifDataEmpty}" type="text" id="datasets" placeholder="Numeric data value for each label. Eg. 1,2,3 etc" v-model="data.chartDatasetDataString" @keyup="addDatasetData(index)">
+							<p class="gl_fieldRequiredError" v-if="data.ifDataEmpty">Field required</p>
+						</td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="colors">Fill Color*</label></th>
-						<td><input class="regular-text" :class="{'gl_fieldRequired': data.ifFillColorEmpty}" type="text" id="colors" v-model="data.backgroundColor" @keyup="addDatasetBgColor(index)"></td>
+						<td>
+							<input class="regular-text" :class="{'gl_fieldRequired': data.ifFillColorEmpty}" type="text" id="colors" v-model="data.backgroundColor" @keyup="addDatasetBgColor(index)">
+							<p class="gl_fieldRequiredError" v-if="data.ifFillColorEmpty">Field required</p>
+						</td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="line_color">Line Color*</label></th>
-						<td><input class="regular-text" :class="{'gl_fieldRequired': data.ifLineColorEmpty}" type="text" id="line_color" v-model="data.borderColor" @keyup="addDatasetborderColor(index)"></td>
+						<td>
+							<input class="regular-text" :class="{'gl_fieldRequired': data.ifLineColorEmpty}" type="text" id="line_color" v-model="data.borderColor" @keyup="addDatasetborderColor(index)">
+							<p class="gl_fieldRequiredError" v-if="data.ifLineColorEmpty">Field required</p>
+						</td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="straight_line">Straight Line</label></th>
@@ -107,7 +117,6 @@
 				showLegend: true,
 				beginAtZero: false,
 				ifxAxesLabelEmpty: false,
-				fieldsRequired: false,
 				datasets: [
 					{
 						label: '',
@@ -227,22 +236,18 @@
 					if(value.chartDatasetDataString === '') {
 						value.ifDataEmpty = true;
 						DatasetHasEmptyValue = false;
-						outerThis.fieldsRequired = true;
 					}
 					if(value.backgroundColor === '') {
 						value.ifFillColorEmpty = true;
 						DatasetHasEmptyValue = false;
-						outerThis.fieldsRequired = true;
 					}
 					if(value.borderColor === '') {
 						value.ifLineColorEmpty = true;
 						DatasetHasEmptyValue = false;
-						outerThis.fieldsRequired = true;
 					}
 				});
 
 				if(this.chartlabelsString === '') {
-					this.fieldsRequired = true;
 					this.ifxAxesLabelEmpty = true;
 				}
 
@@ -288,22 +293,18 @@
 					if(value.chartDatasetDataString === '') {
 						value.ifDataEmpty = true;
 						DatasetHasEmptyValue = false;
-						outerThis.fieldsRequired = true;
 					}
 					if(value.backgroundColor === '') {
 						value.ifFillColorEmpty = true;
 						DatasetHasEmptyValue = false;
-						outerThis.fieldsRequired = true;
 					}
 					if(value.borderColor === '') {
 						value.ifLineColorEmpty = true;
 						DatasetHasEmptyValue = false;
-						outerThis.fieldsRequired = true;
 					}
 				});
 
 				if(this.chartlabelsString === '') {
-					this.fieldsRequired = true;
 					this.ifxAxesLabelEmpty = true;
 				}
 

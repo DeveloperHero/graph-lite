@@ -6,9 +6,7 @@
 					<th scope="row" class="gl_backButotnTh">
 						<img src="./../../images/back-arrow.png" @click="goBacktoAllGraphPage" class="gl_backButtonImage">
 					</th>
-					<td class="gl_backButotnTh">
-						<p class="gl_fieldRequiredError" v-if="fieldsRequired">Field(s) required</p>
-					</td>
+					<td></td>
 				</tr>
 			</table>
 
@@ -37,6 +35,7 @@
 												<label for="radius">Bubble Radius</label>
 												<input class="bubblePoints" :class="{'gl_fieldRequired': data.ifrPointEmpty}" type="number" id="radius" v-model="dataset.data[PIndex].r" @keyup="addDatasetDataPoints(index, PIndex, 'r')" @mouseup="addDatasetDataPoints(index, PIndex, 'r')">
 											</div>
+											<p class="gl_fieldRequiredError" v-if="data.ifxPointEmpty || data.ifyPointEmpty || data.ifrPointEmpty">Field required</p>
 										</div>
 										<div v-if="PIndex != 0">
 											<a href="javascript:void(0)" class="deleteButtonPoint" @click="deleteButtonPoint(index, PIndex)">X</a>
@@ -47,12 +46,18 @@
 							</td>
 					</tr>
 					<tr>
-						<th scope="row" style="padding-top: 5px; padding-bottom: 5px;"><label for="colors">Circle Background Color*</label></th>
-						<td><input class="regular-text" :class="{'gl_fieldRequired': dataset.ifCircleBackgroundEmpty}" type="text" id="colors" v-model="dataset.backgroundColor" @keyup="addDatasetBgColor(index)"></td>
+						<th scope="row" style="padding-top: 15px; padding-bottom: 5px;"><label for="colors">Circle Background Color*</label></th>
+						<td>
+							<input class="regular-text" :class="{'gl_fieldRequired': dataset.ifCircleBackgroundEmpty}" type="text" id="colors" v-model="dataset.backgroundColor" @keyup="addDatasetBgColor(index)">
+							<p class="gl_fieldRequiredError" v-if="dataset.ifCircleBackgroundEmpty">Field required</p>
+						</td>
 					</tr>
 					<tr>
-						<th scope="row" style="padding-top: 5px; padding-bottom: 5px;"><label for="line_color">Circle Border Color*</label></th>
-						<td><input class="regular-text" :class="{'gl_fieldRequired': dataset.ifCicleBorderColorEmpty}" type="text" id="line_color" v-model="dataset.borderColor" @keyup="addDatasetborderColor(index)"></td>
+						<th scope="row" style="padding-top: 15px; padding-bottom: 5px;"><label for="line_color">Circle Border Color*</label></th>
+						<td>
+							<input class="regular-text" :class="{'gl_fieldRequired': dataset.ifCicleBorderColorEmpty}" type="text" id="line_color" v-model="dataset.borderColor" @keyup="addDatasetborderColor(index)">
+							<p class="gl_fieldRequiredError" v-if="dataset.ifCicleBorderColorEmpty">Field required</p>
+						</td>
 					</tr>
 					<tr v-if="index != 0">
 						<th scope="row" class="gl_deleteButtonTh"><label></label></th>
@@ -109,7 +114,6 @@
 				legendPosition: 'top',
 				showTitle: false,
 				showLegend: true,
-				fieldsRequired: false,
 				datasets: [
 					{
 						label: '',
@@ -233,29 +237,24 @@
 					if(value.backgroundColor === '') {
 						value.ifCircleBackgroundEmpty = true;
 						DatasetHasEmptyValue = false;
-						outerThis.fieldsRequired = true;
 					}
 					if(value.borderColor === '') {
 						value.ifCicleBorderColorEmpty = true;
 						DatasetHasEmptyValue = false;
-						outerThis.fieldsRequired = true;
 					}
 
 					value.data.forEach(function(data) {
 						if(data.x === '') {
 							data.ifxPointEmpty = true;
 							DatasetHasEmptyValue = false;
-							outerThis.fieldsRequired = true;
 						}
 						if(data.y === '') {
 							data.ifyPointEmpty = true;
 							DatasetHasEmptyValue = false;
-							outerThis.fieldsRequired = true;
 						}
 						if(data.r === '') {
 							data.ifrPointEmpty = true;
 							DatasetHasEmptyValue = false;
-							outerThis.fieldsRequired = true;
 						}
 					})
 				});
@@ -294,29 +293,24 @@
 					if(value.backgroundColor === '') {
 						value.ifCircleBackgroundEmpty = true;
 						DatasetHasEmptyValue = false;
-						outerThis.fieldsRequired = true;
 					}
 					if(value.borderColor === '') {
 						value.ifCicleBorderColorEmpty = true;
 						DatasetHasEmptyValue = false;
-						outerThis.fieldsRequired = true;
 					}
 
 					value.data.forEach(function(data) {
 						if(data.x === '') {
 							data.ifxPointEmpty = true;
 							DatasetHasEmptyValue = false;
-							outerThis.fieldsRequired = true;
 						}
 						if(data.y === '') {
 							data.ifyPointEmpty = true;
 							DatasetHasEmptyValue = false;
-							outerThis.fieldsRequired = true;
 						}
 						if(data.r === '') {
 							data.ifrPointEmpty = true;
 							DatasetHasEmptyValue = false;
-							outerThis.fieldsRequired = true;
 						}
 					})
 				});
