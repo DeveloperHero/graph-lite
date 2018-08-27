@@ -337,3 +337,7 @@ body::-webkit-scrollbar-track, body::-webkit-scrollbar-thumb, body::-webkit-scro
 .gl_fieldRequired {
     border: 1px solid red !important;
 }
+.gifImg {
+    width: 100% !important;
+    margin-top: 50px !important;
+}

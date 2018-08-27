@@ -88,7 +88,8 @@
 			</table>
 		</div>
 		<div class="graphDiv">
-			<div class="gl_graphChildDiv">
+			<img src="./../../images/radar.gif" class="gifImg" v-if="showGif">
+			<div class="gl_graphChildDiv" v-show="!showGif">
 				<canvas id="radarChart"></canvas>
 			</div>
 		</div>
@@ -108,6 +109,7 @@
 				showTitle: false,
 				showLegend: true,
 				ifLabelsEmpty: false,
+				showGif: true,
 				datasets: [
 					{
 						label: '',
@@ -149,11 +151,13 @@
 				if(this.ifLabelsEmpty) {
 					this.ifLabelsEmpty = false;
 				}
+				this.showGif=false;
 				this.labels = this.chartlabelsString.split(',');
 				this.theChart.data.labels = this.labels;
 				this.theChart.update();
 			},
 			addDatasetLabel(index) {
+				this.showGif=false;
 				this.theChart.data.datasets[index].label = this.datasets[index].label;
 				this.theChart.update();
 			},
@@ -161,6 +165,7 @@
 				if(this.datasets[index].ifDataEmpty) {
 					this.datasets[index].ifDataEmpty = false;
 				}
+				this.showGif=false;
 				this.datasets[index].data = this.datasets[index].chartDatasetDataString.split(',');
 				this.theChart.data.datasets[index].data = this.datasets[index].data;
 				this.theChart.update();
@@ -169,6 +174,7 @@
 				if(this.datasets[index].ifFillColorEmpty) {
 					this.datasets[index].ifFillColorEmpty = false;
 				}
+				this.showGif=false;
 				this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
 				this.theChart.update();
 			},
@@ -176,24 +182,29 @@
 				if(this.datasets[index].ifLineColorEmpty) {
 					this.datasets[index].ifLineColorEmpty = false;
 				}
+				this.showGif=false;
 				this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
 				this.theChart.update();
 			},
 			fillColor(index) {
+				this.showGif=false;
 				this.theChart.data.datasets[index].fill = this.datasets[index].fill;
 				this.theChart.update();
 			},
 			addTitleText() {
 				this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
+				this.showGif=false;
 				this.theChart.options.title.display = this.showTitle;
 				this.theChart.options.title.text = this.titleText;
 				this.theChart.update();
 			},
 			showingGraphLegend() {
+				this.showGif=false;
 				this.theChart.options.legend.display = this.showLegend;
 				this.theChart.update();
 			},
 			changeLegendPosition() {
+				this.showGif=false;
 				this.theChart.options.legend.position = this.legendPosition;
 				this.theChart.update();
 			},
@@ -353,6 +364,7 @@
 				});
 			},
 			forEdit() {
+				this.showGif=false;
 				let outerThis = this;
 				this.chartlabelsString = this.graphData.data.labels.join(", ");
 				this.theChart.data.labels = this.labels = this.graphData.data.labels;
