@@ -3,7 +3,7 @@
 		<div class="graphOptions">
 			<table class="form-table">
 				<tr>
-					<th scope="row" class="gl_backButotnTh"><button type="button" @click="goBacktoAllGraphPage">Go Back</button></th>
+					<th scope="row" class="gl_backButotnTh"><button class="gl_backButton" type="button" @click="goBacktoAllGraphPage">Go Back</button></th>
 					<td></td>
 				</tr>
 			</table>
@@ -95,7 +95,7 @@
 			</table>
 		</div>
 		<div class="graphDiv">
-			<iframe class="tutorialFrame" v-if="showTutorial" width="560" height="315" src="https://www.youtube.com/embed/Hwn4UKc5Bew?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+			<iframe class="tutorialFrame" v-if="showTutorial" width="560" height="315" src="https://www.youtube.com/embed/Hwn4UKc5Bew?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="margin-top: 97px !important"></iframe>
 			<div class="gl_graphChildDiv" v-show="!showTutorial">
 				<canvas id="bubbleChart"></canvas>
 			</div>
@@ -478,7 +478,7 @@
 	}
 	fieldset {
 		width: 100%;
-		border: 1px solid #32373c;
+		border: 1px solid #F0F0F0;
 		padding-left: 10px;
 		margin-bottom: 7px;
 	}

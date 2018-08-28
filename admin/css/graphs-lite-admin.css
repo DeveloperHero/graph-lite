@@ -86,7 +86,7 @@ button.saveGraphData {
     max-height: 343px;
     width: 23%;
     text-align:  center;
-    border:  1px solid #333;
+    border:  1px solid #F0F0F0;
     margin: 5px 5px;
     overflow:  hidden;
 }
@@ -326,6 +326,9 @@ body::-webkit-scrollbar-track, body::-webkit-scrollbar-thumb, body::-webkit-scro
 .gl_backButotnTh {
     padding: 0 !important;
 }
+.gl_backButton {
+    margin-bottom: 30px;
+}
 .gl_backButtonImage {
     width: 40px;
     cursor: pointer;
@@ -341,5 +344,5 @@ body::-webkit-scrollbar-track, body::-webkit-scrollbar-thumb, body::-webkit-scro
 }
 .tutorialFrame {
     margin-left: 5px;
-    margin-top: 50px !important;
+    margin-top: 105px !important;
 }

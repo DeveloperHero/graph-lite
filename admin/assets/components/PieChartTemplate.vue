@@ -3,7 +3,7 @@
 		<div class="graphOptions">
 			<table class="form-table">
 				<tr>
-					<th scope="row" class="gl_backButotnTh"><button type="button" @click="goBacktoAllGraphPage">Go Back</button></th>
+					<th scope="row" class="gl_backButotnTh"><button class="gl_backButton" type="button" @click="goBacktoAllGraphPage">Go Back</button></th>
 					<td></td>
 				</tr>
 				<tr>

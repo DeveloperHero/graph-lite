@@ -3,7 +3,7 @@
 		<div class="graphOptions">
 			<table class="form-table">
 				<tr>
-					<th scope="row" class="gl_backButotnTh"><button type="button" @click="goBacktoAllGraphPage">Go Back</button></th>
+					<th scope="row" class="gl_backButotnTh"><button class="gl_backButton" type="button" @click="goBacktoAllGraphPage">Go Back</button></th>
 					<td></td>
 				</tr>
 				<tr>
@@ -447,7 +447,7 @@
 	}
 	fieldset {
 		width: 100%;
-		border: 1px solid #32373c;
+		border: 1px solid #F0F0F0;
 		padding-left: 10px;
 		margin-bottom: 7px;
 	}
