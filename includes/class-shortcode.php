@@ -20,13 +20,14 @@ class Graph_Lite_Shortcode
 		), $atts ));
 
 		$chart_data = unserialize(get_post_meta( $id, 'graphs_lite_data', true ));
+		$rand_id = uniqid();
 
-		wp_localize_script( GRAPHS_LITE_NAME, 'gl', [
+		wp_localize_script( GRAPHS_LITE_NAME, 'gnc_plugin_data_' . $rand_id, [
 			'chart_id'   => $id,
 			'chart_data' =>	json_encode( $chart_data ),
 		] );
 
-		include plugin_dir_path( __FILE__ ) . '../public/partials/graphs-lite-public-display.php';
+		echo '<div data-attr="' . $rand_id . '" class="gnc-plugin-chart_area gnc-plugin-charts"> <canvas id="gnc-plugin-chart-' . $rand_id . '"></canvas></div>';
 
 		return ob_get_clean();
 	}
