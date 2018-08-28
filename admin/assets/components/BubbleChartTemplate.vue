@@ -95,8 +95,8 @@
 			</table>
 		</div>
 		<div class="graphDiv">
-			<img src="./../../images/bubble.gif" class="gifImg" v-if="showGif">
-			<div class="gl_graphChildDiv" v-show="!showGif">
+			<iframe class="tutorialFrame" v-if="showTutorial" width="560" height="315" src="https://www.youtube.com/embed/Hwn4UKc5Bew?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+			<div class="gl_graphChildDiv" v-show="!showTutorial">
 				<canvas id="bubbleChart"></canvas>
 			</div>
 		</div>
@@ -113,7 +113,7 @@
 				legendPosition: 'top',
 				showTitle: false,
 				showLegend: true,
-				showGif: true,
+				showTutorial: true,
 				datasets: [
 					{
 						label: '',
@@ -180,7 +180,7 @@
 				this.theChart.update();
 			},
 			addDatasetLabel(index) {
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.data.datasets[index].label = this.datasets[index].label;
 				this.theChart.update();
 			},
@@ -189,7 +189,7 @@
 				if(this.datasets[index].data[pIndex][gettingErrorPoint]) {
 					this.datasets[index].data[pIndex][gettingErrorPoint] = false;
 				}
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.data.datasets[index].data[pIndex][point] = this.datasets[index].data[pIndex][point];
 				this.theChart.update();
 			},
@@ -197,7 +197,7 @@
 				if(this.datasets[index].ifCircleBackgroundEmpty) {
 					this.datasets[index].ifCircleBackgroundEmpty = false;
 				}
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
 				this.theChart.update();
 			},
@@ -205,24 +205,24 @@
 				if(this.datasets[index].ifCicleBorderColorEmpty) {
 					this.datasets[index].ifCicleBorderColorEmpty = false;
 				}
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
 				this.theChart.update();
 			},
 			addTitleText() {
 				this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.options.title.display = this.showTitle;
 				this.theChart.options.title.text = this.titleText;
 				this.theChart.update();
 			},
 			showingGraphLegend() {
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.options.legend.display = this.showLegend;
 				this.theChart.update();
 			},
 			changeLegendPosition() {
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.options.legend.position = this.legendPosition;
 				this.theChart.update();
 			},
@@ -391,7 +391,7 @@
 				});
 			},
 			forEdit() {
-				this.showGif=false;
+				this.showTutorial=false;
 				let outerThis = this;
 				this.graphData.data.datasets.forEach(function(value, key) {
 					if(key) {

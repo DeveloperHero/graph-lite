@@ -54,8 +54,8 @@
 			</table>
 		</div>
 		<div class="graphDiv">
-			<img src="./../../images/doughnut.gif" class="gifImg" v-if="showGif">
-			<div class="gl_graphChildDiv" v-show="!showGif">
+			<iframe class="tutorialFrame" v-if="showTutorial" width="560" height="315" src="https://www.youtube.com/embed/Hwn4UKc5Bew?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+			<div class="gl_graphChildDiv" v-show="!showTutorial">
 				<canvas id="DoughnutChart"></canvas>
 			</div>
 		</div>
@@ -85,7 +85,7 @@
 				ifLabelsEmpty: false,
 				ifDataEmpty: false,
 				ifBackgroundEmpty: false,
-				showGif: true
+				showTutorial: true
 			};
 		},
 		methods: {
@@ -93,7 +93,7 @@
 				if(this.ifLabelsEmpty) {
 					this.ifLabelsEmpty = false;
 				}
-				this.showGif=false;
+				this.showTutorial=false;
 				this.labels = this.chartlabelString.split(',');
 				this.theChart.data.labels = this.labels;
 				this.theChart.update();
@@ -102,7 +102,7 @@
 				if(this.ifDataEmpty) {
 					this.ifDataEmpty = false;
 				}
-				this.showGif=false;
+				this.showTutorial=false;
 				this.datasets[0].data = this.chartDatasetDataString.split(',');
 				this.theChart.data.datasets[0].data = this.datasets[0].data;
 				this.theChart.update();
@@ -111,25 +111,25 @@
 				if(this.ifBackgroundEmpty) {
 					this.ifBackgroundEmpty = false;
 				}
-				this.showGif=false;
+				this.showTutorial=false;
 				this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
 				this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor;
 				this.theChart.update();
 			},
 			addTitleText() {
 				this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.options.title.display = this.showTitle;
 				this.theChart.options.title.text = this.titleText;
 				this.theChart.update();
 			},
 			showingGraphLegend() {
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.options.legend.display = this.showLegend;
 				this.theChart.update();
 			},
 			changeLegendPosition() {
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.options.legend.position = this.legendPosition;
 				this.theChart.update();
 			},
@@ -247,7 +247,7 @@
 				});
 			},
 			forEdit() {
-				this.showGif=false;
+				this.showTutorial=false;
 				this.chartlabelString = this.graphData.data.labels.join(", ");
 				this.theChart.data.labels = this.labels = this.graphData.data.labels;
 

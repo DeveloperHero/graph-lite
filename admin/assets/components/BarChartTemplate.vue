@@ -79,8 +79,8 @@
 			</table>
 		</div>
 		<div class="graphDiv">
-			<img src="./../../images/bar.gif" class="gifImg" v-if="showGif">
-			<div class="gl_graphChildDiv" v-show="!showGif">
+			<iframe class="tutorialFrame" v-if="showTutorial" width="560" height="315" src="https://www.youtube.com/embed/Hwn4UKc5Bew?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+			<div class="gl_graphChildDiv" v-show="!showTutorial">
 				<canvas id="barChart"></canvas>
 			</div>
 		</div>
@@ -101,7 +101,7 @@
 				showLegend: true,
 				beginAtZero: false,
 				ifxAxesLabelEmpty: false,
-				showGif: true,
+				showTutorial: true,
 				datasets: [
 					{
 						label: '',
@@ -135,13 +135,13 @@
 				if(this.ifxAxesLabelEmpty) {
 					this.ifxAxesLabelEmpty = false;
 				}
-				this.showGif=false;
+				this.showTutorial=false;
 				this.labels = this.chartlabelsString.split(',');
 				this.theChart.data.labels = this.labels;
 				this.theChart.update();
 			},
 			addDatasetLabel(index) {
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.data.datasets[index].label = this.datasets[index].label;
 				this.theChart.update();
 			},
@@ -149,7 +149,7 @@
 				if(this.datasets[index].ifDataEmpty) {
 					this.datasets[index].ifDataEmpty = false;
 				}
-				this.showGif=false;
+				this.showTutorial=false;
 				this.datasets[index].data = this.datasets[index].chartDatasetDataString.split(',');
 				this.theChart.data.datasets[index].data = this.datasets[index].data;
 				this.theChart.update();
@@ -158,29 +158,29 @@
 				if(this.datasets[index].ifBackgroundEmpty) {
 					this.datasets[index].ifBackgroundEmpty = false;
 				}
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
 				this.theChart.update();
 			},
 			addTitleText() {
 				this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.options.title.display = this.showTitle;
 				this.theChart.options.title.text = this.titleText;
 				this.theChart.update();
 			},
 			yAxesRange() {
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero;
 				this.theChart.update();
 			},
 			showingGraphLegend() {
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.options.legend.display = this.showLegend;
 				this.theChart.update();
 			},
 			changeLegendPosition() {
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.options.legend.position = this.legendPosition;
 				this.theChart.update();
 			},
@@ -338,7 +338,7 @@
 				});
 			},
 			forEdit() {
-				this.showGif=false;
+				this.showTutorial=false;
 				let outerThis = this;
 				this.chartlabelsString = this.graphData.data.labels.join(", ");
 				this.theChart.data.labels = this.labels = this.graphData.data.labels;
