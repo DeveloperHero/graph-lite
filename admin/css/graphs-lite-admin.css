@@ -81,7 +81,9 @@ button.saveGraphData {
 }
 
 .gl_single_graph {
-    display:  inline-block;
+    display:  block;
+    float: left;
+    max-height: 343px;
     width: 23%;
     text-align:  center;
     border:  1px solid #333;
