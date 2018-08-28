@@ -3,16 +3,14 @@
 		<div class="graphOptions">
 			<table class="form-table">
 				<tr>
-					<th scope="row" class="gl_backButotnTh">
-						<img src="./../../images/back-arrow.png" @click="goBacktoAllGraphPage" class="gl_backButtonImage">
-					</th>
+					<th scope="row" class="gl_backButotnTh"><button type="button" @click="goBacktoAllGraphPage">Go Back</button></th>
 					<td></td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="labels">xAsis Labels*</label></th>
 					<td>
 						<input class="regular-text" :class="{'gl_fieldRequired': ifxAxesLabelEmpty}" type="text" id="labels" placeholder="Comma separated list of labels" v-model="chartlabelsString" @keyup="addLabels">
-						<p class="gl_fieldRequiredError" v-if="ifxAxesLabelEmpty">Field required</p>
+						<p class="gl_fieldRequiredError" v-if="ifxAxesLabelEmpty">*required</p>
 					</td>
 				</tr>
 			</table>
@@ -28,21 +26,21 @@
 						<th scope="row"><label for="datasets">Data*</label></th>
 						<td>
 							<input class="regular-text" :class="{'gl_fieldRequired': data.ifDataEmpty}" type="text" id="datasets" placeholder="Numeric data value for each label. Eg. 1,2,3 etc" v-model="data.chartDatasetDataString" @keyup="addDatasetData(index)">
-							<p class="gl_fieldRequiredError" v-if="data.ifDataEmpty">Field required</p>
+							<p class="gl_fieldRequiredError" v-if="data.ifDataEmpty">*required</p>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="colors">Fill Color*</label></th>
 						<td>
 							<input class="regular-text" :class="{'gl_fieldRequired': data.ifFillColorEmpty}" type="text" id="colors" v-model="data.backgroundColor" @keyup="addDatasetBgColor(index)">
-							<p class="gl_fieldRequiredError" v-if="data.ifFillColorEmpty">Field required</p>
+							<p class="gl_fieldRequiredError" v-if="data.ifFillColorEmpty">*required</p>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="line_color">Line Color*</label></th>
 						<td>
 							<input class="regular-text" :class="{'gl_fieldRequired': data.ifLineColorEmpty}" type="text" id="line_color" v-model="data.borderColor" @keyup="addDatasetborderColor(index)">
-							<p class="gl_fieldRequiredError" v-if="data.ifLineColorEmpty">Field required</p>
+							<p class="gl_fieldRequiredError" v-if="data.ifLineColorEmpty">*required</p>
 						</td>
 					</tr>
 					<tr>
@@ -96,8 +94,8 @@
 			</table>
 		</div>
 		<div class="graphDiv">
-			<img src="./../../images/line.gif" class="gifImg" v-if="showGif">
-			<div class="gl_graphChildDiv" v-show="!showGif">
+			<iframe class="tutorialFrame" v-if="showTutorial" width="560" height="315" src="https://www.youtube.com/embed/Hwn4UKc5Bew?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+			<div class="gl_graphChildDiv" v-show="!showTutorial">
 				<canvas id="lineChart"></canvas>
 			</div>
 		</div>
@@ -118,7 +116,7 @@
 				showLegend: true,
 				beginAtZero: false,
 				ifxAxesLabelEmpty: false,
-				showGif: true,
+				showTutorial: true,
 				datasets: [
 					{
 						label: '',
@@ -162,13 +160,13 @@
 				if(this.ifxAxesLabelEmpty) {
 					this.ifxAxesLabelEmpty = false;
 				}
-				this.showGif=false;
+				this.showTutorial=false;
 				this.labels = this.chartlabelsString.split(',');
 				this.theChart.data.labels = this.labels;
 				this.theChart.update();
 			},
 			addDatasetLabel(index) {
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.data.datasets[index].label = this.datasets[index].label;
 				this.theChart.update();
 			},
@@ -176,7 +174,7 @@
 				if(this.datasets[index].ifDataEmpty) {
 					this.datasets[index].ifDataEmpty = false;
 				}
-				this.showGif=false;
+				this.showTutorial=false;
 				this.datasets[index].data = this.datasets[index].chartDatasetDataString.split(',');
 				this.theChart.data.datasets[index].data = this.datasets[index].data;
 				this.theChart.update();
@@ -185,7 +183,7 @@
 				if(this.datasets[index].ifFillColorEmpty) {
 					this.datasets[index].ifFillColorEmpty = false;
 				}
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
 				this.theChart.update();
 			},
@@ -193,39 +191,39 @@
 				if(this.datasets[index].ifLineColorEmpty) {
 					this.datasets[index].ifLineColorEmpty = false;
 				}
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
 				this.theChart.update();
 			},
 			fillColor(index) {
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.data.datasets[index].fill = this.datasets[index].fill;
 				this.theChart.update();
 			},
 			addTitleText() {
 				this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.options.title.display = this.showTitle;
 				this.theChart.options.title.text = this.titleText;
 				this.theChart.update();
 			},
 			showingGraphLegend() {
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.options.legend.display = this.showLegend;
 				this.theChart.update();
 			},
 			changeLegendPosition() {
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.options.legend.position = this.legendPosition;
 				this.theChart.update();
 			},
 			yAxesRange() {
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero;
 				this.theChart.update();
 			},
 			makeLineStraight(index) {
-				this.showGif=false;
+				this.showTutorial=false;
 				if(this.datasets[index].straightLine) {
 					this.datasets[index].lineTension = 0;
 					this.theChart.data.datasets[index].lineTension = 0;
@@ -373,7 +371,7 @@
 				}
 			},
 			onLoad() {
-				let ctx = document.getElementById("lineChart");
+				let ctx = document.getElementById("lineChart").getContext('2d');
 				this.theChart = new Chart(ctx, {
 					type: this.chartType,
 					data: {
@@ -409,7 +407,7 @@
 				});
 			},
 			forEdit() {
-				this.showGif=false;
+				this.showTutorial=false;
 				let outerThis = this;
 				this.chartlabelsString = this.graphData.data.labels.join(", ");
 				this.theChart.data.labels = this.labels = this.graphData.data.labels;

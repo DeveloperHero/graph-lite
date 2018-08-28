@@ -3,30 +3,28 @@
 		<div class="graphOptions">
 			<table class="form-table">
 				<tr>
-					<th scope="row" class="gl_backButotnTh">
-						<img src="./../../images/back-arrow.png" @click="goBacktoAllGraphPage" class="gl_backButtonImage">
-					</th>
+					<th scope="row" class="gl_backButotnTh"><button type="button" @click="goBacktoAllGraphPage">Go Back</button></th>
 					<td></td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="datasets">Data*</label></th>
 					<td>
 						<input class="regular-text" :class="{'gl_fieldRequired': ifDataEmpty}" type="text" id="datasets" placeholder="Numeric data value for each label. Eg. 1,2,3 etc" v-model="chartDatasetDataString" @keyup="addDatasetData">
-						<p class="gl_fieldRequiredError" v-if="ifDataEmpty">Field required</p>
+						<p class="gl_fieldRequiredError" v-if="ifDataEmpty">*required</p>
 					</td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="colors">Color*</label></th>
 					<td>
 						<input class="regular-text" :class="{'gl_fieldRequired': ifBackgroundEmpty}"  type="text" id="colors" placeholder="Color value for each label. Eg. red, green, blue" v-model="chartDatasetBgColorString" @keyup="addDatasetBgColor">
-						<p class="gl_fieldRequiredError" v-if="ifBackgroundEmpty">Field required</p>
+						<p class="gl_fieldRequiredError" v-if="ifBackgroundEmpty">*required</p>
 					</td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="labels">Labels*</label></th>
 					<td>
 						<input class="regular-text" :class="{'gl_fieldRequired': ifLabelsEmpty}" type="text" id="labels" placeholder="Comma separated list of labels" v-model="chartlabelString" @keyup="addLabels">
-						<p class="gl_fieldRequiredError" v-if="ifLabelsEmpty">Field required</p>
+						<p class="gl_fieldRequiredError" v-if="ifLabelsEmpty">*required</p>
 					</td>
 				</tr>
 				<tr>
@@ -56,8 +54,8 @@
 			</table>
 		</div>
 		<div class="graphDiv">
-			<img src="./../../images/polarArea.gif" class="gifImg" v-if="showGif">
-			<div class="gl_graphChildDiv" v-show="!showGif">
+			<iframe class="tutorialFrame" v-if="showTutorial" width="560" height="315" src="https://www.youtube.com/embed/Hwn4UKc5Bew?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+			<div class="gl_graphChildDiv" v-if="!showTutorial">
 				<canvas id="PolarAreaChart"></canvas>
 			</div>
 		</div>
@@ -87,7 +85,7 @@
 				ifLabelsEmpty: false,
 				ifDataEmpty: false,
 				ifBackgroundEmpty: false,
-				showGif: true
+				showTutorial: true
 			};
 		},
 		methods: {
@@ -95,7 +93,7 @@
 				if(this.ifLabelsEmpty) {
 					this.ifLabelsEmpty = false;
 				}
-				this.showGif=false;
+				this.showTutorial=false;
 				this.labels = this.chartlabelString.split(',');
 				this.theChart.data.labels = this.labels;
 				this.theChart.update();
@@ -104,7 +102,7 @@
 				if(this.ifDataEmpty) {
 					this.ifDataEmpty = false;
 				}
-				this.showGif=false;
+				this.showTutorial=false;
 				this.datasets[0].data = this.chartDatasetDataString.split(',');
 				this.theChart.data.datasets[0].data = this.datasets[0].data;
 				this.theChart.update();
@@ -113,25 +111,25 @@
 				if(this.ifBackgroundEmpty) {
 					this.ifBackgroundEmpty = false;
 				}
-				this.showGif=false;
+				this.showTutorial=false;
 				this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
 				this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor;
 				this.theChart.update();
 			},
 			addTitleText() {
 				this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.options.title.display = this.showTitle;
 				this.theChart.options.title.text = this.titleText;
 				this.theChart.update();
 			},
 			showingGraphLegend() {
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.options.legend.display = this.showLegend;
 				this.theChart.update();
 			},
 			changeLegendPosition() {
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.options.legend.position = this.legendPosition;
 				this.theChart.update();
 			},
@@ -223,7 +221,7 @@
 				}
 			},
 			onLoad() {
-				let ctx = document.getElementById("PolarAreaChart");
+				let ctx = document.getElementById("PolarAreaChart").getContext('2d');
 				this.theChart = new Chart(ctx, {
 					type: this.chartType,
 					data: {
@@ -249,7 +247,7 @@
 				});
 			},
 			forEdit() {
-				this.showGif=false;
+				this.showTutorial=false;
 				this.chartlabelString = this.graphData.data.labels.join(", ");
 				this.theChart.data.labels = this.labels = this.graphData.data.labels;
 

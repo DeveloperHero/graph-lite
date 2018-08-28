@@ -3,9 +3,7 @@
 		<div class="graphOptions">
 			<table class="form-table">
 				<tr>
-					<th scope="row" class="gl_backButotnTh">
-						<img src="./../../images/back-arrow.png" @click="goBacktoAllGraphPage" class="gl_backButtonImage">
-					</th>
+					<th scope="row" class="gl_backButotnTh"><button type="button" @click="goBacktoAllGraphPage">Go Back</button></th>
 					<td></td>
 				</tr>
 			</table>
@@ -31,7 +29,7 @@
 												<label for="yPoint">y-point</label>
 												<input class="bubblePoints" :class="{'gl_fieldRequired': data.ifyPointEmpty}" type="number" id="yPoint" v-model="dataset.data[PIndex].y" @keyup="addDatasetDataPoints(index, PIndex, 'y')" @mouseup="addDatasetDataPoints(index, PIndex, 'y')">
 											</div>
-											<p class="gl_fieldRequiredError" v-if="data.ifxPointEmpty || data.ifyPointEmpty">Field required</p>
+											<p class="gl_fieldRequiredError" v-if="data.ifxPointEmpty || data.ifyPointEmpty">*required</p>
 										</div>
 										<div v-if="PIndex != 0">
 											<a href="javascript:void(0)" class="deleteButtonPoint" @click="deleteButtonPoint(index, PIndex)">X</a>
@@ -45,14 +43,14 @@
 						<th scope="row" style="padding-top: 5px; padding-bottom: 5px"><label for="colors">Circle Background Color*</label></th>
 						<td>
 							<input class="regular-text" :class="{'gl_fieldRequired': dataset.ifCircleBackgroundEmpty}" type="text" id="colors" v-model="dataset.backgroundColor" @keyup="addDatasetBgColor(index)">
-							<p class="gl_fieldRequiredError" v-if="dataset.ifCircleBackgroundEmpty">Field required</p>
+							<p class="gl_fieldRequiredError" v-if="dataset.ifCircleBackgroundEmpty">*required</p>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row" style="padding-top: 5px; padding-bottom: 5px"><label for="line_color">Circle Border Color*</label></th>
 						<td>
 							<input class="regular-text" :class="{'gl_fieldRequired': dataset.ifCicleBorderColorEmpty}" type="text" id="line_color" v-model="dataset.borderColor" @keyup="addDatasetborderColor(index)">
-							<p class="gl_fieldRequiredError" v-if="dataset.ifCicleBorderColorEmpty">Field required</p>
+							<p class="gl_fieldRequiredError" v-if="dataset.ifCicleBorderColorEmpty">*required</p>
 						</td>
 					</tr>
 					<tr v-if="index != 0">
@@ -94,8 +92,8 @@
 			</table>
 		</div>
 		<div class="graphDiv">
-			<img src="./../../images/scatter.gif" class="gifImg" v-if="showGif">
-			<div class="gl_graphChildDiv" v-show="!showGif">
+			<iframe class="tutorialFrame" v-if="showTutorial" width="560" height="315" src="https://www.youtube.com/embed/Hwn4UKc5Bew?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+			<div class="gl_graphChildDiv" v-show="!showTutorial">
 				<canvas id="scatterChart"></canvas>
 			</div>
 		</div>
@@ -112,7 +110,7 @@
 				legendPosition: 'top',
 				showTitle: false,
 				showLegend: true,
-				showGif: true,
+				showTutorial: true,
 				datasets: [
 					{
 						label: '',
@@ -166,13 +164,13 @@
 				this.theChart.update();
 			},
 			addBubblePoint(index) {
-				this.showGif=false;
+				this.showTutorial=false;
 				this.datasets[index].data.push({ x: '', y: '', ifxPointEmpty: false, ifyPointEmpty: false });
 				this.theChart.data.datasets[index].data.push({x: '', y: ''});
 				this.theChart.update();
 			},
 			addDatasetLabel(index) {
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.data.datasets[index].label = this.datasets[index].label;
 				this.theChart.update();
 			},
@@ -181,7 +179,7 @@
 				if(this.datasets[index].data[pIndex][gettingErrorPoint]) {
 					this.datasets[index].data[pIndex][gettingErrorPoint] = false;
 				}
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.data.datasets[index].data[pIndex][point] = this.datasets[index].data[pIndex][point];
 				this.theChart.update();
 			},
@@ -189,7 +187,7 @@
 				if(this.datasets[index].ifCircleBackgroundEmpty) {
 					this.datasets[index].ifCircleBackgroundEmpty = false;
 				}
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
 				this.theChart.update();
 			},
@@ -197,24 +195,24 @@
 				if(this.datasets[index].ifCicleBorderColorEmpty) {
 					this.datasets[index].ifCicleBorderColorEmpty = false;
 				}
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
 				this.theChart.update();
 			},
 			addTitleText() {
 				this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.options.title.display = this.showTitle;
 				this.theChart.options.title.text = this.titleText;
 				this.theChart.update();
 			},
 			showingGraphLegend() {
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.options.legend.display = this.showLegend;
 				this.theChart.update();
 			},
 			changeLegendPosition() {
-				this.showGif=false;
+				this.showTutorial=false;
 				this.theChart.options.legend.position = this.legendPosition;
 				this.theChart.update();
 			},
@@ -346,7 +344,7 @@
 				}
 			},
 			onLoad() {
-				let ctx = document.getElementById("scatterChart");
+				let ctx = document.getElementById("scatterChart").getContext('2d');
 				this.theChart = new Chart(ctx, {
 					type: this.chartType,
 					data: {
@@ -377,7 +375,7 @@
 				});
 			},
 			forEdit() {
-				this.showGif=false;
+				this.showTutorial=false;
 				let outerThis = this;
 				this.graphData.data.datasets.forEach(function(value, key) {
 					if(key) {

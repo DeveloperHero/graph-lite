@@ -63,7 +63,7 @@
 			onLoad() {
 				let outerThis = this;
 				this.allGraph.forEach(function(value, key) {
-					var ctx = document.getElementById(key);
+					var ctx = document.getElementById(key).getContext('2d');
 					outerThis.theChart[key] = new Chart(ctx, {
 						type: value.type,
 						data: value.data,

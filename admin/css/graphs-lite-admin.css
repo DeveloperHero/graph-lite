@@ -81,7 +81,9 @@ button.saveGraphData {
 }
 
 .gl_single_graph {
-    display:  inline-block;
+    display:  block;
+    float: left;
+    max-height: 343px;
     width: 23%;
     text-align:  center;
     border:  1px solid #333;
@@ -267,9 +269,9 @@ div#gl-admin-meta-box h2.hndle.ui-sortable-handle {
     display: none;
 }
 
-div#gl-admin-meta-box h2.hndle, button.handlediv {
+/*div#gl-admin-meta-box h2.hndle, button.handlediv {
     display:  none !important;
-}
+}*/
 
 body::-webkit-scrollbar-track, body::-webkit-scrollbar-thumb, body::-webkit-scrollbar {
     display: none;
@@ -330,14 +332,14 @@ body::-webkit-scrollbar-track, body::-webkit-scrollbar-thumb, body::-webkit-scro
 }
 .gl_fieldRequiredError {
     color: red;
-    font-size: 14px !important;
+    font-size: 10px !important;
     font-weight: bold;
-    margin-top: 0px !important;
+    /*margin-top: 0px !important;*/
 }
 .gl_fieldRequired {
     border: 1px solid red !important;
 }
-.gifImg {
-    width: 100% !important;
+.tutorialFrame {
+    margin-left: 5px;
     margin-top: 50px !important;
 }
