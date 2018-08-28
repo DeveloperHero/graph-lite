@@ -10,7 +10,7 @@
 					<th scope="row"><label for="labels">xAsis Labels*</label></th>
 					<td>
 						<input class="regular-text" :class="{'gl_fieldRequired': ifxAxesLabelEmpty}" type="text" id="labels" placeholder="Comma separated list of labels" v-model="chartlabelsString" @keyup="addLabels">
-						<p class="gl_fieldRequiredError" v-if="ifxAxesLabelEmpty">Field required</p>
+						<p class="gl_fieldRequiredError" v-if="ifxAxesLabelEmpty">*required</p>
 					</td>
 				</tr>
 			</table>
@@ -26,14 +26,14 @@
 						<th scope="row"><label for="datasets">Data*</label></th>
 						<td>
 							<input class="regular-text" :class="{'gl_fieldRequired': data.ifDataEmpty}" type="text" id="datasets" placeholder="Numeric data value for each label. Eg. 1,2,3 etc" v-model="data.chartDatasetDataString" @keyup="addDatasetData(index)">
-							<p class="gl_fieldRequiredError" v-if="data.ifDataEmpty">Field required</p>
+							<p class="gl_fieldRequiredError" v-if="data.ifDataEmpty">*required</p>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="colors">Color*</label></th>
 						<td>
 							<input class="regular-text" :class="{'gl_fieldRequired': data.ifBackgroundEmpty}" type="text" id="colors" placeholder="Color value for bar. Eg. red" v-model="data.backgroundColor" @keyup="addDatasetBgColor(index)">
-							<p class="gl_fieldRequiredError" v-if="data.ifBackgroundEmpty">Field required</p>
+							<p class="gl_fieldRequiredError" v-if="data.ifBackgroundEmpty">*required</p>
 						</td>
 					</tr>
 					<tr v-if="index != 0">
@@ -304,7 +304,7 @@
 				}
 			},
 			onLoad() {
-				let ctx = document.getElementById("barChart");
+				let ctx = document.getElementById("barChart").getContext('2d');
 				this.theChart = new Chart(ctx, {
 					type: this.chartType,
 					data: {

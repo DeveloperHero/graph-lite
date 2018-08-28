@@ -332,9 +332,9 @@ body::-webkit-scrollbar-track, body::-webkit-scrollbar-thumb, body::-webkit-scro
 }
 .gl_fieldRequiredError {
     color: red;
-    font-size: 14px !important;
+    font-size: 10px !important;
     font-weight: bold;
-    margin-top: 0px !important;
+    /*margin-top: 0px !important;*/
 }
 .gl_fieldRequired {
     border: 1px solid red !important;

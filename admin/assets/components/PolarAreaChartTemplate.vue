@@ -10,21 +10,21 @@
 					<th scope="row"><label for="datasets">Data*</label></th>
 					<td>
 						<input class="regular-text" :class="{'gl_fieldRequired': ifDataEmpty}" type="text" id="datasets" placeholder="Numeric data value for each label. Eg. 1,2,3 etc" v-model="chartDatasetDataString" @keyup="addDatasetData">
-						<p class="gl_fieldRequiredError" v-if="ifDataEmpty">Field required</p>
+						<p class="gl_fieldRequiredError" v-if="ifDataEmpty">*required</p>
 					</td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="colors">Color*</label></th>
 					<td>
 						<input class="regular-text" :class="{'gl_fieldRequired': ifBackgroundEmpty}"  type="text" id="colors" placeholder="Color value for each label. Eg. red, green, blue" v-model="chartDatasetBgColorString" @keyup="addDatasetBgColor">
-						<p class="gl_fieldRequiredError" v-if="ifBackgroundEmpty">Field required</p>
+						<p class="gl_fieldRequiredError" v-if="ifBackgroundEmpty">*required</p>
 					</td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="labels">Labels*</label></th>
 					<td>
 						<input class="regular-text" :class="{'gl_fieldRequired': ifLabelsEmpty}" type="text" id="labels" placeholder="Comma separated list of labels" v-model="chartlabelString" @keyup="addLabels">
-						<p class="gl_fieldRequiredError" v-if="ifLabelsEmpty">Field required</p>
+						<p class="gl_fieldRequiredError" v-if="ifLabelsEmpty">*required</p>
 					</td>
 				</tr>
 				<tr>
@@ -55,7 +55,7 @@
 		</div>
 		<div class="graphDiv">
 			<iframe class="tutorialFrame" v-if="showTutorial" width="560" height="315" src="https://www.youtube.com/embed/Hwn4UKc5Bew?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-			<div class="gl_graphChildDiv" v-show="!showTutorial">
+			<div class="gl_graphChildDiv" v-if="!showTutorial">
 				<canvas id="PolarAreaChart"></canvas>
 			</div>
 		</div>
@@ -221,7 +221,7 @@
 				}
 			},
 			onLoad() {
-				let ctx = document.getElementById("PolarAreaChart");
+				let ctx = document.getElementById("PolarAreaChart").getContext('2d');
 				this.theChart = new Chart(ctx, {
 					type: this.chartType,
 					data: {

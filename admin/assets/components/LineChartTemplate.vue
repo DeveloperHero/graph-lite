@@ -10,7 +10,7 @@
 					<th scope="row"><label for="labels">xAsis Labels*</label></th>
 					<td>
 						<input class="regular-text" :class="{'gl_fieldRequired': ifxAxesLabelEmpty}" type="text" id="labels" placeholder="Comma separated list of labels" v-model="chartlabelsString" @keyup="addLabels">
-						<p class="gl_fieldRequiredError" v-if="ifxAxesLabelEmpty">Field required</p>
+						<p class="gl_fieldRequiredError" v-if="ifxAxesLabelEmpty">*required</p>
 					</td>
 				</tr>
 			</table>
@@ -26,21 +26,21 @@
 						<th scope="row"><label for="datasets">Data*</label></th>
 						<td>
 							<input class="regular-text" :class="{'gl_fieldRequired': data.ifDataEmpty}" type="text" id="datasets" placeholder="Numeric data value for each label. Eg. 1,2,3 etc" v-model="data.chartDatasetDataString" @keyup="addDatasetData(index)">
-							<p class="gl_fieldRequiredError" v-if="data.ifDataEmpty">Field required</p>
+							<p class="gl_fieldRequiredError" v-if="data.ifDataEmpty">*required</p>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="colors">Fill Color*</label></th>
 						<td>
 							<input class="regular-text" :class="{'gl_fieldRequired': data.ifFillColorEmpty}" type="text" id="colors" v-model="data.backgroundColor" @keyup="addDatasetBgColor(index)">
-							<p class="gl_fieldRequiredError" v-if="data.ifFillColorEmpty">Field required</p>
+							<p class="gl_fieldRequiredError" v-if="data.ifFillColorEmpty">*required</p>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="line_color">Line Color*</label></th>
 						<td>
 							<input class="regular-text" :class="{'gl_fieldRequired': data.ifLineColorEmpty}" type="text" id="line_color" v-model="data.borderColor" @keyup="addDatasetborderColor(index)">
-							<p class="gl_fieldRequiredError" v-if="data.ifLineColorEmpty">Field required</p>
+							<p class="gl_fieldRequiredError" v-if="data.ifLineColorEmpty">*required</p>
 						</td>
 					</tr>
 					<tr>
@@ -371,7 +371,7 @@
 				}
 			},
 			onLoad() {
-				let ctx = document.getElementById("lineChart");
+				let ctx = document.getElementById("lineChart").getContext('2d');
 				this.theChart = new Chart(ctx, {
 					type: this.chartType,
 					data: {
