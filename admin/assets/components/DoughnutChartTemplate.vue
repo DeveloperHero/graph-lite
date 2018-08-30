@@ -23,7 +23,13 @@
 				<tr>
 					<th scope="row"><label for="colors">Color*</label></th>
 					<td>
-						<input class="regular-text" :class="{'gl_fieldRequired': ifBackgroundEmpty}" type="text" id="colors" placeholder="Color value for each label. Eg. red, green, blue" v-model="chartDatasetBgColorString" @keyup="addDatasetBgColor">
+						<input class="regular-text" :class="{'gl_fieldRequired': ifBackgroundEmpty}" type="text" id="colors" placeholder="Color value for each label. Eg. red, green, blue" v-model="chartDatasetBgColorString" @keyup="addDatasetBgColor" @focus="showBackgroundColorPickerField">
+						<chrome-picker v-model="setBackgroundColor" v-if="backgroundColorFieldFocused" />
+						<div>
+							<button class="gl_colorPickerButton" type="button" @click="pickBackgroundColor" v-if="backgroundColorFieldFocused">Pick</button>
+							<button class="gl_colorPickerButton" type="button" @click="hideBackgroundColorPickerField" v-if="backgroundColorFieldFocused">Close</button>
+						</div>
+						<div style="clear: both;"></div>
 						<p class="gl_fieldRequiredError" v-if="ifBackgroundEmpty">*required</p>
 					</td>
 				</tr>
@@ -63,6 +69,8 @@
 </template>
 
 <script type="text/javascript">
+	import { Chrome } from 'vue-color';
+
 	export default {
 		props: ['graphData', 'graphIndex'],
 		data() {
@@ -73,6 +81,8 @@
 				chartDatasetBgColorString: '',
 				titleText: '',
 				legendPosition: 'top',
+				setBackgroundColor: '',
+				labelsConcatCount: 0,
 				labels: [],
 				datasets: [
 					{
@@ -85,8 +95,12 @@
 				ifLabelsEmpty: false,
 				ifDataEmpty: false,
 				ifBackgroundEmpty: false,
-				showTutorial: true
+				showTutorial: true,
+				backgroundColorFieldFocused: false
 			};
+		},
+		components: {
+			'chrome-picker': Chrome
 		},
 		methods: {
 			addLabels() {
@@ -94,8 +108,7 @@
 					this.ifLabelsEmpty = false;
 				}
 				this.showTutorial=false;
-				this.labels = this.chartlabelString.split(',');
-				this.theChart.data.labels = this.labels;
+				this.theChart.data.labels = this.labels = this.chartlabelString.split(',');
 				this.theChart.update();
 			},
 			addDatasetData() {
@@ -103,17 +116,40 @@
 					this.ifDataEmpty = false;
 				}
 				this.showTutorial=false;
-				this.datasets[0].data = this.chartDatasetDataString.split(',');
-				this.theChart.data.datasets[0].data = this.datasets[0].data;
+				this.theChart.data.datasets[0].data = this.datasets[0].data = this.chartDatasetDataString.split(',');
 				this.theChart.update();
+			},
+			showBackgroundColorPickerField() {
+				this.backgroundColorFieldFocused = true;
+			},
+			hideBackgroundColorPickerField() {
+				this.backgroundColorFieldFocused = false;
+			},
+			pickBackgroundColor() {
+				if(this.ifBackgroundEmpty) {
+					this.ifBackgroundEmpty = false;
+				}
+				this.showTutorial=false;
+				if(this.labelsConcatCount > 0) {
+					this.chartDatasetBgColorString = this.chartDatasetBgColorString + ',' + this.setBackgroundColor.hex;
+				} else {
+					this.chartDatasetBgColorString = this.setBackgroundColor.hex;
+				}
+				this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
+				this.theChart.update();
+				this.backgroundColorFieldFocused = false;
+				this.labelsConcatCount = this.datasets[0].backgroundColor.length;
 			},
 			addDatasetBgColor() {
 				if(this.ifBackgroundEmpty) {
 					this.ifBackgroundEmpty = false;
 				}
 				this.showTutorial=false;
-				this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
-				this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor;
+				this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
+				if(this.chartDatasetBgColorString === '') {
+					this.datasets[0].backgroundColor.length = 0;
+				}
+				this.labelsConcatCount = this.datasets[0].backgroundColor.length;
 				this.theChart.update();
 			},
 			addTitleText() {
@@ -253,6 +289,7 @@
 
 				this.chartDatasetBgColorString = this.graphData.data.datasets[0].backgroundColor.join(", ");
 				this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.graphData.data.datasets[0].backgroundColor;
+				this.labelsConcatCount = this.datasets[0].backgroundColor.length;
 
 				this.chartDatasetDataString = this.graphData.data.datasets[0].data.join(", ");
 				this.theChart.data.datasets[0].data = this.datasets[0].data = this.graphData.data.datasets[0].data;
@@ -309,5 +346,19 @@
 	}
 	.form-table th {
 		width: 25%;
+	}
+	.vc-chrome-toggle-btn {
+		display: none !important;
+	}
+	.gl_colorPickerButton {
+		background-color: #FFFFFF !important;
+		color: #969696 !important;
+		border: 1px solid #ddd !important;
+		margin-top: 2px;
+		display: block;
+	}
+	.vc-chrome {
+		float: left;
+		margin: 2px 3px 0px 2px;
 	}
 </style>

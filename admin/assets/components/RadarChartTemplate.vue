@@ -32,14 +32,26 @@
 					<tr>
 						<th scope="row"><label for="colors">Fill Color*</label></th>
 						<td>
-							<input class="regular-text" :class="{'gl_fieldRequired': data.ifFillColorEmpty}" type="text" id="colors" v-model="data.backgroundColor" @keyup="addDatasetBgColor(index)">
+							<input class="regular-text" :class="{'gl_fieldRequired': data.ifFillColorEmpty}" type="text" id="colors" v-model="data.backgroundColor" @keyup="addDatasetBgColor(index)" @focus="showBackgroundColorPickerField(index)">
+							<chrome-picker v-model="setBackgroundColor" v-if="data.backgroundColorFieldFocused" />
+							<div>
+								<button class="gl_colorPickerButton" type="button" @click="pickBackgroundColor(index)" v-if="data.backgroundColorFieldFocused">Pick</button>
+								<button class="gl_colorPickerButton" type="button" @click="hideBackgroundColorPickerField(index)" v-if="data.backgroundColorFieldFocused">Close</button>
+							</div>
+							<div style="clear: both;"></div>
 							<p class="gl_fieldRequiredError" v-if="data.ifFillColorEmpty">*required</p>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="line_color">Line Color*</label></th>
 						<td>
-							<input class="regular-text" :class="{'gl_fieldRequired': data.ifLineColorEmpty}" type="text" id="line_color" v-model="data.borderColor" @keyup="addDatasetborderColor(index)">
+							<input class="regular-text" :class="{'gl_fieldRequired': data.ifLineColorEmpty}" type="text" id="line_color" v-model="data.borderColor" @keyup="addDatasetborderColor(index)" @focus="showBorderColorPickerField(index)">
+							<chrome-picker v-model="setBorderColor" v-if="data.borderColorFieldFocused" />
+							<div>
+								<button class="gl_colorPickerButton" type="button" @click="pickBorderColor(index)" v-if="data.borderColorFieldFocused">Pick</button>
+								<button class="gl_colorPickerButton" type="button" @click="hideBorderColorPickerField(index)" v-if="data.borderColorFieldFocused">Close</button>
+							</div>
+							<div style="clear: both;"></div>
 							<p class="gl_fieldRequiredError" v-if="data.ifLineColorEmpty">*required</p>
 						</td>
 					</tr>
@@ -95,6 +107,8 @@
 </template>
 
 <script type="text/javascript">
+	import { Chrome } from 'vue-color';
+
 	export default {
 		props: ['graphData', 'graphIndex'],
 		data() {
@@ -103,6 +117,8 @@
 				chartlabelsString: '',
 				titleText: '',
 				legendPosition: 'top',
+				setBackgroundColor: '',
+				setBorderColor: '',
 				labels: [],
 				showTitle: false,
 				showLegend: true,
@@ -118,10 +134,15 @@
 						fill: false,
 						ifDataEmpty: false,
 						ifFillColorEmpty: false,
-						ifLineColorEmpty: false
+						ifLineColorEmpty: false,
+						backgroundColorFieldFocused: false,
+						borderColorFieldFocused: false
 					}
 				]
 			};
+		},
+		components: {
+			'chrome-picker': Chrome
 		},
 		methods: {
 			addDataset() {
@@ -134,7 +155,9 @@
 					fill: false,
 					ifDataEmpty: false,
 					ifFillColorEmpty: false,
-					ifLineColorEmpty: false
+					ifLineColorEmpty: false,
+					backgroundColorFieldFocused: false,
+					borderColorFieldFocused: false
 				});
 				this.theChart.data.datasets.push({
 					label: '',
@@ -168,6 +191,21 @@
 				this.theChart.data.datasets[index].data = this.datasets[index].data;
 				this.theChart.update();
 			},
+			showBackgroundColorPickerField(index) {
+				this.datasets[index].backgroundColorFieldFocused = true;
+			},
+			hideBackgroundColorPickerField(index) {
+				this.datasets[index].backgroundColorFieldFocused = false;
+			},
+			pickBackgroundColor(index) {
+				if(this.datasets[index].ifFillColorEmpty) {
+					this.datasets[index].ifFillColorEmpty = false;
+				}
+				this.showTutorial=false;
+				this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor = this.setBackgroundColor.hex;
+				this.theChart.update();
+				this.datasets[index].backgroundColorFieldFocused = false;
+			},
 			addDatasetBgColor(index) {
 				if(this.datasets[index].ifFillColorEmpty) {
 					this.datasets[index].ifFillColorEmpty = false;
@@ -175,6 +213,21 @@
 				this.showTutorial=false;
 				this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
 				this.theChart.update();
+			},
+			showBorderColorPickerField(index) {
+				this.datasets[index].borderColorFieldFocused = true;
+			},
+			hideBorderColorPickerField(index) {
+				this.datasets[index].borderColorFieldFocused = false;
+			},
+			pickBorderColor(index) {
+				if(this.datasets[index].ifLineColorEmpty) {
+					this.datasets[index].ifLineColorEmpty = false;
+				}
+				this.showTutorial=false;
+				this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor = this.setBorderColor.hex;
+				this.theChart.update();
+				this.datasets[index].borderColorFieldFocused = false;
 			},
 			addDatasetborderColor(index) {
 				if(this.datasets[index].ifLineColorEmpty) {
@@ -368,7 +421,7 @@
 				this.theChart.data.labels = this.labels = this.graphData.data.labels;
 				this.graphData.data.datasets.forEach(function(value, key) {
 					if(key) {
-						outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor:'', ifDataEmpty: false, ifFillColorEmpty: false, ifLineColorEmpty: false });
+						outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor:'', ifDataEmpty: false, ifFillColorEmpty: false, ifLineColorEmpty: false, backgroundColorFieldFocused: false, borderColorFieldFocused: false });
 						outerThis.theChart.data.datasets.push({ label: '', data: [], backgroundColor:'' });
 					}
 					outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = outerThis.graphData.data.datasets[key].label;
@@ -456,5 +509,19 @@
 	}
 	fieldset table {
 		margin-top: 0 !important;
+	}
+	.vc-chrome-toggle-btn {
+		display: none !important;
+	}
+	.gl_colorPickerButton {
+		background-color: #FFFFFF !important;
+		color: #969696 !important;
+		border: 1px solid #ddd !important;
+		margin-top: 2px;
+		display: block;
+	}
+	.vc-chrome {
+		float: left;
+		margin: 2px 3px 0px 2px;
 	}
 </style>
