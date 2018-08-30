@@ -2702,6 +2702,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 			editedGraphIdNo: '',
 			legendPosition: 'top',
 			setBackgroundColor: '',
+			backgroundConcatCount: 0,
 			labels: [],
 			datasets: [{
 				data: [],
@@ -2747,7 +2748,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 				this.ifBackgroundEmpty = false;
 			}
 			this.showTutorial = false;
-			if (this.labelsConcatCount > 0) {
+			if (this.backgroundConcatCount > 0) {
 				this.chartDatasetBgColorString = this.chartDatasetBgColorString + ',' + this.setBackgroundColor.hex;
 			} else {
 				this.chartDatasetBgColorString = this.setBackgroundColor.hex;
@@ -2755,7 +2756,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
 			this.theChart.update();
 			this.backgroundColorFieldFocused = false;
-			this.labelsConcatCount = this.datasets[0].backgroundColor.length;
+			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
 		},
 		addDatasetBgColor() {
 			if (this.ifBackgroundEmpty) {
@@ -2766,6 +2767,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 			if (this.chartDatasetBgColorString === '') {
 				this.datasets[0].backgroundColor.length = 0;
 			}
+			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
 			this.theChart.update();
 		},
 		addTitleText() {
@@ -2901,6 +2903,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 			this.chartDatasetBgColorString = this.graphData.data.datasets[0].backgroundColor.join(", ");
 			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.graphData.data.datasets[0].backgroundColor;
+			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
 
 			this.chartDatasetDataString = this.graphData.data.datasets[0].data.join(", ");
 			this.theChart.data.datasets[0].data = this.datasets[0].data = this.graphData.data.datasets[0].data;
@@ -3015,7 +3018,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 			titleText: '',
 			legendPosition: 'top',
 			setBackgroundColor: '',
-			labelsConcatCount: 0,
+			backgroundConcatCount: 0,
 			labels: [],
 			datasets: [{
 				data: [],
@@ -3061,7 +3064,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 				this.ifBackgroundEmpty = false;
 			}
 			this.showTutorial = false;
-			if (this.labelsConcatCount > 0) {
+			if (this.backgroundConcatCount > 0) {
 				this.chartDatasetBgColorString = this.chartDatasetBgColorString + ',' + this.setBackgroundColor.hex;
 			} else {
 				this.chartDatasetBgColorString = this.setBackgroundColor.hex;
@@ -3069,7 +3072,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
 			this.theChart.update();
 			this.backgroundColorFieldFocused = false;
-			this.labelsConcatCount = this.datasets[0].backgroundColor.length;
+			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
 		},
 		addDatasetBgColor() {
 			if (this.ifBackgroundEmpty) {
@@ -3080,7 +3083,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 			if (this.chartDatasetBgColorString === '') {
 				this.datasets[0].backgroundColor.length = 0;
 			}
-			this.labelsConcatCount = this.datasets[0].backgroundColor.length;
+			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
 			this.theChart.update();
 		},
 		addTitleText() {
@@ -3216,7 +3219,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 			this.chartDatasetBgColorString = this.graphData.data.datasets[0].backgroundColor.join(", ");
 			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.graphData.data.datasets[0].backgroundColor;
-			this.labelsConcatCount = this.datasets[0].backgroundColor.length;
+			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
 
 			this.chartDatasetDataString = this.graphData.data.datasets[0].data.join(", ");
 			this.theChart.data.datasets[0].data = this.datasets[0].data = this.graphData.data.datasets[0].data;
@@ -3792,6 +3795,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 			titleText: '',
 			legendPosition: 'top',
 			setBackgroundColor: '',
+			backgroundConcatCount: 0,
 			labels: [],
 			datasets: [{
 				data: [],
@@ -3837,7 +3841,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 				this.ifBackgroundEmpty = false;
 			}
 			this.showTutorial = false;
-			if (this.labelsConcatCount > 0) {
+			if (this.backgroundConcatCount > 0) {
 				this.chartDatasetBgColorString = this.chartDatasetBgColorString + ',' + this.setBackgroundColor.hex;
 			} else {
 				this.chartDatasetBgColorString = this.setBackgroundColor.hex;
@@ -3845,7 +3849,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
 			this.theChart.update();
 			this.backgroundColorFieldFocused = false;
-			this.labelsConcatCount = this.datasets[0].backgroundColor.length;
+			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
 		},
 		addDatasetBgColor() {
 			if (this.ifBackgroundEmpty) {
@@ -3856,6 +3860,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 			if (this.chartDatasetBgColorString === '') {
 				this.datasets[0].backgroundColor.length = 0;
 			}
+			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
 			this.theChart.update();
 		},
 		addTitleText() {
@@ -3991,6 +3996,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 			this.chartDatasetBgColorString = this.graphData.data.datasets[0].backgroundColor.join(", ");
 			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.graphData.data.datasets[0].backgroundColor;
+			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
 
 			this.chartDatasetDataString = this.graphData.data.datasets[0].data.join(", ");
 			this.theChart.data.datasets[0].data = this.datasets[0].data = this.graphData.data.datasets[0].data;
@@ -16799,7 +16805,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__ = __webpack_require__(10);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_af3eea40_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_a7612cd2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(41);
 function injectStyle (ssrContext) {
   __webpack_require__(39)
 }
@@ -16819,7 +16825,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_af3eea40_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_a7612cd2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -16840,7 +16846,7 @@ var content = __webpack_require__(40);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(1)("fbca27a6", content, true, {});
+var update = __webpack_require__(1)("74223eac", content, true, {});
 
 /***/ }),
 /* 40 */
@@ -16873,7 +16879,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(11);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_9da34d7a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(45);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_719aeef2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(45);
 function injectStyle (ssrContext) {
   __webpack_require__(43)
 }
@@ -16893,7 +16899,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DoughnutChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_9da34d7a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_719aeef2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -16914,7 +16920,7 @@ var content = __webpack_require__(44);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(1)("3ac4f263", content, true, {});
+var update = __webpack_require__(1)("64e7cb28", content, true, {});
 
 /***/ }),
 /* 44 */
@@ -17021,7 +17027,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(13);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_fd200154_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(53);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4dda8882_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(53);
 function injectStyle (ssrContext) {
   __webpack_require__(51)
 }
@@ -17041,7 +17047,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PolarAreaChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_fd200154_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4dda8882_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -17062,7 +17068,7 @@ var content = __webpack_require__(52);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(1)("7b68d8e0", content, true, {});
+var update = __webpack_require__(1)("e5b96716", content, true, {});
 
 /***/ }),
 /* 52 */

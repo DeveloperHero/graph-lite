@@ -82,6 +82,7 @@
 				titleText: '',
 				legendPosition: 'top',
 				setBackgroundColor: '',
+				backgroundConcatCount: 0,
 				labels: [],
 				datasets: [
 					{
@@ -129,7 +130,7 @@
 					this.ifBackgroundEmpty = false;
 				}
 				this.showTutorial=false;
-				if(this.labelsConcatCount > 0) {
+				if(this.backgroundConcatCount > 0) {
 					this.chartDatasetBgColorString = this.chartDatasetBgColorString + ',' + this.setBackgroundColor.hex;
 				} else {
 					this.chartDatasetBgColorString = this.setBackgroundColor.hex;
@@ -137,7 +138,7 @@
 				this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
 				this.theChart.update();
 				this.backgroundColorFieldFocused = false;
-				this.labelsConcatCount = this.datasets[0].backgroundColor.length;
+				this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
 			},
 			addDatasetBgColor() {
 				if(this.ifBackgroundEmpty) {
@@ -148,6 +149,7 @@
 				if(this.chartDatasetBgColorString === '') {
 					this.datasets[0].backgroundColor.length = 0;
 				}
+				this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
 				this.theChart.update();
 			},
 			addTitleText() {
@@ -287,6 +289,7 @@
 
 				this.chartDatasetBgColorString = this.graphData.data.datasets[0].backgroundColor.join(", ");
 				this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.graphData.data.datasets[0].backgroundColor;
+				this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
 
 				this.chartDatasetDataString = this.graphData.data.datasets[0].data.join(", ");
 				this.theChart.data.datasets[0].data = this.datasets[0].data = this.graphData.data.datasets[0].data;
