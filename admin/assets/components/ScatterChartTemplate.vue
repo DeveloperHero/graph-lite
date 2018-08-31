@@ -42,14 +42,26 @@
 					<tr>
 						<th scope="row" style="padding-top: 5px; padding-bottom: 5px"><label for="colors">Circle Background Color*</label></th>
 						<td>
-							<input class="regular-text" :class="{'gl_fieldRequired': dataset.ifCircleBackgroundEmpty}" type="text" id="colors" v-model="dataset.backgroundColor" @keyup="addDatasetBgColor(index)">
+							<input class="regular-text" :class="{'gl_fieldRequired': dataset.ifCircleBackgroundEmpty}" type="text" id="colors" v-model="dataset.backgroundColor" @keyup="addDatasetBgColor(index)" @focus="showBackgroundColorPickerField(index)">
+							<chrome-picker v-model="setBackgroundColor" v-if="dataset.backgroundColorFieldFocused" />
+							<div>
+								<button class="gl_colorPickerButton" type="button" @click="pickBackgroundColor(index)" v-if="dataset.backgroundColorFieldFocused">Pick</button>
+								<button class="gl_colorPickerButton" type="button" @click="hideBackgroundColorPickerField(index)" v-if="dataset.backgroundColorFieldFocused">Close</button>
+							</div>
+							<div style="clear: both;"></div>
 							<p class="gl_fieldRequiredError" v-if="dataset.ifCircleBackgroundEmpty">*required</p>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row" style="padding-top: 5px; padding-bottom: 5px"><label for="line_color">Circle Border Color*</label></th>
 						<td>
-							<input class="regular-text" :class="{'gl_fieldRequired': dataset.ifCicleBorderColorEmpty}" type="text" id="line_color" v-model="dataset.borderColor" @keyup="addDatasetborderColor(index)">
+							<input class="regular-text" :class="{'gl_fieldRequired': dataset.ifCicleBorderColorEmpty}" type="text" id="line_color" v-model="dataset.borderColor" @keyup="addDatasetborderColor(index)" @focus="showBorderColorPickerField(index)">
+							<chrome-picker v-model="setBorderColor" v-if="dataset.borderColorFieldFocused" />
+							<div>
+								<button class="gl_colorPickerButton" type="button" @click="pickBorderColor(index)" v-if="dataset.borderColorFieldFocused">Pick</button>
+								<button class="gl_colorPickerButton" type="button" @click="hideBorderColorPickerField(index)" v-if="dataset.borderColorFieldFocused">Close</button>
+							</div>
+							<div style="clear: both;"></div>
 							<p class="gl_fieldRequiredError" v-if="dataset.ifCicleBorderColorEmpty">*required</p>
 						</td>
 					</tr>
@@ -101,6 +113,8 @@
 </template>
 
 <script type="text/javascript">
+	import { Chrome } from 'vue-color';
+
 	export default {
 		props: ['graphData', 'graphIndex'],
 		data() {
@@ -108,6 +122,8 @@
 				chartType: 'scatter',
 				titleText: '',
 				legendPosition: 'top',
+				setBackgroundColor: '',
+				setBorderColor: '',
 				showTitle: false,
 				showLegend: true,
 				showTutorial: true,
@@ -127,10 +143,15 @@
 						fill: false,
 						showLine: false,
 						ifCircleBackgroundEmpty: false,
-						ifCicleBorderColorEmpty: false
+						ifCicleBorderColorEmpty: false,
+						backgroundColorFieldFocused: false,
+						borderColorFieldFocused: false
 					}
 				]
 			};
+		},
+		components: {
+			'chrome-picker': Chrome
 		},
 		methods: {
 			addDataset() {
@@ -149,7 +170,9 @@
 					fill: false,
 					showLine: false,
 					ifCircleBackgroundEmpty: false,
-					ifCicleBorderColorEmpty: false
+					ifCicleBorderColorEmpty: false,
+					backgroundColorFieldFocused: false,
+					borderColorFieldFocused: false
 				});
 				this.theChart.data.datasets.push({
 					label: '',
@@ -183,6 +206,21 @@
 				this.theChart.data.datasets[index].data[pIndex][point] = this.datasets[index].data[pIndex][point];
 				this.theChart.update();
 			},
+			showBackgroundColorPickerField(index) {
+				this.datasets[index].backgroundColorFieldFocused = true;
+			},
+			hideBackgroundColorPickerField(index) {
+				this.datasets[index].backgroundColorFieldFocused = false;
+			},
+			pickBackgroundColor(index) {
+				if(this.datasets[index].ifCircleBackgroundEmpty) {
+					this.datasets[index].ifCircleBackgroundEmpty = false;
+				}
+				this.showTutorial=false;
+				this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor = this.setBackgroundColor.hex;
+				this.theChart.update();
+				this.datasets[index].backgroundColorFieldFocused = false;
+			},
 			addDatasetBgColor(index) {
 				if(this.datasets[index].ifCircleBackgroundEmpty) {
 					this.datasets[index].ifCircleBackgroundEmpty = false;
@@ -190,6 +228,21 @@
 				this.showTutorial=false;
 				this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
 				this.theChart.update();
+			},
+			showBorderColorPickerField(index) {
+				this.datasets[index].borderColorFieldFocused = true;
+			},
+			hideBorderColorPickerField(index) {
+				this.datasets[index].borderColorFieldFocused = false;
+			},
+			pickBorderColor(index) {
+				if(this.datasets[index].ifCicleBorderColorEmpty) {
+					this.datasets[index].ifCicleBorderColorEmpty = false;
+				}
+				this.showTutorial=false;
+				this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor = this.setBorderColor.hex;
+				this.theChart.update();
+				this.datasets[index].borderColorFieldFocused = false;
 			},
 			addDatasetborderColor(index) {
 				if(this.datasets[index].ifCicleBorderColorEmpty) {
@@ -379,7 +432,7 @@
 				let outerThis = this;
 				this.graphData.data.datasets.forEach(function(value, key) {
 					if(key) {
-						outerThis.datasets.push({ label: '', data: [{ x: '', y: '', ifxPointEmpty: false, ifyPointEmpty: false }], backgroundColor:'', fill: false, showLine: false, ifCircleBackgroundEmpty: false, ifCicleBorderColorEmpty: false });
+						outerThis.datasets.push({ label: '', data: [{ x: '', y: '', ifxPointEmpty: false, ifyPointEmpty: false }], backgroundColor:'', fill: false, showLine: false, ifCircleBackgroundEmpty: false, ifCicleBorderColorEmpty: false, backgroundColorFieldFocused: false, borderColorFieldFocused: false });
 						outerThis.theChart.data.datasets.push({ label: '', data: [{ x: '', y: '' }], backgroundColor:'', fill: false, showLine: false });
 					}
 					outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = value.label;
@@ -477,5 +530,19 @@
 		text-decoration: none;
 		font-size: 13px;
 		color: black;
+	}
+	.vc-chrome-toggle-btn {
+		display: none !important;
+	}
+	.gl_colorPickerButton {
+		background-color: #FFFFFF !important;
+		color: #969696 !important;
+		border: 1px solid #ddd !important;
+		margin-top: 2px;
+		display: block;
+	}
+	.vc-chrome {
+		float: left;
+		margin: 2px 3px 0px 2px;
 	}
 </style>
