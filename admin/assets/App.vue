@@ -49,12 +49,15 @@
                 this.currentComponent = data.currentComponent;
             },
             whenGraphSaved() {
+                this.currentPageName = 'All Graphs';
                 this.currentComponent = 'allGraphs';
             },
             whenGraphUpdated() {
+                this.currentPageName = 'All Graphs';
                 this.currentComponent = 'allGraphs';
             },
             whenBackButtonPressed() {
+                this.currentPageName = 'All Graphs';
                 this.currentComponent = 'allGraphs';
             },
             resetComponent() {

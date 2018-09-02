@@ -107,27 +107,6 @@ button.saveGraphData {
     text-align:  center;
 }
 
-.gl_single_graph .gl_control_area button {
-/*    border:  0;
-    color:  #fff;
-    padding:  5px 10px;
-    width:  68px;
-    text-align:  center;
-    font-weight:  bold;
-    cursor: pointer;
-    outline: none;
-    background: #3472aa;*/
-}
-
-
-/*.gl_single_graph .gl_control_area button:first-child {
-    background: #3e8e41;
-}
-
-.gl_single_graph .gl_control_area button:last-child {
-    background: #e74c3c;
-}*/
-
 .gl_single_graph .gl_graph_box {
     min-height: 295px;
 }
@@ -173,6 +152,12 @@ div#gl-admin-meta-box .sweet-modal-buttons a.button {
 /**
  * Template
  */
+.gl_chart_template {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+}
 .gl_chart_template button {
     border:  0;
     padding: 8px 12px;
@@ -182,9 +167,74 @@ div#gl-admin-meta-box .sweet-modal-buttons a.button {
     font-size:  14px;
     cursor:  pointer;
 }
-
 .gl_chart_template input[type="text"] {
     width:  100%;
+    height: 35px;
+}
+.gl_chart_template .form-table th {
+    width: 25%;
+}
+.gl_saveGraphData {
+    float: right;
+}
+.gl_deleteButtonTd, .gl_deleteButtonTh {
+    padding: 0 !important;
+}
+.gl_delete_dataset {
+    float: right;
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: #fff !important;
+    margin-bottom: 8px !important;
+    margin-right: 10px !important;
+}
+.gl_chart_template fieldset {
+    width: 98%;
+    border: 1px solid #F0F0F0;
+    padding-left: 10px;
+    margin-bottom: 7px;
+}
+.gl_chart_template fieldset legend {
+    font-weight: bold;
+}
+.gl_chart_template fieldset table {
+    margin-top: 0 !important;
+}
+.gl_chart_template fieldset .form-table td {
+    padding-left: 2px;
+}
+.gl_bubble_input_fields {
+    padding-right: 8px;
+}
+.gl_deleteBublePoint {
+    text-decoration: none;
+    font-size: 13px;
+    color: black;
+}
+.gl_colorPickerButton {
+    background-color: #FFFFFF !important;
+    color: #969696 !important;
+    border: 1px solid #ddd !important;
+    width: 50%;
+    float: left;
+}
+.gl_colorPickerDiv {
+    width: 100%;
+    position: relative;
+}
+.vc-chrome-toggle-btn {
+    display: none !important;
+}
+.vc-chrome {
+    position: absolute;
+    margin: 2px 3px 0px 2px;
+}
+.gl_pickOrCloseColorPickerDiv {
+    position: absolute;
+    left: 1px;
+    width: 227px;
+    top: 246px;
+    box-shadow: 0 2px 4px rgba(0,0,0,.3);
 }
 
 .gl_sc_point {
@@ -277,10 +327,21 @@ body::-webkit-scrollbar-track, body::-webkit-scrollbar-thumb, body::-webkit-scro
     display: none;
 }
 
-.graphOptions {
+.gl_graphOptions {
     padding-right: 15px;
+    width: 50%;
+    padding-top: 20px;
 }
-
+.gl_graphDiv {
+    width: 50%;
+}
+.gl_graphChildDiv {
+    position: fixed;
+    width: 46%;
+    height: 50%;
+    right: 40px;
+    top: 150px;
+}
 .sweet-modal-overlay {
     background:  #fff !important;
 }
@@ -337,7 +398,6 @@ body::-webkit-scrollbar-track, body::-webkit-scrollbar-thumb, body::-webkit-scro
     color: red;
     font-size: 10px !important;
     font-weight: bold;
-    /*margin-top: 0px !important;*/
 }
 .gl_fieldRequired {
     border: 1px solid red !important;
