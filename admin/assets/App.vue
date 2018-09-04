@@ -1,19 +1,21 @@
 <template>
-    <div>
+    <div class="mainAppDiv">
         <div class="gl_heading_area">
             <div class="gl_heading">
                 <p>{{currentPageName}}</p>
-                <div>
-                    <a href="javascript:void(0)" @click="resetComponent" class="close_graph_modal">X</a>
-                </div>
+                <button type="button" @click="resetComponent" class="media-modal-close close_graph_modal">
+                    <span class="media-modal-icon">
+                        <span class="screen-reader-text">Close media panel</span>
+                    </span>
+                </button>
             </div>
         </div>
 
-        <component @graphPage="whenPageChange" @saved="whenGraphSaved" @updated="whenGraphUpdated" @backed="whenBackButtonPressed" v-bind:is="currentChartTabComponent" :graph-data="editedGraphData" :graph-index="editedGraphIndex"></component>
+        <component class="gl_graphComponentDiv" @graphPage="whenPageChange" @saved="whenGraphSaved" @updated="whenGraphUpdated" @backed="whenBackButtonPressed" v-bind:is="currentChartTabComponent" :graph-data="editedGraphData" :graph-index="editedGraphIndex"></component>
     </div>
 </template>
 
-<script>
+<script type="text/javascript">
     import allGraphs from './components/allSavedChartsTemplate';
     import barChart from './components/BarChartTemplate';
     import lineChart from './components/LineChartTemplate';
@@ -34,7 +36,7 @@
             }
         },
         computed: {
-            currentChartTabComponent: function () {
+            currentChartTabComponent() {
                 return this.currentComponent;
             },
         },
@@ -49,12 +51,15 @@
                 this.currentComponent = data.currentComponent;
             },
             whenGraphSaved() {
+                this.currentPageName = 'All Graphs';
                 this.currentComponent = 'allGraphs';
             },
             whenGraphUpdated() {
+                this.currentPageName = 'All Graphs';
                 this.currentComponent = 'allGraphs';
             },
             whenBackButtonPressed() {
+                this.currentPageName = 'All Graphs';
                 this.currentComponent = 'allGraphs';
             },
             resetComponent() {
@@ -68,21 +73,21 @@
     }
 </script>
 
-<style>
-.gl_heading p {
-    display: inline-block;
-}
-.gl_heading div {
-    text-align: right;
-    font-weight: bold;
-    font-size: 18px;
-    display: inline-block;
-    float: right;
-    margin-top: 13px;
-}
-.gl_heading div a {
-    text-decoration: none;
-    color: #000;
-    box-shadow: none;
-}
+<style type="text/css" scoped="scoped">
+    .gl_heading p {
+        display: inline-block;
+    }
+    .gl_heading div {
+        text-align: right;
+        font-weight: bold;
+        font-size: 18px;
+        display: inline-block;
+        float: right;
+        margin-top: 13px;
+    }
+    .gl_heading div a {
+        text-decoration: none;
+        color: #000;
+        box-shadow: none;
+    }
 </style>

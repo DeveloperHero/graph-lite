@@ -1,6 +1,6 @@
 <template>
-	<div class="barChart gl_chart_template" id="bar">
-		<div class="graphOptions">
+	<div class="gl_chart_template" id="bar">
+		<div class="gl_graphOptions">
 			<table class="form-table">
 				<tr>
 					<th scope="row" class="gl_backButotnTh"><button class="gl_backButton" type="button" @click="goBacktoAllGraphPage">Go Back</button></th>
@@ -31,20 +31,22 @@
 					</tr>
 					<tr>
 						<th scope="row"><label for="colors">Color*</label></th>
-						<td>
+						<td class="gl_colorPickerTd" v-on-clickaway="() => clickedAway(index)">
 							<input class="regular-text" :class="{'gl_fieldRequired': data.ifBackgroundEmpty}" type="text" id="colors" placeholder="Color value for bar. Eg. red" v-model="data.backgroundColor" @keyup="addDatasetBgColor(index)" @focus="showBackgroundColorPickerField(index)">
-							<chrome-picker v-model="setBackgroundColor" v-if="data.backgroundColorFieldFocused" />
-							<div>
-								<button class="gl_colorPickerButton" type="button" @click="pickBackgroundColor(index)" v-if="data.backgroundColorFieldFocused">Pick</button>
-								<button class="gl_colorPickerButton" type="button" @click="hideBackgroundColorPickerField(index)" v-if="data.backgroundColorFieldFocused">Close</button>
+							<div class="gl_colorPickerDiv">
+								<chrome-picker v-model="setBackgroundColor" v-if="data.backgroundColorFieldFocused" />
+								<div class="gl_pickOrCloseColorPickerDiv">
+									<button class="gl_colorPickerButton" type="button" @click="pickBackgroundColor(index)" v-if="data.backgroundColorFieldFocused">Pick</button>
+									<button class="gl_colorPickerButton" type="button" @click="hideBackgroundColorPickerField(index)" v-if="data.backgroundColorFieldFocused">Close</button>
+									<div style="clear: both;"></div>
+								</div>
 							</div>
-							<div style="clear: both;"></div>
 							<p class="gl_fieldRequiredError" v-if="data.ifBackgroundEmpty">*required</p>
 						</td>
 					</tr>
 					<tr v-if="index != 0">
 						<th scope="row" class="gl_deleteButtonTh"><label></label></th>
-						<td class="gl_deleteButtonTd"><input type="button" class="button button-danger delete_dataset" value="Delete Dataset" @click="deleteDataset(index)"></td>
+						<td class="gl_deleteButtonTd"><input type="button" class="button button-danger gl_delete_dataset" value="Delete Dataset" @click="deleteDataset(index)"></td>
 					</tr>
 				</table>
 			</fieldset>
@@ -79,13 +81,17 @@
 				</tr>
 				<tr>
 					<th scope="row"><label></label></th>
-					<td v-if="graphData == ''"><button type="button" class="saveGraphData" @click="saveGraphData">Save</button></td>
-					<td v-else><button type="button" class="saveGraphData" @click="updateGraphData">Update</button></td>
+					<td v-if="graphData == ''"><button type="button" class="gl_saveGraphData" @click="saveGraphData">Save</button></td>
+					<td v-else><button type="button" class="gl_saveGraphData" @click="updateGraphData">Update</button></td>
 				</tr>
 			</table>
 		</div>
-		<div class="graphDiv">
-			<iframe class="tutorialFrame" v-if="showTutorial" width="560" height="315" src="https://www.youtube.com/embed/Hwn4UKc5Bew?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+		<div class="gl_graphDiv">
+			<!-- <iframe class="gl_tutorialFrame" v-if="showTutorial" width="560" height="315" src="https://www.youtube.com/embed/Hwn4UKc5Bew?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe> -->
+			<div class="gl_dummyMessages" v-if="showTutorial">
+				<h2>Start typing to see live preview</h2>
+				<p>Live preview will appear here after you enter some data</p>
+			</div>
 			<div class="gl_graphChildDiv" v-show="!showTutorial">
 				<canvas id="barChart"></canvas>
 			</div>
@@ -95,8 +101,10 @@
 
 <script type="text/javascript">
 	import { Chrome } from 'vue-color';
+	import { mixin as clickaway } from 'vue-clickaway2';
 
 	export default {
+		mixins: [ clickaway ],
 		props: ['graphData', 'graphIndex'],
 		data() {
 			return {
@@ -190,6 +198,9 @@
 				this.showTutorial=false;
 				this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
 				this.theChart.update();
+			},
+			clickedAway(index) {
+				this.datasets[index].backgroundColorFieldFocused = false;
 			},
 			addTitleText() {
 				this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
@@ -407,71 +418,5 @@
 	}
 </script>
 
-<style type="text/css">
-	.barChart {
-		width: 100%;
-		height: 100%;
-		display: flex;
-		flex-direction: row;
-	}
-	.graphOptions {
-		width: 50%;
-		padding-top: 20px;
-	}
-	.graphDiv {
-		width: 50%;
-	}
-	.gl_graphChildDiv {
-		position: fixed;
-		width: 46%;
-		height: 50%;
-		right: 40px;
-		top: 150px;
-	}
-	.saveGraphData {
-		float: right;
-	}
-	input[type="text"] {
-		height: 35px;
-	}
-	.form-table th {
-		width: 25%;
-	}
-	.gl_deleteButtonTd, .gl_deleteButtonTh {
-		padding: 0 !important;
-	}
-	.delete_dataset {
-		float: right;
-		background-color: #dc3545 !important;
-		border-color: #dc3545 !important;
-		color: #fff !important;
-		margin-bottom: 8px !important;
-		margin-right: 10px !important;
-	}
-	fieldset {
-		width: 100%;
-		border: 1px solid #F0F0F0;
-		padding-left: 10px;
-		margin-bottom: 7px;
-	}
-	legend {
-		font-weight: bold;
-	}
-	fieldset table {
-		margin-top: 0 !important;
-	}
-	.vc-chrome-toggle-btn {
-		display: none !important;
-	}
-	.gl_colorPickerButton {
-		background-color: #FFFFFF !important;
-		color: #969696 !important;
-		border: 1px solid #ddd !important;
-		margin-top: 2px;
-		display: block;
-	}
-	.vc-chrome {
-		float: left;
-		margin: 2px 3px 0px 2px;
-	}
+<style type="text/css" scoped="scoped">
 </style>

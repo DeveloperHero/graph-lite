@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/js/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 16);
+/******/ 	return __webpack_require__(__webpack_require__.s = 18);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -165,7 +165,7 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
   ) }
 }
 
-var listToStyles = __webpack_require__(25)
+var listToStyles = __webpack_require__(26)
 
 /*
 type StyleObject = {
@@ -490,6 +490,95 @@ module.exports = function normalizeComponent (
 
 /***/ }),
 /* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var Vue = __webpack_require__(6);
+Vue = 'default' in Vue ? Vue['default'] : Vue;
+
+var version = '2.2.2';
+
+var compatible = (/^2\./).test(Vue.version);
+if (!compatible) {
+  Vue.util.warn('VueClickaway ' + version + ' only supports Vue 2.x, and does not support Vue ' + Vue.version);
+}
+
+
+
+// @SECTION: implementation
+
+var HANDLER = '_vue_clickaway_handler';
+
+function bind(el, binding, vnode) {
+  unbind(el);
+
+  var vm = vnode.context;
+
+  var callback = binding.value;
+  if (typeof callback !== 'function') {
+    if (false) {
+      Vue.util.warn(
+        'v-' + binding.name + '="' +
+        binding.expression + '" expects a function value, ' +
+        'got ' + callback
+      );
+    }
+    return;
+  }
+
+  // @NOTE: Vue binds directives in microtasks, while UI events are dispatched
+  //        in macrotasks. This causes the listener to be set up before
+  //        the "origin" click event (the event that lead to the binding of
+  //        the directive) arrives at the document root. To work around that,
+  //        we ignore events until the end of the "initial" macrotask.
+  // @REFERENCE: https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/
+  // @REFERENCE: https://github.com/simplesmiler/vue-clickaway/issues/8
+  var initialMacrotaskEnded = false;
+  setTimeout(function() {
+    initialMacrotaskEnded = true;
+  }, 0);
+
+  el[HANDLER] = function(ev) {
+    // @NOTE: this test used to be just `el.contains`, but working with path is better,
+    //        because it tests whether the element was there at the time of
+    //        the click, not whether it is there now, that the event has arrived
+    //        to the top.
+    // @NOTE: `.path` is non-standard, the standard way is `.composedPath()`
+    var path = ev.path || (ev.composedPath ? ev.composedPath() : undefined);
+    if (initialMacrotaskEnded && (path ? path.indexOf(el) < 0 : !el.contains(ev.target))) {
+      return callback.call(vm, ev);
+    }
+  };
+
+  document.documentElement.addEventListener('click', el[HANDLER], false);
+}
+
+function unbind(el) {
+  document.documentElement.removeEventListener('click', el[HANDLER], false);
+  delete el[HANDLER];
+}
+
+var directive = {
+  bind: bind,
+  update: function(el, binding, vnode) {
+    if (binding.value === binding.oldValue) return;
+    bind(el, binding, vnode);
+  },
+  unbind: unbind,
+};
+
+var mixin = {
+  directives: { onClickaway: directive },
+};
+
+exports.version = version;
+exports.directive = directive;
+exports.mixin = mixin;
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports) {
 
 var g;
@@ -516,4487 +605,11 @@ module.exports = g;
 
 
 /***/ }),
-/* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* unused harmony export Store */
-/* unused harmony export install */
-/* unused harmony export mapState */
-/* unused harmony export mapMutations */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return mapGetters; });
-/* unused harmony export mapActions */
-/* unused harmony export createNamespacedHelpers */
-/**
- * vuex v3.0.1
- * (c) 2017 Evan You
- * @license MIT
- */
-var applyMixin = function (Vue) {
-  var version = Number(Vue.version.split('.')[0]);
-
-  if (version >= 2) {
-    Vue.mixin({ beforeCreate: vuexInit });
-  } else {
-    // override init and inject vuex init procedure
-    // for 1.x backwards compatibility.
-    var _init = Vue.prototype._init;
-    Vue.prototype._init = function (options) {
-      if ( options === void 0 ) options = {};
-
-      options.init = options.init
-        ? [vuexInit].concat(options.init)
-        : vuexInit;
-      _init.call(this, options);
-    };
-  }
-
-  /**
-   * Vuex init hook, injected into each instances init hooks list.
-   */
-
-  function vuexInit () {
-    var options = this.$options;
-    // store injection
-    if (options.store) {
-      this.$store = typeof options.store === 'function'
-        ? options.store()
-        : options.store;
-    } else if (options.parent && options.parent.$store) {
-      this.$store = options.parent.$store;
-    }
-  }
-};
-
-var devtoolHook =
-  typeof window !== 'undefined' &&
-  window.__VUE_DEVTOOLS_GLOBAL_HOOK__;
-
-function devtoolPlugin (store) {
-  if (!devtoolHook) { return }
-
-  store._devtoolHook = devtoolHook;
-
-  devtoolHook.emit('vuex:init', store);
-
-  devtoolHook.on('vuex:travel-to-state', function (targetState) {
-    store.replaceState(targetState);
-  });
-
-  store.subscribe(function (mutation, state) {
-    devtoolHook.emit('vuex:mutation', mutation, state);
-  });
-}
-
-/**
- * Get the first item that pass the test
- * by second argument function
- *
- * @param {Array} list
- * @param {Function} f
- * @return {*}
- */
-/**
- * Deep copy the given object considering circular structure.
- * This function caches all nested objects and its copies.
- * If it detects circular structure, use cached copy to avoid infinite loop.
- *
- * @param {*} obj
- * @param {Array<Object>} cache
- * @return {*}
- */
-
-
-/**
- * forEach for object
- */
-function forEachValue (obj, fn) {
-  Object.keys(obj).forEach(function (key) { return fn(obj[key], key); });
-}
-
-function isObject (obj) {
-  return obj !== null && typeof obj === 'object'
-}
-
-function isPromise (val) {
-  return val && typeof val.then === 'function'
-}
-
-function assert (condition, msg) {
-  if (!condition) { throw new Error(("[vuex] " + msg)) }
-}
-
-var Module = function Module (rawModule, runtime) {
-  this.runtime = runtime;
-  this._children = Object.create(null);
-  this._rawModule = rawModule;
-  var rawState = rawModule.state;
-  this.state = (typeof rawState === 'function' ? rawState() : rawState) || {};
-};
-
-var prototypeAccessors$1 = { namespaced: { configurable: true } };
-
-prototypeAccessors$1.namespaced.get = function () {
-  return !!this._rawModule.namespaced
-};
-
-Module.prototype.addChild = function addChild (key, module) {
-  this._children[key] = module;
-};
-
-Module.prototype.removeChild = function removeChild (key) {
-  delete this._children[key];
-};
-
-Module.prototype.getChild = function getChild (key) {
-  return this._children[key]
-};
-
-Module.prototype.update = function update (rawModule) {
-  this._rawModule.namespaced = rawModule.namespaced;
-  if (rawModule.actions) {
-    this._rawModule.actions = rawModule.actions;
-  }
-  if (rawModule.mutations) {
-    this._rawModule.mutations = rawModule.mutations;
-  }
-  if (rawModule.getters) {
-    this._rawModule.getters = rawModule.getters;
-  }
-};
-
-Module.prototype.forEachChild = function forEachChild (fn) {
-  forEachValue(this._children, fn);
-};
-
-Module.prototype.forEachGetter = function forEachGetter (fn) {
-  if (this._rawModule.getters) {
-    forEachValue(this._rawModule.getters, fn);
-  }
-};
-
-Module.prototype.forEachAction = function forEachAction (fn) {
-  if (this._rawModule.actions) {
-    forEachValue(this._rawModule.actions, fn);
-  }
-};
-
-Module.prototype.forEachMutation = function forEachMutation (fn) {
-  if (this._rawModule.mutations) {
-    forEachValue(this._rawModule.mutations, fn);
-  }
-};
-
-Object.defineProperties( Module.prototype, prototypeAccessors$1 );
-
-var ModuleCollection = function ModuleCollection (rawRootModule) {
-  // register root module (Vuex.Store options)
-  this.register([], rawRootModule, false);
-};
-
-ModuleCollection.prototype.get = function get (path) {
-  return path.reduce(function (module, key) {
-    return module.getChild(key)
-  }, this.root)
-};
-
-ModuleCollection.prototype.getNamespace = function getNamespace (path) {
-  var module = this.root;
-  return path.reduce(function (namespace, key) {
-    module = module.getChild(key);
-    return namespace + (module.namespaced ? key + '/' : '')
-  }, '')
-};
-
-ModuleCollection.prototype.update = function update$1 (rawRootModule) {
-  update([], this.root, rawRootModule);
-};
-
-ModuleCollection.prototype.register = function register (path, rawModule, runtime) {
-    var this$1 = this;
-    if ( runtime === void 0 ) runtime = true;
-
-  if (false) {
-    assertRawModule(path, rawModule);
-  }
-
-  var newModule = new Module(rawModule, runtime);
-  if (path.length === 0) {
-    this.root = newModule;
-  } else {
-    var parent = this.get(path.slice(0, -1));
-    parent.addChild(path[path.length - 1], newModule);
-  }
-
-  // register nested modules
-  if (rawModule.modules) {
-    forEachValue(rawModule.modules, function (rawChildModule, key) {
-      this$1.register(path.concat(key), rawChildModule, runtime);
-    });
-  }
-};
-
-ModuleCollection.prototype.unregister = function unregister (path) {
-  var parent = this.get(path.slice(0, -1));
-  var key = path[path.length - 1];
-  if (!parent.getChild(key).runtime) { return }
-
-  parent.removeChild(key);
-};
-
-function update (path, targetModule, newModule) {
-  if (false) {
-    assertRawModule(path, newModule);
-  }
-
-  // update target module
-  targetModule.update(newModule);
-
-  // update nested modules
-  if (newModule.modules) {
-    for (var key in newModule.modules) {
-      if (!targetModule.getChild(key)) {
-        if (false) {
-          console.warn(
-            "[vuex] trying to add a new module '" + key + "' on hot reloading, " +
-            'manual reload is needed'
-          );
-        }
-        return
-      }
-      update(
-        path.concat(key),
-        targetModule.getChild(key),
-        newModule.modules[key]
-      );
-    }
-  }
-}
-
-var functionAssert = {
-  assert: function (value) { return typeof value === 'function'; },
-  expected: 'function'
-};
-
-var objectAssert = {
-  assert: function (value) { return typeof value === 'function' ||
-    (typeof value === 'object' && typeof value.handler === 'function'); },
-  expected: 'function or object with "handler" function'
-};
-
-var assertTypes = {
-  getters: functionAssert,
-  mutations: functionAssert,
-  actions: objectAssert
-};
-
-function assertRawModule (path, rawModule) {
-  Object.keys(assertTypes).forEach(function (key) {
-    if (!rawModule[key]) { return }
-
-    var assertOptions = assertTypes[key];
-
-    forEachValue(rawModule[key], function (value, type) {
-      assert(
-        assertOptions.assert(value),
-        makeAssertionMessage(path, key, type, value, assertOptions.expected)
-      );
-    });
-  });
-}
-
-function makeAssertionMessage (path, key, type, value, expected) {
-  var buf = key + " should be " + expected + " but \"" + key + "." + type + "\"";
-  if (path.length > 0) {
-    buf += " in module \"" + (path.join('.')) + "\"";
-  }
-  buf += " is " + (JSON.stringify(value)) + ".";
-  return buf
-}
-
-var Vue; // bind on install
-
-var Store = function Store (options) {
-  var this$1 = this;
-  if ( options === void 0 ) options = {};
-
-  // Auto install if it is not done yet and `window` has `Vue`.
-  // To allow users to avoid auto-installation in some cases,
-  // this code should be placed here. See #731
-  if (!Vue && typeof window !== 'undefined' && window.Vue) {
-    install(window.Vue);
-  }
-
-  if (false) {
-    assert(Vue, "must call Vue.use(Vuex) before creating a store instance.");
-    assert(typeof Promise !== 'undefined', "vuex requires a Promise polyfill in this browser.");
-    assert(this instanceof Store, "Store must be called with the new operator.");
-  }
-
-  var plugins = options.plugins; if ( plugins === void 0 ) plugins = [];
-  var strict = options.strict; if ( strict === void 0 ) strict = false;
-
-  var state = options.state; if ( state === void 0 ) state = {};
-  if (typeof state === 'function') {
-    state = state() || {};
-  }
-
-  // store internal state
-  this._committing = false;
-  this._actions = Object.create(null);
-  this._actionSubscribers = [];
-  this._mutations = Object.create(null);
-  this._wrappedGetters = Object.create(null);
-  this._modules = new ModuleCollection(options);
-  this._modulesNamespaceMap = Object.create(null);
-  this._subscribers = [];
-  this._watcherVM = new Vue();
-
-  // bind commit and dispatch to self
-  var store = this;
-  var ref = this;
-  var dispatch = ref.dispatch;
-  var commit = ref.commit;
-  this.dispatch = function boundDispatch (type, payload) {
-    return dispatch.call(store, type, payload)
-  };
-  this.commit = function boundCommit (type, payload, options) {
-    return commit.call(store, type, payload, options)
-  };
-
-  // strict mode
-  this.strict = strict;
-
-  // init root module.
-  // this also recursively registers all sub-modules
-  // and collects all module getters inside this._wrappedGetters
-  installModule(this, state, [], this._modules.root);
-
-  // initialize the store vm, which is responsible for the reactivity
-  // (also registers _wrappedGetters as computed properties)
-  resetStoreVM(this, state);
-
-  // apply plugins
-  plugins.forEach(function (plugin) { return plugin(this$1); });
-
-  if (Vue.config.devtools) {
-    devtoolPlugin(this);
-  }
-};
-
-var prototypeAccessors = { state: { configurable: true } };
-
-prototypeAccessors.state.get = function () {
-  return this._vm._data.$$state
-};
-
-prototypeAccessors.state.set = function (v) {
-  if (false) {
-    assert(false, "Use store.replaceState() to explicit replace store state.");
-  }
-};
-
-Store.prototype.commit = function commit (_type, _payload, _options) {
-    var this$1 = this;
-
-  // check object-style commit
-  var ref = unifyObjectStyle(_type, _payload, _options);
-    var type = ref.type;
-    var payload = ref.payload;
-    var options = ref.options;
-
-  var mutation = { type: type, payload: payload };
-  var entry = this._mutations[type];
-  if (!entry) {
-    if (false) {
-      console.error(("[vuex] unknown mutation type: " + type));
-    }
-    return
-  }
-  this._withCommit(function () {
-    entry.forEach(function commitIterator (handler) {
-      handler(payload);
-    });
-  });
-  this._subscribers.forEach(function (sub) { return sub(mutation, this$1.state); });
-
-  if (
-    false
-  ) {
-    console.warn(
-      "[vuex] mutation type: " + type + ". Silent option has been removed. " +
-      'Use the filter functionality in the vue-devtools'
-    );
-  }
-};
-
-Store.prototype.dispatch = function dispatch (_type, _payload) {
-    var this$1 = this;
-
-  // check object-style dispatch
-  var ref = unifyObjectStyle(_type, _payload);
-    var type = ref.type;
-    var payload = ref.payload;
-
-  var action = { type: type, payload: payload };
-  var entry = this._actions[type];
-  if (!entry) {
-    if (false) {
-      console.error(("[vuex] unknown action type: " + type));
-    }
-    return
-  }
-
-  this._actionSubscribers.forEach(function (sub) { return sub(action, this$1.state); });
-
-  return entry.length > 1
-    ? Promise.all(entry.map(function (handler) { return handler(payload); }))
-    : entry[0](payload)
-};
-
-Store.prototype.subscribe = function subscribe (fn) {
-  return genericSubscribe(fn, this._subscribers)
-};
-
-Store.prototype.subscribeAction = function subscribeAction (fn) {
-  return genericSubscribe(fn, this._actionSubscribers)
-};
-
-Store.prototype.watch = function watch (getter, cb, options) {
-    var this$1 = this;
-
-  if (false) {
-    assert(typeof getter === 'function', "store.watch only accepts a function.");
-  }
-  return this._watcherVM.$watch(function () { return getter(this$1.state, this$1.getters); }, cb, options)
-};
-
-Store.prototype.replaceState = function replaceState (state) {
-    var this$1 = this;
-
-  this._withCommit(function () {
-    this$1._vm._data.$$state = state;
-  });
-};
-
-Store.prototype.registerModule = function registerModule (path, rawModule, options) {
-    if ( options === void 0 ) options = {};
-
-  if (typeof path === 'string') { path = [path]; }
-
-  if (false) {
-    assert(Array.isArray(path), "module path must be a string or an Array.");
-    assert(path.length > 0, 'cannot register the root module by using registerModule.');
-  }
-
-  this._modules.register(path, rawModule);
-  installModule(this, this.state, path, this._modules.get(path), options.preserveState);
-  // reset store to update getters...
-  resetStoreVM(this, this.state);
-};
-
-Store.prototype.unregisterModule = function unregisterModule (path) {
-    var this$1 = this;
-
-  if (typeof path === 'string') { path = [path]; }
-
-  if (false) {
-    assert(Array.isArray(path), "module path must be a string or an Array.");
-  }
-
-  this._modules.unregister(path);
-  this._withCommit(function () {
-    var parentState = getNestedState(this$1.state, path.slice(0, -1));
-    Vue.delete(parentState, path[path.length - 1]);
-  });
-  resetStore(this);
-};
-
-Store.prototype.hotUpdate = function hotUpdate (newOptions) {
-  this._modules.update(newOptions);
-  resetStore(this, true);
-};
-
-Store.prototype._withCommit = function _withCommit (fn) {
-  var committing = this._committing;
-  this._committing = true;
-  fn();
-  this._committing = committing;
-};
-
-Object.defineProperties( Store.prototype, prototypeAccessors );
-
-function genericSubscribe (fn, subs) {
-  if (subs.indexOf(fn) < 0) {
-    subs.push(fn);
-  }
-  return function () {
-    var i = subs.indexOf(fn);
-    if (i > -1) {
-      subs.splice(i, 1);
-    }
-  }
-}
-
-function resetStore (store, hot) {
-  store._actions = Object.create(null);
-  store._mutations = Object.create(null);
-  store._wrappedGetters = Object.create(null);
-  store._modulesNamespaceMap = Object.create(null);
-  var state = store.state;
-  // init all modules
-  installModule(store, state, [], store._modules.root, true);
-  // reset vm
-  resetStoreVM(store, state, hot);
-}
-
-function resetStoreVM (store, state, hot) {
-  var oldVm = store._vm;
-
-  // bind store public getters
-  store.getters = {};
-  var wrappedGetters = store._wrappedGetters;
-  var computed = {};
-  forEachValue(wrappedGetters, function (fn, key) {
-    // use computed to leverage its lazy-caching mechanism
-    computed[key] = function () { return fn(store); };
-    Object.defineProperty(store.getters, key, {
-      get: function () { return store._vm[key]; },
-      enumerable: true // for local getters
-    });
-  });
-
-  // use a Vue instance to store the state tree
-  // suppress warnings just in case the user has added
-  // some funky global mixins
-  var silent = Vue.config.silent;
-  Vue.config.silent = true;
-  store._vm = new Vue({
-    data: {
-      $$state: state
-    },
-    computed: computed
-  });
-  Vue.config.silent = silent;
-
-  // enable strict mode for new vm
-  if (store.strict) {
-    enableStrictMode(store);
-  }
-
-  if (oldVm) {
-    if (hot) {
-      // dispatch changes in all subscribed watchers
-      // to force getter re-evaluation for hot reloading.
-      store._withCommit(function () {
-        oldVm._data.$$state = null;
-      });
-    }
-    Vue.nextTick(function () { return oldVm.$destroy(); });
-  }
-}
-
-function installModule (store, rootState, path, module, hot) {
-  var isRoot = !path.length;
-  var namespace = store._modules.getNamespace(path);
-
-  // register in namespace map
-  if (module.namespaced) {
-    store._modulesNamespaceMap[namespace] = module;
-  }
-
-  // set state
-  if (!isRoot && !hot) {
-    var parentState = getNestedState(rootState, path.slice(0, -1));
-    var moduleName = path[path.length - 1];
-    store._withCommit(function () {
-      Vue.set(parentState, moduleName, module.state);
-    });
-  }
-
-  var local = module.context = makeLocalContext(store, namespace, path);
-
-  module.forEachMutation(function (mutation, key) {
-    var namespacedType = namespace + key;
-    registerMutation(store, namespacedType, mutation, local);
-  });
-
-  module.forEachAction(function (action, key) {
-    var type = action.root ? key : namespace + key;
-    var handler = action.handler || action;
-    registerAction(store, type, handler, local);
-  });
-
-  module.forEachGetter(function (getter, key) {
-    var namespacedType = namespace + key;
-    registerGetter(store, namespacedType, getter, local);
-  });
-
-  module.forEachChild(function (child, key) {
-    installModule(store, rootState, path.concat(key), child, hot);
-  });
-}
-
-/**
- * make localized dispatch, commit, getters and state
- * if there is no namespace, just use root ones
- */
-function makeLocalContext (store, namespace, path) {
-  var noNamespace = namespace === '';
-
-  var local = {
-    dispatch: noNamespace ? store.dispatch : function (_type, _payload, _options) {
-      var args = unifyObjectStyle(_type, _payload, _options);
-      var payload = args.payload;
-      var options = args.options;
-      var type = args.type;
-
-      if (!options || !options.root) {
-        type = namespace + type;
-        if (false) {
-          console.error(("[vuex] unknown local action type: " + (args.type) + ", global type: " + type));
-          return
-        }
-      }
-
-      return store.dispatch(type, payload)
-    },
-
-    commit: noNamespace ? store.commit : function (_type, _payload, _options) {
-      var args = unifyObjectStyle(_type, _payload, _options);
-      var payload = args.payload;
-      var options = args.options;
-      var type = args.type;
-
-      if (!options || !options.root) {
-        type = namespace + type;
-        if (false) {
-          console.error(("[vuex] unknown local mutation type: " + (args.type) + ", global type: " + type));
-          return
-        }
-      }
-
-      store.commit(type, payload, options);
-    }
-  };
-
-  // getters and state object must be gotten lazily
-  // because they will be changed by vm update
-  Object.defineProperties(local, {
-    getters: {
-      get: noNamespace
-        ? function () { return store.getters; }
-        : function () { return makeLocalGetters(store, namespace); }
-    },
-    state: {
-      get: function () { return getNestedState(store.state, path); }
-    }
-  });
-
-  return local
-}
-
-function makeLocalGetters (store, namespace) {
-  var gettersProxy = {};
-
-  var splitPos = namespace.length;
-  Object.keys(store.getters).forEach(function (type) {
-    // skip if the target getter is not match this namespace
-    if (type.slice(0, splitPos) !== namespace) { return }
-
-    // extract local getter type
-    var localType = type.slice(splitPos);
-
-    // Add a port to the getters proxy.
-    // Define as getter property because
-    // we do not want to evaluate the getters in this time.
-    Object.defineProperty(gettersProxy, localType, {
-      get: function () { return store.getters[type]; },
-      enumerable: true
-    });
-  });
-
-  return gettersProxy
-}
-
-function registerMutation (store, type, handler, local) {
-  var entry = store._mutations[type] || (store._mutations[type] = []);
-  entry.push(function wrappedMutationHandler (payload) {
-    handler.call(store, local.state, payload);
-  });
-}
-
-function registerAction (store, type, handler, local) {
-  var entry = store._actions[type] || (store._actions[type] = []);
-  entry.push(function wrappedActionHandler (payload, cb) {
-    var res = handler.call(store, {
-      dispatch: local.dispatch,
-      commit: local.commit,
-      getters: local.getters,
-      state: local.state,
-      rootGetters: store.getters,
-      rootState: store.state
-    }, payload, cb);
-    if (!isPromise(res)) {
-      res = Promise.resolve(res);
-    }
-    if (store._devtoolHook) {
-      return res.catch(function (err) {
-        store._devtoolHook.emit('vuex:error', err);
-        throw err
-      })
-    } else {
-      return res
-    }
-  });
-}
-
-function registerGetter (store, type, rawGetter, local) {
-  if (store._wrappedGetters[type]) {
-    if (false) {
-      console.error(("[vuex] duplicate getter key: " + type));
-    }
-    return
-  }
-  store._wrappedGetters[type] = function wrappedGetter (store) {
-    return rawGetter(
-      local.state, // local state
-      local.getters, // local getters
-      store.state, // root state
-      store.getters // root getters
-    )
-  };
-}
-
-function enableStrictMode (store) {
-  store._vm.$watch(function () { return this._data.$$state }, function () {
-    if (false) {
-      assert(store._committing, "Do not mutate vuex store state outside mutation handlers.");
-    }
-  }, { deep: true, sync: true });
-}
-
-function getNestedState (state, path) {
-  return path.length
-    ? path.reduce(function (state, key) { return state[key]; }, state)
-    : state
-}
-
-function unifyObjectStyle (type, payload, options) {
-  if (isObject(type) && type.type) {
-    options = payload;
-    payload = type;
-    type = type.type;
-  }
-
-  if (false) {
-    assert(typeof type === 'string', ("Expects string as the type, but found " + (typeof type) + "."));
-  }
-
-  return { type: type, payload: payload, options: options }
-}
-
-function install (_Vue) {
-  if (Vue && _Vue === Vue) {
-    if (false) {
-      console.error(
-        '[vuex] already installed. Vue.use(Vuex) should be called only once.'
-      );
-    }
-    return
-  }
-  Vue = _Vue;
-  applyMixin(Vue);
-}
-
-var mapState = normalizeNamespace(function (namespace, states) {
-  var res = {};
-  normalizeMap(states).forEach(function (ref) {
-    var key = ref.key;
-    var val = ref.val;
-
-    res[key] = function mappedState () {
-      var state = this.$store.state;
-      var getters = this.$store.getters;
-      if (namespace) {
-        var module = getModuleByNamespace(this.$store, 'mapState', namespace);
-        if (!module) {
-          return
-        }
-        state = module.context.state;
-        getters = module.context.getters;
-      }
-      return typeof val === 'function'
-        ? val.call(this, state, getters)
-        : state[val]
-    };
-    // mark vuex getter for devtools
-    res[key].vuex = true;
-  });
-  return res
-});
-
-var mapMutations = normalizeNamespace(function (namespace, mutations) {
-  var res = {};
-  normalizeMap(mutations).forEach(function (ref) {
-    var key = ref.key;
-    var val = ref.val;
-
-    res[key] = function mappedMutation () {
-      var args = [], len = arguments.length;
-      while ( len-- ) args[ len ] = arguments[ len ];
-
-      var commit = this.$store.commit;
-      if (namespace) {
-        var module = getModuleByNamespace(this.$store, 'mapMutations', namespace);
-        if (!module) {
-          return
-        }
-        commit = module.context.commit;
-      }
-      return typeof val === 'function'
-        ? val.apply(this, [commit].concat(args))
-        : commit.apply(this.$store, [val].concat(args))
-    };
-  });
-  return res
-});
-
-var mapGetters = normalizeNamespace(function (namespace, getters) {
-  var res = {};
-  normalizeMap(getters).forEach(function (ref) {
-    var key = ref.key;
-    var val = ref.val;
-
-    val = namespace + val;
-    res[key] = function mappedGetter () {
-      if (namespace && !getModuleByNamespace(this.$store, 'mapGetters', namespace)) {
-        return
-      }
-      if (false) {
-        console.error(("[vuex] unknown getter: " + val));
-        return
-      }
-      return this.$store.getters[val]
-    };
-    // mark vuex getter for devtools
-    res[key].vuex = true;
-  });
-  return res
-});
-
-var mapActions = normalizeNamespace(function (namespace, actions) {
-  var res = {};
-  normalizeMap(actions).forEach(function (ref) {
-    var key = ref.key;
-    var val = ref.val;
-
-    res[key] = function mappedAction () {
-      var args = [], len = arguments.length;
-      while ( len-- ) args[ len ] = arguments[ len ];
-
-      var dispatch = this.$store.dispatch;
-      if (namespace) {
-        var module = getModuleByNamespace(this.$store, 'mapActions', namespace);
-        if (!module) {
-          return
-        }
-        dispatch = module.context.dispatch;
-      }
-      return typeof val === 'function'
-        ? val.apply(this, [dispatch].concat(args))
-        : dispatch.apply(this.$store, [val].concat(args))
-    };
-  });
-  return res
-});
-
-var createNamespacedHelpers = function (namespace) { return ({
-  mapState: mapState.bind(null, namespace),
-  mapGetters: mapGetters.bind(null, namespace),
-  mapMutations: mapMutations.bind(null, namespace),
-  mapActions: mapActions.bind(null, namespace)
-}); };
-
-function normalizeMap (map) {
-  return Array.isArray(map)
-    ? map.map(function (key) { return ({ key: key, val: key }); })
-    : Object.keys(map).map(function (key) { return ({ key: key, val: map[key] }); })
-}
-
-function normalizeNamespace (fn) {
-  return function (namespace, map) {
-    if (typeof namespace !== 'string') {
-      map = namespace;
-      namespace = '';
-    } else if (namespace.charAt(namespace.length - 1) !== '/') {
-      namespace += '/';
-    }
-    return fn(namespace, map)
-  }
-}
-
-function getModuleByNamespace (store, helper, namespace) {
-  var module = store._modulesNamespaceMap[namespace];
-  if (false) {
-    console.error(("[vuex] module namespace not found in " + helper + "(): " + namespace));
-  }
-  return module
-}
-
-var index_esm = {
-  Store: Store,
-  install: install,
-  version: '3.0.1',
-  mapState: mapState,
-  mapMutations: mapMutations,
-  mapGetters: mapGetters,
-  mapActions: mapActions,
-  createNamespacedHelpers: createNamespacedHelpers
-};
-
-
-/* harmony default export */ __webpack_exports__["a"] = (index_esm);
-
-
-/***/ }),
 /* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_allSavedChartsTemplate__ = __webpack_require__(26);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_BarChartTemplate__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_LineChartTemplate__ = __webpack_require__(34);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_PieChartTemplate__ = __webpack_require__(38);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_DoughnutChartTemplate__ = __webpack_require__(42);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_RadarChartTemplate__ = __webpack_require__(46);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_PolarAreaChartTemplate__ = __webpack_require__(50);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_BubbleChartTemplate__ = __webpack_require__(54);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__components_ScatterChartTemplate__ = __webpack_require__(58);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-
-
-
-
-
-
-
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-    data() {
-        return {
-            currentComponent: 'allGraphs',
-            editedGraphData: [],
-            editedGraphIndex: '',
-            currentPageName: 'All Graphs'
-        };
-    },
-    computed: {
-        currentChartTabComponent: function () {
-            return this.currentComponent;
-        }
-    },
-    components: {
-        allGraphs: __WEBPACK_IMPORTED_MODULE_0__components_allSavedChartsTemplate__["a" /* default */], pieChart: __WEBPACK_IMPORTED_MODULE_3__components_PieChartTemplate__["a" /* default */], doughnutChart: __WEBPACK_IMPORTED_MODULE_4__components_DoughnutChartTemplate__["a" /* default */], polarAreaChart: __WEBPACK_IMPORTED_MODULE_6__components_PolarAreaChartTemplate__["a" /* default */], barChart: __WEBPACK_IMPORTED_MODULE_1__components_BarChartTemplate__["a" /* default */], lineChart: __WEBPACK_IMPORTED_MODULE_2__components_LineChartTemplate__["a" /* default */], radarChart: __WEBPACK_IMPORTED_MODULE_5__components_RadarChartTemplate__["a" /* default */], bubbleChart: __WEBPACK_IMPORTED_MODULE_7__components_BubbleChartTemplate__["a" /* default */], scatterChart: __WEBPACK_IMPORTED_MODULE_8__components_ScatterChartTemplate__["a" /* default */]
-    },
-    methods: {
-        whenPageChange(data) {
-            this.editedGraphIndex = data.graphIndex;
-            this.editedGraphData = data.graphData;
-            this.currentPageName = data.pageName;
-            this.currentComponent = data.currentComponent;
-        },
-        whenGraphSaved() {
-            this.currentComponent = 'allGraphs';
-        },
-        whenGraphUpdated() {
-            this.currentComponent = 'allGraphs';
-        },
-        whenBackButtonPressed() {
-            this.currentComponent = 'allGraphs';
-        },
-        resetComponent() {
-            let outerThis = this;
-            this.currentPageName = 'All Graphs';
-            setTimeout(function () {
-                outerThis.currentComponent = 'allGraphs';
-            }, 500);
-        }
-    }
-});
-
-/***/ }),
-/* 7 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(5);
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-	data() {
-		return {
-			currentComponent: '',
-			selectedChartIndex: '',
-			theChart: [],
-			docState: 'add',
-			chartTabs: [{ tabFileName: 'pieChart', tabName: 'Pie Chart' }, { tabFileName: 'doughnutChart', tabName: 'Doughnut Chart' }, { tabFileName: 'polarAreaChart', tabName: 'Polar Area Chart' }, { tabFileName: 'barChart', tabName: 'Bar Chart' }, { tabFileName: 'lineChart', tabName: 'Line Chart' }, { tabFileName: 'radarChart', tabName: 'Radar Chart' }, { tabFileName: 'bubbleChart', tabName: 'Bubble Chart' }, { tabFileName: 'scatterChart', tabName: 'Scatter Chart' }]
-		};
-	},
-	computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])(['allGraph'])),
-	methods: {
-		onLoad() {
-			let outerThis = this;
-			this.allGraph.forEach(function (value, key) {
-				var ctx = document.getElementById(key).getContext('2d');
-				outerThis.theChart[key] = new Chart(ctx, {
-					type: value.type,
-					data: value.data,
-					options: value.options
-				});
-				ctx.height = 295;
-			});
-		},
-		useGraph(id) {
-			var content = '[graph_lite id="' + id + '"]';
-			tinymce.activeEditor.execCommand('mceInsertContent', false, content);
-			$('#gl-admin-meta-box').fadeOut();
-		},
-		changeTabChart() {
-			this.currentPageName = this.chartTabs[this.selectedChartIndex].tabName;
-			this.currentComponent = this.chartTabs[this.selectedChartIndex].tabFileName;
-			this.selectedChartIndex = '';
-			this.docState = 'add';
-
-			let withData = { graphIndex: 0, graphData: '', pageName: this.currentPageName, currentComponent: this.currentComponent };
-			this.$emit('graphPage', withData);
-		},
-		editGraphDetails(index) {
-			let chartType = this.allGraph[index].type + "Chart";
-			let result = this.chartTabs.find(chart => chart.tabFileName === chartType);
-			this.currentPageName = result.tabName;
-			this.currentComponent = chartType;
-
-			let withData = { graphIndex: index, graphData: this.allGraph[index], pageName: this.currentPageName, currentComponent: this.currentComponent };
-			this.$emit('graphPage', withData);
-		},
-		whenGraphUpdated() {
-			let index = this.$store.state.editedGraphIndex;
-			if (index != '') {
-				this.theChart[index].data.datasets = this.allGraph[index].data.datasets;
-				this.theChart[index].options.legend.display = this.allGraph[index].options.legend.display;
-				this.theChart[index].options.legend.position = this.allGraph[index].options.legend.position;
-				this.theChart[index].options.title.display = this.allGraph[index].options.title.display;
-				this.theChart[index].options.title.text = this.allGraph[index].options.title.text;
-
-				if (this.allGraph[index].type == "pie" || this.allGraph[index].type == "doughnut" || this.allGraph[index].type == "polarArea" || this.allGraph[index].type == "bar" || this.allGraph[index].type == "line" || this.allGraph[index].type == "radar") {
-					this.theChart[index].data.labels = this.allGraph[index].data.labels;
-				}
-				if (this.allGraph[index].type == "bar" || this.allGraph[index].type == "line") {
-					this.theChart[index].options.scales.yAxes[0].ticks.beginAtZero = this.allGraph[index].options.scales.yAxes[0].ticks.beginAtZero;
-				}
-				if (this.allGraph[index].type == "radar") {
-					this.theChart[index].options.scale.ticks.beginAtZero = this.allGraph[index].options.scale.ticks.beginAtZero;
-				}
-
-				this.theChart[index].update();
-				this.$store.commit('emptyEditGraph');
-			}
-		},
-		deleteGraph(index) {
-			let deletedGraphId = this.allGraph[index].graph_id;
-			const outerThis = this;
-
-			$.sweetModal.confirm('Do you really want to delete the chart?', function () {
-				$.ajax({
-					url: ajaxurl,
-					type: 'POST',
-					dataType: 'json',
-					data: {
-						action: 'delete_chart',
-						graph_id: deletedGraphId
-					},
-					success: function (response) {
-						outerThis.$store.dispatch('deleteGraph', index);
-					},
-					error: function (error) {
-						alert('Something went wront please try again');
-					}
-				});
-			});
-		}
-	},
-	mounted() {
-		this.onLoad();
-		this.whenGraphUpdated();
-	}
-});
-
-/***/ }),
-/* 8 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_color__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-	props: ['graphData', 'graphIndex'],
-	data() {
-		return {
-			chartType: 'bar',
-			chartlabelsString: '',
-			titleText: '',
-			legendPosition: 'top',
-			setBackgroundColor: '',
-			labels: [],
-			showTitle: false,
-			showLegend: true,
-			beginAtZero: false,
-			ifxAxesLabelEmpty: false,
-			showTutorial: true,
-			datasets: [{
-				label: '',
-				chartDatasetDataString: '',
-				data: [],
-				backgroundColor: '',
-				ifDataEmpty: false,
-				ifBackgroundEmpty: false,
-				backgroundColorFieldFocused: false
-			}]
-		};
-	},
-	components: {
-		'chrome-picker': __WEBPACK_IMPORTED_MODULE_0_vue_color__["Chrome"]
-	},
-	methods: {
-		addDataset() {
-			this.datasets.push({
-				label: '',
-				chartDatasetDataString: '',
-				data: [],
-				backgroundColor: '',
-				ifDataEmpty: false,
-				ifBackgroundEmpty: false,
-				backgroundColorFieldFocused: false
-			});
-			this.theChart.data.datasets.push({
-				label: '',
-				data: [],
-				backgroundColor: ''
-			});
-			this.theChart.update();
-		},
-		addLabels() {
-			if (this.ifxAxesLabelEmpty) {
-				this.ifxAxesLabelEmpty = false;
-			}
-			this.showTutorial = false;
-			this.labels = this.chartlabelsString.split(',');
-			this.theChart.data.labels = this.labels;
-			this.theChart.update();
-		},
-		addDatasetLabel(index) {
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].label = this.datasets[index].label;
-			this.theChart.update();
-		},
-		addDatasetData(index) {
-			if (this.datasets[index].ifDataEmpty) {
-				this.datasets[index].ifDataEmpty = false;
-			}
-			this.showTutorial = false;
-			this.datasets[index].data = this.datasets[index].chartDatasetDataString.split(',');
-			this.theChart.data.datasets[index].data = this.datasets[index].data;
-			this.theChart.update();
-		},
-		showBackgroundColorPickerField(index) {
-			this.datasets[index].backgroundColorFieldFocused = true;
-		},
-		hideBackgroundColorPickerField(index) {
-			this.datasets[index].backgroundColorFieldFocused = false;
-		},
-		pickBackgroundColor(index) {
-			if (this.datasets[index].ifBackgroundEmpty) {
-				this.datasets[index].ifBackgroundEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor = this.setBackgroundColor.hex;
-			this.theChart.update();
-			this.datasets[index].backgroundColorFieldFocused = false;
-		},
-		addDatasetBgColor(index) {
-			if (this.datasets[index].ifBackgroundEmpty) {
-				this.datasets[index].ifBackgroundEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
-			this.theChart.update();
-		},
-		addTitleText() {
-			this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
-			this.showTutorial = false;
-			this.theChart.options.title.display = this.showTitle;
-			this.theChart.options.title.text = this.titleText;
-			this.theChart.update();
-		},
-		yAxesRange() {
-			this.showTutorial = false;
-			this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero;
-			this.theChart.update();
-		},
-		showingGraphLegend() {
-			this.showTutorial = false;
-			this.theChart.options.legend.display = this.showLegend;
-			this.theChart.update();
-		},
-		changeLegendPosition() {
-			this.showTutorial = false;
-			this.theChart.options.legend.position = this.legendPosition;
-			this.theChart.update();
-		},
-		deleteDataset(index) {
-			this.datasets.splice(index, 1);
-			this.theChart.data.datasets.splice(index, 1);
-			this.theChart.update();
-		},
-		saveGraphData() {
-			let outerThis = this;
-			let DatasetHasEmptyValue = true;
-
-			this.datasets.forEach(function (value) {
-				if (value.chartDatasetDataString === '') {
-					value.ifDataEmpty = true;
-					DatasetHasEmptyValue = false;
-				}
-				if (value.backgroundColor === '') {
-					value.ifBackgroundEmpty = true;
-					DatasetHasEmptyValue = false;
-				}
-			});
-
-			if (this.chartlabelsString === '') {
-				this.ifxAxesLabelEmpty = true;
-			}
-
-			if (this.chartlabelsString !== '' && DatasetHasEmptyValue) {
-				let chartDatas = {
-					type: this.chartType,
-					data: {
-						labels: this.labels,
-						datasets: this.datasets
-					},
-					options: {
-						maintainAspectRatio: false,
-						scales: {
-							yAxes: [{
-								ticks: {
-									beginAtZero: this.beginAtZero
-								}
-							}]
-						},
-						title: {
-							display: this.showTitle,
-							text: this.titleText
-						},
-						legend: {
-							display: this.showLegend,
-							position: this.legendPosition
-						}
-					}
-				};
-
-				this.$store.dispatch('addNewGraph', chartDatas).then(function () {
-					setTimeout(function () {
-						outerThis.$emit("saved");
-					}, 1500);
-				});
-			}
-		},
-		updateGraphData() {
-			let outerThis = this;
-			let DatasetHasEmptyValue = true;
-
-			this.datasets.forEach(function (value) {
-				if (value.chartDatasetDataString === '') {
-					value.ifDataEmpty = true;
-					DatasetHasEmptyValue = false;
-				}
-				if (value.backgroundColor === '') {
-					value.ifBackgroundEmpty = true;
-					DatasetHasEmptyValue = false;
-				}
-			});
-
-			if (this.chartlabelsString === '') {
-				if (this.chartlabelsString === '') {
-					this.ifxAxesLabelEmpty = true;
-				}
-			}
-
-			if (this.chartlabelsString !== '' && DatasetHasEmptyValue) {
-				let chartDatas = {
-					type: this.chartType,
-					data: {
-						labels: this.labels,
-						datasets: []
-					},
-					options: {
-						maintainAspectRatio: false,
-						scales: {
-							yAxes: [{
-								ticks: {
-									beginAtZero: this.beginAtZero
-								}
-							}]
-						},
-						title: {
-							display: this.showTitle,
-							text: this.titleText
-						},
-						legend: {
-							display: this.showLegend,
-							position: this.legendPosition
-						}
-					}
-				};
-
-				this.datasets.forEach(function (value) {
-					chartDatas.data.datasets.push({ label: value.label, data: value.data, chartDatasetDataString: value.chartDatasetDataString, backgroundColor: value.backgroundColor });
-				});
-
-				let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
-
-				this.$store.dispatch('updateGraph', payload).then(function () {
-					setTimeout(function () {
-						outerThis.$emit("updated");
-					}, 2000);
-				});
-			}
-		},
-		onLoad() {
-			let ctx = document.getElementById("barChart").getContext('2d');
-			this.theChart = new Chart(ctx, {
-				type: this.chartType,
-				data: {
-					labels: [],
-					datasets: [{
-						label: '',
-						data: [],
-						backgroundColor: ''
-					}]
-				},
-				options: {
-					maintainAspectRatio: false,
-					scales: {
-						yAxes: [{
-							ticks: {
-								beginAtZero: false
-							}
-						}]
-					},
-					title: {
-						display: false,
-						text: ''
-					},
-					legend: {
-						display: true,
-						position: 'top'
-					}
-				}
-			});
-		},
-		forEdit() {
-			this.showTutorial = false;
-			let outerThis = this;
-			this.chartlabelsString = this.graphData.data.labels.join(", ");
-			this.theChart.data.labels = this.labels = this.graphData.data.labels;
-			this.graphData.data.datasets.forEach(function (value, key) {
-				if (key) {
-					outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor: '', ifDataEmpty: false, ifBackgroundEmpty: false, backgroundColorFieldFocused: false });
-					outerThis.theChart.data.datasets.push({ label: '', data: [], backgroundColor: '' });
-				}
-				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = outerThis.graphData.data.datasets[key].label;
-
-				outerThis.datasets[key].chartDatasetDataString = outerThis.graphData.data.datasets[key].chartDatasetDataString;
-
-				outerThis.theChart.data.datasets[key].data = outerThis.datasets[key].data = outerThis.graphData.data.datasets[key].data;
-
-				outerThis.theChart.data.datasets[key].backgroundColor = outerThis.datasets[key].backgroundColor = outerThis.graphData.data.datasets[key].backgroundColor;
-			});
-
-			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
-			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
-
-			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
-			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
-
-			this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero = this.graphData.options.scales.yAxes[0].ticks.beginAtZero;
-			this.theChart.update();
-		},
-		goBacktoAllGraphPage() {
-			this.$emit("backed");
-		}
-	},
-	mounted() {
-		this.onLoad();
-		if (this.graphData != '') {
-			this.forEdit();
-		}
-	}
-});
-
-/***/ }),
-/* 9 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_color__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-	props: ['graphData', 'graphIndex'],
-	data() {
-		return {
-			chartType: 'line',
-			chartlabelsString: '',
-			titleText: '',
-			legendPosition: 'top',
-			setBackgroundColor: '',
-			setBorderColor: '',
-			labels: [],
-			showTitle: false,
-			showLegend: true,
-			beginAtZero: false,
-			ifxAxesLabelEmpty: false,
-			showTutorial: true,
-			datasets: [{
-				label: '',
-				chartDatasetDataString: '',
-				data: [],
-				backgroundColor: '',
-				borderColor: '',
-				fill: false,
-				straightLine: false,
-				ifDataEmpty: false,
-				ifFillColorEmpty: false,
-				ifLineColorEmpty: false,
-				backgroundColorFieldFocused: false,
-				borderColorFieldFocused: false
-			}]
-		};
-	},
-	components: {
-		'chrome-picker': __WEBPACK_IMPORTED_MODULE_0_vue_color__["Chrome"]
-	},
-	methods: {
-		addDataset() {
-			this.datasets.push({
-				label: '',
-				chartDatasetDataString: '',
-				data: [],
-				backgroundColor: '',
-				borderColor: '',
-				fill: false,
-				straightLine: false,
-				ifDataEmpty: false,
-				ifFillColorEmpty: false,
-				ifLineColorEmpty: false,
-				backgroundColorFieldFocused: false,
-				borderColorFieldFocused: false
-			});
-			this.theChart.data.datasets.push({
-				label: '',
-				data: [],
-				backgroundColor: '',
-				borderColor: '',
-				fill: false
-			});
-			this.theChart.update();
-		},
-		addLabels() {
-			if (this.ifxAxesLabelEmpty) {
-				this.ifxAxesLabelEmpty = false;
-			}
-			this.showTutorial = false;
-			this.labels = this.chartlabelsString.split(',');
-			this.theChart.data.labels = this.labels;
-			this.theChart.update();
-		},
-		addDatasetLabel(index) {
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].label = this.datasets[index].label;
-			this.theChart.update();
-		},
-		addDatasetData(index) {
-			if (this.datasets[index].ifDataEmpty) {
-				this.datasets[index].ifDataEmpty = false;
-			}
-			this.showTutorial = false;
-			this.datasets[index].data = this.datasets[index].chartDatasetDataString.split(',');
-			this.theChart.data.datasets[index].data = this.datasets[index].data;
-			this.theChart.update();
-		},
-		showBackgroundColorPickerField(index) {
-			this.datasets[index].backgroundColorFieldFocused = true;
-		},
-		hideBackgroundColorPickerField(index) {
-			this.datasets[index].backgroundColorFieldFocused = false;
-		},
-		pickBackgroundColor(index) {
-			if (this.datasets[index].ifFillColorEmpty) {
-				this.datasets[index].ifFillColorEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor = this.setBackgroundColor.hex;
-			this.theChart.update();
-			this.datasets[index].backgroundColorFieldFocused = false;
-		},
-		addDatasetBgColor(index) {
-			if (this.datasets[index].ifFillColorEmpty) {
-				this.datasets[index].ifFillColorEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
-			this.theChart.update();
-		},
-		showBorderColorPickerField(index) {
-			this.datasets[index].borderColorFieldFocused = true;
-		},
-		hideBorderColorPickerField(index) {
-			this.datasets[index].borderColorFieldFocused = false;
-		},
-		pickBorderColor(index) {
-			if (this.datasets[index].ifLineColorEmpty) {
-				this.datasets[index].ifLineColorEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor = this.setBorderColor.hex;
-			this.theChart.update();
-			this.datasets[index].borderColorFieldFocused = false;
-		},
-		addDatasetborderColor(index) {
-			if (this.datasets[index].ifLineColorEmpty) {
-				this.datasets[index].ifLineColorEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
-			this.theChart.update();
-		},
-		fillColor(index) {
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].fill = this.datasets[index].fill;
-			this.theChart.update();
-		},
-		addTitleText() {
-			this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
-			this.showTutorial = false;
-			this.theChart.options.title.display = this.showTitle;
-			this.theChart.options.title.text = this.titleText;
-			this.theChart.update();
-		},
-		showingGraphLegend() {
-			this.showTutorial = false;
-			this.theChart.options.legend.display = this.showLegend;
-			this.theChart.update();
-		},
-		changeLegendPosition() {
-			this.showTutorial = false;
-			this.theChart.options.legend.position = this.legendPosition;
-			this.theChart.update();
-		},
-		yAxesRange() {
-			this.showTutorial = false;
-			this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero;
-			this.theChart.update();
-		},
-		makeLineStraight(index) {
-			this.showTutorial = false;
-			if (this.datasets[index].straightLine) {
-				this.datasets[index].lineTension = 0;
-				this.theChart.data.datasets[index].lineTension = 0;
-				this.theChart.update();
-			} else {
-				delete this.datasets[index].lineTension;
-				delete this.theChart.data.datasets[index].lineTension;
-				this.theChart.update();
-			}
-		},
-		deleteDataset(index) {
-			this.datasets.splice(index, 1);
-			this.theChart.data.datasets.splice(index, 1);
-			this.theChart.update();
-		},
-		saveGraphData() {
-			let outerThis = this;
-			let DatasetHasEmptyValue = true;
-
-			this.datasets.forEach(function (value) {
-				if (value.chartDatasetDataString === '') {
-					value.ifDataEmpty = true;
-					DatasetHasEmptyValue = false;
-				}
-				if (value.backgroundColor === '') {
-					value.ifFillColorEmpty = true;
-					DatasetHasEmptyValue = false;
-				}
-				if (value.borderColor === '') {
-					value.ifLineColorEmpty = true;
-					DatasetHasEmptyValue = false;
-				}
-			});
-
-			if (this.chartlabelsString === '') {
-				this.ifxAxesLabelEmpty = true;
-			}
-
-			if (this.chartlabelsString !== '' && DatasetHasEmptyValue) {
-				let chartDatas = {
-					type: this.chartType,
-					data: {
-						labels: this.labels,
-						datasets: this.datasets
-					},
-					options: {
-						maintainAspectRatio: false,
-						scales: {
-							yAxes: [{
-								ticks: {
-									beginAtZero: this.beginAtZero
-								}
-							}]
-						},
-						title: {
-							display: this.showTitle,
-							text: this.titleText
-						},
-						legend: {
-							display: this.showLegend,
-							position: this.legendPosition
-						}
-					}
-				};
-
-				this.$store.dispatch('addNewGraph', chartDatas).then(function () {
-					setTimeout(function () {
-						outerThis.$emit("saved");
-					}, 1500);
-				});
-			}
-		},
-		updateGraphData() {
-			let outerThis = this;
-			let DatasetHasEmptyValue = true;
-
-			this.datasets.forEach(function (value) {
-				if (value.chartDatasetDataString === '') {
-					value.ifDataEmpty = true;
-					DatasetHasEmptyValue = false;
-				}
-				if (value.backgroundColor === '') {
-					value.ifFillColorEmpty = true;
-					DatasetHasEmptyValue = false;
-				}
-				if (value.borderColor === '') {
-					value.ifLineColorEmpty = true;
-					DatasetHasEmptyValue = false;
-				}
-			});
-
-			if (this.chartlabelsString === '') {
-				this.ifxAxesLabelEmpty = true;
-			}
-
-			if (this.chartlabelsString !== '' && DatasetHasEmptyValue) {
-				let chartDatas = {
-					type: this.chartType,
-					data: {
-						labels: this.labels,
-						datasets: []
-					},
-					options: {
-						maintainAspectRatio: false,
-						scales: {
-							yAxes: [{
-								ticks: {
-									beginAtZero: this.beginAtZero
-								}
-							}]
-						},
-						title: {
-							display: this.showTitle,
-							text: this.titleText
-						},
-						legend: {
-							display: this.showLegend,
-							position: this.legendPosition
-						}
-					}
-				};
-
-				this.datasets.forEach(function (value, key) {
-					chartDatas.data.datasets.push({
-						label: value.label,
-						data: value.data,
-						chartDatasetDataString: value.chartDatasetDataString,
-						backgroundColor: value.backgroundColor,
-						borderColor: value.borderColor,
-						fill: value.fill,
-						straightLine: value.straightLine
-					});
-					if (value.straightLine) {
-						chartDatas.data.datasets[key].lineTension = 0;
-					}
-				});
-
-				let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
-
-				this.$store.dispatch('updateGraph', payload).then(function () {
-					setTimeout(function () {
-						outerThis.$emit("updated");
-					}, 2000);
-				});
-			}
-		},
-		onLoad() {
-			let ctx = document.getElementById("lineChart").getContext('2d');
-			this.theChart = new Chart(ctx, {
-				type: this.chartType,
-				data: {
-					labels: [],
-					datasets: [{
-						label: '',
-						data: [],
-						backgroundColor: '',
-						borderColor: '',
-						fill: false
-					}]
-				},
-				options: {
-					maintainAspectRatio: false,
-					scales: {
-						yAxes: [{
-							ticks: {
-								beginAtZero: false
-							}
-						}]
-					},
-					title: {
-						display: false,
-						text: ''
-					},
-					legend: {
-						display: true,
-						position: 'top'
-					}
-				}
-			});
-		},
-		forEdit() {
-			this.showTutorial = false;
-			let outerThis = this;
-			this.chartlabelsString = this.graphData.data.labels.join(", ");
-			this.theChart.data.labels = this.labels = this.graphData.data.labels;
-			this.graphData.data.datasets.forEach(function (value, key) {
-				if (key) {
-					outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor: '', ifDataEmpty: false, ifFillColorEmpty: false, ifLineColorEmpty: false, backgroundColorFieldFocused: false, borderColorFieldFocused: false });
-					outerThis.theChart.data.datasets.push({ label: '', data: [], backgroundColor: '' });
-				}
-				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = outerThis.graphData.data.datasets[key].label;
-
-				outerThis.datasets[key].chartDatasetDataString = outerThis.graphData.data.datasets[key].chartDatasetDataString;
-
-				outerThis.theChart.data.datasets[key].data = outerThis.datasets[key].data = outerThis.graphData.data.datasets[key].data;
-
-				outerThis.theChart.data.datasets[key].backgroundColor = outerThis.datasets[key].backgroundColor = outerThis.graphData.data.datasets[key].backgroundColor;
-
-				outerThis.theChart.data.datasets[key].borderColor = outerThis.datasets[key].borderColor = outerThis.graphData.data.datasets[key].borderColor;
-
-				outerThis.theChart.data.datasets[key].fill = outerThis.datasets[key].fill = outerThis.graphData.data.datasets[key].fill;
-
-				outerThis.datasets[key].straightLine = outerThis.graphData.data.datasets[key].straightLine;
-				if (outerThis.graphData.data.datasets[key].straightLine) {
-					outerThis.theChart.data.datasets[key].lineTension = outerThis.datasets[key].lineTension = 0;
-				}
-			});
-
-			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
-			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
-			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
-			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
-			this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero = this.graphData.options.scales.yAxes[0].ticks.beginAtZero;
-			this.theChart.update();
-		},
-		goBacktoAllGraphPage() {
-			this.$emit("backed");
-		}
-	},
-	mounted() {
-		this.onLoad();
-		if (this.graphData != '') {
-			this.forEdit();
-		}
-	}
-});
-
-/***/ }),
-/* 10 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_color__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-	props: ['graphData', 'graphIndex'],
-	data() {
-		return {
-			chartType: 'pie',
-			chartlabelString: '',
-			chartDatasetDataString: '',
-			chartDatasetBgColorString: '',
-			titleText: '',
-			editedGraphIdNo: '',
-			legendPosition: 'top',
-			setBackgroundColor: '',
-			backgroundConcatCount: 0,
-			labels: [],
-			datasets: [{
-				data: [],
-				backgroundColor: []
-			}],
-			showTitle: false,
-			showLegend: true,
-			ifLabelsEmpty: false,
-			ifDataEmpty: false,
-			ifBackgroundEmpty: false,
-			showTutorial: true,
-			backgroundColorFieldFocused: false
-		};
-	},
-	components: {
-		'chrome-picker': __WEBPACK_IMPORTED_MODULE_0_vue_color__["Chrome"]
-	},
-	methods: {
-		addLabels() {
-			if (this.ifLabelsEmpty) {
-				this.ifLabelsEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.labels = this.labels = this.chartlabelString.split(',');
-			this.theChart.update();
-		},
-		addDatasetData() {
-			if (this.ifDataEmpty) {
-				this.ifDataEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.datasets[0].data = this.datasets[0].data = this.chartDatasetDataString.split(',');
-			this.theChart.update();
-		},
-		showBackgroundColorPickerField() {
-			this.backgroundColorFieldFocused = true;
-		},
-		hideBackgroundColorPickerField() {
-			this.backgroundColorFieldFocused = false;
-		},
-		pickBackgroundColor() {
-			if (this.ifBackgroundEmpty) {
-				this.ifBackgroundEmpty = false;
-			}
-			this.showTutorial = false;
-			if (this.backgroundConcatCount > 0) {
-				this.chartDatasetBgColorString = this.chartDatasetBgColorString + ',' + this.setBackgroundColor.hex;
-			} else {
-				this.chartDatasetBgColorString = this.setBackgroundColor.hex;
-			}
-			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
-			this.theChart.update();
-			this.backgroundColorFieldFocused = false;
-			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
-		},
-		addDatasetBgColor() {
-			if (this.ifBackgroundEmpty) {
-				this.ifBackgroundEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
-			if (this.chartDatasetBgColorString === '') {
-				this.datasets[0].backgroundColor.length = 0;
-			}
-			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
-			this.theChart.update();
-		},
-		addTitleText() {
-			this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
-			this.showTutorial = false;
-			this.theChart.options.title.display = this.showTitle;
-			this.theChart.options.title.text = this.titleText;
-			this.theChart.update();
-		},
-		showingGraphLegend() {
-			this.showTutorial = false;
-			this.theChart.options.legend.display = this.showLegend;
-			this.theChart.update();
-		},
-		changeLegendPosition() {
-			this.showTutorial = false;
-			this.theChart.options.legend.position = this.legendPosition;
-			this.theChart.update();
-		},
-		saveGraphData() {
-			let outerThis = this;
-
-			if (this.chartlabelString === '') {
-				this.ifLabelsEmpty = true;
-			}
-			if (this.chartDatasetDataString === '') {
-				this.ifDataEmpty = true;
-			}
-			if (this.chartDatasetBgColorString === '') {
-				this.ifBackgroundEmpty = true;
-			}
-
-			if (this.chartlabelString !== '' && this.chartDatasetDataString !== '' && this.chartDatasetBgColorString !== '') {
-				let chartDatas = {
-					type: this.chartType,
-					data: {
-						labels: this.labels,
-						datasets: this.datasets
-					},
-					options: {
-						maintainAspectRatio: false,
-						title: {
-							display: this.showTitle,
-							text: this.titleText
-						},
-						legend: {
-							display: this.showLegend,
-							position: this.legendPosition
-						}
-					}
-				};
-
-				this.$store.dispatch('addNewGraph', chartDatas).then(function () {
-					setTimeout(function () {
-						outerThis.$emit("saved");
-					}, 1500);
-				});
-			}
-		},
-		updateGraphData() {
-			let outerThis = this;
-
-			if (this.chartlabelString === '') {
-				this.ifLabelsEmpty = true;
-			}
-			if (this.chartDatasetDataString === '') {
-				this.ifDataEmpty = true;
-			}
-			if (this.chartDatasetBgColorString === '') {
-				this.ifBackgroundEmpty = true;
-			}
-
-			if (this.chartlabelString !== '' && this.chartDatasetDataString !== '' && this.chartDatasetBgColorString !== '') {
-				let chartDatas = {
-					type: this.chartType,
-					data: {
-						labels: this.labels,
-						datasets: [{
-							data: this.datasets[0].data,
-							backgroundColor: this.datasets[0].backgroundColor
-						}]
-					},
-					options: {
-						maintainAspectRatio: false,
-						title: {
-							display: this.showTitle,
-							text: this.titleText
-						},
-						legend: {
-							display: this.showLegend,
-							position: this.legendPosition
-						}
-					}
-				};
-
-				let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
-
-				this.$store.dispatch('updateGraph', payload).then(function () {
-					setTimeout(function () {
-						outerThis.$emit("updated");
-					}, 2000);
-				});
-			}
-		},
-		onLoad() {
-			let ctx = document.getElementById("pieChart").getContext('2d');
-			this.theChart = new Chart(ctx, {
-				type: this.chartType,
-				data: {
-					labels: [],
-					datasets: [{
-						data: [],
-						backgroundColor: []
-					}]
-				},
-				options: {
-					maintainAspectRatio: false,
-					title: {
-						display: false,
-						text: ''
-					},
-					legend: {
-						display: true,
-						position: 'top'
-					}
-				}
-			});
-		},
-		forEdit() {
-			this.showTutorial = false;
-			this.chartlabelString = this.graphData.data.labels.join(", ");
-			this.theChart.data.labels = this.labels = this.graphData.data.labels;
-
-			this.chartDatasetBgColorString = this.graphData.data.datasets[0].backgroundColor.join(", ");
-			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.graphData.data.datasets[0].backgroundColor;
-			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
-
-			this.chartDatasetDataString = this.graphData.data.datasets[0].data.join(", ");
-			this.theChart.data.datasets[0].data = this.datasets[0].data = this.graphData.data.datasets[0].data;
-
-			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
-			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
-
-			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
-			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
-			this.theChart.update();
-		},
-		goBacktoAllGraphPage() {
-			this.$emit("backed");
-		}
-	},
-	mounted() {
-		this.onLoad();
-		if (this.graphData != '') {
-			this.forEdit();
-		}
-	}
-});
-
-/***/ }),
-/* 11 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_color__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-	props: ['graphData', 'graphIndex'],
-	data() {
-		return {
-			chartType: 'doughnut',
-			chartlabelString: '',
-			chartDatasetDataString: '',
-			chartDatasetBgColorString: '',
-			titleText: '',
-			legendPosition: 'top',
-			setBackgroundColor: '',
-			backgroundConcatCount: 0,
-			labels: [],
-			datasets: [{
-				data: [],
-				backgroundColor: []
-			}],
-			showTitle: false,
-			showLegend: true,
-			ifLabelsEmpty: false,
-			ifDataEmpty: false,
-			ifBackgroundEmpty: false,
-			showTutorial: true,
-			backgroundColorFieldFocused: false
-		};
-	},
-	components: {
-		'chrome-picker': __WEBPACK_IMPORTED_MODULE_0_vue_color__["Chrome"]
-	},
-	methods: {
-		addLabels() {
-			if (this.ifLabelsEmpty) {
-				this.ifLabelsEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.labels = this.labels = this.chartlabelString.split(',');
-			this.theChart.update();
-		},
-		addDatasetData() {
-			if (this.ifDataEmpty) {
-				this.ifDataEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.datasets[0].data = this.datasets[0].data = this.chartDatasetDataString.split(',');
-			this.theChart.update();
-		},
-		showBackgroundColorPickerField() {
-			this.backgroundColorFieldFocused = true;
-		},
-		hideBackgroundColorPickerField() {
-			this.backgroundColorFieldFocused = false;
-		},
-		pickBackgroundColor() {
-			if (this.ifBackgroundEmpty) {
-				this.ifBackgroundEmpty = false;
-			}
-			this.showTutorial = false;
-			if (this.backgroundConcatCount > 0) {
-				this.chartDatasetBgColorString = this.chartDatasetBgColorString + ',' + this.setBackgroundColor.hex;
-			} else {
-				this.chartDatasetBgColorString = this.setBackgroundColor.hex;
-			}
-			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
-			this.theChart.update();
-			this.backgroundColorFieldFocused = false;
-			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
-		},
-		addDatasetBgColor() {
-			if (this.ifBackgroundEmpty) {
-				this.ifBackgroundEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
-			if (this.chartDatasetBgColorString === '') {
-				this.datasets[0].backgroundColor.length = 0;
-			}
-			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
-			this.theChart.update();
-		},
-		addTitleText() {
-			this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
-			this.showTutorial = false;
-			this.theChart.options.title.display = this.showTitle;
-			this.theChart.options.title.text = this.titleText;
-			this.theChart.update();
-		},
-		showingGraphLegend() {
-			this.showTutorial = false;
-			this.theChart.options.legend.display = this.showLegend;
-			this.theChart.update();
-		},
-		changeLegendPosition() {
-			this.showTutorial = false;
-			this.theChart.options.legend.position = this.legendPosition;
-			this.theChart.update();
-		},
-		saveGraphData() {
-			let outerThis = this;
-
-			if (this.chartlabelString === '') {
-				this.ifLabelsEmpty = true;
-			}
-			if (this.chartDatasetDataString === '') {
-				this.ifDataEmpty = true;
-			}
-			if (this.chartDatasetBgColorString === '') {
-				this.ifBackgroundEmpty = true;
-			}
-
-			if (this.chartlabelString !== '' && this.chartDatasetDataString !== '' && this.chartDatasetBgColorString !== '') {
-				let chartDatas = {
-					type: this.chartType,
-					data: {
-						labels: this.labels,
-						datasets: this.datasets
-					},
-					options: {
-						maintainAspectRatio: false,
-						title: {
-							display: this.showTitle,
-							text: this.titleText
-						},
-						legend: {
-							display: this.showLegend,
-							position: this.legendPosition
-						}
-					}
-				};
-
-				this.$store.dispatch('addNewGraph', chartDatas).then(function () {
-					setTimeout(function () {
-						outerThis.$emit("saved");
-					}, 1500);
-				});
-			}
-		},
-		updateGraphData() {
-			let outerThis = this;
-
-			if (this.chartlabelString === '') {
-				this.ifLabelsEmpty = true;
-			}
-			if (this.chartDatasetDataString === '') {
-				this.ifDataEmpty = true;
-			}
-			if (this.chartDatasetBgColorString === '') {
-				this.ifBackgroundEmpty = true;
-			}
-
-			if (this.chartlabelString !== '' && this.chartDatasetDataString !== '' && this.chartDatasetBgColorString !== '') {
-				let chartDatas = {
-					type: this.chartType,
-					data: {
-						labels: this.labels,
-						datasets: [{
-							data: this.datasets[0].data,
-							backgroundColor: this.datasets[0].backgroundColor
-						}]
-					},
-					options: {
-						maintainAspectRatio: false,
-						title: {
-							display: this.showTitle,
-							text: this.titleText
-						},
-						legend: {
-							display: this.showLegend,
-							position: this.legendPosition
-						}
-					}
-				};
-
-				let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
-
-				this.$store.dispatch('updateGraph', payload).then(function () {
-					setTimeout(function () {
-						outerThis.$emit("updated");
-					}, 2000);
-				});
-			}
-		},
-		onLoad() {
-			let ctx = document.getElementById("DoughnutChart").getContext('2d');
-			this.theChart = new Chart(ctx, {
-				type: this.chartType,
-				data: {
-					labels: [],
-					datasets: [{
-						data: [],
-						backgroundColor: []
-					}]
-				},
-				options: {
-					maintainAspectRatio: false,
-					title: {
-						display: false,
-						text: ''
-					},
-					legend: {
-						display: true,
-						position: 'top'
-					}
-				}
-			});
-		},
-		forEdit() {
-			this.showTutorial = false;
-			this.chartlabelString = this.graphData.data.labels.join(", ");
-			this.theChart.data.labels = this.labels = this.graphData.data.labels;
-
-			this.chartDatasetBgColorString = this.graphData.data.datasets[0].backgroundColor.join(", ");
-			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.graphData.data.datasets[0].backgroundColor;
-			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
-
-			this.chartDatasetDataString = this.graphData.data.datasets[0].data.join(", ");
-			this.theChart.data.datasets[0].data = this.datasets[0].data = this.graphData.data.datasets[0].data;
-
-			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
-			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
-
-			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
-			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
-			this.theChart.update();
-		},
-		goBacktoAllGraphPage() {
-			this.$emit("backed");
-		}
-	},
-	mounted() {
-		this.onLoad();
-		if (this.graphData != '') {
-			this.forEdit();
-		}
-	}
-});
-
-/***/ }),
-/* 12 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_color__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-	props: ['graphData', 'graphIndex'],
-	data() {
-		return {
-			chartType: 'radar',
-			chartlabelsString: '',
-			titleText: '',
-			legendPosition: 'top',
-			setBackgroundColor: '',
-			setBorderColor: '',
-			labels: [],
-			showTitle: false,
-			showLegend: true,
-			ifLabelsEmpty: false,
-			showTutorial: true,
-			datasets: [{
-				label: '',
-				chartDatasetDataString: '',
-				data: [],
-				backgroundColor: '',
-				borderColor: '',
-				fill: false,
-				ifDataEmpty: false,
-				ifFillColorEmpty: false,
-				ifLineColorEmpty: false,
-				backgroundColorFieldFocused: false,
-				borderColorFieldFocused: false
-			}]
-		};
-	},
-	components: {
-		'chrome-picker': __WEBPACK_IMPORTED_MODULE_0_vue_color__["Chrome"]
-	},
-	methods: {
-		addDataset() {
-			this.datasets.push({
-				label: '',
-				chartDatasetDataString: '',
-				data: [],
-				backgroundColor: '',
-				borderColor: '',
-				fill: false,
-				ifDataEmpty: false,
-				ifFillColorEmpty: false,
-				ifLineColorEmpty: false,
-				backgroundColorFieldFocused: false,
-				borderColorFieldFocused: false
-			});
-			this.theChart.data.datasets.push({
-				label: '',
-				data: [],
-				backgroundColor: '',
-				borderColor: '',
-				fill: false
-			});
-			this.theChart.update();
-		},
-		addLabels() {
-			if (this.ifLabelsEmpty) {
-				this.ifLabelsEmpty = false;
-			}
-			this.showTutorial = false;
-			this.labels = this.chartlabelsString.split(',');
-			this.theChart.data.labels = this.labels;
-			this.theChart.update();
-		},
-		addDatasetLabel(index) {
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].label = this.datasets[index].label;
-			this.theChart.update();
-		},
-		addDatasetData(index) {
-			if (this.datasets[index].ifDataEmpty) {
-				this.datasets[index].ifDataEmpty = false;
-			}
-			this.showTutorial = false;
-			this.datasets[index].data = this.datasets[index].chartDatasetDataString.split(',');
-			this.theChart.data.datasets[index].data = this.datasets[index].data;
-			this.theChart.update();
-		},
-		showBackgroundColorPickerField(index) {
-			this.datasets[index].backgroundColorFieldFocused = true;
-		},
-		hideBackgroundColorPickerField(index) {
-			this.datasets[index].backgroundColorFieldFocused = false;
-		},
-		pickBackgroundColor(index) {
-			if (this.datasets[index].ifFillColorEmpty) {
-				this.datasets[index].ifFillColorEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor = this.setBackgroundColor.hex;
-			this.theChart.update();
-			this.datasets[index].backgroundColorFieldFocused = false;
-		},
-		addDatasetBgColor(index) {
-			if (this.datasets[index].ifFillColorEmpty) {
-				this.datasets[index].ifFillColorEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
-			this.theChart.update();
-		},
-		showBorderColorPickerField(index) {
-			this.datasets[index].borderColorFieldFocused = true;
-		},
-		hideBorderColorPickerField(index) {
-			this.datasets[index].borderColorFieldFocused = false;
-		},
-		pickBorderColor(index) {
-			if (this.datasets[index].ifLineColorEmpty) {
-				this.datasets[index].ifLineColorEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor = this.setBorderColor.hex;
-			this.theChart.update();
-			this.datasets[index].borderColorFieldFocused = false;
-		},
-		addDatasetborderColor(index) {
-			if (this.datasets[index].ifLineColorEmpty) {
-				this.datasets[index].ifLineColorEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
-			this.theChart.update();
-		},
-		fillColor(index) {
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].fill = this.datasets[index].fill;
-			this.theChart.update();
-		},
-		addTitleText() {
-			this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
-			this.showTutorial = false;
-			this.theChart.options.title.display = this.showTitle;
-			this.theChart.options.title.text = this.titleText;
-			this.theChart.update();
-		},
-		showingGraphLegend() {
-			this.showTutorial = false;
-			this.theChart.options.legend.display = this.showLegend;
-			this.theChart.update();
-		},
-		changeLegendPosition() {
-			this.showTutorial = false;
-			this.theChart.options.legend.position = this.legendPosition;
-			this.theChart.update();
-		},
-		deleteDataset(index) {
-			this.datasets.splice(index, 1);
-			this.theChart.data.datasets.splice(index, 1);
-			this.theChart.update();
-		},
-		saveGraphData() {
-			let outerThis = this;
-			let DatasetHasEmptyValue = true;
-
-			this.datasets.forEach(function (value) {
-				if (value.chartDatasetDataString === '') {
-					value.ifDataEmpty = true;
-					DatasetHasEmptyValue = false;
-				}
-				if (value.backgroundColor === '') {
-					value.ifFillColorEmpty = true;
-					DatasetHasEmptyValue = false;
-				}
-				if (value.borderColor === '') {
-					value.ifLineColorEmpty = true;
-					DatasetHasEmptyValue = false;
-				}
-			});
-
-			if (this.chartlabelsString === '') {
-				this.ifLabelsEmpty = true;
-			}
-
-			if (this.chartlabelsString !== '' && DatasetHasEmptyValue) {
-				let chartDatas = {
-					type: this.chartType,
-					data: {
-						labels: this.labels,
-						datasets: this.datasets
-					},
-					options: {
-						maintainAspectRatio: false,
-						scale: {
-							ticks: {
-								beginAtZero: true
-							}
-						},
-						title: {
-							display: this.showTitle,
-							text: this.titleText
-						},
-						legend: {
-							display: this.showLegend,
-							position: this.legendPosition
-						}
-					}
-				};
-
-				this.$store.dispatch('addNewGraph', chartDatas).then(function () {
-					setTimeout(function () {
-						outerThis.$emit("saved");
-					}, 1500);
-				});
-			}
-		},
-		updateGraphData() {
-			let outerThis = this;
-			let DatasetHasEmptyValue = true;
-
-			this.datasets.forEach(function (value) {
-				if (value.chartDatasetDataString === '') {
-					value.ifDataEmpty = true;
-					DatasetHasEmptyValue = false;
-				}
-				if (value.backgroundColor === '') {
-					value.ifFillColorEmpty = true;
-					DatasetHasEmptyValue = false;
-				}
-				if (value.borderColor === '') {
-					value.ifLineColorEmpty = true;
-					DatasetHasEmptyValue = false;
-				}
-			});
-
-			if (this.chartlabelsString === '') {
-				this.ifLabelsEmpty = true;
-			}
-
-			if (this.chartlabelsString !== '' && DatasetHasEmptyValue) {
-				let chartDatas = {
-					type: this.chartType,
-					data: {
-						labels: this.labels,
-						datasets: []
-					},
-					options: {
-						maintainAspectRatio: false,
-						scale: {
-							ticks: {
-								beginAtZero: true
-							}
-						},
-						title: {
-							display: this.showTitle,
-							text: this.titleText
-						},
-						legend: {
-							display: this.showLegend,
-							position: this.legendPosition
-						}
-					}
-				};
-
-				this.datasets.forEach(function (value) {
-					chartDatas.data.datasets.push({ label: value.label, data: value.data, chartDatasetDataString: value.chartDatasetDataString, backgroundColor: value.backgroundColor, borderColor: value.borderColor, fill: value.fill });
-				});
-
-				let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
-
-				this.$store.dispatch('updateGraph', payload).then(function () {
-					setTimeout(function () {
-						outerThis.$emit("updated");
-					}, 2000);
-				});
-			}
-		},
-		onLoad() {
-			let ctx = document.getElementById("radarChart").getContext('2d');
-			this.theChart = new Chart(ctx, {
-				type: this.chartType,
-				data: {
-					labels: [],
-					datasets: [{
-						label: '',
-						data: [],
-						backgroundColor: '',
-						borderColor: '',
-						fill: false
-					}]
-				},
-				options: {
-					maintainAspectRatio: false,
-					scale: {
-						ticks: {
-							beginAtZero: true
-						}
-					},
-					title: {
-						display: false,
-						text: ''
-					},
-					legend: {
-						display: true,
-						position: 'top'
-					}
-				}
-			});
-		},
-		forEdit() {
-			this.showTutorial = false;
-			let outerThis = this;
-			this.chartlabelsString = this.graphData.data.labels.join(", ");
-			this.theChart.data.labels = this.labels = this.graphData.data.labels;
-			this.graphData.data.datasets.forEach(function (value, key) {
-				if (key) {
-					outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor: '', ifDataEmpty: false, ifFillColorEmpty: false, ifLineColorEmpty: false, backgroundColorFieldFocused: false, borderColorFieldFocused: false });
-					outerThis.theChart.data.datasets.push({ label: '', data: [], backgroundColor: '' });
-				}
-				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = outerThis.graphData.data.datasets[key].label;
-
-				outerThis.datasets[key].chartDatasetDataString = outerThis.graphData.data.datasets[key].chartDatasetDataString;
-
-				outerThis.theChart.data.datasets[key].data = outerThis.datasets[key].data = outerThis.graphData.data.datasets[key].data;
-
-				outerThis.theChart.data.datasets[key].backgroundColor = outerThis.datasets[key].backgroundColor = outerThis.graphData.data.datasets[key].backgroundColor;
-
-				outerThis.theChart.data.datasets[key].borderColor = outerThis.datasets[key].borderColor = outerThis.graphData.data.datasets[key].borderColor;
-
-				outerThis.theChart.data.datasets[key].fill = outerThis.datasets[key].fill = outerThis.graphData.data.datasets[key].fill;
-			});
-
-			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
-			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
-			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
-			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
-			this.theChart.options.scale.ticks.beginAtZero = this.beginAtZero = this.graphData.options.scale.ticks.beginAtZero;
-			this.theChart.update();
-		},
-		goBacktoAllGraphPage() {
-			this.$emit("backed");
-		}
-	},
-	mounted() {
-		this.onLoad();
-		if (this.graphData != '') {
-			this.forEdit();
-		}
-	}
-});
-
-/***/ }),
-/* 13 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_color__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-	props: ['graphData', 'graphIndex'],
-	data() {
-		return {
-			chartType: 'polarArea',
-			chartlabelString: '',
-			chartDatasetDataString: '',
-			chartDatasetBgColorString: '',
-			titleText: '',
-			legendPosition: 'top',
-			setBackgroundColor: '',
-			backgroundConcatCount: 0,
-			labels: [],
-			datasets: [{
-				data: [],
-				backgroundColor: []
-			}],
-			showTitle: false,
-			showLegend: true,
-			ifLabelsEmpty: false,
-			ifDataEmpty: false,
-			ifBackgroundEmpty: false,
-			showTutorial: true,
-			backgroundColorFieldFocused: false
-		};
-	},
-	components: {
-		'chrome-picker': __WEBPACK_IMPORTED_MODULE_0_vue_color__["Chrome"]
-	},
-	methods: {
-		addLabels() {
-			if (this.ifLabelsEmpty) {
-				this.ifLabelsEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.labels = this.labels = this.chartlabelString.split(',');
-			this.theChart.update();
-		},
-		addDatasetData() {
-			if (this.ifDataEmpty) {
-				this.ifDataEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.datasets[0].data = this.datasets[0].data = this.chartDatasetDataString.split(',');
-			this.theChart.update();
-		},
-		showBackgroundColorPickerField() {
-			this.backgroundColorFieldFocused = true;
-		},
-		hideBackgroundColorPickerField() {
-			this.backgroundColorFieldFocused = false;
-		},
-		pickBackgroundColor() {
-			if (this.ifBackgroundEmpty) {
-				this.ifBackgroundEmpty = false;
-			}
-			this.showTutorial = false;
-			if (this.backgroundConcatCount > 0) {
-				this.chartDatasetBgColorString = this.chartDatasetBgColorString + ',' + this.setBackgroundColor.hex;
-			} else {
-				this.chartDatasetBgColorString = this.setBackgroundColor.hex;
-			}
-			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
-			this.theChart.update();
-			this.backgroundColorFieldFocused = false;
-			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
-		},
-		addDatasetBgColor() {
-			if (this.ifBackgroundEmpty) {
-				this.ifBackgroundEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
-			if (this.chartDatasetBgColorString === '') {
-				this.datasets[0].backgroundColor.length = 0;
-			}
-			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
-			this.theChart.update();
-		},
-		addTitleText() {
-			this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
-			this.showTutorial = false;
-			this.theChart.options.title.display = this.showTitle;
-			this.theChart.options.title.text = this.titleText;
-			this.theChart.update();
-		},
-		showingGraphLegend() {
-			this.showTutorial = false;
-			this.theChart.options.legend.display = this.showLegend;
-			this.theChart.update();
-		},
-		changeLegendPosition() {
-			this.showTutorial = false;
-			this.theChart.options.legend.position = this.legendPosition;
-			this.theChart.update();
-		},
-		saveGraphData() {
-			let outerThis = this;
-
-			if (this.chartlabelString === '') {
-				this.ifLabelsEmpty = true;
-			}
-			if (this.chartDatasetDataString === '') {
-				this.ifDataEmpty = true;
-			}
-			if (this.chartDatasetBgColorString === '') {
-				this.ifBackgroundEmpty = true;
-			}
-
-			if (this.chartlabelString !== '' && this.chartDatasetDataString !== '' && this.chartDatasetBgColorString !== '') {
-				let chartDatas = {
-					type: this.chartType,
-					data: {
-						labels: this.labels,
-						datasets: this.datasets
-					},
-					options: {
-						maintainAspectRatio: false,
-						title: {
-							display: this.showTitle,
-							text: this.titleText
-						},
-						legend: {
-							display: this.showLegend,
-							position: this.legendPosition
-						}
-					}
-				};
-
-				this.$store.dispatch('addNewGraph', chartDatas).then(function () {
-					setTimeout(function () {
-						outerThis.$emit("saved");
-					}, 1500);
-				});
-			}
-		},
-		updateGraphData() {
-			let outerThis = this;
-
-			if (this.chartlabelString === '') {
-				this.ifLabelsEmpty = true;
-			}
-			if (this.chartDatasetDataString === '') {
-				this.ifDataEmpty = true;
-			}
-			if (this.chartDatasetBgColorString === '') {
-				this.ifBackgroundEmpty = true;
-			}
-
-			if (this.chartlabelString !== '' && this.chartDatasetDataString !== '' && this.chartDatasetBgColorString !== '') {
-				let chartDatas = {
-					type: this.chartType,
-					data: {
-						labels: this.labels,
-						datasets: [{
-							data: this.datasets[0].data,
-							backgroundColor: this.datasets[0].backgroundColor
-						}]
-					},
-					options: {
-						maintainAspectRatio: false,
-						title: {
-							display: this.showTitle,
-							text: this.titleText
-						},
-						legend: {
-							display: this.showLegend,
-							position: this.legendPosition
-						}
-					}
-				};
-
-				let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
-
-				this.$store.dispatch('updateGraph', payload).then(function () {
-					setTimeout(function () {
-						outerThis.$emit("updated");
-					}, 2000);
-				});
-			}
-		},
-		onLoad() {
-			let ctx = document.getElementById("PolarAreaChart").getContext('2d');
-			this.theChart = new Chart(ctx, {
-				type: this.chartType,
-				data: {
-					labels: [],
-					datasets: [{
-						data: [],
-						backgroundColor: []
-					}]
-				},
-				options: {
-					maintainAspectRatio: false,
-					title: {
-						display: false,
-						text: ''
-					},
-					legend: {
-						display: true,
-						position: 'top'
-					}
-				}
-			});
-		},
-		forEdit() {
-			this.showTutorial = false;
-			this.chartlabelString = this.graphData.data.labels.join(", ");
-			this.theChart.data.labels = this.labels = this.graphData.data.labels;
-
-			this.chartDatasetBgColorString = this.graphData.data.datasets[0].backgroundColor.join(", ");
-			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.graphData.data.datasets[0].backgroundColor;
-			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
-
-			this.chartDatasetDataString = this.graphData.data.datasets[0].data.join(", ");
-			this.theChart.data.datasets[0].data = this.datasets[0].data = this.graphData.data.datasets[0].data;
-
-			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
-			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
-
-			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
-			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
-			this.theChart.update();
-		},
-		goBacktoAllGraphPage() {
-			this.$emit("backed");
-		}
-	},
-	mounted() {
-		this.onLoad();
-		if (this.graphData != '') {
-			this.forEdit();
-		}
-	}
-});
-
-/***/ }),
-/* 14 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_color__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-	props: ['graphData', 'graphIndex'],
-	data() {
-		return {
-			chartType: 'bubble',
-			titleText: '',
-			legendPosition: 'top',
-			setBackgroundColor: '',
-			setBorderColor: '',
-			showTitle: false,
-			showLegend: true,
-			showTutorial: true,
-			datasets: [{
-				label: '',
-				data: [{
-					x: '',
-					y: '',
-					r: '',
-					ifxPointEmpty: false,
-					ifyPointEmpty: false,
-					ifrPointEmpty: false
-				}],
-				backgroundColor: '',
-				borderColor: '',
-				hoverRadius: 0,
-				ifCircleBackgroundEmpty: false,
-				ifCicleBorderColorEmpty: false,
-				backgroundColorFieldFocused: false,
-				borderColorFieldFocused: false
-			}]
-		};
-	},
-	components: {
-		'chrome-picker': __WEBPACK_IMPORTED_MODULE_0_vue_color__["Chrome"]
-	},
-	methods: {
-		addDataset() {
-			this.datasets.push({
-				label: '',
-				data: [{
-					x: '',
-					y: '',
-					r: '',
-					ifxPointEmpty: false,
-					ifyPointEmpty: false,
-					ifrPointEmpty: false
-				}],
-				backgroundColor: '',
-				borderColor: '',
-				hoverRadius: 0,
-				ifCircleBackgroundEmpty: false,
-				ifCicleBorderColorEmpty: false,
-				backgroundColorFieldFocused: false,
-				borderColorFieldFocused: false
-			});
-			this.theChart.data.datasets.push({
-				label: '',
-				data: [{ x: '', y: '', r: '' }],
-				backgroundColor: '',
-				borderColor: '',
-				hoverRadius: 0
-			});
-			this.theChart.update();
-		},
-		addBubblePoint(index) {
-			this.datasets[index].data.push({
-				x: '',
-				y: '',
-				r: '',
-				ifxPointEmpty: false,
-				ifyPointEmpty: false,
-				ifrPointEmpty: false
-			});
-			this.theChart.data.datasets[index].data.push({ x: '', y: '', r: '' });
-			this.theChart.update();
-		},
-		addDatasetLabel(index) {
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].label = this.datasets[index].label;
-			this.theChart.update();
-		},
-		addDatasetDataPoints(index, pIndex, point) {
-			let gettingErrorPoint = 'if' + point + 'PointEmpty';
-			if (this.datasets[index].data[pIndex][gettingErrorPoint]) {
-				this.datasets[index].data[pIndex][gettingErrorPoint] = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].data[pIndex][point] = this.datasets[index].data[pIndex][point];
-			this.theChart.update();
-		},
-		showBackgroundColorPickerField(index) {
-			this.datasets[index].backgroundColorFieldFocused = true;
-		},
-		hideBackgroundColorPickerField(index) {
-			this.datasets[index].backgroundColorFieldFocused = false;
-		},
-		pickBackgroundColor(index) {
-			if (this.datasets[index].ifCircleBackgroundEmpty) {
-				this.datasets[index].ifCircleBackgroundEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor = this.setBackgroundColor.hex;
-			this.theChart.update();
-			this.datasets[index].backgroundColorFieldFocused = false;
-		},
-		addDatasetBgColor(index) {
-			if (this.datasets[index].ifCircleBackgroundEmpty) {
-				this.datasets[index].ifCircleBackgroundEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
-			this.theChart.update();
-		},
-		showBorderColorPickerField(index) {
-			this.datasets[index].borderColorFieldFocused = true;
-		},
-		hideBorderColorPickerField(index) {
-			this.datasets[index].borderColorFieldFocused = false;
-		},
-		pickBorderColor(index) {
-			if (this.datasets[index].ifCicleBorderColorEmpty) {
-				this.datasets[index].ifCicleBorderColorEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor = this.setBorderColor.hex;
-			this.theChart.update();
-			this.datasets[index].borderColorFieldFocused = false;
-		},
-		addDatasetborderColor(index) {
-			if (this.datasets[index].ifCicleBorderColorEmpty) {
-				this.datasets[index].ifCicleBorderColorEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
-			this.theChart.update();
-		},
-		addTitleText() {
-			this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
-			this.showTutorial = false;
-			this.theChart.options.title.display = this.showTitle;
-			this.theChart.options.title.text = this.titleText;
-			this.theChart.update();
-		},
-		showingGraphLegend() {
-			this.showTutorial = false;
-			this.theChart.options.legend.display = this.showLegend;
-			this.theChart.update();
-		},
-		changeLegendPosition() {
-			this.showTutorial = false;
-			this.theChart.options.legend.position = this.legendPosition;
-			this.theChart.update();
-		},
-		deleteDataset(index) {
-			this.datasets.splice(index, 1);
-			this.theChart.data.datasets.splice(index, 1);
-			this.theChart.update();
-		},
-		deleteButtonPoint(datasetIndex, bubblePointIndex) {
-			this.datasets[datasetIndex].data.splice(bubblePointIndex, 1);
-			this.theChart.data.datasets[datasetIndex].data.splice(bubblePointIndex, 1);
-			this.theChart.update();
-		},
-		saveGraphData() {
-			let outerThis = this;
-			let DatasetHasEmptyValue = true;
-
-			this.datasets.forEach(function (value) {
-				if (value.backgroundColor === '') {
-					value.ifCircleBackgroundEmpty = true;
-					DatasetHasEmptyValue = false;
-				}
-				if (value.borderColor === '') {
-					value.ifCicleBorderColorEmpty = true;
-					DatasetHasEmptyValue = false;
-				}
-
-				value.data.forEach(function (data) {
-					if (data.x === '') {
-						data.ifxPointEmpty = true;
-						DatasetHasEmptyValue = false;
-					}
-					if (data.y === '') {
-						data.ifyPointEmpty = true;
-						DatasetHasEmptyValue = false;
-					}
-					if (data.r === '') {
-						data.ifrPointEmpty = true;
-						DatasetHasEmptyValue = false;
-					}
-				});
-			});
-
-			if (DatasetHasEmptyValue) {
-				let chartDatas = {
-					type: this.chartType,
-					data: {
-						datasets: this.datasets
-					},
-					options: {
-						maintainAspectRatio: false,
-						title: {
-							display: this.showTitle,
-							text: this.titleText
-						},
-						legend: {
-							display: this.showLegend,
-							position: this.legendPosition
-						}
-					}
-				};
-
-				this.$store.dispatch('addNewGraph', chartDatas).then(function () {
-					setTimeout(function () {
-						outerThis.$emit("saved");
-					}, 1500);
-				});
-			}
-		},
-		updateGraphData() {
-			let outerThis = this;
-			let DatasetHasEmptyValue = true;
-
-			this.datasets.forEach(function (value) {
-				if (value.backgroundColor === '') {
-					value.ifCircleBackgroundEmpty = true;
-					DatasetHasEmptyValue = false;
-				}
-				if (value.borderColor === '') {
-					value.ifCicleBorderColorEmpty = true;
-					DatasetHasEmptyValue = false;
-				}
-
-				value.data.forEach(function (data) {
-					if (data.x === '') {
-						data.ifxPointEmpty = true;
-						DatasetHasEmptyValue = false;
-					}
-					if (data.y === '') {
-						data.ifyPointEmpty = true;
-						DatasetHasEmptyValue = false;
-					}
-					if (data.r === '') {
-						data.ifrPointEmpty = true;
-						DatasetHasEmptyValue = false;
-					}
-				});
-			});
-
-			if (DatasetHasEmptyValue) {
-				let chartDatas = {
-					type: this.chartType,
-					data: {
-						datasets: []
-					},
-					options: {
-						maintainAspectRatio: false,
-						title: {
-							display: this.showTitle,
-							text: this.titleText
-						},
-						legend: {
-							display: this.showLegend,
-							position: this.legendPosition
-						}
-					}
-				};
-
-				this.datasets.forEach(function (value, key) {
-					chartDatas.data.datasets.push({
-						label: value.label,
-						data: value.data,
-						backgroundColor: value.backgroundColor,
-						borderColor: value.borderColor,
-						hoverRadius: 0
-					});
-				});
-
-				let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
-
-				this.$store.dispatch('updateGraph', payload).then(function () {
-					setTimeout(function () {
-						outerThis.$emit("updated");
-					}, 2000);
-				});
-			}
-		},
-		onLoad() {
-			let ctx = document.getElementById("bubbleChart").getContext('2d');
-			this.theChart = new Chart(ctx, {
-				type: this.chartType,
-				data: {
-					datasets: [{
-						label: '',
-						data: [{ x: '', y: '', r: '' }],
-						backgroundColor: '',
-						borderColor: '',
-						hoverRadius: 0
-					}]
-				},
-				options: {
-					maintainAspectRatio: false,
-					title: {
-						display: false,
-						text: ''
-					},
-					legend: {
-						display: true,
-						position: 'top'
-					}
-				}
-			});
-		},
-		forEdit() {
-			this.showTutorial = false;
-			let outerThis = this;
-			this.graphData.data.datasets.forEach(function (value, key) {
-				if (key) {
-					outerThis.datasets.push({ label: '', data: [{ x: '', y: '', r: '', ifxPointEmpty: false, ifyPointEmpty: false, ifrPointEmpty: false }], backgroundColor: '', ifCircleBackgroundEmpty: false, ifCicleBorderColorEmpty: false, backgroundColorFieldFocused: false, borderColorFieldFocused: false });
-					outerThis.theChart.data.datasets.push({ label: '', data: [{ x: '', y: '', r: '' }], backgroundColor: '' });
-				}
-				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = value.label;
-				value.data.forEach(function (innerValue, innerKey) {
-					if (innerKey) {
-						outerThis.datasets[key].data.push({ x: '', y: '', r: '' });
-						outerThis.theChart.data.datasets[key].data.push({ x: '', y: '', r: '' });
-					}
-					outerThis.theChart.data.datasets[key].data[innerKey].x = outerThis.datasets[key].data[innerKey].x = innerValue.x;
-					outerThis.theChart.data.datasets[key].data[innerKey].y = outerThis.datasets[key].data[innerKey].y = innerValue.y;
-					outerThis.theChart.data.datasets[key].data[innerKey].r = outerThis.datasets[key].data[innerKey].r = innerValue.r;
-				});
-				outerThis.theChart.data.datasets[key].backgroundColor = outerThis.datasets[key].backgroundColor = value.backgroundColor;
-				outerThis.theChart.data.datasets[key].borderColor = outerThis.datasets[key].borderColor = value.borderColor;
-				outerThis.theChart.data.datasets[key].hoverRadius = outerThis.datasets[key].hoverRadius = 0;
-			});
-
-			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
-			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
-			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
-			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
-			this.theChart.update();
-		},
-		goBacktoAllGraphPage() {
-			this.$emit("backed");
-		}
-	},
-	mounted() {
-		this.onLoad();
-		if (this.graphData != '') {
-			this.forEdit();
-		}
-	}
-});
-
-/***/ }),
-/* 15 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_color__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-	props: ['graphData', 'graphIndex'],
-	data() {
-		return {
-			chartType: 'scatter',
-			titleText: '',
-			legendPosition: 'top',
-			setBackgroundColor: '',
-			setBorderColor: '',
-			showTitle: false,
-			showLegend: true,
-			showTutorial: true,
-			datasets: [{
-				label: '',
-				data: [{
-					x: '',
-					y: '',
-					ifxPointEmpty: false,
-					ifyPointEmpty: false
-				}],
-				backgroundColor: '',
-				borderColor: '',
-				fill: false,
-				showLine: false,
-				ifCircleBackgroundEmpty: false,
-				ifCicleBorderColorEmpty: false,
-				backgroundColorFieldFocused: false,
-				borderColorFieldFocused: false
-			}]
-		};
-	},
-	components: {
-		'chrome-picker': __WEBPACK_IMPORTED_MODULE_0_vue_color__["Chrome"]
-	},
-	methods: {
-		addDataset() {
-			this.datasets.push({
-				label: '',
-				data: [{
-					x: '',
-					y: '',
-					fxPointEmpty: false,
-					ifyPointEmpty: false
-				}],
-				backgroundColor: '',
-				borderColor: '',
-				fill: false,
-				showLine: false,
-				ifCircleBackgroundEmpty: false,
-				ifCicleBorderColorEmpty: false,
-				backgroundColorFieldFocused: false,
-				borderColorFieldFocused: false
-			});
-			this.theChart.data.datasets.push({
-				label: '',
-				data: [{ x: '', y: '' }],
-				backgroundColor: '',
-				borderColor: '',
-				fill: false,
-				showLine: false
-			});
-			this.theChart.update();
-		},
-		addBubblePoint(index) {
-			this.showTutorial = false;
-			this.datasets[index].data.push({ x: '', y: '', ifxPointEmpty: false, ifyPointEmpty: false });
-			this.theChart.data.datasets[index].data.push({ x: '', y: '' });
-			this.theChart.update();
-		},
-		addDatasetLabel(index) {
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].label = this.datasets[index].label;
-			this.theChart.update();
-		},
-		addDatasetDataPoints(index, pIndex, point) {
-			let gettingErrorPoint = 'if' + point + 'PointEmpty';
-			if (this.datasets[index].data[pIndex][gettingErrorPoint]) {
-				this.datasets[index].data[pIndex][gettingErrorPoint] = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].data[pIndex][point] = this.datasets[index].data[pIndex][point];
-			this.theChart.update();
-		},
-		showBackgroundColorPickerField(index) {
-			this.datasets[index].backgroundColorFieldFocused = true;
-		},
-		hideBackgroundColorPickerField(index) {
-			this.datasets[index].backgroundColorFieldFocused = false;
-		},
-		pickBackgroundColor(index) {
-			if (this.datasets[index].ifCircleBackgroundEmpty) {
-				this.datasets[index].ifCircleBackgroundEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor = this.setBackgroundColor.hex;
-			this.theChart.update();
-			this.datasets[index].backgroundColorFieldFocused = false;
-		},
-		addDatasetBgColor(index) {
-			if (this.datasets[index].ifCircleBackgroundEmpty) {
-				this.datasets[index].ifCircleBackgroundEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
-			this.theChart.update();
-		},
-		showBorderColorPickerField(index) {
-			this.datasets[index].borderColorFieldFocused = true;
-		},
-		hideBorderColorPickerField(index) {
-			this.datasets[index].borderColorFieldFocused = false;
-		},
-		pickBorderColor(index) {
-			if (this.datasets[index].ifCicleBorderColorEmpty) {
-				this.datasets[index].ifCicleBorderColorEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor = this.setBorderColor.hex;
-			this.theChart.update();
-			this.datasets[index].borderColorFieldFocused = false;
-		},
-		addDatasetborderColor(index) {
-			if (this.datasets[index].ifCicleBorderColorEmpty) {
-				this.datasets[index].ifCicleBorderColorEmpty = false;
-			}
-			this.showTutorial = false;
-			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
-			this.theChart.update();
-		},
-		addTitleText() {
-			this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
-			this.showTutorial = false;
-			this.theChart.options.title.display = this.showTitle;
-			this.theChart.options.title.text = this.titleText;
-			this.theChart.update();
-		},
-		showingGraphLegend() {
-			this.showTutorial = false;
-			this.theChart.options.legend.display = this.showLegend;
-			this.theChart.update();
-		},
-		changeLegendPosition() {
-			this.showTutorial = false;
-			this.theChart.options.legend.position = this.legendPosition;
-			this.theChart.update();
-		},
-		deleteDataset(index) {
-			this.datasets.splice(index, 1);
-			this.theChart.data.datasets.splice(index, 1);
-			this.theChart.update();
-		},
-		deleteButtonPoint(datasetIndex, bubblePointIndex) {
-			this.datasets[datasetIndex].data.splice(bubblePointIndex, 1);
-			this.theChart.data.datasets[datasetIndex].data.splice(bubblePointIndex, 1);
-			this.theChart.update();
-		},
-		saveGraphData() {
-			let outerThis = this;
-			let DatasetHasEmptyValue = true;
-
-			this.datasets.forEach(function (value) {
-				if (value.backgroundColor === '') {
-					value.ifCircleBackgroundEmpty = true;
-					DatasetHasEmptyValue = false;
-				}
-				if (value.borderColor === '') {
-					value.ifCicleBorderColorEmpty = true;
-					DatasetHasEmptyValue = false;
-				}
-
-				value.data.forEach(function (data) {
-					if (data.x === '') {
-						data.ifxPointEmpty = true;
-						DatasetHasEmptyValue = false;
-					}
-					if (data.y === '') {
-						data.ifyPointEmpty = true;
-						DatasetHasEmptyValue = false;
-					}
-				});
-			});
-
-			if (DatasetHasEmptyValue) {
-				let chartDatas = {
-					type: this.chartType,
-					data: {
-						datasets: this.datasets
-					},
-					options: {
-						maintainAspectRatio: false,
-						title: {
-							display: this.showTitle,
-							text: this.titleText
-						},
-						legend: {
-							display: this.showLegend,
-							position: this.legendPosition
-						}
-					}
-				};
-
-				this.$store.dispatch('addNewGraph', chartDatas).then(function () {
-					setTimeout(function () {
-						outerThis.$emit("saved");
-					}, 1500);
-				});
-			}
-		},
-		updateGraphData() {
-			let outerThis = this;
-			let DatasetHasEmptyValue = true;
-
-			this.datasets.forEach(function (value) {
-				if (value.backgroundColor === '') {
-					value.ifCircleBackgroundEmpty = true;
-					DatasetHasEmptyValue = false;
-				}
-				if (value.borderColor === '') {
-					value.ifCicleBorderColorEmpty = true;
-					DatasetHasEmptyValue = false;
-				}
-
-				value.data.forEach(function (data) {
-					if (data.x === '') {
-						data.ifxPointEmpty = true;
-						DatasetHasEmptyValue = false;
-					}
-					if (data.y === '') {
-						data.ifyPointEmpty = true;
-						DatasetHasEmptyValue = false;
-					}
-				});
-			});
-
-			if (DatasetHasEmptyValue) {
-				let chartDatas = {
-					type: this.chartType,
-					data: {
-						datasets: []
-					},
-					options: {
-						maintainAspectRatio: false,
-						title: {
-							display: this.showTitle,
-							text: this.titleText
-						},
-						legend: {
-							display: this.showLegend,
-							position: this.legendPosition
-						}
-					}
-				};
-
-				this.datasets.forEach(function (value, key) {
-					chartDatas.data.datasets.push({
-						label: value.label,
-						data: value.data,
-						backgroundColor: value.backgroundColor,
-						borderColor: value.borderColor,
-						fill: value.fill,
-						showLine: value.showLine
-					});
-				});
-
-				let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
-
-				this.$store.dispatch('updateGraph', payload).then(function () {
-					setTimeout(function () {
-						outerThis.$emit("updated");
-					}, 2000);
-				});
-			}
-		},
-		onLoad() {
-			let ctx = document.getElementById("scatterChart").getContext('2d');
-			this.theChart = new Chart(ctx, {
-				type: this.chartType,
-				data: {
-					datasets: [{
-						label: '',
-						data: [{ x: '', y: '' }],
-						backgroundColor: '',
-						borderColor: '',
-						fill: false,
-						showLine: false
-					}]
-				},
-				options: {
-					maintainAspectRatio: false,
-					title: {
-						display: false,
-						text: ''
-					},
-					legend: {
-						display: true,
-						position: 'top'
-					}
-				}
-			});
-		},
-		forEdit() {
-			this.showTutorial = false;
-			let outerThis = this;
-			this.graphData.data.datasets.forEach(function (value, key) {
-				if (key) {
-					outerThis.datasets.push({ label: '', data: [{ x: '', y: '', ifxPointEmpty: false, ifyPointEmpty: false }], backgroundColor: '', fill: false, showLine: false, ifCircleBackgroundEmpty: false, ifCicleBorderColorEmpty: false, backgroundColorFieldFocused: false, borderColorFieldFocused: false });
-					outerThis.theChart.data.datasets.push({ label: '', data: [{ x: '', y: '' }], backgroundColor: '', fill: false, showLine: false });
-				}
-				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = value.label;
-				value.data.forEach(function (innerValue, innerKey) {
-					if (innerKey) {
-						outerThis.datasets[key].data.push({ x: '', y: '' });
-						outerThis.theChart.data.datasets[key].data.push({ x: '', y: '' });
-					}
-					outerThis.theChart.data.datasets[key].data[innerKey].x = outerThis.datasets[key].data[innerKey].x = innerValue.x;
-					outerThis.theChart.data.datasets[key].data[innerKey].y = outerThis.datasets[key].data[innerKey].y = innerValue.y;
-				});
-				outerThis.theChart.data.datasets[key].backgroundColor = outerThis.datasets[key].backgroundColor = value.backgroundColor;
-				outerThis.theChart.data.datasets[key].borderColor = outerThis.datasets[key].borderColor = value.borderColor;
-			});
-
-			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
-			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
-			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
-			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
-			this.theChart.update();
-		},
-		goBacktoAllGraphPage() {
-			this.$emit("backed");
-		}
-	},
-	mounted() {
-		this.onLoad();
-		if (this.graphData != '') {
-			this.forEdit();
-		}
-	}
-});
-
-/***/ }),
-/* 16 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(17);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__store__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__App_vue__ = __webpack_require__(22);
-
-
-
-
-//components
-
-
-__WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].use(__WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */]);
-
-new __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */]({
-	el: '#app',
-	render: h => h(__WEBPACK_IMPORTED_MODULE_3__App_vue__["a" /* default */]),
-	store: new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store(__WEBPACK_IMPORTED_MODULE_2__store__["a" /* default */]),
-	created() {
-		this.$store.dispatch('onLoad');
-	}
-});
-
-/***/ }),
-/* 17 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
 /* WEBPACK VAR INJECTION */(function(global, setImmediate) {/*!
  * Vue.js v2.5.17
  * (c) 2014-2018 Evan You
@@ -15927,12 +11540,4614 @@ function getOuterHTML (el) {
 
 Vue.compile = compileToFunctions;
 
-/* harmony default export */ __webpack_exports__["a"] = (Vue);
+/* harmony default export */ __webpack_exports__["default"] = (Vue);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(4), __webpack_require__(18).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(5), __webpack_require__(19).setImmediate))
+
+/***/ }),
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export Store */
+/* unused harmony export install */
+/* unused harmony export mapState */
+/* unused harmony export mapMutations */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return mapGetters; });
+/* unused harmony export mapActions */
+/* unused harmony export createNamespacedHelpers */
+/**
+ * vuex v3.0.1
+ * (c) 2017 Evan You
+ * @license MIT
+ */
+var applyMixin = function (Vue) {
+  var version = Number(Vue.version.split('.')[0]);
+
+  if (version >= 2) {
+    Vue.mixin({ beforeCreate: vuexInit });
+  } else {
+    // override init and inject vuex init procedure
+    // for 1.x backwards compatibility.
+    var _init = Vue.prototype._init;
+    Vue.prototype._init = function (options) {
+      if ( options === void 0 ) options = {};
+
+      options.init = options.init
+        ? [vuexInit].concat(options.init)
+        : vuexInit;
+      _init.call(this, options);
+    };
+  }
+
+  /**
+   * Vuex init hook, injected into each instances init hooks list.
+   */
+
+  function vuexInit () {
+    var options = this.$options;
+    // store injection
+    if (options.store) {
+      this.$store = typeof options.store === 'function'
+        ? options.store()
+        : options.store;
+    } else if (options.parent && options.parent.$store) {
+      this.$store = options.parent.$store;
+    }
+  }
+};
+
+var devtoolHook =
+  typeof window !== 'undefined' &&
+  window.__VUE_DEVTOOLS_GLOBAL_HOOK__;
+
+function devtoolPlugin (store) {
+  if (!devtoolHook) { return }
+
+  store._devtoolHook = devtoolHook;
+
+  devtoolHook.emit('vuex:init', store);
+
+  devtoolHook.on('vuex:travel-to-state', function (targetState) {
+    store.replaceState(targetState);
+  });
+
+  store.subscribe(function (mutation, state) {
+    devtoolHook.emit('vuex:mutation', mutation, state);
+  });
+}
+
+/**
+ * Get the first item that pass the test
+ * by second argument function
+ *
+ * @param {Array} list
+ * @param {Function} f
+ * @return {*}
+ */
+/**
+ * Deep copy the given object considering circular structure.
+ * This function caches all nested objects and its copies.
+ * If it detects circular structure, use cached copy to avoid infinite loop.
+ *
+ * @param {*} obj
+ * @param {Array<Object>} cache
+ * @return {*}
+ */
+
+
+/**
+ * forEach for object
+ */
+function forEachValue (obj, fn) {
+  Object.keys(obj).forEach(function (key) { return fn(obj[key], key); });
+}
+
+function isObject (obj) {
+  return obj !== null && typeof obj === 'object'
+}
+
+function isPromise (val) {
+  return val && typeof val.then === 'function'
+}
+
+function assert (condition, msg) {
+  if (!condition) { throw new Error(("[vuex] " + msg)) }
+}
+
+var Module = function Module (rawModule, runtime) {
+  this.runtime = runtime;
+  this._children = Object.create(null);
+  this._rawModule = rawModule;
+  var rawState = rawModule.state;
+  this.state = (typeof rawState === 'function' ? rawState() : rawState) || {};
+};
+
+var prototypeAccessors$1 = { namespaced: { configurable: true } };
+
+prototypeAccessors$1.namespaced.get = function () {
+  return !!this._rawModule.namespaced
+};
+
+Module.prototype.addChild = function addChild (key, module) {
+  this._children[key] = module;
+};
+
+Module.prototype.removeChild = function removeChild (key) {
+  delete this._children[key];
+};
+
+Module.prototype.getChild = function getChild (key) {
+  return this._children[key]
+};
+
+Module.prototype.update = function update (rawModule) {
+  this._rawModule.namespaced = rawModule.namespaced;
+  if (rawModule.actions) {
+    this._rawModule.actions = rawModule.actions;
+  }
+  if (rawModule.mutations) {
+    this._rawModule.mutations = rawModule.mutations;
+  }
+  if (rawModule.getters) {
+    this._rawModule.getters = rawModule.getters;
+  }
+};
+
+Module.prototype.forEachChild = function forEachChild (fn) {
+  forEachValue(this._children, fn);
+};
+
+Module.prototype.forEachGetter = function forEachGetter (fn) {
+  if (this._rawModule.getters) {
+    forEachValue(this._rawModule.getters, fn);
+  }
+};
+
+Module.prototype.forEachAction = function forEachAction (fn) {
+  if (this._rawModule.actions) {
+    forEachValue(this._rawModule.actions, fn);
+  }
+};
+
+Module.prototype.forEachMutation = function forEachMutation (fn) {
+  if (this._rawModule.mutations) {
+    forEachValue(this._rawModule.mutations, fn);
+  }
+};
+
+Object.defineProperties( Module.prototype, prototypeAccessors$1 );
+
+var ModuleCollection = function ModuleCollection (rawRootModule) {
+  // register root module (Vuex.Store options)
+  this.register([], rawRootModule, false);
+};
+
+ModuleCollection.prototype.get = function get (path) {
+  return path.reduce(function (module, key) {
+    return module.getChild(key)
+  }, this.root)
+};
+
+ModuleCollection.prototype.getNamespace = function getNamespace (path) {
+  var module = this.root;
+  return path.reduce(function (namespace, key) {
+    module = module.getChild(key);
+    return namespace + (module.namespaced ? key + '/' : '')
+  }, '')
+};
+
+ModuleCollection.prototype.update = function update$1 (rawRootModule) {
+  update([], this.root, rawRootModule);
+};
+
+ModuleCollection.prototype.register = function register (path, rawModule, runtime) {
+    var this$1 = this;
+    if ( runtime === void 0 ) runtime = true;
+
+  if (false) {
+    assertRawModule(path, rawModule);
+  }
+
+  var newModule = new Module(rawModule, runtime);
+  if (path.length === 0) {
+    this.root = newModule;
+  } else {
+    var parent = this.get(path.slice(0, -1));
+    parent.addChild(path[path.length - 1], newModule);
+  }
+
+  // register nested modules
+  if (rawModule.modules) {
+    forEachValue(rawModule.modules, function (rawChildModule, key) {
+      this$1.register(path.concat(key), rawChildModule, runtime);
+    });
+  }
+};
+
+ModuleCollection.prototype.unregister = function unregister (path) {
+  var parent = this.get(path.slice(0, -1));
+  var key = path[path.length - 1];
+  if (!parent.getChild(key).runtime) { return }
+
+  parent.removeChild(key);
+};
+
+function update (path, targetModule, newModule) {
+  if (false) {
+    assertRawModule(path, newModule);
+  }
+
+  // update target module
+  targetModule.update(newModule);
+
+  // update nested modules
+  if (newModule.modules) {
+    for (var key in newModule.modules) {
+      if (!targetModule.getChild(key)) {
+        if (false) {
+          console.warn(
+            "[vuex] trying to add a new module '" + key + "' on hot reloading, " +
+            'manual reload is needed'
+          );
+        }
+        return
+      }
+      update(
+        path.concat(key),
+        targetModule.getChild(key),
+        newModule.modules[key]
+      );
+    }
+  }
+}
+
+var functionAssert = {
+  assert: function (value) { return typeof value === 'function'; },
+  expected: 'function'
+};
+
+var objectAssert = {
+  assert: function (value) { return typeof value === 'function' ||
+    (typeof value === 'object' && typeof value.handler === 'function'); },
+  expected: 'function or object with "handler" function'
+};
+
+var assertTypes = {
+  getters: functionAssert,
+  mutations: functionAssert,
+  actions: objectAssert
+};
+
+function assertRawModule (path, rawModule) {
+  Object.keys(assertTypes).forEach(function (key) {
+    if (!rawModule[key]) { return }
+
+    var assertOptions = assertTypes[key];
+
+    forEachValue(rawModule[key], function (value, type) {
+      assert(
+        assertOptions.assert(value),
+        makeAssertionMessage(path, key, type, value, assertOptions.expected)
+      );
+    });
+  });
+}
+
+function makeAssertionMessage (path, key, type, value, expected) {
+  var buf = key + " should be " + expected + " but \"" + key + "." + type + "\"";
+  if (path.length > 0) {
+    buf += " in module \"" + (path.join('.')) + "\"";
+  }
+  buf += " is " + (JSON.stringify(value)) + ".";
+  return buf
+}
+
+var Vue; // bind on install
+
+var Store = function Store (options) {
+  var this$1 = this;
+  if ( options === void 0 ) options = {};
+
+  // Auto install if it is not done yet and `window` has `Vue`.
+  // To allow users to avoid auto-installation in some cases,
+  // this code should be placed here. See #731
+  if (!Vue && typeof window !== 'undefined' && window.Vue) {
+    install(window.Vue);
+  }
+
+  if (false) {
+    assert(Vue, "must call Vue.use(Vuex) before creating a store instance.");
+    assert(typeof Promise !== 'undefined', "vuex requires a Promise polyfill in this browser.");
+    assert(this instanceof Store, "Store must be called with the new operator.");
+  }
+
+  var plugins = options.plugins; if ( plugins === void 0 ) plugins = [];
+  var strict = options.strict; if ( strict === void 0 ) strict = false;
+
+  var state = options.state; if ( state === void 0 ) state = {};
+  if (typeof state === 'function') {
+    state = state() || {};
+  }
+
+  // store internal state
+  this._committing = false;
+  this._actions = Object.create(null);
+  this._actionSubscribers = [];
+  this._mutations = Object.create(null);
+  this._wrappedGetters = Object.create(null);
+  this._modules = new ModuleCollection(options);
+  this._modulesNamespaceMap = Object.create(null);
+  this._subscribers = [];
+  this._watcherVM = new Vue();
+
+  // bind commit and dispatch to self
+  var store = this;
+  var ref = this;
+  var dispatch = ref.dispatch;
+  var commit = ref.commit;
+  this.dispatch = function boundDispatch (type, payload) {
+    return dispatch.call(store, type, payload)
+  };
+  this.commit = function boundCommit (type, payload, options) {
+    return commit.call(store, type, payload, options)
+  };
+
+  // strict mode
+  this.strict = strict;
+
+  // init root module.
+  // this also recursively registers all sub-modules
+  // and collects all module getters inside this._wrappedGetters
+  installModule(this, state, [], this._modules.root);
+
+  // initialize the store vm, which is responsible for the reactivity
+  // (also registers _wrappedGetters as computed properties)
+  resetStoreVM(this, state);
+
+  // apply plugins
+  plugins.forEach(function (plugin) { return plugin(this$1); });
+
+  if (Vue.config.devtools) {
+    devtoolPlugin(this);
+  }
+};
+
+var prototypeAccessors = { state: { configurable: true } };
+
+prototypeAccessors.state.get = function () {
+  return this._vm._data.$$state
+};
+
+prototypeAccessors.state.set = function (v) {
+  if (false) {
+    assert(false, "Use store.replaceState() to explicit replace store state.");
+  }
+};
+
+Store.prototype.commit = function commit (_type, _payload, _options) {
+    var this$1 = this;
+
+  // check object-style commit
+  var ref = unifyObjectStyle(_type, _payload, _options);
+    var type = ref.type;
+    var payload = ref.payload;
+    var options = ref.options;
+
+  var mutation = { type: type, payload: payload };
+  var entry = this._mutations[type];
+  if (!entry) {
+    if (false) {
+      console.error(("[vuex] unknown mutation type: " + type));
+    }
+    return
+  }
+  this._withCommit(function () {
+    entry.forEach(function commitIterator (handler) {
+      handler(payload);
+    });
+  });
+  this._subscribers.forEach(function (sub) { return sub(mutation, this$1.state); });
+
+  if (
+    false
+  ) {
+    console.warn(
+      "[vuex] mutation type: " + type + ". Silent option has been removed. " +
+      'Use the filter functionality in the vue-devtools'
+    );
+  }
+};
+
+Store.prototype.dispatch = function dispatch (_type, _payload) {
+    var this$1 = this;
+
+  // check object-style dispatch
+  var ref = unifyObjectStyle(_type, _payload);
+    var type = ref.type;
+    var payload = ref.payload;
+
+  var action = { type: type, payload: payload };
+  var entry = this._actions[type];
+  if (!entry) {
+    if (false) {
+      console.error(("[vuex] unknown action type: " + type));
+    }
+    return
+  }
+
+  this._actionSubscribers.forEach(function (sub) { return sub(action, this$1.state); });
+
+  return entry.length > 1
+    ? Promise.all(entry.map(function (handler) { return handler(payload); }))
+    : entry[0](payload)
+};
+
+Store.prototype.subscribe = function subscribe (fn) {
+  return genericSubscribe(fn, this._subscribers)
+};
+
+Store.prototype.subscribeAction = function subscribeAction (fn) {
+  return genericSubscribe(fn, this._actionSubscribers)
+};
+
+Store.prototype.watch = function watch (getter, cb, options) {
+    var this$1 = this;
+
+  if (false) {
+    assert(typeof getter === 'function', "store.watch only accepts a function.");
+  }
+  return this._watcherVM.$watch(function () { return getter(this$1.state, this$1.getters); }, cb, options)
+};
+
+Store.prototype.replaceState = function replaceState (state) {
+    var this$1 = this;
+
+  this._withCommit(function () {
+    this$1._vm._data.$$state = state;
+  });
+};
+
+Store.prototype.registerModule = function registerModule (path, rawModule, options) {
+    if ( options === void 0 ) options = {};
+
+  if (typeof path === 'string') { path = [path]; }
+
+  if (false) {
+    assert(Array.isArray(path), "module path must be a string or an Array.");
+    assert(path.length > 0, 'cannot register the root module by using registerModule.');
+  }
+
+  this._modules.register(path, rawModule);
+  installModule(this, this.state, path, this._modules.get(path), options.preserveState);
+  // reset store to update getters...
+  resetStoreVM(this, this.state);
+};
+
+Store.prototype.unregisterModule = function unregisterModule (path) {
+    var this$1 = this;
+
+  if (typeof path === 'string') { path = [path]; }
+
+  if (false) {
+    assert(Array.isArray(path), "module path must be a string or an Array.");
+  }
+
+  this._modules.unregister(path);
+  this._withCommit(function () {
+    var parentState = getNestedState(this$1.state, path.slice(0, -1));
+    Vue.delete(parentState, path[path.length - 1]);
+  });
+  resetStore(this);
+};
+
+Store.prototype.hotUpdate = function hotUpdate (newOptions) {
+  this._modules.update(newOptions);
+  resetStore(this, true);
+};
+
+Store.prototype._withCommit = function _withCommit (fn) {
+  var committing = this._committing;
+  this._committing = true;
+  fn();
+  this._committing = committing;
+};
+
+Object.defineProperties( Store.prototype, prototypeAccessors );
+
+function genericSubscribe (fn, subs) {
+  if (subs.indexOf(fn) < 0) {
+    subs.push(fn);
+  }
+  return function () {
+    var i = subs.indexOf(fn);
+    if (i > -1) {
+      subs.splice(i, 1);
+    }
+  }
+}
+
+function resetStore (store, hot) {
+  store._actions = Object.create(null);
+  store._mutations = Object.create(null);
+  store._wrappedGetters = Object.create(null);
+  store._modulesNamespaceMap = Object.create(null);
+  var state = store.state;
+  // init all modules
+  installModule(store, state, [], store._modules.root, true);
+  // reset vm
+  resetStoreVM(store, state, hot);
+}
+
+function resetStoreVM (store, state, hot) {
+  var oldVm = store._vm;
+
+  // bind store public getters
+  store.getters = {};
+  var wrappedGetters = store._wrappedGetters;
+  var computed = {};
+  forEachValue(wrappedGetters, function (fn, key) {
+    // use computed to leverage its lazy-caching mechanism
+    computed[key] = function () { return fn(store); };
+    Object.defineProperty(store.getters, key, {
+      get: function () { return store._vm[key]; },
+      enumerable: true // for local getters
+    });
+  });
+
+  // use a Vue instance to store the state tree
+  // suppress warnings just in case the user has added
+  // some funky global mixins
+  var silent = Vue.config.silent;
+  Vue.config.silent = true;
+  store._vm = new Vue({
+    data: {
+      $$state: state
+    },
+    computed: computed
+  });
+  Vue.config.silent = silent;
+
+  // enable strict mode for new vm
+  if (store.strict) {
+    enableStrictMode(store);
+  }
+
+  if (oldVm) {
+    if (hot) {
+      // dispatch changes in all subscribed watchers
+      // to force getter re-evaluation for hot reloading.
+      store._withCommit(function () {
+        oldVm._data.$$state = null;
+      });
+    }
+    Vue.nextTick(function () { return oldVm.$destroy(); });
+  }
+}
+
+function installModule (store, rootState, path, module, hot) {
+  var isRoot = !path.length;
+  var namespace = store._modules.getNamespace(path);
+
+  // register in namespace map
+  if (module.namespaced) {
+    store._modulesNamespaceMap[namespace] = module;
+  }
+
+  // set state
+  if (!isRoot && !hot) {
+    var parentState = getNestedState(rootState, path.slice(0, -1));
+    var moduleName = path[path.length - 1];
+    store._withCommit(function () {
+      Vue.set(parentState, moduleName, module.state);
+    });
+  }
+
+  var local = module.context = makeLocalContext(store, namespace, path);
+
+  module.forEachMutation(function (mutation, key) {
+    var namespacedType = namespace + key;
+    registerMutation(store, namespacedType, mutation, local);
+  });
+
+  module.forEachAction(function (action, key) {
+    var type = action.root ? key : namespace + key;
+    var handler = action.handler || action;
+    registerAction(store, type, handler, local);
+  });
+
+  module.forEachGetter(function (getter, key) {
+    var namespacedType = namespace + key;
+    registerGetter(store, namespacedType, getter, local);
+  });
+
+  module.forEachChild(function (child, key) {
+    installModule(store, rootState, path.concat(key), child, hot);
+  });
+}
+
+/**
+ * make localized dispatch, commit, getters and state
+ * if there is no namespace, just use root ones
+ */
+function makeLocalContext (store, namespace, path) {
+  var noNamespace = namespace === '';
+
+  var local = {
+    dispatch: noNamespace ? store.dispatch : function (_type, _payload, _options) {
+      var args = unifyObjectStyle(_type, _payload, _options);
+      var payload = args.payload;
+      var options = args.options;
+      var type = args.type;
+
+      if (!options || !options.root) {
+        type = namespace + type;
+        if (false) {
+          console.error(("[vuex] unknown local action type: " + (args.type) + ", global type: " + type));
+          return
+        }
+      }
+
+      return store.dispatch(type, payload)
+    },
+
+    commit: noNamespace ? store.commit : function (_type, _payload, _options) {
+      var args = unifyObjectStyle(_type, _payload, _options);
+      var payload = args.payload;
+      var options = args.options;
+      var type = args.type;
+
+      if (!options || !options.root) {
+        type = namespace + type;
+        if (false) {
+          console.error(("[vuex] unknown local mutation type: " + (args.type) + ", global type: " + type));
+          return
+        }
+      }
+
+      store.commit(type, payload, options);
+    }
+  };
+
+  // getters and state object must be gotten lazily
+  // because they will be changed by vm update
+  Object.defineProperties(local, {
+    getters: {
+      get: noNamespace
+        ? function () { return store.getters; }
+        : function () { return makeLocalGetters(store, namespace); }
+    },
+    state: {
+      get: function () { return getNestedState(store.state, path); }
+    }
+  });
+
+  return local
+}
+
+function makeLocalGetters (store, namespace) {
+  var gettersProxy = {};
+
+  var splitPos = namespace.length;
+  Object.keys(store.getters).forEach(function (type) {
+    // skip if the target getter is not match this namespace
+    if (type.slice(0, splitPos) !== namespace) { return }
+
+    // extract local getter type
+    var localType = type.slice(splitPos);
+
+    // Add a port to the getters proxy.
+    // Define as getter property because
+    // we do not want to evaluate the getters in this time.
+    Object.defineProperty(gettersProxy, localType, {
+      get: function () { return store.getters[type]; },
+      enumerable: true
+    });
+  });
+
+  return gettersProxy
+}
+
+function registerMutation (store, type, handler, local) {
+  var entry = store._mutations[type] || (store._mutations[type] = []);
+  entry.push(function wrappedMutationHandler (payload) {
+    handler.call(store, local.state, payload);
+  });
+}
+
+function registerAction (store, type, handler, local) {
+  var entry = store._actions[type] || (store._actions[type] = []);
+  entry.push(function wrappedActionHandler (payload, cb) {
+    var res = handler.call(store, {
+      dispatch: local.dispatch,
+      commit: local.commit,
+      getters: local.getters,
+      state: local.state,
+      rootGetters: store.getters,
+      rootState: store.state
+    }, payload, cb);
+    if (!isPromise(res)) {
+      res = Promise.resolve(res);
+    }
+    if (store._devtoolHook) {
+      return res.catch(function (err) {
+        store._devtoolHook.emit('vuex:error', err);
+        throw err
+      })
+    } else {
+      return res
+    }
+  });
+}
+
+function registerGetter (store, type, rawGetter, local) {
+  if (store._wrappedGetters[type]) {
+    if (false) {
+      console.error(("[vuex] duplicate getter key: " + type));
+    }
+    return
+  }
+  store._wrappedGetters[type] = function wrappedGetter (store) {
+    return rawGetter(
+      local.state, // local state
+      local.getters, // local getters
+      store.state, // root state
+      store.getters // root getters
+    )
+  };
+}
+
+function enableStrictMode (store) {
+  store._vm.$watch(function () { return this._data.$$state }, function () {
+    if (false) {
+      assert(store._committing, "Do not mutate vuex store state outside mutation handlers.");
+    }
+  }, { deep: true, sync: true });
+}
+
+function getNestedState (state, path) {
+  return path.length
+    ? path.reduce(function (state, key) { return state[key]; }, state)
+    : state
+}
+
+function unifyObjectStyle (type, payload, options) {
+  if (isObject(type) && type.type) {
+    options = payload;
+    payload = type;
+    type = type.type;
+  }
+
+  if (false) {
+    assert(typeof type === 'string', ("Expects string as the type, but found " + (typeof type) + "."));
+  }
+
+  return { type: type, payload: payload, options: options }
+}
+
+function install (_Vue) {
+  if (Vue && _Vue === Vue) {
+    if (false) {
+      console.error(
+        '[vuex] already installed. Vue.use(Vuex) should be called only once.'
+      );
+    }
+    return
+  }
+  Vue = _Vue;
+  applyMixin(Vue);
+}
+
+var mapState = normalizeNamespace(function (namespace, states) {
+  var res = {};
+  normalizeMap(states).forEach(function (ref) {
+    var key = ref.key;
+    var val = ref.val;
+
+    res[key] = function mappedState () {
+      var state = this.$store.state;
+      var getters = this.$store.getters;
+      if (namespace) {
+        var module = getModuleByNamespace(this.$store, 'mapState', namespace);
+        if (!module) {
+          return
+        }
+        state = module.context.state;
+        getters = module.context.getters;
+      }
+      return typeof val === 'function'
+        ? val.call(this, state, getters)
+        : state[val]
+    };
+    // mark vuex getter for devtools
+    res[key].vuex = true;
+  });
+  return res
+});
+
+var mapMutations = normalizeNamespace(function (namespace, mutations) {
+  var res = {};
+  normalizeMap(mutations).forEach(function (ref) {
+    var key = ref.key;
+    var val = ref.val;
+
+    res[key] = function mappedMutation () {
+      var args = [], len = arguments.length;
+      while ( len-- ) args[ len ] = arguments[ len ];
+
+      var commit = this.$store.commit;
+      if (namespace) {
+        var module = getModuleByNamespace(this.$store, 'mapMutations', namespace);
+        if (!module) {
+          return
+        }
+        commit = module.context.commit;
+      }
+      return typeof val === 'function'
+        ? val.apply(this, [commit].concat(args))
+        : commit.apply(this.$store, [val].concat(args))
+    };
+  });
+  return res
+});
+
+var mapGetters = normalizeNamespace(function (namespace, getters) {
+  var res = {};
+  normalizeMap(getters).forEach(function (ref) {
+    var key = ref.key;
+    var val = ref.val;
+
+    val = namespace + val;
+    res[key] = function mappedGetter () {
+      if (namespace && !getModuleByNamespace(this.$store, 'mapGetters', namespace)) {
+        return
+      }
+      if (false) {
+        console.error(("[vuex] unknown getter: " + val));
+        return
+      }
+      return this.$store.getters[val]
+    };
+    // mark vuex getter for devtools
+    res[key].vuex = true;
+  });
+  return res
+});
+
+var mapActions = normalizeNamespace(function (namespace, actions) {
+  var res = {};
+  normalizeMap(actions).forEach(function (ref) {
+    var key = ref.key;
+    var val = ref.val;
+
+    res[key] = function mappedAction () {
+      var args = [], len = arguments.length;
+      while ( len-- ) args[ len ] = arguments[ len ];
+
+      var dispatch = this.$store.dispatch;
+      if (namespace) {
+        var module = getModuleByNamespace(this.$store, 'mapActions', namespace);
+        if (!module) {
+          return
+        }
+        dispatch = module.context.dispatch;
+      }
+      return typeof val === 'function'
+        ? val.apply(this, [dispatch].concat(args))
+        : dispatch.apply(this.$store, [val].concat(args))
+    };
+  });
+  return res
+});
+
+var createNamespacedHelpers = function (namespace) { return ({
+  mapState: mapState.bind(null, namespace),
+  mapGetters: mapGetters.bind(null, namespace),
+  mapMutations: mapMutations.bind(null, namespace),
+  mapActions: mapActions.bind(null, namespace)
+}); };
+
+function normalizeMap (map) {
+  return Array.isArray(map)
+    ? map.map(function (key) { return ({ key: key, val: key }); })
+    : Object.keys(map).map(function (key) { return ({ key: key, val: map[key] }); })
+}
+
+function normalizeNamespace (fn) {
+  return function (namespace, map) {
+    if (typeof namespace !== 'string') {
+      map = namespace;
+      namespace = '';
+    } else if (namespace.charAt(namespace.length - 1) !== '/') {
+      namespace += '/';
+    }
+    return fn(namespace, map)
+  }
+}
+
+function getModuleByNamespace (store, helper, namespace) {
+  var module = store._modulesNamespaceMap[namespace];
+  if (false) {
+    console.error(("[vuex] module namespace not found in " + helper + "(): " + namespace));
+  }
+  return module
+}
+
+var index_esm = {
+  Store: Store,
+  install: install,
+  version: '3.0.1',
+  mapState: mapState,
+  mapMutations: mapMutations,
+  mapGetters: mapGetters,
+  mapActions: mapActions,
+  createNamespacedHelpers: createNamespacedHelpers
+};
+
+
+/* harmony default export */ __webpack_exports__["a"] = (index_esm);
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_allSavedChartsTemplate__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_BarChartTemplate__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_LineChartTemplate__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_PieChartTemplate__ = __webpack_require__(39);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_DoughnutChartTemplate__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_RadarChartTemplate__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_PolarAreaChartTemplate__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_BubbleChartTemplate__ = __webpack_require__(55);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__components_ScatterChartTemplate__ = __webpack_require__(59);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+
+
+
+
+
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+    data() {
+        return {
+            currentComponent: 'allGraphs',
+            editedGraphData: [],
+            editedGraphIndex: '',
+            currentPageName: 'All Graphs'
+        };
+    },
+    computed: {
+        currentChartTabComponent() {
+            return this.currentComponent;
+        }
+    },
+    components: {
+        allGraphs: __WEBPACK_IMPORTED_MODULE_0__components_allSavedChartsTemplate__["a" /* default */], pieChart: __WEBPACK_IMPORTED_MODULE_3__components_PieChartTemplate__["a" /* default */], doughnutChart: __WEBPACK_IMPORTED_MODULE_4__components_DoughnutChartTemplate__["a" /* default */], polarAreaChart: __WEBPACK_IMPORTED_MODULE_6__components_PolarAreaChartTemplate__["a" /* default */], barChart: __WEBPACK_IMPORTED_MODULE_1__components_BarChartTemplate__["a" /* default */], lineChart: __WEBPACK_IMPORTED_MODULE_2__components_LineChartTemplate__["a" /* default */], radarChart: __WEBPACK_IMPORTED_MODULE_5__components_RadarChartTemplate__["a" /* default */], bubbleChart: __WEBPACK_IMPORTED_MODULE_7__components_BubbleChartTemplate__["a" /* default */], scatterChart: __WEBPACK_IMPORTED_MODULE_8__components_ScatterChartTemplate__["a" /* default */]
+    },
+    methods: {
+        whenPageChange(data) {
+            this.editedGraphIndex = data.graphIndex;
+            this.editedGraphData = data.graphData;
+            this.currentPageName = data.pageName;
+            this.currentComponent = data.currentComponent;
+        },
+        whenGraphSaved() {
+            this.currentPageName = 'All Graphs';
+            this.currentComponent = 'allGraphs';
+        },
+        whenGraphUpdated() {
+            this.currentPageName = 'All Graphs';
+            this.currentComponent = 'allGraphs';
+        },
+        whenBackButtonPressed() {
+            this.currentPageName = 'All Graphs';
+            this.currentComponent = 'allGraphs';
+        },
+        resetComponent() {
+            let outerThis = this;
+            this.currentPageName = 'All Graphs';
+            setTimeout(function () {
+                outerThis.currentComponent = 'allGraphs';
+            }, 500);
+        }
+    }
+});
+
+/***/ }),
+/* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(7);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+	data() {
+		return {
+			currentComponent: '',
+			selectedChartIndex: '',
+			theChart: [],
+			docState: 'add',
+			chartTabs: [{ tabFileName: 'pieChart', tabName: 'Pie Chart' }, { tabFileName: 'doughnutChart', tabName: 'Doughnut Chart' }, { tabFileName: 'polarAreaChart', tabName: 'Polar Area Chart' }, { tabFileName: 'barChart', tabName: 'Bar Chart' }, { tabFileName: 'lineChart', tabName: 'Line Chart' }, { tabFileName: 'radarChart', tabName: 'Radar Chart' }, { tabFileName: 'bubbleChart', tabName: 'Bubble Chart' }, { tabFileName: 'scatterChart', tabName: 'Scatter Chart' }]
+		};
+	},
+	computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])(['allGraph'])),
+	methods: {
+		onLoad() {
+			let outerThis = this;
+			this.allGraph.forEach(function (value, key) {
+				var ctx = document.getElementById(key).getContext('2d');
+				outerThis.theChart[key] = new Chart(ctx, {
+					type: value.type,
+					data: value.data,
+					options: value.options
+				});
+				ctx.height = 295;
+			});
+		},
+		useGraph(id) {
+			var content = '[graph_lite id="' + id + '"]';
+			tinymce.activeEditor.execCommand('mceInsertContent', false, content);
+			$('#gl-admin-meta-box').fadeOut();
+		},
+		changeTabChart() {
+			this.currentPageName = this.chartTabs[this.selectedChartIndex].tabName;
+			this.currentComponent = this.chartTabs[this.selectedChartIndex].tabFileName;
+			this.selectedChartIndex = '';
+			this.docState = 'add';
+
+			let withData = { graphIndex: 0, graphData: '', pageName: this.currentPageName, currentComponent: this.currentComponent };
+			this.$emit('graphPage', withData);
+		},
+		editGraphDetails(index) {
+			let chartType = this.allGraph[index].type + "Chart";
+			let result = this.chartTabs.find(chart => chart.tabFileName === chartType);
+			this.currentPageName = result.tabName;
+			this.currentComponent = chartType;
+
+			let withData = { graphIndex: index, graphData: this.allGraph[index], pageName: this.currentPageName, currentComponent: this.currentComponent };
+			this.$emit('graphPage', withData);
+		},
+		whenGraphUpdated() {
+			let index = this.$store.state.editedGraphIndex;
+			if (index != '') {
+				this.theChart[index].data.datasets = this.allGraph[index].data.datasets;
+				this.theChart[index].options.legend.display = this.allGraph[index].options.legend.display;
+				this.theChart[index].options.legend.position = this.allGraph[index].options.legend.position;
+				this.theChart[index].options.title.display = this.allGraph[index].options.title.display;
+				this.theChart[index].options.title.text = this.allGraph[index].options.title.text;
+
+				if (this.allGraph[index].type == "pie" || this.allGraph[index].type == "doughnut" || this.allGraph[index].type == "polarArea" || this.allGraph[index].type == "bar" || this.allGraph[index].type == "line" || this.allGraph[index].type == "radar") {
+					this.theChart[index].data.labels = this.allGraph[index].data.labels;
+				}
+				if (this.allGraph[index].type == "bar" || this.allGraph[index].type == "line") {
+					this.theChart[index].options.scales.yAxes[0].ticks.beginAtZero = this.allGraph[index].options.scales.yAxes[0].ticks.beginAtZero;
+				}
+				if (this.allGraph[index].type == "radar") {
+					this.theChart[index].options.scale.ticks.beginAtZero = this.allGraph[index].options.scale.ticks.beginAtZero;
+				}
+
+				this.theChart[index].update();
+				this.$store.commit('emptyEditGraph');
+			}
+		},
+		deleteGraph(index) {
+			let deletedGraphId = this.allGraph[index].graph_id;
+			const outerThis = this;
+
+			$.sweetModal.confirm('Do you really want to delete the chart?', function () {
+				$.ajax({
+					url: ajaxurl,
+					type: 'POST',
+					dataType: 'json',
+					data: {
+						action: 'delete_chart',
+						graph_id: deletedGraphId
+					},
+					success: function (response) {
+						outerThis.$store.dispatch('deleteGraph', index);
+					},
+					error: function (error) {
+						alert('Something went wront please try again');
+					}
+				});
+			});
+		}
+	},
+	mounted() {
+		this.onLoad();
+		this.whenGraphUpdated();
+	}
+});
+
+/***/ }),
+/* 10 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_color__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_clickaway2__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_clickaway2___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_clickaway2__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+	mixins: [__WEBPACK_IMPORTED_MODULE_1_vue_clickaway2__["mixin"]],
+	props: ['graphData', 'graphIndex'],
+	data() {
+		return {
+			chartType: 'bar',
+			chartlabelsString: '',
+			titleText: '',
+			legendPosition: 'top',
+			setBackgroundColor: '',
+			labels: [],
+			showTitle: false,
+			showLegend: true,
+			beginAtZero: false,
+			ifxAxesLabelEmpty: false,
+			showTutorial: true,
+			datasets: [{
+				label: '',
+				chartDatasetDataString: '',
+				data: [],
+				backgroundColor: '',
+				ifDataEmpty: false,
+				ifBackgroundEmpty: false,
+				backgroundColorFieldFocused: false
+			}]
+		};
+	},
+	components: {
+		'chrome-picker': __WEBPACK_IMPORTED_MODULE_0_vue_color__["Chrome"]
+	},
+	methods: {
+		addDataset() {
+			this.datasets.push({
+				label: '',
+				chartDatasetDataString: '',
+				data: [],
+				backgroundColor: '',
+				ifDataEmpty: false,
+				ifBackgroundEmpty: false,
+				backgroundColorFieldFocused: false
+			});
+			this.theChart.data.datasets.push({
+				label: '',
+				data: [],
+				backgroundColor: ''
+			});
+			this.theChart.update();
+		},
+		addLabels() {
+			if (this.ifxAxesLabelEmpty) {
+				this.ifxAxesLabelEmpty = false;
+			}
+			this.showTutorial = false;
+			this.labels = this.chartlabelsString.split(',');
+			this.theChart.data.labels = this.labels;
+			this.theChart.update();
+		},
+		addDatasetLabel(index) {
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].label = this.datasets[index].label;
+			this.theChart.update();
+		},
+		addDatasetData(index) {
+			if (this.datasets[index].ifDataEmpty) {
+				this.datasets[index].ifDataEmpty = false;
+			}
+			this.showTutorial = false;
+			this.datasets[index].data = this.datasets[index].chartDatasetDataString.split(',');
+			this.theChart.data.datasets[index].data = this.datasets[index].data;
+			this.theChart.update();
+		},
+		showBackgroundColorPickerField(index) {
+			this.datasets[index].backgroundColorFieldFocused = true;
+		},
+		hideBackgroundColorPickerField(index) {
+			this.datasets[index].backgroundColorFieldFocused = false;
+		},
+		pickBackgroundColor(index) {
+			if (this.datasets[index].ifBackgroundEmpty) {
+				this.datasets[index].ifBackgroundEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor = this.setBackgroundColor.hex;
+			this.theChart.update();
+			this.datasets[index].backgroundColorFieldFocused = false;
+		},
+		addDatasetBgColor(index) {
+			if (this.datasets[index].ifBackgroundEmpty) {
+				this.datasets[index].ifBackgroundEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
+			this.theChart.update();
+		},
+		clickedAway(index) {
+			this.datasets[index].backgroundColorFieldFocused = false;
+		},
+		addTitleText() {
+			this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
+			this.showTutorial = false;
+			this.theChart.options.title.display = this.showTitle;
+			this.theChart.options.title.text = this.titleText;
+			this.theChart.update();
+		},
+		yAxesRange() {
+			this.showTutorial = false;
+			this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero;
+			this.theChart.update();
+		},
+		showingGraphLegend() {
+			this.showTutorial = false;
+			this.theChart.options.legend.display = this.showLegend;
+			this.theChart.update();
+		},
+		changeLegendPosition() {
+			this.showTutorial = false;
+			this.theChart.options.legend.position = this.legendPosition;
+			this.theChart.update();
+		},
+		deleteDataset(index) {
+			this.datasets.splice(index, 1);
+			this.theChart.data.datasets.splice(index, 1);
+			this.theChart.update();
+		},
+		saveGraphData() {
+			let outerThis = this;
+			let DatasetHasEmptyValue = true;
+
+			this.datasets.forEach(function (value) {
+				if (value.chartDatasetDataString === '') {
+					value.ifDataEmpty = true;
+					DatasetHasEmptyValue = false;
+				}
+				if (value.backgroundColor === '') {
+					value.ifBackgroundEmpty = true;
+					DatasetHasEmptyValue = false;
+				}
+			});
+
+			if (this.chartlabelsString === '') {
+				this.ifxAxesLabelEmpty = true;
+			}
+
+			if (this.chartlabelsString !== '' && DatasetHasEmptyValue) {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: this.datasets
+					},
+					options: {
+						maintainAspectRatio: false,
+						scales: {
+							yAxes: [{
+								ticks: {
+									beginAtZero: this.beginAtZero
+								}
+							}]
+						},
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.$store.dispatch('addNewGraph', chartDatas).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("saved");
+					}, 1500);
+				});
+			}
+		},
+		updateGraphData() {
+			let outerThis = this;
+			let DatasetHasEmptyValue = true;
+
+			this.datasets.forEach(function (value) {
+				if (value.chartDatasetDataString === '') {
+					value.ifDataEmpty = true;
+					DatasetHasEmptyValue = false;
+				}
+				if (value.backgroundColor === '') {
+					value.ifBackgroundEmpty = true;
+					DatasetHasEmptyValue = false;
+				}
+			});
+
+			if (this.chartlabelsString === '') {
+				if (this.chartlabelsString === '') {
+					this.ifxAxesLabelEmpty = true;
+				}
+			}
+
+			if (this.chartlabelsString !== '' && DatasetHasEmptyValue) {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: []
+					},
+					options: {
+						maintainAspectRatio: false,
+						scales: {
+							yAxes: [{
+								ticks: {
+									beginAtZero: this.beginAtZero
+								}
+							}]
+						},
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.datasets.forEach(function (value) {
+					chartDatas.data.datasets.push({ label: value.label, data: value.data, chartDatasetDataString: value.chartDatasetDataString, backgroundColor: value.backgroundColor });
+				});
+
+				let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+
+				this.$store.dispatch('updateGraph', payload).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("updated");
+					}, 2000);
+				});
+			}
+		},
+		onLoad() {
+			let ctx = document.getElementById("barChart").getContext('2d');
+			this.theChart = new Chart(ctx, {
+				type: this.chartType,
+				data: {
+					labels: [],
+					datasets: [{
+						label: '',
+						data: [],
+						backgroundColor: ''
+					}]
+				},
+				options: {
+					maintainAspectRatio: false,
+					scales: {
+						yAxes: [{
+							ticks: {
+								beginAtZero: false
+							}
+						}]
+					},
+					title: {
+						display: false,
+						text: ''
+					},
+					legend: {
+						display: true,
+						position: 'top'
+					}
+				}
+			});
+		},
+		forEdit() {
+			this.showTutorial = false;
+			let outerThis = this;
+			this.chartlabelsString = this.graphData.data.labels.join(", ");
+			this.theChart.data.labels = this.labels = this.graphData.data.labels;
+			this.graphData.data.datasets.forEach(function (value, key) {
+				if (key) {
+					outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor: '', ifDataEmpty: false, ifBackgroundEmpty: false, backgroundColorFieldFocused: false });
+					outerThis.theChart.data.datasets.push({ label: '', data: [], backgroundColor: '' });
+				}
+				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = outerThis.graphData.data.datasets[key].label;
+
+				outerThis.datasets[key].chartDatasetDataString = outerThis.graphData.data.datasets[key].chartDatasetDataString;
+
+				outerThis.theChart.data.datasets[key].data = outerThis.datasets[key].data = outerThis.graphData.data.datasets[key].data;
+
+				outerThis.theChart.data.datasets[key].backgroundColor = outerThis.datasets[key].backgroundColor = outerThis.graphData.data.datasets[key].backgroundColor;
+			});
+
+			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
+			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
+
+			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
+			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
+
+			this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero = this.graphData.options.scales.yAxes[0].ticks.beginAtZero;
+			this.theChart.update();
+		},
+		goBacktoAllGraphPage() {
+			this.$emit("backed");
+		}
+	},
+	mounted() {
+		this.onLoad();
+		if (this.graphData != '') {
+			this.forEdit();
+		}
+	}
+});
+
+/***/ }),
+/* 11 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_color__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_clickaway2__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_clickaway2___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_clickaway2__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+	mixins: [__WEBPACK_IMPORTED_MODULE_1_vue_clickaway2__["mixin"]],
+	props: ['graphData', 'graphIndex'],
+	data() {
+		return {
+			chartType: 'line',
+			chartlabelsString: '',
+			titleText: '',
+			legendPosition: 'top',
+			setBackgroundColor: '',
+			setBorderColor: '',
+			labels: [],
+			showTitle: false,
+			showLegend: true,
+			beginAtZero: false,
+			ifxAxesLabelEmpty: false,
+			showTutorial: true,
+			datasets: [{
+				label: '',
+				chartDatasetDataString: '',
+				data: [],
+				backgroundColor: '',
+				borderColor: '',
+				fill: false,
+				straightLine: false,
+				ifDataEmpty: false,
+				ifFillColorEmpty: false,
+				ifLineColorEmpty: false,
+				backgroundColorFieldFocused: false,
+				borderColorFieldFocused: false
+			}]
+		};
+	},
+	components: {
+		'chrome-picker': __WEBPACK_IMPORTED_MODULE_0_vue_color__["Chrome"]
+	},
+	methods: {
+		addDataset() {
+			this.datasets.push({
+				label: '',
+				chartDatasetDataString: '',
+				data: [],
+				backgroundColor: '',
+				borderColor: '',
+				fill: false,
+				straightLine: false,
+				ifDataEmpty: false,
+				ifFillColorEmpty: false,
+				ifLineColorEmpty: false,
+				backgroundColorFieldFocused: false,
+				borderColorFieldFocused: false
+			});
+			this.theChart.data.datasets.push({
+				label: '',
+				data: [],
+				backgroundColor: '',
+				borderColor: '',
+				fill: false
+			});
+			this.theChart.update();
+		},
+		addLabels() {
+			if (this.ifxAxesLabelEmpty) {
+				this.ifxAxesLabelEmpty = false;
+			}
+			this.showTutorial = false;
+			this.labels = this.chartlabelsString.split(',');
+			this.theChart.data.labels = this.labels;
+			this.theChart.update();
+		},
+		addDatasetLabel(index) {
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].label = this.datasets[index].label;
+			this.theChart.update();
+		},
+		addDatasetData(index) {
+			if (this.datasets[index].ifDataEmpty) {
+				this.datasets[index].ifDataEmpty = false;
+			}
+			this.showTutorial = false;
+			this.datasets[index].data = this.datasets[index].chartDatasetDataString.split(',');
+			this.theChart.data.datasets[index].data = this.datasets[index].data;
+			this.theChart.update();
+		},
+		showBackgroundColorPickerField(index) {
+			this.datasets[index].backgroundColorFieldFocused = true;
+		},
+		hideBackgroundColorPickerField(index) {
+			this.datasets[index].backgroundColorFieldFocused = false;
+		},
+		clickedAwayFromBg(index) {
+			this.datasets[index].backgroundColorFieldFocused = false;
+		},
+		pickBackgroundColor(index) {
+			if (this.datasets[index].ifFillColorEmpty) {
+				this.datasets[index].ifFillColorEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor = this.setBackgroundColor.hex;
+			this.theChart.update();
+			this.datasets[index].backgroundColorFieldFocused = false;
+		},
+		addDatasetBgColor(index) {
+			if (this.datasets[index].ifFillColorEmpty) {
+				this.datasets[index].ifFillColorEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
+			this.theChart.update();
+		},
+		showBorderColorPickerField(index) {
+			this.datasets[index].borderColorFieldFocused = true;
+		},
+		hideBorderColorPickerField(index) {
+			this.datasets[index].borderColorFieldFocused = false;
+		},
+		clickedAwayFromBd(index) {
+			this.datasets[index].borderColorFieldFocused = false;
+		},
+		pickBorderColor(index) {
+			if (this.datasets[index].ifLineColorEmpty) {
+				this.datasets[index].ifLineColorEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor = this.setBorderColor.hex;
+			this.theChart.update();
+			this.datasets[index].borderColorFieldFocused = false;
+		},
+		addDatasetborderColor(index) {
+			if (this.datasets[index].ifLineColorEmpty) {
+				this.datasets[index].ifLineColorEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
+			this.theChart.update();
+		},
+		fillColor(index) {
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].fill = this.datasets[index].fill;
+			this.theChart.update();
+		},
+		addTitleText() {
+			this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
+			this.showTutorial = false;
+			this.theChart.options.title.display = this.showTitle;
+			this.theChart.options.title.text = this.titleText;
+			this.theChart.update();
+		},
+		showingGraphLegend() {
+			this.showTutorial = false;
+			this.theChart.options.legend.display = this.showLegend;
+			this.theChart.update();
+		},
+		changeLegendPosition() {
+			this.showTutorial = false;
+			this.theChart.options.legend.position = this.legendPosition;
+			this.theChart.update();
+		},
+		yAxesRange() {
+			this.showTutorial = false;
+			this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero;
+			this.theChart.update();
+		},
+		makeLineStraight(index) {
+			this.showTutorial = false;
+			if (this.datasets[index].straightLine) {
+				this.datasets[index].lineTension = 0;
+				this.theChart.data.datasets[index].lineTension = 0;
+				this.theChart.update();
+			} else {
+				delete this.datasets[index].lineTension;
+				delete this.theChart.data.datasets[index].lineTension;
+				this.theChart.update();
+			}
+		},
+		deleteDataset(index) {
+			this.datasets.splice(index, 1);
+			this.theChart.data.datasets.splice(index, 1);
+			this.theChart.update();
+		},
+		saveGraphData() {
+			let outerThis = this;
+			let DatasetHasEmptyValue = true;
+
+			this.datasets.forEach(function (value) {
+				if (value.chartDatasetDataString === '') {
+					value.ifDataEmpty = true;
+					DatasetHasEmptyValue = false;
+				}
+				if (value.backgroundColor === '') {
+					value.ifFillColorEmpty = true;
+					DatasetHasEmptyValue = false;
+				}
+				if (value.borderColor === '') {
+					value.ifLineColorEmpty = true;
+					DatasetHasEmptyValue = false;
+				}
+			});
+
+			if (this.chartlabelsString === '') {
+				this.ifxAxesLabelEmpty = true;
+			}
+
+			if (this.chartlabelsString !== '' && DatasetHasEmptyValue) {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: this.datasets
+					},
+					options: {
+						maintainAspectRatio: false,
+						scales: {
+							yAxes: [{
+								ticks: {
+									beginAtZero: this.beginAtZero
+								}
+							}]
+						},
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.$store.dispatch('addNewGraph', chartDatas).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("saved");
+					}, 1500);
+				});
+			}
+		},
+		updateGraphData() {
+			let outerThis = this;
+			let DatasetHasEmptyValue = true;
+
+			this.datasets.forEach(function (value) {
+				if (value.chartDatasetDataString === '') {
+					value.ifDataEmpty = true;
+					DatasetHasEmptyValue = false;
+				}
+				if (value.backgroundColor === '') {
+					value.ifFillColorEmpty = true;
+					DatasetHasEmptyValue = false;
+				}
+				if (value.borderColor === '') {
+					value.ifLineColorEmpty = true;
+					DatasetHasEmptyValue = false;
+				}
+			});
+
+			if (this.chartlabelsString === '') {
+				this.ifxAxesLabelEmpty = true;
+			}
+
+			if (this.chartlabelsString !== '' && DatasetHasEmptyValue) {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: []
+					},
+					options: {
+						maintainAspectRatio: false,
+						scales: {
+							yAxes: [{
+								ticks: {
+									beginAtZero: this.beginAtZero
+								}
+							}]
+						},
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.datasets.forEach(function (value, key) {
+					chartDatas.data.datasets.push({
+						label: value.label,
+						data: value.data,
+						chartDatasetDataString: value.chartDatasetDataString,
+						backgroundColor: value.backgroundColor,
+						borderColor: value.borderColor,
+						fill: value.fill,
+						straightLine: value.straightLine
+					});
+					if (value.straightLine) {
+						chartDatas.data.datasets[key].lineTension = 0;
+					}
+				});
+
+				let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+
+				this.$store.dispatch('updateGraph', payload).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("updated");
+					}, 2000);
+				});
+			}
+		},
+		onLoad() {
+			let ctx = document.getElementById("lineChart").getContext('2d');
+			this.theChart = new Chart(ctx, {
+				type: this.chartType,
+				data: {
+					labels: [],
+					datasets: [{
+						label: '',
+						data: [],
+						backgroundColor: '',
+						borderColor: '',
+						fill: false
+					}]
+				},
+				options: {
+					maintainAspectRatio: false,
+					scales: {
+						yAxes: [{
+							ticks: {
+								beginAtZero: false
+							}
+						}]
+					},
+					title: {
+						display: false,
+						text: ''
+					},
+					legend: {
+						display: true,
+						position: 'top'
+					}
+				}
+			});
+		},
+		forEdit() {
+			this.showTutorial = false;
+			let outerThis = this;
+			this.chartlabelsString = this.graphData.data.labels.join(", ");
+			this.theChart.data.labels = this.labels = this.graphData.data.labels;
+			this.graphData.data.datasets.forEach(function (value, key) {
+				if (key) {
+					outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor: '', ifDataEmpty: false, ifFillColorEmpty: false, ifLineColorEmpty: false, backgroundColorFieldFocused: false, borderColorFieldFocused: false });
+					outerThis.theChart.data.datasets.push({ label: '', data: [], backgroundColor: '' });
+				}
+				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = outerThis.graphData.data.datasets[key].label;
+
+				outerThis.datasets[key].chartDatasetDataString = outerThis.graphData.data.datasets[key].chartDatasetDataString;
+
+				outerThis.theChart.data.datasets[key].data = outerThis.datasets[key].data = outerThis.graphData.data.datasets[key].data;
+
+				outerThis.theChart.data.datasets[key].backgroundColor = outerThis.datasets[key].backgroundColor = outerThis.graphData.data.datasets[key].backgroundColor;
+
+				outerThis.theChart.data.datasets[key].borderColor = outerThis.datasets[key].borderColor = outerThis.graphData.data.datasets[key].borderColor;
+
+				outerThis.theChart.data.datasets[key].fill = outerThis.datasets[key].fill = outerThis.graphData.data.datasets[key].fill;
+
+				outerThis.datasets[key].straightLine = outerThis.graphData.data.datasets[key].straightLine;
+				if (outerThis.graphData.data.datasets[key].straightLine) {
+					outerThis.theChart.data.datasets[key].lineTension = outerThis.datasets[key].lineTension = 0;
+				}
+			});
+
+			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
+			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
+			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
+			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
+			this.theChart.options.scales.yAxes[0].ticks.beginAtZero = this.beginAtZero = this.graphData.options.scales.yAxes[0].ticks.beginAtZero;
+			this.theChart.update();
+		},
+		goBacktoAllGraphPage() {
+			this.$emit("backed");
+		}
+	},
+	mounted() {
+		this.onLoad();
+		if (this.graphData != '') {
+			this.forEdit();
+		}
+	}
+});
+
+/***/ }),
+/* 12 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_color__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_clickaway2__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_clickaway2___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_clickaway2__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+	mixins: [__WEBPACK_IMPORTED_MODULE_1_vue_clickaway2__["mixin"]],
+	props: ['graphData', 'graphIndex'],
+	data() {
+		return {
+			chartType: 'pie',
+			chartlabelString: '',
+			chartDatasetDataString: '',
+			chartDatasetBgColorString: '',
+			titleText: '',
+			editedGraphIdNo: '',
+			legendPosition: 'top',
+			setBackgroundColor: '',
+			backgroundConcatCount: 0,
+			labels: [],
+			datasets: [{
+				data: [],
+				backgroundColor: []
+			}],
+			showTitle: false,
+			showLegend: true,
+			ifLabelsEmpty: false,
+			ifDataEmpty: false,
+			ifBackgroundEmpty: false,
+			showTutorial: true,
+			backgroundColorFieldFocused: false
+		};
+	},
+	components: {
+		'chrome-picker': __WEBPACK_IMPORTED_MODULE_0_vue_color__["Chrome"]
+	},
+	methods: {
+		addLabels() {
+			if (this.ifLabelsEmpty) {
+				this.ifLabelsEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.labels = this.labels = this.chartlabelString.split(',');
+			this.theChart.update();
+		},
+		addDatasetData() {
+			if (this.ifDataEmpty) {
+				this.ifDataEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.datasets[0].data = this.datasets[0].data = this.chartDatasetDataString.split(',');
+			this.theChart.update();
+		},
+		showBackgroundColorPickerField() {
+			this.backgroundColorFieldFocused = true;
+		},
+		hideBackgroundColorPickerField() {
+			this.backgroundColorFieldFocused = false;
+		},
+		clickedAway() {
+			this.backgroundColorFieldFocused = false;
+		},
+		pickBackgroundColor() {
+			if (this.ifBackgroundEmpty) {
+				this.ifBackgroundEmpty = false;
+			}
+			this.showTutorial = false;
+			if (this.backgroundConcatCount > 0) {
+				this.chartDatasetBgColorString = this.chartDatasetBgColorString + ',' + this.setBackgroundColor.hex;
+			} else {
+				this.chartDatasetBgColorString = this.setBackgroundColor.hex;
+			}
+			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
+			this.theChart.update();
+			this.backgroundColorFieldFocused = false;
+			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
+		},
+		addDatasetBgColor() {
+			if (this.ifBackgroundEmpty) {
+				this.ifBackgroundEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
+			if (this.chartDatasetBgColorString === '') {
+				this.datasets[0].backgroundColor.length = 0;
+			}
+			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
+			this.theChart.update();
+		},
+		addTitleText() {
+			this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
+			this.showTutorial = false;
+			this.theChart.options.title.display = this.showTitle;
+			this.theChart.options.title.text = this.titleText;
+			this.theChart.update();
+		},
+		showingGraphLegend() {
+			this.showTutorial = false;
+			this.theChart.options.legend.display = this.showLegend;
+			this.theChart.update();
+		},
+		changeLegendPosition() {
+			this.showTutorial = false;
+			this.theChart.options.legend.position = this.legendPosition;
+			this.theChart.update();
+		},
+		saveGraphData() {
+			let outerThis = this;
+
+			if (this.chartlabelString === '') {
+				this.ifLabelsEmpty = true;
+			}
+			if (this.chartDatasetDataString === '') {
+				this.ifDataEmpty = true;
+			}
+			if (this.chartDatasetBgColorString === '') {
+				this.ifBackgroundEmpty = true;
+			}
+
+			if (this.chartlabelString !== '' && this.chartDatasetDataString !== '' && this.chartDatasetBgColorString !== '') {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: this.datasets
+					},
+					options: {
+						maintainAspectRatio: false,
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.$store.dispatch('addNewGraph', chartDatas).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("saved");
+					}, 1500);
+				});
+			}
+		},
+		updateGraphData() {
+			let outerThis = this;
+
+			if (this.chartlabelString === '') {
+				this.ifLabelsEmpty = true;
+			}
+			if (this.chartDatasetDataString === '') {
+				this.ifDataEmpty = true;
+			}
+			if (this.chartDatasetBgColorString === '') {
+				this.ifBackgroundEmpty = true;
+			}
+
+			if (this.chartlabelString !== '' && this.chartDatasetDataString !== '' && this.chartDatasetBgColorString !== '') {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: [{
+							data: this.datasets[0].data,
+							backgroundColor: this.datasets[0].backgroundColor
+						}]
+					},
+					options: {
+						maintainAspectRatio: false,
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+
+				this.$store.dispatch('updateGraph', payload).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("updated");
+					}, 2000);
+				});
+			}
+		},
+		onLoad() {
+			let ctx = document.getElementById("pieChart").getContext('2d');
+			this.theChart = new Chart(ctx, {
+				type: this.chartType,
+				data: {
+					labels: [],
+					datasets: [{
+						data: [],
+						backgroundColor: []
+					}]
+				},
+				options: {
+					maintainAspectRatio: false,
+					title: {
+						display: false,
+						text: ''
+					},
+					legend: {
+						display: true,
+						position: 'top'
+					}
+				}
+			});
+		},
+		forEdit() {
+			this.showTutorial = false;
+			this.chartlabelString = this.graphData.data.labels.join(", ");
+			this.theChart.data.labels = this.labels = this.graphData.data.labels;
+
+			this.chartDatasetBgColorString = this.graphData.data.datasets[0].backgroundColor.join(", ");
+			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.graphData.data.datasets[0].backgroundColor;
+			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
+
+			this.chartDatasetDataString = this.graphData.data.datasets[0].data.join(", ");
+			this.theChart.data.datasets[0].data = this.datasets[0].data = this.graphData.data.datasets[0].data;
+
+			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
+			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
+
+			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
+			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
+			this.theChart.update();
+		},
+		goBacktoAllGraphPage() {
+			this.$emit("backed");
+		}
+	},
+	mounted() {
+		this.onLoad();
+		if (this.graphData != '') {
+			this.forEdit();
+		}
+	}
+});
+
+/***/ }),
+/* 13 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_color__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_clickaway2__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_clickaway2___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_clickaway2__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+	mixins: [__WEBPACK_IMPORTED_MODULE_1_vue_clickaway2__["mixin"]],
+	props: ['graphData', 'graphIndex'],
+	data() {
+		return {
+			chartType: 'doughnut',
+			chartlabelString: '',
+			chartDatasetDataString: '',
+			chartDatasetBgColorString: '',
+			titleText: '',
+			legendPosition: 'top',
+			setBackgroundColor: '',
+			backgroundConcatCount: 0,
+			labels: [],
+			datasets: [{
+				data: [],
+				backgroundColor: []
+			}],
+			showTitle: false,
+			showLegend: true,
+			ifLabelsEmpty: false,
+			ifDataEmpty: false,
+			ifBackgroundEmpty: false,
+			showTutorial: true,
+			backgroundColorFieldFocused: false
+		};
+	},
+	components: {
+		'chrome-picker': __WEBPACK_IMPORTED_MODULE_0_vue_color__["Chrome"]
+	},
+	methods: {
+		addLabels() {
+			if (this.ifLabelsEmpty) {
+				this.ifLabelsEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.labels = this.labels = this.chartlabelString.split(',');
+			this.theChart.update();
+		},
+		addDatasetData() {
+			if (this.ifDataEmpty) {
+				this.ifDataEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.datasets[0].data = this.datasets[0].data = this.chartDatasetDataString.split(',');
+			this.theChart.update();
+		},
+		showBackgroundColorPickerField() {
+			this.backgroundColorFieldFocused = true;
+		},
+		hideBackgroundColorPickerField() {
+			this.backgroundColorFieldFocused = false;
+		},
+		pickBackgroundColor() {
+			if (this.ifBackgroundEmpty) {
+				this.ifBackgroundEmpty = false;
+			}
+			this.showTutorial = false;
+			if (this.backgroundConcatCount > 0) {
+				this.chartDatasetBgColorString = this.chartDatasetBgColorString + ',' + this.setBackgroundColor.hex;
+			} else {
+				this.chartDatasetBgColorString = this.setBackgroundColor.hex;
+			}
+			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
+			this.theChart.update();
+			this.backgroundColorFieldFocused = false;
+			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
+		},
+		addDatasetBgColor() {
+			if (this.ifBackgroundEmpty) {
+				this.ifBackgroundEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
+			if (this.chartDatasetBgColorString === '') {
+				this.datasets[0].backgroundColor.length = 0;
+			}
+			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
+			this.theChart.update();
+		},
+		clickedAway() {
+			this.backgroundColorFieldFocused = false;
+		},
+		addTitleText() {
+			this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
+			this.showTutorial = false;
+			this.theChart.options.title.display = this.showTitle;
+			this.theChart.options.title.text = this.titleText;
+			this.theChart.update();
+		},
+		showingGraphLegend() {
+			this.showTutorial = false;
+			this.theChart.options.legend.display = this.showLegend;
+			this.theChart.update();
+		},
+		changeLegendPosition() {
+			this.showTutorial = false;
+			this.theChart.options.legend.position = this.legendPosition;
+			this.theChart.update();
+		},
+		saveGraphData() {
+			let outerThis = this;
+
+			if (this.chartlabelString === '') {
+				this.ifLabelsEmpty = true;
+			}
+			if (this.chartDatasetDataString === '') {
+				this.ifDataEmpty = true;
+			}
+			if (this.chartDatasetBgColorString === '') {
+				this.ifBackgroundEmpty = true;
+			}
+
+			if (this.chartlabelString !== '' && this.chartDatasetDataString !== '' && this.chartDatasetBgColorString !== '') {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: this.datasets
+					},
+					options: {
+						maintainAspectRatio: false,
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.$store.dispatch('addNewGraph', chartDatas).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("saved");
+					}, 1500);
+				});
+			}
+		},
+		updateGraphData() {
+			let outerThis = this;
+
+			if (this.chartlabelString === '') {
+				this.ifLabelsEmpty = true;
+			}
+			if (this.chartDatasetDataString === '') {
+				this.ifDataEmpty = true;
+			}
+			if (this.chartDatasetBgColorString === '') {
+				this.ifBackgroundEmpty = true;
+			}
+
+			if (this.chartlabelString !== '' && this.chartDatasetDataString !== '' && this.chartDatasetBgColorString !== '') {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: [{
+							data: this.datasets[0].data,
+							backgroundColor: this.datasets[0].backgroundColor
+						}]
+					},
+					options: {
+						maintainAspectRatio: false,
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+
+				this.$store.dispatch('updateGraph', payload).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("updated");
+					}, 2000);
+				});
+			}
+		},
+		onLoad() {
+			let ctx = document.getElementById("DoughnutChart").getContext('2d');
+			this.theChart = new Chart(ctx, {
+				type: this.chartType,
+				data: {
+					labels: [],
+					datasets: [{
+						data: [],
+						backgroundColor: []
+					}]
+				},
+				options: {
+					maintainAspectRatio: false,
+					title: {
+						display: false,
+						text: ''
+					},
+					legend: {
+						display: true,
+						position: 'top'
+					}
+				}
+			});
+		},
+		forEdit() {
+			this.showTutorial = false;
+			this.chartlabelString = this.graphData.data.labels.join(", ");
+			this.theChart.data.labels = this.labels = this.graphData.data.labels;
+
+			this.chartDatasetBgColorString = this.graphData.data.datasets[0].backgroundColor.join(", ");
+			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.graphData.data.datasets[0].backgroundColor;
+			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
+
+			this.chartDatasetDataString = this.graphData.data.datasets[0].data.join(", ");
+			this.theChart.data.datasets[0].data = this.datasets[0].data = this.graphData.data.datasets[0].data;
+
+			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
+			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
+
+			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
+			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
+			this.theChart.update();
+		},
+		goBacktoAllGraphPage() {
+			this.$emit("backed");
+		}
+	},
+	mounted() {
+		this.onLoad();
+		if (this.graphData != '') {
+			this.forEdit();
+		}
+	}
+});
+
+/***/ }),
+/* 14 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_color__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_clickaway2__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_clickaway2___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_clickaway2__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+	mixins: [__WEBPACK_IMPORTED_MODULE_1_vue_clickaway2__["mixin"]],
+	props: ['graphData', 'graphIndex'],
+	data() {
+		return {
+			chartType: 'radar',
+			chartlabelsString: '',
+			titleText: '',
+			legendPosition: 'top',
+			setBackgroundColor: '',
+			setBorderColor: '',
+			labels: [],
+			showTitle: false,
+			showLegend: true,
+			ifLabelsEmpty: false,
+			showTutorial: true,
+			datasets: [{
+				label: '',
+				chartDatasetDataString: '',
+				data: [],
+				backgroundColor: '',
+				borderColor: '',
+				fill: false,
+				ifDataEmpty: false,
+				ifFillColorEmpty: false,
+				ifLineColorEmpty: false,
+				backgroundColorFieldFocused: false,
+				borderColorFieldFocused: false
+			}]
+		};
+	},
+	components: {
+		'chrome-picker': __WEBPACK_IMPORTED_MODULE_0_vue_color__["Chrome"]
+	},
+	methods: {
+		addDataset() {
+			this.datasets.push({
+				label: '',
+				chartDatasetDataString: '',
+				data: [],
+				backgroundColor: '',
+				borderColor: '',
+				fill: false,
+				ifDataEmpty: false,
+				ifFillColorEmpty: false,
+				ifLineColorEmpty: false,
+				backgroundColorFieldFocused: false,
+				borderColorFieldFocused: false
+			});
+			this.theChart.data.datasets.push({
+				label: '',
+				data: [],
+				backgroundColor: '',
+				borderColor: '',
+				fill: false
+			});
+			this.theChart.update();
+		},
+		addLabels() {
+			if (this.ifLabelsEmpty) {
+				this.ifLabelsEmpty = false;
+			}
+			this.showTutorial = false;
+			this.labels = this.chartlabelsString.split(',');
+			this.theChart.data.labels = this.labels;
+			this.theChart.update();
+		},
+		addDatasetLabel(index) {
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].label = this.datasets[index].label;
+			this.theChart.update();
+		},
+		addDatasetData(index) {
+			if (this.datasets[index].ifDataEmpty) {
+				this.datasets[index].ifDataEmpty = false;
+			}
+			this.showTutorial = false;
+			this.datasets[index].data = this.datasets[index].chartDatasetDataString.split(',');
+			this.theChart.data.datasets[index].data = this.datasets[index].data;
+			this.theChart.update();
+		},
+		showBackgroundColorPickerField(index) {
+			this.datasets[index].backgroundColorFieldFocused = true;
+		},
+		hideBackgroundColorPickerField(index) {
+			this.datasets[index].backgroundColorFieldFocused = false;
+		},
+		clickedAwayFromBg(index) {
+			this.datasets[index].backgroundColorFieldFocused = false;
+		},
+		pickBackgroundColor(index) {
+			if (this.datasets[index].ifFillColorEmpty) {
+				this.datasets[index].ifFillColorEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor = this.setBackgroundColor.hex;
+			this.theChart.update();
+			this.datasets[index].backgroundColorFieldFocused = false;
+		},
+		addDatasetBgColor(index) {
+			if (this.datasets[index].ifFillColorEmpty) {
+				this.datasets[index].ifFillColorEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
+			this.theChart.update();
+		},
+		showBorderColorPickerField(index) {
+			this.datasets[index].borderColorFieldFocused = true;
+		},
+		hideBorderColorPickerField(index) {
+			this.datasets[index].borderColorFieldFocused = false;
+		},
+		clickedAwayFromBd(index) {
+			this.datasets[index].borderColorFieldFocused = false;
+		},
+		pickBorderColor(index) {
+			if (this.datasets[index].ifLineColorEmpty) {
+				this.datasets[index].ifLineColorEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor = this.setBorderColor.hex;
+			this.theChart.update();
+			this.datasets[index].borderColorFieldFocused = false;
+		},
+		addDatasetborderColor(index) {
+			if (this.datasets[index].ifLineColorEmpty) {
+				this.datasets[index].ifLineColorEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
+			this.theChart.update();
+		},
+		fillColor(index) {
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].fill = this.datasets[index].fill;
+			this.theChart.update();
+		},
+		addTitleText() {
+			this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
+			this.showTutorial = false;
+			this.theChart.options.title.display = this.showTitle;
+			this.theChart.options.title.text = this.titleText;
+			this.theChart.update();
+		},
+		showingGraphLegend() {
+			this.showTutorial = false;
+			this.theChart.options.legend.display = this.showLegend;
+			this.theChart.update();
+		},
+		changeLegendPosition() {
+			this.showTutorial = false;
+			this.theChart.options.legend.position = this.legendPosition;
+			this.theChart.update();
+		},
+		deleteDataset(index) {
+			this.datasets.splice(index, 1);
+			this.theChart.data.datasets.splice(index, 1);
+			this.theChart.update();
+		},
+		saveGraphData() {
+			let outerThis = this;
+			let DatasetHasEmptyValue = true;
+
+			this.datasets.forEach(function (value) {
+				if (value.chartDatasetDataString === '') {
+					value.ifDataEmpty = true;
+					DatasetHasEmptyValue = false;
+				}
+				if (value.backgroundColor === '') {
+					value.ifFillColorEmpty = true;
+					DatasetHasEmptyValue = false;
+				}
+				if (value.borderColor === '') {
+					value.ifLineColorEmpty = true;
+					DatasetHasEmptyValue = false;
+				}
+			});
+
+			if (this.chartlabelsString === '') {
+				this.ifLabelsEmpty = true;
+			}
+
+			if (this.chartlabelsString !== '' && DatasetHasEmptyValue) {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: this.datasets
+					},
+					options: {
+						maintainAspectRatio: false,
+						scale: {
+							ticks: {
+								beginAtZero: true
+							}
+						},
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.$store.dispatch('addNewGraph', chartDatas).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("saved");
+					}, 1500);
+				});
+			}
+		},
+		updateGraphData() {
+			let outerThis = this;
+			let DatasetHasEmptyValue = true;
+
+			this.datasets.forEach(function (value) {
+				if (value.chartDatasetDataString === '') {
+					value.ifDataEmpty = true;
+					DatasetHasEmptyValue = false;
+				}
+				if (value.backgroundColor === '') {
+					value.ifFillColorEmpty = true;
+					DatasetHasEmptyValue = false;
+				}
+				if (value.borderColor === '') {
+					value.ifLineColorEmpty = true;
+					DatasetHasEmptyValue = false;
+				}
+			});
+
+			if (this.chartlabelsString === '') {
+				this.ifLabelsEmpty = true;
+			}
+
+			if (this.chartlabelsString !== '' && DatasetHasEmptyValue) {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: []
+					},
+					options: {
+						maintainAspectRatio: false,
+						scale: {
+							ticks: {
+								beginAtZero: true
+							}
+						},
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.datasets.forEach(function (value) {
+					chartDatas.data.datasets.push({ label: value.label, data: value.data, chartDatasetDataString: value.chartDatasetDataString, backgroundColor: value.backgroundColor, borderColor: value.borderColor, fill: value.fill });
+				});
+
+				let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+
+				this.$store.dispatch('updateGraph', payload).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("updated");
+					}, 2000);
+				});
+			}
+		},
+		onLoad() {
+			let ctx = document.getElementById("radarChart").getContext('2d');
+			this.theChart = new Chart(ctx, {
+				type: this.chartType,
+				data: {
+					labels: [],
+					datasets: [{
+						label: '',
+						data: [],
+						backgroundColor: '',
+						borderColor: '',
+						fill: false
+					}]
+				},
+				options: {
+					maintainAspectRatio: false,
+					scale: {
+						ticks: {
+							beginAtZero: true
+						}
+					},
+					title: {
+						display: false,
+						text: ''
+					},
+					legend: {
+						display: true,
+						position: 'top'
+					}
+				}
+			});
+		},
+		forEdit() {
+			this.showTutorial = false;
+			let outerThis = this;
+			this.chartlabelsString = this.graphData.data.labels.join(", ");
+			this.theChart.data.labels = this.labels = this.graphData.data.labels;
+			this.graphData.data.datasets.forEach(function (value, key) {
+				if (key) {
+					outerThis.datasets.push({ label: '', chartDatasetDataString: '', data: [], backgroundColor: '', ifDataEmpty: false, ifFillColorEmpty: false, ifLineColorEmpty: false, backgroundColorFieldFocused: false, borderColorFieldFocused: false });
+					outerThis.theChart.data.datasets.push({ label: '', data: [], backgroundColor: '' });
+				}
+				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = outerThis.graphData.data.datasets[key].label;
+
+				outerThis.datasets[key].chartDatasetDataString = outerThis.graphData.data.datasets[key].chartDatasetDataString;
+
+				outerThis.theChart.data.datasets[key].data = outerThis.datasets[key].data = outerThis.graphData.data.datasets[key].data;
+
+				outerThis.theChart.data.datasets[key].backgroundColor = outerThis.datasets[key].backgroundColor = outerThis.graphData.data.datasets[key].backgroundColor;
+
+				outerThis.theChart.data.datasets[key].borderColor = outerThis.datasets[key].borderColor = outerThis.graphData.data.datasets[key].borderColor;
+
+				outerThis.theChart.data.datasets[key].fill = outerThis.datasets[key].fill = outerThis.graphData.data.datasets[key].fill;
+			});
+
+			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
+			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
+			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
+			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
+			this.theChart.options.scale.ticks.beginAtZero = this.beginAtZero = this.graphData.options.scale.ticks.beginAtZero;
+			this.theChart.update();
+		},
+		goBacktoAllGraphPage() {
+			this.$emit("backed");
+		}
+	},
+	mounted() {
+		this.onLoad();
+		if (this.graphData != '') {
+			this.forEdit();
+		}
+	}
+});
+
+/***/ }),
+/* 15 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_color__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_clickaway2__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_clickaway2___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_clickaway2__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+	mixins: [__WEBPACK_IMPORTED_MODULE_1_vue_clickaway2__["mixin"]],
+	props: ['graphData', 'graphIndex'],
+	data() {
+		return {
+			chartType: 'polarArea',
+			chartlabelString: '',
+			chartDatasetDataString: '',
+			chartDatasetBgColorString: '',
+			titleText: '',
+			legendPosition: 'top',
+			setBackgroundColor: '',
+			backgroundConcatCount: 0,
+			labels: [],
+			datasets: [{
+				data: [],
+				backgroundColor: []
+			}],
+			showTitle: false,
+			showLegend: true,
+			ifLabelsEmpty: false,
+			ifDataEmpty: false,
+			ifBackgroundEmpty: false,
+			showTutorial: true,
+			backgroundColorFieldFocused: false
+		};
+	},
+	components: {
+		'chrome-picker': __WEBPACK_IMPORTED_MODULE_0_vue_color__["Chrome"]
+	},
+	methods: {
+		addLabels() {
+			if (this.ifLabelsEmpty) {
+				this.ifLabelsEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.labels = this.labels = this.chartlabelString.split(',');
+			this.theChart.update();
+		},
+		addDatasetData() {
+			if (this.ifDataEmpty) {
+				this.ifDataEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.datasets[0].data = this.datasets[0].data = this.chartDatasetDataString.split(',');
+			this.theChart.update();
+		},
+		showBackgroundColorPickerField() {
+			this.backgroundColorFieldFocused = true;
+		},
+		hideBackgroundColorPickerField() {
+			this.backgroundColorFieldFocused = false;
+		},
+		pickBackgroundColor() {
+			if (this.ifBackgroundEmpty) {
+				this.ifBackgroundEmpty = false;
+			}
+			this.showTutorial = false;
+			if (this.backgroundConcatCount > 0) {
+				this.chartDatasetBgColorString = this.chartDatasetBgColorString + ',' + this.setBackgroundColor.hex;
+			} else {
+				this.chartDatasetBgColorString = this.setBackgroundColor.hex;
+			}
+			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
+			this.theChart.update();
+			this.backgroundColorFieldFocused = false;
+			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
+		},
+		addDatasetBgColor() {
+			if (this.ifBackgroundEmpty) {
+				this.ifBackgroundEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.chartDatasetBgColorString.split(',');
+			if (this.chartDatasetBgColorString === '') {
+				this.datasets[0].backgroundColor.length = 0;
+			}
+			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
+			this.theChart.update();
+		},
+		clickedAway() {
+			this.backgroundColorFieldFocused = false;
+		},
+		addTitleText() {
+			this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
+			this.showTutorial = false;
+			this.theChart.options.title.display = this.showTitle;
+			this.theChart.options.title.text = this.titleText;
+			this.theChart.update();
+		},
+		showingGraphLegend() {
+			this.showTutorial = false;
+			this.theChart.options.legend.display = this.showLegend;
+			this.theChart.update();
+		},
+		changeLegendPosition() {
+			this.showTutorial = false;
+			this.theChart.options.legend.position = this.legendPosition;
+			this.theChart.update();
+		},
+		saveGraphData() {
+			let outerThis = this;
+
+			if (this.chartlabelString === '') {
+				this.ifLabelsEmpty = true;
+			}
+			if (this.chartDatasetDataString === '') {
+				this.ifDataEmpty = true;
+			}
+			if (this.chartDatasetBgColorString === '') {
+				this.ifBackgroundEmpty = true;
+			}
+
+			if (this.chartlabelString !== '' && this.chartDatasetDataString !== '' && this.chartDatasetBgColorString !== '') {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: this.datasets
+					},
+					options: {
+						maintainAspectRatio: false,
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.$store.dispatch('addNewGraph', chartDatas).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("saved");
+					}, 1500);
+				});
+			}
+		},
+		updateGraphData() {
+			let outerThis = this;
+
+			if (this.chartlabelString === '') {
+				this.ifLabelsEmpty = true;
+			}
+			if (this.chartDatasetDataString === '') {
+				this.ifDataEmpty = true;
+			}
+			if (this.chartDatasetBgColorString === '') {
+				this.ifBackgroundEmpty = true;
+			}
+
+			if (this.chartlabelString !== '' && this.chartDatasetDataString !== '' && this.chartDatasetBgColorString !== '') {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						labels: this.labels,
+						datasets: [{
+							data: this.datasets[0].data,
+							backgroundColor: this.datasets[0].backgroundColor
+						}]
+					},
+					options: {
+						maintainAspectRatio: false,
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+
+				this.$store.dispatch('updateGraph', payload).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("updated");
+					}, 2000);
+				});
+			}
+		},
+		onLoad() {
+			let ctx = document.getElementById("PolarAreaChart").getContext('2d');
+			this.theChart = new Chart(ctx, {
+				type: this.chartType,
+				data: {
+					labels: [],
+					datasets: [{
+						data: [],
+						backgroundColor: []
+					}]
+				},
+				options: {
+					maintainAspectRatio: false,
+					title: {
+						display: false,
+						text: ''
+					},
+					legend: {
+						display: true,
+						position: 'top'
+					}
+				}
+			});
+		},
+		forEdit() {
+			this.showTutorial = false;
+			this.chartlabelString = this.graphData.data.labels.join(", ");
+			this.theChart.data.labels = this.labels = this.graphData.data.labels;
+
+			this.chartDatasetBgColorString = this.graphData.data.datasets[0].backgroundColor.join(", ");
+			this.theChart.data.datasets[0].backgroundColor = this.datasets[0].backgroundColor = this.graphData.data.datasets[0].backgroundColor;
+			this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
+
+			this.chartDatasetDataString = this.graphData.data.datasets[0].data.join(", ");
+			this.theChart.data.datasets[0].data = this.datasets[0].data = this.graphData.data.datasets[0].data;
+
+			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
+			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
+
+			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
+			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
+			this.theChart.update();
+		},
+		goBacktoAllGraphPage() {
+			this.$emit("backed");
+		}
+	},
+	mounted() {
+		this.onLoad();
+		if (this.graphData != '') {
+			this.forEdit();
+		}
+	}
+});
+
+/***/ }),
+/* 16 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_color__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_clickaway2__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_clickaway2___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_clickaway2__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+	mixins: [__WEBPACK_IMPORTED_MODULE_1_vue_clickaway2__["mixin"]],
+	props: ['graphData', 'graphIndex'],
+	data() {
+		return {
+			chartType: 'bubble',
+			titleText: '',
+			legendPosition: 'top',
+			setBackgroundColor: '',
+			setBorderColor: '',
+			showTitle: false,
+			showLegend: true,
+			showTutorial: true,
+			datasets: [{
+				label: '',
+				data: [{
+					x: '',
+					y: '',
+					r: '',
+					ifxPointEmpty: false,
+					ifyPointEmpty: false,
+					ifrPointEmpty: false
+				}],
+				backgroundColor: '',
+				borderColor: '',
+				hoverRadius: 0,
+				ifCircleBackgroundEmpty: false,
+				ifCicleBorderColorEmpty: false,
+				backgroundColorFieldFocused: false,
+				borderColorFieldFocused: false
+			}]
+		};
+	},
+	components: {
+		'chrome-picker': __WEBPACK_IMPORTED_MODULE_0_vue_color__["Chrome"]
+	},
+	methods: {
+		addDataset() {
+			this.datasets.push({
+				label: '',
+				data: [{
+					x: '',
+					y: '',
+					r: '',
+					ifxPointEmpty: false,
+					ifyPointEmpty: false,
+					ifrPointEmpty: false
+				}],
+				backgroundColor: '',
+				borderColor: '',
+				hoverRadius: 0,
+				ifCircleBackgroundEmpty: false,
+				ifCicleBorderColorEmpty: false,
+				backgroundColorFieldFocused: false,
+				borderColorFieldFocused: false
+			});
+			this.theChart.data.datasets.push({
+				label: '',
+				data: [{ x: '', y: '', r: '' }],
+				backgroundColor: '',
+				borderColor: '',
+				hoverRadius: 0
+			});
+			this.theChart.update();
+		},
+		addBubblePoint(index) {
+			this.datasets[index].data.push({
+				x: '',
+				y: '',
+				r: '',
+				ifxPointEmpty: false,
+				ifyPointEmpty: false,
+				ifrPointEmpty: false
+			});
+			this.theChart.data.datasets[index].data.push({ x: '', y: '', r: '' });
+			this.theChart.update();
+		},
+		addDatasetLabel(index) {
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].label = this.datasets[index].label;
+			this.theChart.update();
+		},
+		addDatasetDataPoints(index, pIndex, point) {
+			let gettingErrorPoint = 'if' + point + 'PointEmpty';
+			if (this.datasets[index].data[pIndex][gettingErrorPoint]) {
+				this.datasets[index].data[pIndex][gettingErrorPoint] = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].data[pIndex][point] = this.datasets[index].data[pIndex][point];
+			this.theChart.update();
+		},
+		showBackgroundColorPickerField(index) {
+			this.datasets[index].backgroundColorFieldFocused = true;
+		},
+		hideBackgroundColorPickerField(index) {
+			this.datasets[index].backgroundColorFieldFocused = false;
+		},
+		clickedAwayFromBg(index) {
+			this.datasets[index].backgroundColorFieldFocused = false;
+		},
+		pickBackgroundColor(index) {
+			if (this.datasets[index].ifCircleBackgroundEmpty) {
+				this.datasets[index].ifCircleBackgroundEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor = this.setBackgroundColor.hex;
+			this.theChart.update();
+			this.datasets[index].backgroundColorFieldFocused = false;
+		},
+		addDatasetBgColor(index) {
+			if (this.datasets[index].ifCircleBackgroundEmpty) {
+				this.datasets[index].ifCircleBackgroundEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
+			this.theChart.update();
+		},
+		showBorderColorPickerField(index) {
+			this.datasets[index].borderColorFieldFocused = true;
+		},
+		hideBorderColorPickerField(index) {
+			this.datasets[index].borderColorFieldFocused = false;
+		},
+		clickedAwayFromBd(index) {
+			this.datasets[index].borderColorFieldFocused = false;
+		},
+		pickBorderColor(index) {
+			if (this.datasets[index].ifCicleBorderColorEmpty) {
+				this.datasets[index].ifCicleBorderColorEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor = this.setBorderColor.hex;
+			this.theChart.update();
+			this.datasets[index].borderColorFieldFocused = false;
+		},
+		addDatasetborderColor(index) {
+			if (this.datasets[index].ifCicleBorderColorEmpty) {
+				this.datasets[index].ifCicleBorderColorEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
+			this.theChart.update();
+		},
+		addTitleText() {
+			this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
+			this.showTutorial = false;
+			this.theChart.options.title.display = this.showTitle;
+			this.theChart.options.title.text = this.titleText;
+			this.theChart.update();
+		},
+		showingGraphLegend() {
+			this.showTutorial = false;
+			this.theChart.options.legend.display = this.showLegend;
+			this.theChart.update();
+		},
+		changeLegendPosition() {
+			this.showTutorial = false;
+			this.theChart.options.legend.position = this.legendPosition;
+			this.theChart.update();
+		},
+		deleteDataset(index) {
+			this.datasets.splice(index, 1);
+			this.theChart.data.datasets.splice(index, 1);
+			this.theChart.update();
+		},
+		deleteButtonPoint(datasetIndex, bubblePointIndex) {
+			this.datasets[datasetIndex].data.splice(bubblePointIndex, 1);
+			this.theChart.data.datasets[datasetIndex].data.splice(bubblePointIndex, 1);
+			this.theChart.update();
+		},
+		saveGraphData() {
+			let outerThis = this;
+			let DatasetHasEmptyValue = true;
+
+			this.datasets.forEach(function (value) {
+				if (value.backgroundColor === '') {
+					value.ifCircleBackgroundEmpty = true;
+					DatasetHasEmptyValue = false;
+				}
+				if (value.borderColor === '') {
+					value.ifCicleBorderColorEmpty = true;
+					DatasetHasEmptyValue = false;
+				}
+
+				value.data.forEach(function (data) {
+					if (data.x === '') {
+						data.ifxPointEmpty = true;
+						DatasetHasEmptyValue = false;
+					}
+					if (data.y === '') {
+						data.ifyPointEmpty = true;
+						DatasetHasEmptyValue = false;
+					}
+					if (data.r === '') {
+						data.ifrPointEmpty = true;
+						DatasetHasEmptyValue = false;
+					}
+				});
+			});
+
+			if (DatasetHasEmptyValue) {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						datasets: this.datasets
+					},
+					options: {
+						maintainAspectRatio: false,
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.$store.dispatch('addNewGraph', chartDatas).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("saved");
+					}, 1500);
+				});
+			}
+		},
+		updateGraphData() {
+			let outerThis = this;
+			let DatasetHasEmptyValue = true;
+
+			this.datasets.forEach(function (value) {
+				if (value.backgroundColor === '') {
+					value.ifCircleBackgroundEmpty = true;
+					DatasetHasEmptyValue = false;
+				}
+				if (value.borderColor === '') {
+					value.ifCicleBorderColorEmpty = true;
+					DatasetHasEmptyValue = false;
+				}
+
+				value.data.forEach(function (data) {
+					if (data.x === '') {
+						data.ifxPointEmpty = true;
+						DatasetHasEmptyValue = false;
+					}
+					if (data.y === '') {
+						data.ifyPointEmpty = true;
+						DatasetHasEmptyValue = false;
+					}
+					if (data.r === '') {
+						data.ifrPointEmpty = true;
+						DatasetHasEmptyValue = false;
+					}
+				});
+			});
+
+			if (DatasetHasEmptyValue) {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						datasets: []
+					},
+					options: {
+						maintainAspectRatio: false,
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.datasets.forEach(function (value, key) {
+					chartDatas.data.datasets.push({
+						label: value.label,
+						data: value.data,
+						backgroundColor: value.backgroundColor,
+						borderColor: value.borderColor,
+						hoverRadius: 0
+					});
+				});
+
+				let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+
+				this.$store.dispatch('updateGraph', payload).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("updated");
+					}, 2000);
+				});
+			}
+		},
+		onLoad() {
+			let ctx = document.getElementById("bubbleChart").getContext('2d');
+			this.theChart = new Chart(ctx, {
+				type: this.chartType,
+				data: {
+					datasets: [{
+						label: '',
+						data: [{ x: '', y: '', r: '' }],
+						backgroundColor: '',
+						borderColor: '',
+						hoverRadius: 0
+					}]
+				},
+				options: {
+					maintainAspectRatio: false,
+					title: {
+						display: false,
+						text: ''
+					},
+					legend: {
+						display: true,
+						position: 'top'
+					}
+				}
+			});
+		},
+		forEdit() {
+			this.showTutorial = false;
+			let outerThis = this;
+			this.graphData.data.datasets.forEach(function (value, key) {
+				if (key) {
+					outerThis.datasets.push({ label: '', data: [{ x: '', y: '', r: '', ifxPointEmpty: false, ifyPointEmpty: false, ifrPointEmpty: false }], backgroundColor: '', ifCircleBackgroundEmpty: false, ifCicleBorderColorEmpty: false, backgroundColorFieldFocused: false, borderColorFieldFocused: false });
+					outerThis.theChart.data.datasets.push({ label: '', data: [{ x: '', y: '', r: '' }], backgroundColor: '' });
+				}
+				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = value.label;
+				value.data.forEach(function (innerValue, innerKey) {
+					if (innerKey) {
+						outerThis.datasets[key].data.push({ x: '', y: '', r: '' });
+						outerThis.theChart.data.datasets[key].data.push({ x: '', y: '', r: '' });
+					}
+					outerThis.theChart.data.datasets[key].data[innerKey].x = outerThis.datasets[key].data[innerKey].x = innerValue.x;
+					outerThis.theChart.data.datasets[key].data[innerKey].y = outerThis.datasets[key].data[innerKey].y = innerValue.y;
+					outerThis.theChart.data.datasets[key].data[innerKey].r = outerThis.datasets[key].data[innerKey].r = innerValue.r;
+				});
+				outerThis.theChart.data.datasets[key].backgroundColor = outerThis.datasets[key].backgroundColor = value.backgroundColor;
+				outerThis.theChart.data.datasets[key].borderColor = outerThis.datasets[key].borderColor = value.borderColor;
+				outerThis.theChart.data.datasets[key].hoverRadius = outerThis.datasets[key].hoverRadius = 0;
+			});
+
+			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
+			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
+			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
+			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
+			this.theChart.update();
+		},
+		goBacktoAllGraphPage() {
+			this.$emit("backed");
+		}
+	},
+	mounted() {
+		this.onLoad();
+		if (this.graphData != '') {
+			this.forEdit();
+		}
+	}
+});
+
+/***/ }),
+/* 17 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_color___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_color__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_clickaway2__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_clickaway2___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_clickaway2__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+	mixins: [__WEBPACK_IMPORTED_MODULE_1_vue_clickaway2__["mixin"]],
+	props: ['graphData', 'graphIndex'],
+	data() {
+		return {
+			chartType: 'scatter',
+			titleText: '',
+			legendPosition: 'top',
+			setBackgroundColor: '',
+			setBorderColor: '',
+			showTitle: false,
+			showLegend: true,
+			showTutorial: true,
+			datasets: [{
+				label: '',
+				data: [{
+					x: '',
+					y: '',
+					ifxPointEmpty: false,
+					ifyPointEmpty: false
+				}],
+				backgroundColor: '',
+				borderColor: '',
+				fill: false,
+				showLine: false,
+				ifCircleBackgroundEmpty: false,
+				ifCicleBorderColorEmpty: false,
+				backgroundColorFieldFocused: false,
+				borderColorFieldFocused: false
+			}]
+		};
+	},
+	components: {
+		'chrome-picker': __WEBPACK_IMPORTED_MODULE_0_vue_color__["Chrome"]
+	},
+	methods: {
+		addDataset() {
+			this.datasets.push({
+				label: '',
+				data: [{
+					x: '',
+					y: '',
+					fxPointEmpty: false,
+					ifyPointEmpty: false
+				}],
+				backgroundColor: '',
+				borderColor: '',
+				fill: false,
+				showLine: false,
+				ifCircleBackgroundEmpty: false,
+				ifCicleBorderColorEmpty: false,
+				backgroundColorFieldFocused: false,
+				borderColorFieldFocused: false
+			});
+			this.theChart.data.datasets.push({
+				label: '',
+				data: [{ x: '', y: '' }],
+				backgroundColor: '',
+				borderColor: '',
+				fill: false,
+				showLine: false
+			});
+			this.theChart.update();
+		},
+		addBubblePoint(index) {
+			this.showTutorial = false;
+			this.datasets[index].data.push({ x: '', y: '', ifxPointEmpty: false, ifyPointEmpty: false });
+			this.theChart.data.datasets[index].data.push({ x: '', y: '' });
+			this.theChart.update();
+		},
+		addDatasetLabel(index) {
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].label = this.datasets[index].label;
+			this.theChart.update();
+		},
+		addDatasetDataPoints(index, pIndex, point) {
+			let gettingErrorPoint = 'if' + point + 'PointEmpty';
+			if (this.datasets[index].data[pIndex][gettingErrorPoint]) {
+				this.datasets[index].data[pIndex][gettingErrorPoint] = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].data[pIndex][point] = this.datasets[index].data[pIndex][point];
+			this.theChart.update();
+		},
+		showBackgroundColorPickerField(index) {
+			this.datasets[index].backgroundColorFieldFocused = true;
+		},
+		hideBackgroundColorPickerField(index) {
+			this.datasets[index].backgroundColorFieldFocused = false;
+		},
+		clickedAwayFromBg(index) {
+			this.datasets[index].backgroundColorFieldFocused = false;
+		},
+		pickBackgroundColor(index) {
+			if (this.datasets[index].ifCircleBackgroundEmpty) {
+				this.datasets[index].ifCircleBackgroundEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor = this.setBackgroundColor.hex;
+			this.theChart.update();
+			this.datasets[index].backgroundColorFieldFocused = false;
+		},
+		addDatasetBgColor(index) {
+			if (this.datasets[index].ifCircleBackgroundEmpty) {
+				this.datasets[index].ifCircleBackgroundEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].backgroundColor = this.datasets[index].backgroundColor;
+			this.theChart.update();
+		},
+		showBorderColorPickerField(index) {
+			this.datasets[index].borderColorFieldFocused = true;
+		},
+		hideBorderColorPickerField(index) {
+			this.datasets[index].borderColorFieldFocused = false;
+		},
+		clickedAwayFromBd(index) {
+			this.datasets[index].borderColorFieldFocused = false;
+		},
+		pickBorderColor(index) {
+			if (this.datasets[index].ifCicleBorderColorEmpty) {
+				this.datasets[index].ifCicleBorderColorEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor = this.setBorderColor.hex;
+			this.theChart.update();
+			this.datasets[index].borderColorFieldFocused = false;
+		},
+		addDatasetborderColor(index) {
+			if (this.datasets[index].ifCicleBorderColorEmpty) {
+				this.datasets[index].ifCicleBorderColorEmpty = false;
+			}
+			this.showTutorial = false;
+			this.theChart.data.datasets[index].borderColor = this.datasets[index].borderColor;
+			this.theChart.update();
+		},
+		addTitleText() {
+			this.titleText !== '' ? this.showTitle = true : this.showTitle = false;
+			this.showTutorial = false;
+			this.theChart.options.title.display = this.showTitle;
+			this.theChart.options.title.text = this.titleText;
+			this.theChart.update();
+		},
+		showingGraphLegend() {
+			this.showTutorial = false;
+			this.theChart.options.legend.display = this.showLegend;
+			this.theChart.update();
+		},
+		changeLegendPosition() {
+			this.showTutorial = false;
+			this.theChart.options.legend.position = this.legendPosition;
+			this.theChart.update();
+		},
+		deleteDataset(index) {
+			this.datasets.splice(index, 1);
+			this.theChart.data.datasets.splice(index, 1);
+			this.theChart.update();
+		},
+		deleteButtonPoint(datasetIndex, bubblePointIndex) {
+			this.datasets[datasetIndex].data.splice(bubblePointIndex, 1);
+			this.theChart.data.datasets[datasetIndex].data.splice(bubblePointIndex, 1);
+			this.theChart.update();
+		},
+		saveGraphData() {
+			let outerThis = this;
+			let DatasetHasEmptyValue = true;
+
+			this.datasets.forEach(function (value) {
+				if (value.backgroundColor === '') {
+					value.ifCircleBackgroundEmpty = true;
+					DatasetHasEmptyValue = false;
+				}
+				if (value.borderColor === '') {
+					value.ifCicleBorderColorEmpty = true;
+					DatasetHasEmptyValue = false;
+				}
+
+				value.data.forEach(function (data) {
+					if (data.x === '') {
+						data.ifxPointEmpty = true;
+						DatasetHasEmptyValue = false;
+					}
+					if (data.y === '') {
+						data.ifyPointEmpty = true;
+						DatasetHasEmptyValue = false;
+					}
+				});
+			});
+
+			if (DatasetHasEmptyValue) {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						datasets: this.datasets
+					},
+					options: {
+						maintainAspectRatio: false,
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.$store.dispatch('addNewGraph', chartDatas).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("saved");
+					}, 1500);
+				});
+			}
+		},
+		updateGraphData() {
+			let outerThis = this;
+			let DatasetHasEmptyValue = true;
+
+			this.datasets.forEach(function (value) {
+				if (value.backgroundColor === '') {
+					value.ifCircleBackgroundEmpty = true;
+					DatasetHasEmptyValue = false;
+				}
+				if (value.borderColor === '') {
+					value.ifCicleBorderColorEmpty = true;
+					DatasetHasEmptyValue = false;
+				}
+
+				value.data.forEach(function (data) {
+					if (data.x === '') {
+						data.ifxPointEmpty = true;
+						DatasetHasEmptyValue = false;
+					}
+					if (data.y === '') {
+						data.ifyPointEmpty = true;
+						DatasetHasEmptyValue = false;
+					}
+				});
+			});
+
+			if (DatasetHasEmptyValue) {
+				let chartDatas = {
+					type: this.chartType,
+					data: {
+						datasets: []
+					},
+					options: {
+						maintainAspectRatio: false,
+						title: {
+							display: this.showTitle,
+							text: this.titleText
+						},
+						legend: {
+							display: this.showLegend,
+							position: this.legendPosition
+						}
+					}
+				};
+
+				this.datasets.forEach(function (value, key) {
+					chartDatas.data.datasets.push({
+						label: value.label,
+						data: value.data,
+						backgroundColor: value.backgroundColor,
+						borderColor: value.borderColor,
+						fill: value.fill,
+						showLine: value.showLine
+					});
+				});
+
+				let payload = { 'chartDetails': chartDatas, 'graphIndex': this.graphIndex, 'graph_id': this.graphData.graph_id };
+
+				this.$store.dispatch('updateGraph', payload).then(function () {
+					setTimeout(function () {
+						outerThis.$emit("updated");
+					}, 2000);
+				});
+			}
+		},
+		onLoad() {
+			let ctx = document.getElementById("scatterChart").getContext('2d');
+			this.theChart = new Chart(ctx, {
+				type: this.chartType,
+				data: {
+					datasets: [{
+						label: '',
+						data: [{ x: '', y: '' }],
+						backgroundColor: '',
+						borderColor: '',
+						fill: false,
+						showLine: false
+					}]
+				},
+				options: {
+					maintainAspectRatio: false,
+					title: {
+						display: false,
+						text: ''
+					},
+					legend: {
+						display: true,
+						position: 'top'
+					}
+				}
+			});
+		},
+		forEdit() {
+			this.showTutorial = false;
+			let outerThis = this;
+			this.graphData.data.datasets.forEach(function (value, key) {
+				if (key) {
+					outerThis.datasets.push({ label: '', data: [{ x: '', y: '', ifxPointEmpty: false, ifyPointEmpty: false }], backgroundColor: '', fill: false, showLine: false, ifCircleBackgroundEmpty: false, ifCicleBorderColorEmpty: false, backgroundColorFieldFocused: false, borderColorFieldFocused: false });
+					outerThis.theChart.data.datasets.push({ label: '', data: [{ x: '', y: '' }], backgroundColor: '', fill: false, showLine: false });
+				}
+				outerThis.theChart.data.datasets[key].label = outerThis.datasets[key].label = value.label;
+				value.data.forEach(function (innerValue, innerKey) {
+					if (innerKey) {
+						outerThis.datasets[key].data.push({ x: '', y: '' });
+						outerThis.theChart.data.datasets[key].data.push({ x: '', y: '' });
+					}
+					outerThis.theChart.data.datasets[key].data[innerKey].x = outerThis.datasets[key].data[innerKey].x = innerValue.x;
+					outerThis.theChart.data.datasets[key].data[innerKey].y = outerThis.datasets[key].data[innerKey].y = innerValue.y;
+				});
+				outerThis.theChart.data.datasets[key].backgroundColor = outerThis.datasets[key].backgroundColor = value.backgroundColor;
+				outerThis.theChart.data.datasets[key].borderColor = outerThis.datasets[key].borderColor = value.borderColor;
+			});
+
+			this.theChart.options.title.display = this.showTitle = this.graphData.options.title.display;
+			this.theChart.options.title.text = this.titleText = this.graphData.options.title.text;
+			this.theChart.options.legend.display = this.showLegend = this.graphData.options.legend.display;
+			this.theChart.options.legend.position = this.legendPosition = this.graphData.options.legend.position;
+			this.theChart.update();
+		},
+		goBacktoAllGraphPage() {
+			this.$emit("backed");
+		}
+	},
+	mounted() {
+		this.onLoad();
+		if (this.graphData != '') {
+			this.forEdit();
+		}
+	}
+});
 
 /***/ }),
 /* 18 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__store__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__App_vue__ = __webpack_require__(23);
+
+
+
+
+//components
+
+
+__WEBPACK_IMPORTED_MODULE_0_vue__["default"].use(__WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */]);
+
+new __WEBPACK_IMPORTED_MODULE_0_vue__["default"]({
+	el: '#app',
+	render: h => h(__WEBPACK_IMPORTED_MODULE_3__App_vue__["a" /* default */]),
+	store: new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store(__WEBPACK_IMPORTED_MODULE_2__store__["a" /* default */]),
+	created() {
+		this.$store.dispatch('onLoad');
+	}
+});
+
+/***/ }),
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
@@ -15988,7 +16203,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(19);
+__webpack_require__(20);
 // On some exotic environments, it's not clear which object `setimmediate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -15999,10 +16214,10 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
                          (typeof global !== "undefined" && global.clearImmediate) ||
                          (this && this.clearImmediate);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -16192,10 +16407,10 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(20)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(21)))
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -16385,7 +16600,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -16480,15 +16695,15 @@ process.umask = function() { return 0; };
 });
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(8);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_d7c62d18_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(62);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_29879cf0_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(63);
 function injectStyle (ssrContext) {
-  __webpack_require__(23)
+  __webpack_require__(24)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
@@ -16501,12 +16716,12 @@ var __vue_template_functional__ = false
 /* styles */
 var __vue_styles__ = injectStyle
 /* scopeId */
-var __vue_scopeId__ = null
+var __vue_scopeId__ = "data-v-29879cf0"
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_d7c62d18_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_29879cf0_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -16517,20 +16732,20 @@ var Component = normalizeComponent(
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(24);
+var content = __webpack_require__(25);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(1)("f1b5f576", content, true, {});
+var update = __webpack_require__(1)("6e4c3c9d", content, true, {});
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(false);
@@ -16538,13 +16753,13 @@ exports = module.exports = __webpack_require__(0)(false);
 
 
 // module
-exports.push([module.i, ".gl_heading div,.gl_heading p{display:inline-block}.gl_heading div{text-align:right;font-weight:700;font-size:18px;float:right;margin-top:13px}.gl_heading div a{text-decoration:none;color:#000;box-shadow:none}", ""]);
+exports.push([module.i, ".gl_heading p[data-v-29879cf0]{display:inline-block}.gl_heading div[data-v-29879cf0]{text-align:right;font-weight:700;font-size:18px;display:inline-block;float:right;margin-top:13px}.gl_heading div a[data-v-29879cf0]{text-decoration:none;color:#000;box-shadow:none}", ""]);
 
 // exports
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports) {
 
 /**
@@ -16577,15 +16792,15 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(9);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_711d813a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_ffadfb5e_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__ = __webpack_require__(30);
 function injectStyle (ssrContext) {
-  __webpack_require__(27)
+  __webpack_require__(28)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
@@ -16598,12 +16813,12 @@ var __vue_template_functional__ = false
 /* styles */
 var __vue_styles__ = injectStyle
 /* scopeId */
-var __vue_scopeId__ = null
+var __vue_scopeId__ = "data-v-ffadfb5e"
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_allSavedChartsTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_711d813a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_ffadfb5e_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_allSavedChartsTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -16614,20 +16829,20 @@ var Component = normalizeComponent(
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(28);
+var content = __webpack_require__(29);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(1)("2f1b8748", content, true, {});
+var update = __webpack_require__(1)("2165a092", content, true, {});
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(false);
@@ -16635,13 +16850,13 @@ exports = module.exports = __webpack_require__(0)(false);
 
 
 // module
-exports.push([module.i, ".gl_chart_dropdown_area{margin-bottom:10px}.plusIcon{font-size:50px;margin:0;font-weight:700;margin-top:-65px}", ""]);
+exports.push([module.i, ".gl_chart_dropdown_area[data-v-ffadfb5e]{margin-bottom:10px}.plusIcon[data-v-ffadfb5e]{font-size:50px;margin:0;font-weight:700;margin-top:-65px}", ""]);
 
 // exports
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -16651,15 +16866,15 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BarChartTemplate_vue__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BarChartTemplate_vue__ = __webpack_require__(10);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4de68da9_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_99f5b49a_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__ = __webpack_require__(34);
 function injectStyle (ssrContext) {
-  __webpack_require__(31)
+  __webpack_require__(32)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
@@ -16672,12 +16887,12 @@ var __vue_template_functional__ = false
 /* styles */
 var __vue_styles__ = injectStyle
 /* scopeId */
-var __vue_scopeId__ = null
+var __vue_scopeId__ = "data-v-99f5b49a"
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BarChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4de68da9_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_99f5b49a_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BarChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -16688,20 +16903,20 @@ var Component = normalizeComponent(
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(32);
+var content = __webpack_require__(33);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(1)("68c2dad2", content, true, {});
+var update = __webpack_require__(1)("c734aea8", content, true, {});
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(false);
@@ -16709,31 +16924,31 @@ exports = module.exports = __webpack_require__(0)(false);
 
 
 // module
-exports.push([module.i, ".barChart{width:100%;height:100%;display:flex;flex-direction:row}.graphOptions{width:50%;padding-top:20px}.graphDiv{width:50%}.gl_graphChildDiv{position:fixed;width:46%;height:50%;right:40px;top:150px}.saveGraphData{float:right}input[type=text]{height:35px}.form-table th{width:25%}.gl_deleteButtonTd,.gl_deleteButtonTh{padding:0!important}.delete_dataset{float:right;background-color:#dc3545!important;border-color:#dc3545!important;color:#fff!important;margin-bottom:8px!important;margin-right:10px!important}fieldset{width:100%;border:1px solid #f0f0f0;padding-left:10px;margin-bottom:7px}legend{font-weight:700}fieldset table{margin-top:0!important}.vc-chrome-toggle-btn{display:none!important}.gl_colorPickerButton{background-color:#fff!important;color:#969696!important;border:1px solid #ddd!important;margin-top:2px;display:block}.vc-chrome{float:left;margin:2px 3px 0 2px}", ""]);
+exports.push([module.i, "", ""]);
 
 // exports
 
-
-/***/ }),
-/* 33 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"barChart gl_chart_template",attrs:{"id":"bar"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{staticClass:"gl_backButton",attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelsString),expression:"chartlabelsString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifxAxesLabelEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelsString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelsString=$event.target.value}}}),_vm._v(" "),(_vm.ifxAxesLabelEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])])]),_vm._v(" "),_vm._l((_vm.datasets),function(data,index){return _c('fieldset',{key:data},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.label),expression:"data.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(data.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.chartDatasetDataString),expression:"data.chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(data.chartDatasetDataString)},on:{"keyup":function($event){_vm.addDatasetData(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "chartDatasetDataString", $event.target.value)}}}),_vm._v(" "),(data.ifDataEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.backgroundColor),expression:"data.backgroundColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifBackgroundEmpty},attrs:{"type":"text","id":"colors","placeholder":"Color value for bar. Eg. red"},domProps:{"value":(data.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"focus":function($event){_vm.showBackgroundColorPickerField(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "backgroundColor", $event.target.value)}}}),_vm._v(" "),(data.backgroundColorFieldFocused)?_c('chrome-picker',{model:{value:(_vm.setBackgroundColor),callback:function ($$v) {_vm.setBackgroundColor=$$v},expression:"setBackgroundColor"}}):_vm._e(),_vm._v(" "),_c('div',[(data.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.pickBackgroundColor(index)}}},[_vm._v("Pick")]):_vm._e(),_vm._v(" "),(data.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.hideBackgroundColorPickerField(index)}}},[_vm._v("Close")]):_vm._e()]),_vm._v(" "),_c('div',{staticStyle:{"clear":"both"}}),_vm._v(" "),(data.ifBackgroundEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()],1)]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.beginAtZero),expression:"beginAtZero"}],attrs:{"type":"checkbox","id":"beginAtZero"},domProps:{"checked":Array.isArray(_vm.beginAtZero)?_vm._i(_vm.beginAtZero,null)>-1:(_vm.beginAtZero)},on:{"change":[function($event){var $$a=_vm.beginAtZero,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.beginAtZero=$$a.concat([$$v]))}else{$$i>-1&&(_vm.beginAtZero=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.beginAtZero=$$c}},_vm.yAxesRange]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_c('div',{staticClass:"graphDiv"},[(_vm.showTutorial)?_c('iframe',{staticClass:"tutorialFrame",attrs:{"width":"560","height":"315","src":"https://www.youtube.com/embed/Hwn4UKc5Bew?rel=0&controls=0&showinfo=0","frameborder":"0","allow":"autoplay; encrypted-media","allowfullscreen":""}}):_vm._e(),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.showTutorial),expression:"!showTutorial"}],staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"barChart"}})])])])}
-var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("xAsis Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"beginAtZero"}},[_vm._v("yAxes Range (Begin at 0)")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])}]
-var esExports = { render: render, staticRenderFns: staticRenderFns }
-/* harmony default export */ __webpack_exports__["a"] = (esExports);
 
 /***/ }),
 /* 34 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_LineChartTemplate_vue__ = __webpack_require__(9);
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"gl_chart_template",attrs:{"id":"bar"}},[_c('div',{staticClass:"gl_graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{staticClass:"gl_backButton",attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelsString),expression:"chartlabelsString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifxAxesLabelEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelsString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelsString=$event.target.value}}}),_vm._v(" "),(_vm.ifxAxesLabelEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])])]),_vm._v(" "),_vm._l((_vm.datasets),function(data,index){return _c('fieldset',{key:data},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.label),expression:"data.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(data.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.chartDatasetDataString),expression:"data.chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(data.chartDatasetDataString)},on:{"keyup":function($event){_vm.addDatasetData(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "chartDatasetDataString", $event.target.value)}}}),_vm._v(" "),(data.ifDataEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',{directives:[{name:"on-clickaway",rawName:"v-on-clickaway",value:(function () { return _vm.clickedAway(index); }),expression:"() => clickedAway(index)"}],staticClass:"gl_colorPickerTd"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.backgroundColor),expression:"data.backgroundColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifBackgroundEmpty},attrs:{"type":"text","id":"colors","placeholder":"Color value for bar. Eg. red"},domProps:{"value":(data.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"focus":function($event){_vm.showBackgroundColorPickerField(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "backgroundColor", $event.target.value)}}}),_vm._v(" "),_c('div',{staticClass:"gl_colorPickerDiv"},[(data.backgroundColorFieldFocused)?_c('chrome-picker',{model:{value:(_vm.setBackgroundColor),callback:function ($$v) {_vm.setBackgroundColor=$$v},expression:"setBackgroundColor"}}):_vm._e(),_vm._v(" "),_c('div',{staticClass:"gl_pickOrCloseColorPickerDiv"},[(data.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.pickBackgroundColor(index)}}},[_vm._v("Pick")]):_vm._e(),_vm._v(" "),(data.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.hideBackgroundColorPickerField(index)}}},[_vm._v("Close")]):_vm._e(),_vm._v(" "),_c('div',{staticStyle:{"clear":"both"}})])],1),_vm._v(" "),(data.ifBackgroundEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger gl_delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.beginAtZero),expression:"beginAtZero"}],attrs:{"type":"checkbox","id":"beginAtZero"},domProps:{"checked":Array.isArray(_vm.beginAtZero)?_vm._i(_vm.beginAtZero,null)>-1:(_vm.beginAtZero)},on:{"change":[function($event){var $$a=_vm.beginAtZero,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.beginAtZero=$$a.concat([$$v]))}else{$$i>-1&&(_vm.beginAtZero=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.beginAtZero=$$c}},_vm.yAxesRange]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"gl_saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"gl_saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_c('div',{staticClass:"gl_graphDiv"},[(_vm.showTutorial)?_c('div',{staticClass:"gl_dummyMessages"},[_c('h2',[_vm._v("Start typing to see live preview")]),_vm._v(" "),_c('p',[_vm._v("Live preview will appear here after you enter some data")])]):_vm._e(),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.showTutorial),expression:"!showTutorial"}],staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"barChart"}})])])])}
+var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("xAsis Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"beginAtZero"}},[_vm._v("yAxes Range (Begin at 0)")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])}]
+var esExports = { render: render, staticRenderFns: staticRenderFns }
+/* harmony default export */ __webpack_exports__["a"] = (esExports);
+
+/***/ }),
+/* 35 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_LineChartTemplate_vue__ = __webpack_require__(11);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_57201ec0_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__ = __webpack_require__(37);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7db3ee07_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__ = __webpack_require__(38);
 function injectStyle (ssrContext) {
-  __webpack_require__(35)
+  __webpack_require__(36)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
@@ -16746,12 +16961,12 @@ var __vue_template_functional__ = false
 /* styles */
 var __vue_styles__ = injectStyle
 /* scopeId */
-var __vue_scopeId__ = null
+var __vue_scopeId__ = "data-v-7db3ee07"
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_LineChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_57201ec0_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7db3ee07_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_LineChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -16762,20 +16977,20 @@ var Component = normalizeComponent(
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(36);
+var content = __webpack_require__(37);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(1)("a7976bd6", content, true, {});
+var update = __webpack_require__(1)("432c9dfc", content, true, {});
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(false);
@@ -16783,31 +16998,31 @@ exports = module.exports = __webpack_require__(0)(false);
 
 
 // module
-exports.push([module.i, ".lineChart{width:100%;height:100%;display:flex;flex-direction:row}.graphOptions{width:50%;padding-top:20px}.graphDiv{width:50%}.gl_graphChildDiv{position:fixed;width:46%;height:50%;right:40px;top:150px}.saveGraphData{float:right}input[type=text]{height:35px}.form-table th{width:25%}.gl_deleteButtonTd,.gl_deleteButtonTh{padding:0!important}.delete_dataset{float:right;background-color:#dc3545!important;border-color:#dc3545!important;color:#fff!important;margin-bottom:8px!important;margin-right:10px!important}fieldset{width:100%;border:1px solid #f0f0f0;padding-left:10px;margin-bottom:7px}legend{font-weight:700}fieldset table{margin-top:0!important}.vc-chrome-toggle-btn{display:none!important}.gl_colorPickerButton{background-color:#fff!important;color:#969696!important;border:1px solid #ddd!important;margin-top:2px;display:block}.vc-chrome{float:left;margin:2px 3px 0 2px}", ""]);
+exports.push([module.i, "", ""]);
 
 // exports
 
-
-/***/ }),
-/* 37 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"lineChart gl_chart_template",attrs:{"id":"line"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{staticClass:"gl_backButton",attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelsString),expression:"chartlabelsString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifxAxesLabelEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelsString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelsString=$event.target.value}}}),_vm._v(" "),(_vm.ifxAxesLabelEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])])]),_vm._v(" "),_vm._l((_vm.datasets),function(data,index){return _c('fieldset',{key:data},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.label),expression:"data.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(data.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.chartDatasetDataString),expression:"data.chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(data.chartDatasetDataString)},on:{"keyup":function($event){_vm.addDatasetData(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "chartDatasetDataString", $event.target.value)}}}),_vm._v(" "),(data.ifDataEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.backgroundColor),expression:"data.backgroundColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifFillColorEmpty},attrs:{"type":"text","id":"colors"},domProps:{"value":(data.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"focus":function($event){_vm.showBackgroundColorPickerField(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "backgroundColor", $event.target.value)}}}),_vm._v(" "),(data.backgroundColorFieldFocused)?_c('chrome-picker',{model:{value:(_vm.setBackgroundColor),callback:function ($$v) {_vm.setBackgroundColor=$$v},expression:"setBackgroundColor"}}):_vm._e(),_vm._v(" "),_c('div',[(data.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.pickBackgroundColor(index)}}},[_vm._v("Pick")]):_vm._e(),_vm._v(" "),(data.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.hideBackgroundColorPickerField(index)}}},[_vm._v("Close")]):_vm._e()]),_vm._v(" "),_c('div',{staticStyle:{"clear":"both"}}),_vm._v(" "),(data.ifFillColorEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()],1)]),_vm._v(" "),_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.borderColor),expression:"data.borderColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifLineColorEmpty},attrs:{"type":"text","id":"line_color"},domProps:{"value":(data.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"focus":function($event){_vm.showBorderColorPickerField(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "borderColor", $event.target.value)}}}),_vm._v(" "),(data.borderColorFieldFocused)?_c('chrome-picker',{model:{value:(_vm.setBorderColor),callback:function ($$v) {_vm.setBorderColor=$$v},expression:"setBorderColor"}}):_vm._e(),_vm._v(" "),_c('div',[(data.borderColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.pickBorderColor(index)}}},[_vm._v("Pick")]):_vm._e(),_vm._v(" "),(data.borderColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.hideBorderColorPickerField(index)}}},[_vm._v("Close")]):_vm._e()]),_vm._v(" "),_c('div',{staticStyle:{"clear":"both"}}),_vm._v(" "),(data.ifLineColorEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()],1)]),_vm._v(" "),_c('tr',[_vm._m(5,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.straightLine),expression:"data.straightLine"}],attrs:{"type":"checkbox","id":"straight_line"},domProps:{"checked":Array.isArray(data.straightLine)?_vm._i(data.straightLine,null)>-1:(data.straightLine)},on:{"change":[function($event){var $$a=data.straightLine,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.$set(data, "straightLine", $$a.concat([$$v])))}else{$$i>-1&&(_vm.$set(data, "straightLine", $$a.slice(0,$$i).concat($$a.slice($$i+1))))}}else{_vm.$set(data, "straightLine", $$c)}},function($event){_vm.makeLineStraight(index)}]}})])]),_vm._v(" "),_c('tr',[_vm._m(6,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.fill),expression:"data.fill"}],attrs:{"type":"checkbox","id":"fill"},domProps:{"checked":Array.isArray(data.fill)?_vm._i(data.fill,null)>-1:(data.fill)},on:{"change":[function($event){var $$a=data.fill,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.$set(data, "fill", $$a.concat([$$v])))}else{$$i>-1&&(_vm.$set(data, "fill", $$a.slice(0,$$i).concat($$a.slice($$i+1))))}}else{_vm.$set(data, "fill", $$c)}},function($event){_vm.fillColor(index)}]}})])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(7,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.beginAtZero),expression:"beginAtZero"}],attrs:{"type":"checkbox","id":"beginAtZero"},domProps:{"checked":Array.isArray(_vm.beginAtZero)?_vm._i(_vm.beginAtZero,null)>-1:(_vm.beginAtZero)},on:{"change":[function($event){var $$a=_vm.beginAtZero,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.beginAtZero=$$a.concat([$$v]))}else{$$i>-1&&(_vm.beginAtZero=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.beginAtZero=$$c}},_vm.yAxesRange]}})])]),_vm._v(" "),_c('tr',[_vm._m(10),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(11),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(12),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_c('div',{staticClass:"graphDiv"},[(_vm.showTutorial)?_c('iframe',{staticClass:"tutorialFrame",attrs:{"width":"560","height":"315","src":"https://www.youtube.com/embed/Hwn4UKc5Bew?rel=0&controls=0&showinfo=0","frameborder":"0","allow":"autoplay; encrypted-media","allowfullscreen":""}}):_vm._e(),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.showTutorial),expression:"!showTutorial"}],staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"lineChart"}})])])])}
-var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("xAsis Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Fill Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"line_color"}},[_vm._v("Line Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"straight_line"}},[_vm._v("Straight Line")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"fill"}},[_vm._v("Fill Color Under the line")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"beginAtZero"}},[_vm._v("yAxes Range (Begin at 0)")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])}]
-var esExports = { render: render, staticRenderFns: staticRenderFns }
-/* harmony default export */ __webpack_exports__["a"] = (esExports);
 
 /***/ }),
 /* 38 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__ = __webpack_require__(10);
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"lineChart gl_chart_template",attrs:{"id":"line"}},[_c('div',{staticClass:"gl_graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{staticClass:"gl_backButton",attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelsString),expression:"chartlabelsString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifxAxesLabelEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelsString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelsString=$event.target.value}}}),_vm._v(" "),(_vm.ifxAxesLabelEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])])]),_vm._v(" "),_vm._l((_vm.datasets),function(data,index){return _c('fieldset',{key:data},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.label),expression:"data.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(data.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.chartDatasetDataString),expression:"data.chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(data.chartDatasetDataString)},on:{"keyup":function($event){_vm.addDatasetData(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "chartDatasetDataString", $event.target.value)}}}),_vm._v(" "),(data.ifDataEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',{directives:[{name:"on-clickaway",rawName:"v-on-clickaway",value:(function () { return _vm.clickedAwayFromBg(index); }),expression:"() => clickedAwayFromBg(index)"}],staticClass:"gl_colorPickerTd"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.backgroundColor),expression:"data.backgroundColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifFillColorEmpty},attrs:{"type":"text","id":"colors"},domProps:{"value":(data.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"focus":function($event){_vm.showBackgroundColorPickerField(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "backgroundColor", $event.target.value)}}}),_vm._v(" "),_c('div',{staticClass:"gl_colorPickerDiv"},[(data.backgroundColorFieldFocused)?_c('chrome-picker',{model:{value:(_vm.setBackgroundColor),callback:function ($$v) {_vm.setBackgroundColor=$$v},expression:"setBackgroundColor"}}):_vm._e(),_vm._v(" "),_c('div',{staticClass:"gl_pickOrCloseColorPickerDiv"},[(data.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.pickBackgroundColor(index)}}},[_vm._v("Pick")]):_vm._e(),_vm._v(" "),(data.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.hideBackgroundColorPickerField(index)}}},[_vm._v("Close")]):_vm._e(),_vm._v(" "),_c('div',{staticStyle:{"clear":"both"}})])],1),_vm._v(" "),(data.ifFillColorEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',{directives:[{name:"on-clickaway",rawName:"v-on-clickaway",value:(function () { return _vm.clickedAwayFromBd(index); }),expression:"() => clickedAwayFromBd(index)"}],staticClass:"gl_colorPickerTd"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.borderColor),expression:"data.borderColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifLineColorEmpty},attrs:{"type":"text","id":"line_color"},domProps:{"value":(data.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"focus":function($event){_vm.showBorderColorPickerField(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "borderColor", $event.target.value)}}}),_vm._v(" "),_c('div',{staticClass:"gl_colorPickerDiv"},[(data.borderColorFieldFocused)?_c('chrome-picker',{model:{value:(_vm.setBorderColor),callback:function ($$v) {_vm.setBorderColor=$$v},expression:"setBorderColor"}}):_vm._e(),_vm._v(" "),_c('div',{staticClass:"gl_pickOrCloseColorPickerDiv"},[(data.borderColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.pickBorderColor(index)}}},[_vm._v("Pick")]):_vm._e(),_vm._v(" "),(data.borderColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.hideBorderColorPickerField(index)}}},[_vm._v("Close")]):_vm._e(),_vm._v(" "),_c('div',{staticStyle:{"clear":"both"}})])],1),_vm._v(" "),(data.ifLineColorEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(5,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.straightLine),expression:"data.straightLine"}],attrs:{"type":"checkbox","id":"straight_line"},domProps:{"checked":Array.isArray(data.straightLine)?_vm._i(data.straightLine,null)>-1:(data.straightLine)},on:{"change":[function($event){var $$a=data.straightLine,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.$set(data, "straightLine", $$a.concat([$$v])))}else{$$i>-1&&(_vm.$set(data, "straightLine", $$a.slice(0,$$i).concat($$a.slice($$i+1))))}}else{_vm.$set(data, "straightLine", $$c)}},function($event){_vm.makeLineStraight(index)}]}})])]),_vm._v(" "),_c('tr',[_vm._m(6,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.fill),expression:"data.fill"}],attrs:{"type":"checkbox","id":"fill"},domProps:{"checked":Array.isArray(data.fill)?_vm._i(data.fill,null)>-1:(data.fill)},on:{"change":[function($event){var $$a=data.fill,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.$set(data, "fill", $$a.concat([$$v])))}else{$$i>-1&&(_vm.$set(data, "fill", $$a.slice(0,$$i).concat($$a.slice($$i+1))))}}else{_vm.$set(data, "fill", $$c)}},function($event){_vm.fillColor(index)}]}})])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(7,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger gl_delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.beginAtZero),expression:"beginAtZero"}],attrs:{"type":"checkbox","id":"beginAtZero"},domProps:{"checked":Array.isArray(_vm.beginAtZero)?_vm._i(_vm.beginAtZero,null)>-1:(_vm.beginAtZero)},on:{"change":[function($event){var $$a=_vm.beginAtZero,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.beginAtZero=$$a.concat([$$v]))}else{$$i>-1&&(_vm.beginAtZero=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.beginAtZero=$$c}},_vm.yAxesRange]}})])]),_vm._v(" "),_c('tr',[_vm._m(10),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(11),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(12),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"gl_saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"gl_saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_c('div',{staticClass:"gl_graphDiv"},[(_vm.showTutorial)?_c('div',{staticClass:"gl_dummyMessages"},[_c('h2',[_vm._v("Start typing to see live preview")]),_vm._v(" "),_c('p',[_vm._v("Live preview will appear here after you enter some data")])]):_vm._e(),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.showTutorial),expression:"!showTutorial"}],staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"lineChart"}})])])])}
+var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("xAsis Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Fill Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"line_color"}},[_vm._v("Line Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"straight_line"}},[_vm._v("Straight Line")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"fill"}},[_vm._v("Fill Color Under the line")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"beginAtZero"}},[_vm._v("yAxes Range (Begin at 0)")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])}]
+var esExports = { render: render, staticRenderFns: staticRenderFns }
+/* harmony default export */ __webpack_exports__["a"] = (esExports);
+
+/***/ }),
+/* 39 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__ = __webpack_require__(12);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_a7612cd2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_21cdb018_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__ = __webpack_require__(42);
 function injectStyle (ssrContext) {
-  __webpack_require__(39)
+  __webpack_require__(40)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
@@ -16820,12 +17035,12 @@ var __vue_template_functional__ = false
 /* styles */
 var __vue_styles__ = injectStyle
 /* scopeId */
-var __vue_scopeId__ = null
+var __vue_scopeId__ = "data-v-21cdb018"
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PieChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_a7612cd2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_21cdb018_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PieChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -16836,20 +17051,20 @@ var Component = normalizeComponent(
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(40);
+var content = __webpack_require__(41);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(1)("74223eac", content, true, {});
+var update = __webpack_require__(1)("3eda25d8", content, true, {});
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(false);
@@ -16857,31 +17072,31 @@ exports = module.exports = __webpack_require__(0)(false);
 
 
 // module
-exports.push([module.i, ".pieChart{width:100%;height:100%;display:flex;flex-direction:row}.graphOptions{width:50%;padding-top:20px}.pieChart .graphDiv{width:50%}.pieChart .graphDiv .gl_graphChildDiv{position:fixed;width:40%;height:60%;right:5%;top:150px}.saveGraphDataButton{display:block}.saveGraphData{float:right}input[type=text]{height:35px}.form-table th{width:25%}.vc-chrome-toggle-btn{display:none!important}.gl_colorPickerButton{background-color:#fff!important;color:#969696!important;border:1px solid #ddd!important;margin-top:2px;display:block}.vc-chrome{float:left;margin:2px 3px 0 2px}", ""]);
+exports.push([module.i, ".gl_graphChildDiv[data-v-21cdb018]{width:40%;height:60%;right:5%}", ""]);
 
 // exports
 
-
-/***/ }),
-/* 41 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"pieChart gl_chart_template",attrs:{"id":"pie"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{staticClass:"gl_backButton",attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelString),expression:"chartlabelString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifLabelsEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelString=$event.target.value}}}),_vm._v(" "),(_vm.ifLabelsEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(1),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetDataString),expression:"chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(_vm.chartDatasetDataString)},on:{"keyup":_vm.addDatasetData,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetDataString=$event.target.value}}}),_vm._v(" "),(_vm.ifDataEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(2),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetBgColorString),expression:"chartDatasetBgColorString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifBackgroundEmpty},attrs:{"type":"text","id":"colors","placeholder":"Color value for each label. Eg. red, green, blue"},domProps:{"value":(_vm.chartDatasetBgColorString)},on:{"keyup":_vm.addDatasetBgColor,"focus":_vm.showBackgroundColorPickerField,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetBgColorString=$event.target.value}}}),_vm._v(" "),(_vm.backgroundColorFieldFocused)?_c('chrome-picker',{model:{value:(_vm.setBackgroundColor),callback:function ($$v) {_vm.setBackgroundColor=$$v},expression:"setBackgroundColor"}}):_vm._e(),_vm._v(" "),_c('div',[(_vm.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":_vm.pickBackgroundColor}},[_vm._v("Pick")]):_vm._e(),_vm._v(" "),(_vm.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":_vm.hideBackgroundColorPickerField}},[_vm._v("Close")]):_vm._e()]),_vm._v(" "),_c('div',{staticStyle:{"clear":"both"}}),_vm._v(" "),(_vm.ifBackgroundEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()],1)]),_vm._v(" "),_c('tr',[_vm._m(3),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(4),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])]),_vm._v(" "),_c('div',{staticClass:"graphDiv"},[(_vm.showTutorial)?_c('iframe',{staticClass:"tutorialFrame",attrs:{"width":"560","height":"315","src":"https://www.youtube.com/embed/Hwn4UKc5Bew?rel=0&controls=0&showinfo=0","frameborder":"0","allow":"autoplay; encrypted-media","allowfullscreen":""}}):_vm._e(),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.showTutorial),expression:"!showTutorial"}],staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"pieChart"}})])])])}
-var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])}]
-var esExports = { render: render, staticRenderFns: staticRenderFns }
-/* harmony default export */ __webpack_exports__["a"] = (esExports);
 
 /***/ }),
 /* 42 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(11);
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"gl_chart_template",attrs:{"id":"pie"}},[_c('div',{staticClass:"gl_graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{staticClass:"gl_backButton",attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelString),expression:"chartlabelString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifLabelsEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelString=$event.target.value}}}),_vm._v(" "),(_vm.ifLabelsEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(1),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetDataString),expression:"chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(_vm.chartDatasetDataString)},on:{"keyup":_vm.addDatasetData,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetDataString=$event.target.value}}}),_vm._v(" "),(_vm.ifDataEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(2),_vm._v(" "),_c('td',{directives:[{name:"on-clickaway",rawName:"v-on-clickaway",value:(_vm.clickedAway),expression:"clickedAway"}],staticClass:"gl_colorPickerTd"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetBgColorString),expression:"chartDatasetBgColorString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifBackgroundEmpty},attrs:{"type":"text","id":"colors","placeholder":"Color value for each label. Eg. red, green, blue"},domProps:{"value":(_vm.chartDatasetBgColorString)},on:{"keyup":_vm.addDatasetBgColor,"focus":_vm.showBackgroundColorPickerField,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetBgColorString=$event.target.value}}}),_vm._v(" "),_c('div',{staticClass:"gl_colorPickerDiv"},[(_vm.backgroundColorFieldFocused)?_c('chrome-picker',{model:{value:(_vm.setBackgroundColor),callback:function ($$v) {_vm.setBackgroundColor=$$v},expression:"setBackgroundColor"}}):_vm._e(),_vm._v(" "),_c('div',{staticClass:"gl_pickOrCloseColorPickerDiv"},[(_vm.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":_vm.pickBackgroundColor}},[_vm._v("Pick")]):_vm._e(),_vm._v(" "),(_vm.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":_vm.hideBackgroundColorPickerField}},[_vm._v("Close")]):_vm._e(),_vm._v(" "),_c('div',{staticStyle:{"clear":"both"}})])],1),_vm._v(" "),(_vm.ifBackgroundEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(3),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(4),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"gl_saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"gl_saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])]),_vm._v(" "),_c('div',{staticClass:"gl_graphDiv"},[(_vm.showTutorial)?_c('div',{staticClass:"gl_dummyMessages"},[_c('h2',[_vm._v("Start typing to see live preview")]),_vm._v(" "),_c('p',[_vm._v("Live preview will appear here after you enter some data")])]):_vm._e(),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.showTutorial),expression:"!showTutorial"}],staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"pieChart"}})])])])}
+var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])}]
+var esExports = { render: render, staticRenderFns: staticRenderFns }
+/* harmony default export */ __webpack_exports__["a"] = (esExports);
+
+/***/ }),
+/* 43 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(13);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_719aeef2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(45);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_5857dd54_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__ = __webpack_require__(46);
 function injectStyle (ssrContext) {
-  __webpack_require__(43)
+  __webpack_require__(44)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
@@ -16894,12 +17109,12 @@ var __vue_template_functional__ = false
 /* styles */
 var __vue_styles__ = injectStyle
 /* scopeId */
-var __vue_scopeId__ = null
+var __vue_scopeId__ = "data-v-5857dd54"
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DoughnutChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_719aeef2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_5857dd54_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DoughnutChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -16910,20 +17125,20 @@ var Component = normalizeComponent(
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(44);
+var content = __webpack_require__(45);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(1)("64e7cb28", content, true, {});
+var update = __webpack_require__(1)("237d9545", content, true, {});
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(false);
@@ -16931,31 +17146,31 @@ exports = module.exports = __webpack_require__(0)(false);
 
 
 // module
-exports.push([module.i, ".DoughnutChart{width:100%;height:100%;display:flex;flex-direction:row}.graphOptions{width:50%;padding-top:20px}.DoughnutChart .graphDiv{width:50%}.DoughnutChart .graphDiv .gl_graphChildDiv{position:fixed;width:40%;height:65%;right:5%;top:150px}.saveGraphDataButton{display:block}.saveGraphData{float:right}input[type=text]{height:35px}.form-table th{width:25%}.vc-chrome-toggle-btn{display:none!important}.gl_colorPickerButton{background-color:#fff!important;color:#969696!important;border:1px solid #ddd!important;margin-top:2px;display:block}.vc-chrome{float:left;margin:2px 3px 0 2px}", ""]);
+exports.push([module.i, ".gl_graphChildDiv[data-v-5857dd54]{width:40%;height:65%;right:5%}", ""]);
 
 // exports
 
-
-/***/ }),
-/* 45 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"DoughnutChart gl_chart_template",attrs:{"id":"Doughnut"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{staticClass:"gl_backButton",attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelString),expression:"chartlabelString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifLabelsEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelString=$event.target.value}}}),_vm._v(" "),(_vm.ifLabelsEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(1),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetDataString),expression:"chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(_vm.chartDatasetDataString)},on:{"keyup":_vm.addDatasetData,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetDataString=$event.target.value}}}),_vm._v(" "),(_vm.ifDataEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(2),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetBgColorString),expression:"chartDatasetBgColorString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifBackgroundEmpty},attrs:{"type":"text","id":"colors","placeholder":"Color value for each label. Eg. red, green, blue"},domProps:{"value":(_vm.chartDatasetBgColorString)},on:{"keyup":_vm.addDatasetBgColor,"focus":_vm.showBackgroundColorPickerField,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetBgColorString=$event.target.value}}}),_vm._v(" "),(_vm.backgroundColorFieldFocused)?_c('chrome-picker',{model:{value:(_vm.setBackgroundColor),callback:function ($$v) {_vm.setBackgroundColor=$$v},expression:"setBackgroundColor"}}):_vm._e(),_vm._v(" "),_c('div',[(_vm.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":_vm.pickBackgroundColor}},[_vm._v("Pick")]):_vm._e(),_vm._v(" "),(_vm.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":_vm.hideBackgroundColorPickerField}},[_vm._v("Close")]):_vm._e()]),_vm._v(" "),_c('div',{staticStyle:{"clear":"both"}}),_vm._v(" "),(_vm.ifBackgroundEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()],1)]),_vm._v(" "),_c('tr',[_vm._m(3),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(4),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])]),_vm._v(" "),_c('div',{staticClass:"graphDiv"},[(_vm.showTutorial)?_c('iframe',{staticClass:"tutorialFrame",attrs:{"width":"560","height":"315","src":"https://www.youtube.com/embed/Hwn4UKc5Bew?rel=0&controls=0&showinfo=0","frameborder":"0","allow":"autoplay; encrypted-media","allowfullscreen":""}}):_vm._e(),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.showTutorial),expression:"!showTutorial"}],staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"DoughnutChart"}})])])])}
-var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])}]
-var esExports = { render: render, staticRenderFns: staticRenderFns }
-/* harmony default export */ __webpack_exports__["a"] = (esExports);
 
 /***/ }),
 /* 46 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_RadarChartTemplate_vue__ = __webpack_require__(12);
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"gl_chart_template",attrs:{"id":"Doughnut"}},[_c('div',{staticClass:"gl_graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{staticClass:"gl_backButton",attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelString),expression:"chartlabelString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifLabelsEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelString=$event.target.value}}}),_vm._v(" "),(_vm.ifLabelsEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(1),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetDataString),expression:"chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(_vm.chartDatasetDataString)},on:{"keyup":_vm.addDatasetData,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetDataString=$event.target.value}}}),_vm._v(" "),(_vm.ifDataEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(2),_vm._v(" "),_c('td',{directives:[{name:"on-clickaway",rawName:"v-on-clickaway",value:(_vm.clickedAway),expression:"clickedAway"}],staticClass:"gl_colorPickerTd"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetBgColorString),expression:"chartDatasetBgColorString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifBackgroundEmpty},attrs:{"type":"text","id":"colors","placeholder":"Color value for each label. Eg. red, green, blue"},domProps:{"value":(_vm.chartDatasetBgColorString)},on:{"keyup":_vm.addDatasetBgColor,"focus":_vm.showBackgroundColorPickerField,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetBgColorString=$event.target.value}}}),_vm._v(" "),_c('div',{staticClass:"gl_colorPickerDiv"},[(_vm.backgroundColorFieldFocused)?_c('chrome-picker',{model:{value:(_vm.setBackgroundColor),callback:function ($$v) {_vm.setBackgroundColor=$$v},expression:"setBackgroundColor"}}):_vm._e(),_vm._v(" "),_c('div',{staticClass:"gl_pickOrCloseColorPickerDiv"},[(_vm.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":_vm.pickBackgroundColor}},[_vm._v("Pick")]):_vm._e(),_vm._v(" "),(_vm.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":_vm.hideBackgroundColorPickerField}},[_vm._v("Close")]):_vm._e(),_vm._v(" "),_c('div',{staticStyle:{"clear":"both"}})])],1),_vm._v(" "),(_vm.ifBackgroundEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(3),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(4),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"gl_saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"gl_saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])]),_vm._v(" "),_c('div',{staticClass:"gl_graphDiv"},[(_vm.showTutorial)?_c('div',{staticClass:"gl_dummyMessages"},[_c('h2',[_vm._v("Start typing to see live preview")]),_vm._v(" "),_c('p',[_vm._v("Live preview will appear here after you enter some data")])]):_vm._e(),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.showTutorial),expression:"!showTutorial"}],staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"DoughnutChart"}})])])])}
+var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])}]
+var esExports = { render: render, staticRenderFns: staticRenderFns }
+/* harmony default export */ __webpack_exports__["a"] = (esExports);
+
+/***/ }),
+/* 47 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_RadarChartTemplate_vue__ = __webpack_require__(14);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_f7c4f15c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7063ecf4_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__ = __webpack_require__(50);
 function injectStyle (ssrContext) {
-  __webpack_require__(47)
+  __webpack_require__(48)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
@@ -16968,12 +17183,12 @@ var __vue_template_functional__ = false
 /* styles */
 var __vue_styles__ = injectStyle
 /* scopeId */
-var __vue_scopeId__ = null
+var __vue_scopeId__ = "data-v-7063ecf4"
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_RadarChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_f7c4f15c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7063ecf4_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_RadarChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -16984,20 +17199,20 @@ var Component = normalizeComponent(
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(48);
+var content = __webpack_require__(49);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(1)("9eb68cbe", content, true, {});
+var update = __webpack_require__(1)("6bfc9ec5", content, true, {});
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(false);
@@ -17005,31 +17220,31 @@ exports = module.exports = __webpack_require__(0)(false);
 
 
 // module
-exports.push([module.i, ".radarChart{width:100%;height:100%;display:flex;flex-direction:row}.graphOptions{width:50%;padding-top:20px}.graphDiv{width:50%}.gl_graphChildDiv{position:fixed;width:46%;height:65%;right:40px;top:150px}.saveGraphData{float:right}input[type=text]{height:35px}.form-table th{width:25%}.gl_deleteButtonTd,.gl_deleteButtonTh{padding:0!important}.delete_dataset{float:right;background-color:#dc3545!important;border-color:#dc3545!important;color:#fff!important;margin-bottom:8px!important;margin-right:10px!important}fieldset{width:100%;border:1px solid #f0f0f0;padding-left:10px;margin-bottom:7px}legend{font-weight:700}fieldset table{margin-top:0!important}.vc-chrome-toggle-btn{display:none!important}.gl_colorPickerButton{background-color:#fff!important;color:#969696!important;border:1px solid #ddd!important;margin-top:2px;display:block}.vc-chrome{float:left;margin:2px 3px 0 2px}", ""]);
+exports.push([module.i, ".gl_graphChildDiv[data-v-7063ecf4]{height:65%}", ""]);
 
 // exports
 
-
-/***/ }),
-/* 49 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"radarChart gl_chart_template",attrs:{"id":"line"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{staticClass:"gl_backButton",attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelsString),expression:"chartlabelsString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifLabelsEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelsString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelsString=$event.target.value}}}),_vm._v(" "),(_vm.ifLabelsEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])])]),_vm._v(" "),_vm._l((_vm.datasets),function(data,index){return _c('fieldset',{key:data},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.label),expression:"data.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(data.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.chartDatasetDataString),expression:"data.chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(data.chartDatasetDataString)},on:{"keyup":function($event){_vm.addDatasetData(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "chartDatasetDataString", $event.target.value)}}}),_vm._v(" "),(data.ifDataEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.backgroundColor),expression:"data.backgroundColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifFillColorEmpty},attrs:{"type":"text","id":"colors"},domProps:{"value":(data.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"focus":function($event){_vm.showBackgroundColorPickerField(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "backgroundColor", $event.target.value)}}}),_vm._v(" "),(data.backgroundColorFieldFocused)?_c('chrome-picker',{model:{value:(_vm.setBackgroundColor),callback:function ($$v) {_vm.setBackgroundColor=$$v},expression:"setBackgroundColor"}}):_vm._e(),_vm._v(" "),_c('div',[(data.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.pickBackgroundColor(index)}}},[_vm._v("Pick")]):_vm._e(),_vm._v(" "),(data.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.hideBackgroundColorPickerField(index)}}},[_vm._v("Close")]):_vm._e()]),_vm._v(" "),_c('div',{staticStyle:{"clear":"both"}}),_vm._v(" "),(data.ifFillColorEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()],1)]),_vm._v(" "),_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.borderColor),expression:"data.borderColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifLineColorEmpty},attrs:{"type":"text","id":"line_color"},domProps:{"value":(data.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"focus":function($event){_vm.showBorderColorPickerField(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "borderColor", $event.target.value)}}}),_vm._v(" "),(data.borderColorFieldFocused)?_c('chrome-picker',{model:{value:(_vm.setBorderColor),callback:function ($$v) {_vm.setBorderColor=$$v},expression:"setBorderColor"}}):_vm._e(),_vm._v(" "),_c('div',[(data.borderColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.pickBorderColor(index)}}},[_vm._v("Pick")]):_vm._e(),_vm._v(" "),(data.borderColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.hideBorderColorPickerField(index)}}},[_vm._v("Close")]):_vm._e()]),_vm._v(" "),_c('div',{staticStyle:{"clear":"both"}}),_vm._v(" "),(data.ifLineColorEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()],1)]),_vm._v(" "),_c('tr',[_vm._m(5,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.fill),expression:"data.fill"}],attrs:{"type":"checkbox","id":"fill"},domProps:{"checked":Array.isArray(data.fill)?_vm._i(data.fill,null)>-1:(data.fill)},on:{"change":[function($event){var $$a=data.fill,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.$set(data, "fill", $$a.concat([$$v])))}else{$$i>-1&&(_vm.$set(data, "fill", $$a.slice(0,$$i).concat($$a.slice($$i+1))))}}else{_vm.$set(data, "fill", $$c)}},function($event){_vm.fillColor(index)}]}})])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(6,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(10),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_c('div',{staticClass:"graphDiv"},[(_vm.showTutorial)?_c('iframe',{staticClass:"tutorialFrame",attrs:{"width":"560","height":"315","src":"https://www.youtube.com/embed/Hwn4UKc5Bew?rel=0&controls=0&showinfo=0","frameborder":"0","allow":"autoplay; encrypted-media","allowfullscreen":""}}):_vm._e(),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.showTutorial),expression:"!showTutorial"}],staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"radarChart"}})])])])}
-var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Fill Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"line_color"}},[_vm._v("Line Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"fill"}},[_vm._v("Fill Color Under the line")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])}]
-var esExports = { render: render, staticRenderFns: staticRenderFns }
-/* harmony default export */ __webpack_exports__["a"] = (esExports);
 
 /***/ }),
 /* 50 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(13);
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"gl_chart_template",attrs:{"id":"line"}},[_c('div',{staticClass:"gl_graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{staticClass:"gl_backButton",attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelsString),expression:"chartlabelsString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifLabelsEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelsString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelsString=$event.target.value}}}),_vm._v(" "),(_vm.ifLabelsEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])])]),_vm._v(" "),_vm._l((_vm.datasets),function(data,index){return _c('fieldset',{key:data},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.label),expression:"data.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(data.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.chartDatasetDataString),expression:"data.chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(data.chartDatasetDataString)},on:{"keyup":function($event){_vm.addDatasetData(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "chartDatasetDataString", $event.target.value)}}}),_vm._v(" "),(data.ifDataEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',{directives:[{name:"on-clickaway",rawName:"v-on-clickaway",value:(function () { return _vm.clickedAwayFromBg(index); }),expression:"() => clickedAwayFromBg(index)"}],staticClass:"gl_colorPickerTd"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.backgroundColor),expression:"data.backgroundColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifFillColorEmpty},attrs:{"type":"text","id":"colors"},domProps:{"value":(data.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"focus":function($event){_vm.showBackgroundColorPickerField(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "backgroundColor", $event.target.value)}}}),_vm._v(" "),_c('div',{staticClass:"gl_colorPickerDiv"},[(data.backgroundColorFieldFocused)?_c('chrome-picker',{model:{value:(_vm.setBackgroundColor),callback:function ($$v) {_vm.setBackgroundColor=$$v},expression:"setBackgroundColor"}}):_vm._e(),_vm._v(" "),_c('div',{staticClass:"gl_pickOrCloseColorPickerDiv"},[(data.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.pickBackgroundColor(index)}}},[_vm._v("Pick")]):_vm._e(),_vm._v(" "),(data.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.hideBackgroundColorPickerField(index)}}},[_vm._v("Close")]):_vm._e(),_vm._v(" "),_c('div',{staticStyle:{"clear":"both"}})])],1),_vm._v(" "),(data.ifFillColorEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',{directives:[{name:"on-clickaway",rawName:"v-on-clickaway",value:(function () { return _vm.clickedAwayFromBd(index); }),expression:"() => clickedAwayFromBd(index)"}],staticClass:"gl_colorPickerTd"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.borderColor),expression:"data.borderColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': data.ifLineColorEmpty},attrs:{"type":"text","id":"line_color"},domProps:{"value":(data.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"focus":function($event){_vm.showBorderColorPickerField(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(data, "borderColor", $event.target.value)}}}),_vm._v(" "),_c('div',{staticClass:"gl_colorPickerDiv"},[(data.borderColorFieldFocused)?_c('chrome-picker',{model:{value:(_vm.setBorderColor),callback:function ($$v) {_vm.setBorderColor=$$v},expression:"setBorderColor"}}):_vm._e(),_vm._v(" "),_c('div',{staticClass:"gl_pickOrCloseColorPickerDiv"},[(data.borderColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.pickBorderColor(index)}}},[_vm._v("Pick")]):_vm._e(),_vm._v(" "),(data.borderColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.hideBorderColorPickerField(index)}}},[_vm._v("Close")]):_vm._e(),_vm._v(" "),_c('div',{staticStyle:{"clear":"both"}})])],1),_vm._v(" "),(data.ifLineColorEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(5,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(data.fill),expression:"data.fill"}],attrs:{"type":"checkbox","id":"fill"},domProps:{"checked":Array.isArray(data.fill)?_vm._i(data.fill,null)>-1:(data.fill)},on:{"change":[function($event){var $$a=data.fill,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.$set(data, "fill", $$a.concat([$$v])))}else{$$i>-1&&(_vm.$set(data, "fill", $$a.slice(0,$$i).concat($$a.slice($$i+1))))}}else{_vm.$set(data, "fill", $$c)}},function($event){_vm.fillColor(index)}]}})])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(6,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger gl_delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(9),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(10),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"gl_saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"gl_saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_c('div',{staticClass:"gl_graphDiv"},[(_vm.showTutorial)?_c('div',{staticClass:"gl_dummyMessages"},[_c('h2',[_vm._v("Start typing to see live preview")]),_vm._v(" "),_c('p',[_vm._v("Live preview will appear here after you enter some data")])]):_vm._e(),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.showTutorial),expression:"!showTutorial"}],staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"radarChart"}})])])])}
+var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Fill Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"line_color"}},[_vm._v("Line Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"fill"}},[_vm._v("Fill Color Under the line")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])}]
+var esExports = { render: render, staticRenderFns: staticRenderFns }
+/* harmony default export */ __webpack_exports__["a"] = (esExports);
+
+/***/ }),
+/* 51 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(15);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4dda8882_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(53);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1f76ed3b_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__ = __webpack_require__(54);
 function injectStyle (ssrContext) {
-  __webpack_require__(51)
+  __webpack_require__(52)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
@@ -17042,12 +17257,12 @@ var __vue_template_functional__ = false
 /* styles */
 var __vue_styles__ = injectStyle
 /* scopeId */
-var __vue_scopeId__ = null
+var __vue_scopeId__ = "data-v-1f76ed3b"
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PolarAreaChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4dda8882_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1f76ed3b_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_PolarAreaChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -17058,20 +17273,20 @@ var Component = normalizeComponent(
 
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(52);
+var content = __webpack_require__(53);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(1)("e5b96716", content, true, {});
+var update = __webpack_require__(1)("3aee9205", content, true, {});
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(false);
@@ -17079,31 +17294,31 @@ exports = module.exports = __webpack_require__(0)(false);
 
 
 // module
-exports.push([module.i, ".PolarAreaChart{width:100%;height:100%;display:flex;flex-direction:row}.graphOptions{width:50%;padding-top:20px}.PolarAreaChart .graphDiv{width:50%}.PolarAreaChart .graphDiv .gl_graphChildDiv{position:fixed;width:40%;height:65%;right:5%;top:150px}.saveGraphDataButton{display:block}.saveGraphData{float:right}input[type=text]{height:35px}.form-table th{width:25%}.vc-chrome-toggle-btn{display:none!important}.gl_colorPickerButton{background-color:#fff!important;color:#969696!important;border:1px solid #ddd!important;margin-top:2px;display:block}.vc-chrome{float:left;margin:2px 3px 0 2px}", ""]);
+exports.push([module.i, ".gl_graphChildDiv[data-v-1f76ed3b]{width:40%;height:65%;right:5%}", ""]);
 
 // exports
 
-
-/***/ }),
-/* 53 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"PolarAreaChart gl_chart_template",attrs:{"id":"PolarArea"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{staticClass:"gl_backButton",attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetDataString),expression:"chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(_vm.chartDatasetDataString)},on:{"keyup":_vm.addDatasetData,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetDataString=$event.target.value}}}),_vm._v(" "),(_vm.ifDataEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(1),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetBgColorString),expression:"chartDatasetBgColorString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifBackgroundEmpty},attrs:{"type":"text","id":"colors","placeholder":"Color value for each label. Eg. red, green, blue"},domProps:{"value":(_vm.chartDatasetBgColorString)},on:{"keyup":_vm.addDatasetBgColor,"focus":_vm.showBackgroundColorPickerField,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetBgColorString=$event.target.value}}}),_vm._v(" "),(_vm.backgroundColorFieldFocused)?_c('chrome-picker',{model:{value:(_vm.setBackgroundColor),callback:function ($$v) {_vm.setBackgroundColor=$$v},expression:"setBackgroundColor"}}):_vm._e(),_vm._v(" "),_c('div',[(_vm.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":_vm.pickBackgroundColor}},[_vm._v("Pick")]):_vm._e(),_vm._v(" "),(_vm.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":_vm.hideBackgroundColorPickerField}},[_vm._v("Close")]):_vm._e()]),_vm._v(" "),_c('div',{staticStyle:{"clear":"both"}}),_vm._v(" "),(_vm.ifBackgroundEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()],1)]),_vm._v(" "),_c('tr',[_vm._m(2),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelString),expression:"chartlabelString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifLabelsEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelString=$event.target.value}}}),_vm._v(" "),(_vm.ifLabelsEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(3),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(4),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])]),_vm._v(" "),_vm._m(7)])}
-var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"PolarAreaChart"}})])])}]
-var esExports = { render: render, staticRenderFns: staticRenderFns }
-/* harmony default export */ __webpack_exports__["a"] = (esExports);
 
 /***/ }),
 /* 54 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BubbleChartTemplate_vue__ = __webpack_require__(14);
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"gl_chart_template",attrs:{"id":"PolarArea"}},[_c('div',{staticClass:"gl_graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{staticClass:"gl_backButton",attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(0),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetDataString),expression:"chartDatasetDataString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifDataEmpty},attrs:{"type":"text","id":"datasets","placeholder":"Numeric data value for each label. Eg. 1,2,3 etc"},domProps:{"value":(_vm.chartDatasetDataString)},on:{"keyup":_vm.addDatasetData,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetDataString=$event.target.value}}}),_vm._v(" "),(_vm.ifDataEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(1),_vm._v(" "),_c('td',{directives:[{name:"on-clickaway",rawName:"v-on-clickaway",value:(_vm.clickedAway),expression:"clickedAway"}],staticClass:"gl_colorPickerTd"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartDatasetBgColorString),expression:"chartDatasetBgColorString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifBackgroundEmpty},attrs:{"type":"text","id":"colors","placeholder":"Color value for each label. Eg. red, green, blue"},domProps:{"value":(_vm.chartDatasetBgColorString)},on:{"keyup":_vm.addDatasetBgColor,"focus":_vm.showBackgroundColorPickerField,"input":function($event){if($event.target.composing){ return; }_vm.chartDatasetBgColorString=$event.target.value}}}),_vm._v(" "),_c('div',{staticClass:"gl_colorPickerDiv"},[(_vm.backgroundColorFieldFocused)?_c('chrome-picker',{model:{value:(_vm.setBackgroundColor),callback:function ($$v) {_vm.setBackgroundColor=$$v},expression:"setBackgroundColor"}}):_vm._e(),_vm._v(" "),_c('div',{staticClass:"gl_pickOrCloseColorPickerDiv"},[(_vm.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":_vm.pickBackgroundColor}},[_vm._v("Pick")]):_vm._e(),_vm._v(" "),(_vm.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":_vm.hideBackgroundColorPickerField}},[_vm._v("Close")]):_vm._e(),_vm._v(" "),_c('div',{staticStyle:{"clear":"both"}})])],1),_vm._v(" "),(_vm.ifBackgroundEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(2),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.chartlabelString),expression:"chartlabelString"}],staticClass:"regular-text",class:{'gl_fieldRequired': _vm.ifLabelsEmpty},attrs:{"type":"text","id":"labels","placeholder":"Comma separated list of labels"},domProps:{"value":(_vm.chartlabelString)},on:{"keyup":_vm.addLabels,"input":function($event){if($event.target.composing){ return; }_vm.chartlabelString=$event.target.value}}}),_vm._v(" "),(_vm.ifLabelsEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(3),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(4),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"gl_saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"gl_saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])]),_vm._v(" "),_vm._m(7)])}
+var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"labels"}},[_vm._v("Labels*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"gl_graphDiv"},[_c('div',{staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"PolarAreaChart"}})])])}]
+var esExports = { render: render, staticRenderFns: staticRenderFns }
+/* harmony default export */ __webpack_exports__["a"] = (esExports);
+
+/***/ }),
+/* 55 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BubbleChartTemplate_vue__ = __webpack_require__(16);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_b624ba5a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__ = __webpack_require__(57);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_57f43de1_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__ = __webpack_require__(58);
 function injectStyle (ssrContext) {
-  __webpack_require__(55)
+  __webpack_require__(56)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
@@ -17116,12 +17331,12 @@ var __vue_template_functional__ = false
 /* styles */
 var __vue_styles__ = injectStyle
 /* scopeId */
-var __vue_scopeId__ = null
+var __vue_scopeId__ = "data-v-57f43de1"
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_BubbleChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_b624ba5a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_57f43de1_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_BubbleChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -17132,20 +17347,20 @@ var Component = normalizeComponent(
 
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(56);
+var content = __webpack_require__(57);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(1)("3f1d8836", content, true, {});
+var update = __webpack_require__(1)("128917fa", content, true, {});
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(false);
@@ -17153,31 +17368,31 @@ exports = module.exports = __webpack_require__(0)(false);
 
 
 // module
-exports.push([module.i, ".bubbleChart{width:100%;height:100%;display:flex;flex-direction:row}.graphOptions{width:50%;padding-top:20px}.graphDiv{width:50%}.gl_graphChildDiv{position:fixed;width:46%;height:50%;right:40px;top:150px}.saveGraphData{float:right}.bubblePoints{width:50px}input[type=text]{height:35px}.form-table th{width:25%}.gl_deleteButtonTd,.gl_deleteButtonTh{padding:0!important}.delete_dataset{float:right;background-color:#dc3545!important;border-color:#dc3545!important;color:#fff!important;margin-bottom:8px!important;margin-right:10px!important}fieldset{width:100%;border:1px solid #f0f0f0;padding-left:10px;margin-bottom:7px}legend{font-weight:700}fieldset table{margin-top:0!important}.button_input_fields{padding-right:8px}.deleteButtonPoint{text-decoration:none;font-size:13px;color:#000}.vc-chrome-toggle-btn{display:none!important}.gl_colorPickerButton{background-color:#fff!important;color:#969696!important;border:1px solid #ddd!important;margin-top:2px;display:block}.vc-chrome{float:left;margin:2px 3px 0 2px}", ""]);
+exports.push([module.i, "", ""]);
 
 // exports
 
-
-/***/ }),
-/* 57 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"bubbleChart gl_chart_template",attrs:{"id":"bubble"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{staticClass:"gl_backButton",attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td')])]),_vm._v(" "),_vm._l((_vm.datasets),function(dataset,index){return _c('fieldset',{key:dataset},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(0,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.label),expression:"dataset.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(dataset.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_vm._l((dataset.data),function(data,PIndex){return [_c('div',{staticClass:"gl_bb_point"},[_c('div',{staticClass:"button_input_fields"},[_c('div',{staticClass:"gl_bb_xp"},[_c('label',{attrs:{"for":"xPoint"}},[_vm._v("x-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].x),expression:"dataset.data[PIndex].x"}],staticClass:"bubblePoints",class:{'gl_fieldRequired': data.ifxPointEmpty},attrs:{"type":"number","id":"xPoint"},domProps:{"value":(dataset.data[PIndex].x)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "x", $event.target.value)}}})]),_vm._v(" "),_c('div',{staticClass:"gl_bb_yp"},[_c('label',{attrs:{"for":"yPoint"}},[_vm._v("y-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].y),expression:"dataset.data[PIndex].y"}],staticClass:"bubblePoints",class:{'gl_fieldRequired': data.ifyPointEmpty},attrs:{"type":"number","id":"yPoint"},domProps:{"value":(dataset.data[PIndex].y)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "y", $event.target.value)}}})]),_vm._v(" "),_c('div',{staticClass:"gl_bb_r"},[_c('label',{attrs:{"for":"radius"}},[_vm._v("Bubble Radius")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].r),expression:"dataset.data[PIndex].r"}],staticClass:"bubblePoints",class:{'gl_fieldRequired': data.ifrPointEmpty},attrs:{"type":"number","id":"radius"},domProps:{"value":(dataset.data[PIndex].r)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'r')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'r')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "r", $event.target.value)}}})]),_vm._v(" "),(data.ifxPointEmpty || data.ifyPointEmpty || data.ifrPointEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()]),_vm._v(" "),(PIndex != 0)?_c('div',[_c('a',{staticClass:"deleteButtonPoint",attrs:{"href":"javascript:void(0)"},on:{"click":function($event){_vm.deleteButtonPoint(index, PIndex)}}},[_vm._v("X")])]):_vm._e()])]}),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.addBubblePoint(index)}}},[_vm._v("Add Bubble Point")])],2)]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.backgroundColor),expression:"dataset.backgroundColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': dataset.ifCircleBackgroundEmpty},attrs:{"type":"text","id":"colors"},domProps:{"value":(dataset.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"focus":function($event){_vm.showBackgroundColorPickerField(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "backgroundColor", $event.target.value)}}}),_vm._v(" "),(dataset.backgroundColorFieldFocused)?_c('chrome-picker',{model:{value:(_vm.setBackgroundColor),callback:function ($$v) {_vm.setBackgroundColor=$$v},expression:"setBackgroundColor"}}):_vm._e(),_vm._v(" "),_c('div',[(dataset.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.pickBackgroundColor(index)}}},[_vm._v("Pick")]):_vm._e(),_vm._v(" "),(dataset.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.hideBackgroundColorPickerField(index)}}},[_vm._v("Close")]):_vm._e()]),_vm._v(" "),_c('div',{staticStyle:{"clear":"both"}}),_vm._v(" "),(dataset.ifCircleBackgroundEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()],1)]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.borderColor),expression:"dataset.borderColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': dataset.ifCicleBorderColorEmpty},attrs:{"type":"text","id":"line_color"},domProps:{"value":(dataset.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"focus":function($event){_vm.showBorderColorPickerField(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "borderColor", $event.target.value)}}}),_vm._v(" "),(dataset.borderColorFieldFocused)?_c('chrome-picker',{model:{value:(_vm.setBorderColor),callback:function ($$v) {_vm.setBorderColor=$$v},expression:"setBorderColor"}}):_vm._e(),_vm._v(" "),_c('div',[(dataset.borderColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.pickBorderColor(index)}}},[_vm._v("Pick")]):_vm._e(),_vm._v(" "),(dataset.borderColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.hideBorderColorPickerField(index)}}},[_vm._v("Close")]):_vm._e()]),_vm._v(" "),_c('div',{staticStyle:{"clear":"both"}}),_vm._v(" "),(dataset.ifCicleBorderColorEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()],1)]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_c('div',{staticClass:"graphDiv"},[(_vm.showTutorial)?_c('iframe',{staticClass:"tutorialFrame",staticStyle:{"margin-top":"97px !important"},attrs:{"width":"560","height":"315","src":"https://www.youtube.com/embed/Hwn4UKc5Bew?rel=0&controls=0&showinfo=0","frameborder":"0","allow":"autoplay; encrypted-media","allowfullscreen":""}}):_vm._e(),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.showTutorial),expression:"!showTutorial"}],staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"bubbleChart"}})])])])}
-var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticStyle:{"padding-top":"15px","padding-bottom":"5px"},attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Circle Background Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticStyle:{"padding-top":"15px","padding-bottom":"5px"},attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"line_color"}},[_vm._v("Circle Border Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])}]
-var esExports = { render: render, staticRenderFns: staticRenderFns }
-/* harmony default export */ __webpack_exports__["a"] = (esExports);
 
 /***/ }),
 /* 58 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ScatterChartTemplate_vue__ = __webpack_require__(15);
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"gl_chart_template",attrs:{"id":"bubble"}},[_c('div',{staticClass:"gl_graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{staticClass:"gl_backButton",attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td')])]),_vm._v(" "),_vm._l((_vm.datasets),function(dataset,index){return _c('fieldset',{key:dataset},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(0,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.label),expression:"dataset.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(dataset.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_vm._l((dataset.data),function(data,PIndex){return [_c('div',{staticClass:"gl_bb_point"},[_c('div',{staticClass:"gl_bubble_input_fields"},[_c('div',{staticClass:"gl_bb_xp"},[_c('label',{attrs:{"for":"xPoint"}},[_vm._v("x-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].x),expression:"dataset.data[PIndex].x"}],class:{'gl_fieldRequired': data.ifxPointEmpty},attrs:{"type":"number","id":"xPoint"},domProps:{"value":(dataset.data[PIndex].x)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "x", $event.target.value)}}})]),_vm._v(" "),_c('div',{staticClass:"gl_bb_yp"},[_c('label',{attrs:{"for":"yPoint"}},[_vm._v("y-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].y),expression:"dataset.data[PIndex].y"}],class:{'gl_fieldRequired': data.ifyPointEmpty},attrs:{"type":"number","id":"yPoint"},domProps:{"value":(dataset.data[PIndex].y)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "y", $event.target.value)}}})]),_vm._v(" "),_c('div',{staticClass:"gl_bb_r"},[_c('label',{attrs:{"for":"radius"}},[_vm._v("Bubble Radius")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].r),expression:"dataset.data[PIndex].r"}],class:{'gl_fieldRequired': data.ifrPointEmpty},attrs:{"type":"number","id":"radius"},domProps:{"value":(dataset.data[PIndex].r)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'r')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'r')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "r", $event.target.value)}}})]),_vm._v(" "),(data.ifxPointEmpty || data.ifyPointEmpty || data.ifrPointEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()]),_vm._v(" "),(PIndex != 0)?_c('div',[_c('a',{staticClass:"gl_deleteBublePoint",attrs:{"href":"javascript:void(0)"},on:{"click":function($event){_vm.deleteButtonPoint(index, PIndex)}}},[_vm._v("X")])]):_vm._e()])]}),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.addBubblePoint(index)}}},[_vm._v("Add Bubble Point")])],2)]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',{directives:[{name:"on-clickaway",rawName:"v-on-clickaway",value:(function () { return _vm.clickedAwayFromBg(index); }),expression:"() => clickedAwayFromBg(index)"}],staticClass:"gl_colorPickerTd"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.backgroundColor),expression:"dataset.backgroundColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': dataset.ifCircleBackgroundEmpty},attrs:{"type":"text","id":"colors"},domProps:{"value":(dataset.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"focus":function($event){_vm.showBackgroundColorPickerField(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "backgroundColor", $event.target.value)}}}),_vm._v(" "),_c('div',{staticClass:"gl_colorPickerDiv"},[(dataset.backgroundColorFieldFocused)?_c('chrome-picker',{model:{value:(_vm.setBackgroundColor),callback:function ($$v) {_vm.setBackgroundColor=$$v},expression:"setBackgroundColor"}}):_vm._e(),_vm._v(" "),_c('div',{staticClass:"gl_pickOrCloseColorPickerDiv"},[(dataset.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.pickBackgroundColor(index)}}},[_vm._v("Pick")]):_vm._e(),_vm._v(" "),(dataset.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.hideBackgroundColorPickerField(index)}}},[_vm._v("Close")]):_vm._e(),_vm._v(" "),_c('div',{staticStyle:{"clear":"both"}})])],1),_vm._v(" "),(dataset.ifCircleBackgroundEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',{directives:[{name:"on-clickaway",rawName:"v-on-clickaway",value:(function () { return _vm.clickedAwayFromBd(index); }),expression:"() => clickedAwayFromBd(index)"}],staticClass:"gl_colorPickerTd"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.borderColor),expression:"dataset.borderColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': dataset.ifCicleBorderColorEmpty},attrs:{"type":"text","id":"line_color"},domProps:{"value":(dataset.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"focus":function($event){_vm.showBorderColorPickerField(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "borderColor", $event.target.value)}}}),_vm._v(" "),_c('div',{staticClass:"gl_colorPickerDiv"},[(dataset.borderColorFieldFocused)?_c('chrome-picker',{model:{value:(_vm.setBorderColor),callback:function ($$v) {_vm.setBorderColor=$$v},expression:"setBorderColor"}}):_vm._e(),_vm._v(" "),_c('div',{staticClass:"gl_pickOrCloseColorPickerDiv"},[(dataset.borderColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.pickBorderColor(index)}}},[_vm._v("Pick")]):_vm._e(),_vm._v(" "),(dataset.borderColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.hideBorderColorPickerField(index)}}},[_vm._v("Close")]):_vm._e(),_vm._v(" "),_c('div',{staticStyle:{"clear":"both"}})])],1),_vm._v(" "),(dataset.ifCicleBorderColorEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger gl_delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"gl_saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"gl_saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_c('div',{staticClass:"gl_graphDiv"},[(_vm.showTutorial)?_c('div',{staticClass:"gl_dummyMessages"},[_c('h2',[_vm._v("Start typing to see live preview")]),_vm._v(" "),_c('p',[_vm._v("Live preview will appear here after you enter some data")])]):_vm._e(),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.showTutorial),expression:"!showTutorial"}],staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"bubbleChart"}})])])])}
+var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticStyle:{"padding-top":"15px","padding-bottom":"5px"},attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Circle Background Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticStyle:{"padding-top":"15px","padding-bottom":"5px"},attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"line_color"}},[_vm._v("Circle Border Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])}]
+var esExports = { render: render, staticRenderFns: staticRenderFns }
+/* harmony default export */ __webpack_exports__["a"] = (esExports);
+
+/***/ }),
+/* 59 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ScatterChartTemplate_vue__ = __webpack_require__(17);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_059c1d28_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__ = __webpack_require__(61);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0d86bd72_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__ = __webpack_require__(62);
 function injectStyle (ssrContext) {
-  __webpack_require__(59)
+  __webpack_require__(60)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
@@ -17190,12 +17405,12 @@ var __vue_template_functional__ = false
 /* styles */
 var __vue_styles__ = injectStyle
 /* scopeId */
-var __vue_scopeId__ = null
+var __vue_scopeId__ = "data-v-0d86bd72"
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_ScatterChartTemplate_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_059c1d28_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0d86bd72_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_ScatterChartTemplate_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -17206,20 +17421,20 @@ var Component = normalizeComponent(
 
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(60);
+var content = __webpack_require__(61);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(1)("5b71fb98", content, true, {});
+var update = __webpack_require__(1)("65a356d2", content, true, {});
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(false);
@@ -17227,28 +17442,28 @@ exports = module.exports = __webpack_require__(0)(false);
 
 
 // module
-exports.push([module.i, ".scatterChart{width:100%;height:100%;display:flex;flex-direction:row}.graphOptions{width:50%;padding-top:20px}.graphDiv{width:50%}.gl_graphChildDiv{position:fixed;width:46%;height:50%;right:40px;top:150px}.saveGraphData{float:right}.bubblePoints{width:50px}input[type=text]{height:35px}.form-table th{width:25%}.gl_deleteButtonTd,.gl_deleteButtonTh{padding:0!important}.delete_dataset{float:right;background-color:#dc3545!important;border-color:#dc3545!important;color:#fff!important;margin-bottom:8px!important;margin-right:10px!important}fieldset{width:100%;border:1px solid #f0f0f0;padding-left:10px;margin-bottom:7px}legend{font-weight:700}fieldset table{margin-top:0!important}.button_input_fields{padding-right:8px}.deleteButtonPoint{text-decoration:none;font-size:13px;color:#000}.vc-chrome-toggle-btn{display:none!important}.gl_colorPickerButton{background-color:#fff!important;color:#969696!important;border:1px solid #ddd!important;margin-top:2px;display:block}.vc-chrome{float:left;margin:2px 3px 0 2px}", ""]);
+exports.push([module.i, "", ""]);
 
 // exports
 
-
-/***/ }),
-/* 61 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"scatterChart gl_chart_template",attrs:{"id":"scatter"}},[_c('div',{staticClass:"graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{staticClass:"gl_backButton",attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td')])]),_vm._v(" "),_vm._l((_vm.datasets),function(dataset,index){return _c('fieldset',{key:dataset},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(0,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.label),expression:"dataset.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(dataset.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_vm._l((dataset.data),function(data,PIndex){return [_c('div',{staticClass:"gl_bb_point"},[_c('div',{staticClass:"button_input_fields"},[_c('div',{staticClass:"gl_bb_xp"},[_c('label',{attrs:{"for":"xPoint"}},[_vm._v("x-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].x),expression:"dataset.data[PIndex].x"}],staticClass:"bubblePoints",class:{'gl_fieldRequired': data.ifxPointEmpty},attrs:{"type":"number","id":"xPoint"},domProps:{"value":(dataset.data[PIndex].x)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "x", $event.target.value)}}})]),_vm._v(" "),_c('div',{staticClass:"gl_bb_yp"},[_c('label',{attrs:{"for":"yPoint"}},[_vm._v("y-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].y),expression:"dataset.data[PIndex].y"}],staticClass:"bubblePoints",class:{'gl_fieldRequired': data.ifyPointEmpty},attrs:{"type":"number","id":"yPoint"},domProps:{"value":(dataset.data[PIndex].y)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "y", $event.target.value)}}})]),_vm._v(" "),(data.ifxPointEmpty || data.ifyPointEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()]),_vm._v(" "),(PIndex != 0)?_c('div',[_c('a',{staticClass:"deleteButtonPoint",attrs:{"href":"javascript:void(0)"},on:{"click":function($event){_vm.deleteButtonPoint(index, PIndex)}}},[_vm._v("X")])]):_vm._e()])]}),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.addBubblePoint(index)}}},[_vm._v("Add Bubble Point")])],2)]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.backgroundColor),expression:"dataset.backgroundColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': dataset.ifCircleBackgroundEmpty},attrs:{"type":"text","id":"colors"},domProps:{"value":(dataset.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"focus":function($event){_vm.showBackgroundColorPickerField(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "backgroundColor", $event.target.value)}}}),_vm._v(" "),(dataset.backgroundColorFieldFocused)?_c('chrome-picker',{model:{value:(_vm.setBackgroundColor),callback:function ($$v) {_vm.setBackgroundColor=$$v},expression:"setBackgroundColor"}}):_vm._e(),_vm._v(" "),_c('div',[(dataset.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.pickBackgroundColor(index)}}},[_vm._v("Pick")]):_vm._e(),_vm._v(" "),(dataset.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.hideBackgroundColorPickerField(index)}}},[_vm._v("Close")]):_vm._e()]),_vm._v(" "),_c('div',{staticStyle:{"clear":"both"}}),_vm._v(" "),(dataset.ifCircleBackgroundEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()],1)]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.borderColor),expression:"dataset.borderColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': dataset.ifCicleBorderColorEmpty},attrs:{"type":"text","id":"line_color"},domProps:{"value":(dataset.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"focus":function($event){_vm.showBorderColorPickerField(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "borderColor", $event.target.value)}}}),_vm._v(" "),(dataset.borderColorFieldFocused)?_c('chrome-picker',{model:{value:(_vm.setBorderColor),callback:function ($$v) {_vm.setBorderColor=$$v},expression:"setBorderColor"}}):_vm._e(),_vm._v(" "),_c('div',[(dataset.borderColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.pickBorderColor(index)}}},[_vm._v("Pick")]):_vm._e(),_vm._v(" "),(dataset.borderColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.hideBorderColorPickerField(index)}}},[_vm._v("Close")]):_vm._e()]),_vm._v(" "),_c('div',{staticStyle:{"clear":"both"}}),_vm._v(" "),(dataset.ifCicleBorderColorEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()],1)]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_c('div',{staticClass:"graphDiv"},[(_vm.showTutorial)?_c('iframe',{staticClass:"tutorialFrame",staticStyle:{"margin-top":"97px !important"},attrs:{"width":"560","height":"315","src":"https://www.youtube.com/embed/Hwn4UKc5Bew?rel=0&controls=0&showinfo=0","frameborder":"0","allow":"autoplay; encrypted-media","allowfullscreen":""}}):_vm._e(),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.showTutorial),expression:"!showTutorial"}],staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"scatterChart"}})])])])}
-var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticStyle:{"padding-top":"5px","padding-bottom":"5px"},attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Circle Background Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticStyle:{"padding-top":"5px","padding-bottom":"5px"},attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"line_color"}},[_vm._v("Circle Border Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])}]
-var esExports = { render: render, staticRenderFns: staticRenderFns }
-/* harmony default export */ __webpack_exports__["a"] = (esExports);
 
 /***/ }),
 /* 62 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('div',{staticClass:"gl_heading_area"},[_c('div',{staticClass:"gl_heading"},[_c('p',[_vm._v(_vm._s(_vm.currentPageName))]),_vm._v(" "),_c('div',[_c('a',{staticClass:"close_graph_modal",attrs:{"href":"javascript:void(0)"},on:{"click":_vm.resetComponent}},[_vm._v("X")])])])]),_vm._v(" "),_c(_vm.currentChartTabComponent,{tag:"component",attrs:{"graph-data":_vm.editedGraphData,"graph-index":_vm.editedGraphIndex},on:{"graphPage":_vm.whenPageChange,"saved":_vm.whenGraphSaved,"updated":_vm.whenGraphUpdated,"backed":_vm.whenBackButtonPressed}})],1)}
-var staticRenderFns = []
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"gl_chart_template",attrs:{"id":"scatter"}},[_c('div',{staticClass:"gl_graphOptions"},[_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticClass:"gl_backButotnTh",attrs:{"scope":"row"}},[_c('button',{staticClass:"gl_backButton",attrs:{"type":"button"},on:{"click":_vm.goBacktoAllGraphPage}},[_vm._v("Go Back")])]),_vm._v(" "),_c('td')])]),_vm._v(" "),_vm._l((_vm.datasets),function(dataset,index){return _c('fieldset',{key:dataset},[_c('legend',[_vm._v("Dataset "+_vm._s(index+1))]),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_vm._m(0,true),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.label),expression:"dataset.label"}],staticClass:"regular-text",attrs:{"type":"text","id":"label","placeholder":"Dataset label"},domProps:{"value":(dataset.label)},on:{"keyup":function($event){_vm.addDatasetLabel(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "label", $event.target.value)}}})])]),_vm._v(" "),_c('tr',[_vm._m(1,true),_vm._v(" "),_c('td',[_vm._l((dataset.data),function(data,PIndex){return [_c('div',{staticClass:"gl_bb_point"},[_c('div',{staticClass:"gl_bubble_input_fields"},[_c('div',{staticClass:"gl_bb_xp"},[_c('label',{attrs:{"for":"xPoint"}},[_vm._v("x-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].x),expression:"dataset.data[PIndex].x"}],class:{'gl_fieldRequired': data.ifxPointEmpty},attrs:{"type":"number","id":"xPoint"},domProps:{"value":(dataset.data[PIndex].x)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'x')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "x", $event.target.value)}}})]),_vm._v(" "),_c('div',{staticClass:"gl_bb_yp"},[_c('label',{attrs:{"for":"yPoint"}},[_vm._v("y-point")]),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.data[PIndex].y),expression:"dataset.data[PIndex].y"}],class:{'gl_fieldRequired': data.ifyPointEmpty},attrs:{"type":"number","id":"yPoint"},domProps:{"value":(dataset.data[PIndex].y)},on:{"keyup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"mouseup":function($event){_vm.addDatasetDataPoints(index, PIndex, 'y')},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset.data[PIndex], "y", $event.target.value)}}})]),_vm._v(" "),(data.ifxPointEmpty || data.ifyPointEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()]),_vm._v(" "),(PIndex != 0)?_c('div',[_c('a',{staticClass:"gl_deleteBublePoint",attrs:{"href":"javascript:void(0)"},on:{"click":function($event){_vm.deleteButtonPoint(index, PIndex)}}},[_vm._v("X")])]):_vm._e()])]}),_vm._v(" "),_c('button',{attrs:{"type":"button"},on:{"click":function($event){_vm.addBubblePoint(index)}}},[_vm._v("Add Bubble Point")])],2)]),_vm._v(" "),_c('tr',[_vm._m(2,true),_vm._v(" "),_c('td',{directives:[{name:"on-clickaway",rawName:"v-on-clickaway",value:(function () { return _vm.clickedAwayFromBg(index); }),expression:"() => clickedAwayFromBg(index)"}],staticClass:"gl_colorPickerTd"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.backgroundColor),expression:"dataset.backgroundColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': dataset.ifCircleBackgroundEmpty},attrs:{"type":"text","id":"colors"},domProps:{"value":(dataset.backgroundColor)},on:{"keyup":function($event){_vm.addDatasetBgColor(index)},"focus":function($event){_vm.showBackgroundColorPickerField(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "backgroundColor", $event.target.value)}}}),_vm._v(" "),_c('div',{staticClass:"gl_colorPickerDiv"},[(dataset.backgroundColorFieldFocused)?_c('chrome-picker',{model:{value:(_vm.setBackgroundColor),callback:function ($$v) {_vm.setBackgroundColor=$$v},expression:"setBackgroundColor"}}):_vm._e(),_vm._v(" "),_c('div',{staticClass:"gl_pickOrCloseColorPickerDiv"},[(dataset.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.pickBackgroundColor(index)}}},[_vm._v("Pick")]):_vm._e(),_vm._v(" "),(dataset.backgroundColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.hideBackgroundColorPickerField(index)}}},[_vm._v("Close")]):_vm._e(),_vm._v(" "),_c('div',{staticStyle:{"clear":"both"}})])],1),_vm._v(" "),(dataset.ifCircleBackgroundEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),_c('tr',[_vm._m(3,true),_vm._v(" "),_c('td',{directives:[{name:"on-clickaway",rawName:"v-on-clickaway",value:(function () { return _vm.clickedAwayFromBd(index); }),expression:"() => clickedAwayFromBd(index)"}],staticClass:"gl_colorPickerTd"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(dataset.borderColor),expression:"dataset.borderColor"}],staticClass:"regular-text",class:{'gl_fieldRequired': dataset.ifCicleBorderColorEmpty},attrs:{"type":"text","id":"line_color"},domProps:{"value":(dataset.borderColor)},on:{"keyup":function($event){_vm.addDatasetborderColor(index)},"focus":function($event){_vm.showBorderColorPickerField(index)},"input":function($event){if($event.target.composing){ return; }_vm.$set(dataset, "borderColor", $event.target.value)}}}),_vm._v(" "),_c('div',{staticClass:"gl_colorPickerDiv"},[(dataset.borderColorFieldFocused)?_c('chrome-picker',{model:{value:(_vm.setBorderColor),callback:function ($$v) {_vm.setBorderColor=$$v},expression:"setBorderColor"}}):_vm._e(),_vm._v(" "),_c('div',{staticClass:"gl_pickOrCloseColorPickerDiv"},[(dataset.borderColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.pickBorderColor(index)}}},[_vm._v("Pick")]):_vm._e(),_vm._v(" "),(dataset.borderColorFieldFocused)?_c('button',{staticClass:"gl_colorPickerButton",attrs:{"type":"button"},on:{"click":function($event){_vm.hideBorderColorPickerField(index)}}},[_vm._v("Close")]):_vm._e(),_vm._v(" "),_c('div',{staticStyle:{"clear":"both"}})])],1),_vm._v(" "),(dataset.ifCicleBorderColorEmpty)?_c('p',{staticClass:"gl_fieldRequiredError"},[_vm._v("*required")]):_vm._e()])]),_vm._v(" "),(index != 0)?_c('tr',[_vm._m(4,true),_vm._v(" "),_c('td',{staticClass:"gl_deleteButtonTd"},[_c('input',{staticClass:"button button-danger gl_delete_dataset",attrs:{"type":"button","value":"Delete Dataset"},on:{"click":function($event){_vm.deleteDataset(index)}}})])]):_vm._e()])])}),_vm._v(" "),_c('table',{staticClass:"form-table"},[_c('tr',[_c('th',{staticStyle:{"padding-top":"5px"},attrs:{"scope":"row"}},[_c('input',{staticClass:"button button-primary",attrs:{"type":"button","id":"add_dataset","value":"Add Dataset"},on:{"click":_vm.addDataset}})]),_vm._v(" "),_c('td')]),_vm._v(" "),_c('tr',[_vm._m(5),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.titleText),expression:"titleText"}],staticClass:"regular-text",attrs:{"type":"text","id":"titleText","placeholder":"Title for the chart"},domProps:{"value":(_vm.titleText)},on:{"keyup":_vm.addTitleText,"input":function($event){if($event.target.composing){ return; }_vm.titleText=$event.target.value}}})])]),_vm._v(" "),_c('tr',[_vm._m(6),_vm._v(" "),_c('td',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"type":"checkbox","id":"legend"},domProps:{"checked":Array.isArray(_vm.showLegend)?_vm._i(_vm.showLegend,null)>-1:(_vm.showLegend)},on:{"change":[function($event){var $$a=_vm.showLegend,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.showLegend=$$a.concat([$$v]))}else{$$i>-1&&(_vm.showLegend=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}}else{_vm.showLegend=$$c}},_vm.showingGraphLegend]}})])]),_vm._v(" "),_c('tr',[_vm._m(7),_vm._v(" "),_c('td',[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.legendPosition),expression:"legendPosition"}],attrs:{"id":"legend_position"},on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.legendPosition=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.changeLegendPosition]}},[_c('option',{attrs:{"selected":"selected","value":"top"}},[_vm._v("Top")]),_vm._v(" "),_c('option',{attrs:{"value":"bottom"}},[_vm._v("Bottom")]),_vm._v(" "),_c('option',{attrs:{"value":"left"}},[_vm._v("Left")]),_vm._v(" "),_c('option',{attrs:{"value":"right"}},[_vm._v("Right")])])])]),_vm._v(" "),_c('tr',[_vm._m(8),_vm._v(" "),(_vm.graphData == '')?_c('td',[_c('button',{staticClass:"gl_saveGraphData",attrs:{"type":"button"},on:{"click":_vm.saveGraphData}},[_vm._v("Save")])]):_c('td',[_c('button',{staticClass:"gl_saveGraphData",attrs:{"type":"button"},on:{"click":_vm.updateGraphData}},[_vm._v("Update")])])])])],2),_vm._v(" "),_c('div',{staticClass:"gl_graphDiv"},[(_vm.showTutorial)?_c('div',{staticClass:"gl_dummyMessages"},[_c('h2',[_vm._v("Start typing to see live preview")]),_vm._v(" "),_c('p',[_vm._v("Live preview will appear here after you enter some data")])]):_vm._e(),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.showTutorial),expression:"!showTutorial"}],staticClass:"gl_graphChildDiv"},[_c('canvas',{attrs:{"id":"scatterChart"}})])])])}
+var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"label"}},[_vm._v("Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"datasets"}},[_vm._v("Data*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticStyle:{"padding-top":"5px","padding-bottom":"5px"},attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"colors"}},[_vm._v("Circle Background Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticStyle:{"padding-top":"5px","padding-bottom":"5px"},attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"line_color"}},[_vm._v("Circle Border Color*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{staticClass:"gl_deleteButtonTh",attrs:{"scope":"row"}},[_c('label')])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"titleText"}},[_vm._v("Chart Title")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend"}},[_vm._v("Show Label")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label',{attrs:{"for":"legend_position"}},[_vm._v("Label Position")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('th',{attrs:{"scope":"row"}},[_c('label')])}]
+var esExports = { render: render, staticRenderFns: staticRenderFns }
+/* harmony default export */ __webpack_exports__["a"] = (esExports);
+
+/***/ }),
+/* 63 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"mainAppDiv"},[_c('div',{staticClass:"gl_heading_area"},[_c('div',{staticClass:"gl_heading"},[_c('p',[_vm._v(_vm._s(_vm.currentPageName))]),_vm._v(" "),_c('button',{staticClass:"media-modal-close close_graph_modal",attrs:{"type":"button"},on:{"click":_vm.resetComponent}},[_vm._m(0)])])]),_vm._v(" "),_c(_vm.currentChartTabComponent,{tag:"component",staticClass:"gl_graphComponentDiv",attrs:{"graph-data":_vm.editedGraphData,"graph-index":_vm.editedGraphIndex},on:{"graphPage":_vm.whenPageChange,"saved":_vm.whenGraphSaved,"updated":_vm.whenGraphUpdated,"backed":_vm.whenBackButtonPressed}})],1)}
+var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('span',{staticClass:"media-modal-icon"},[_c('span',{staticClass:"screen-reader-text"},[_vm._v("Close media panel")])])}]
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
 

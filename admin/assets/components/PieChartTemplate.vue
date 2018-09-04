@@ -1,6 +1,6 @@
 <template>
-	<div class="pieChart gl_chart_template" id="pie">
-		<div class="graphOptions">
+	<div class="gl_chart_template" id="pie">
+		<div class="gl_graphOptions">
 			<table class="form-table">
 				<tr>
 					<th scope="row" class="gl_backButotnTh"><button class="gl_backButton" type="button" @click="goBacktoAllGraphPage">Go Back</button></th>
@@ -22,14 +22,16 @@
 				</tr>
 				<tr>
 					<th scope="row"><label for="colors">Color*</label></th>
-					<td>
+					<td class="gl_colorPickerTd" v-on-clickaway="clickedAway">
 						<input class="regular-text" :class="{'gl_fieldRequired': ifBackgroundEmpty}" type="text" id="colors" placeholder="Color value for each label. Eg. red, green, blue" v-model="chartDatasetBgColorString" @keyup="addDatasetBgColor" @focus="showBackgroundColorPickerField">
-						<chrome-picker v-model="setBackgroundColor" v-if="backgroundColorFieldFocused" />
-						<div>
-							<button class="gl_colorPickerButton" type="button" @click="pickBackgroundColor" v-if="backgroundColorFieldFocused">Pick</button>
-							<button class="gl_colorPickerButton" type="button" @click="hideBackgroundColorPickerField" v-if="backgroundColorFieldFocused">Close</button>
+						<div class="gl_colorPickerDiv">
+							<chrome-picker v-model="setBackgroundColor" v-if="backgroundColorFieldFocused" />
+							<div class="gl_pickOrCloseColorPickerDiv">
+								<button class="gl_colorPickerButton" type="button" @click="pickBackgroundColor" v-if="backgroundColorFieldFocused">Pick</button>
+								<button class="gl_colorPickerButton" type="button" @click="hideBackgroundColorPickerField" v-if="backgroundColorFieldFocused">Close</button>
+								<div style="clear: both;"></div>
+							</div>
 						</div>
-						<div style="clear: both;"></div>
 						<p class="gl_fieldRequiredError" v-if="ifBackgroundEmpty">*required</p>
 					</td>
 				</tr>
@@ -54,13 +56,17 @@
 				</tr>
 				<tr>
 					<th scope="row"><label></label></th>
-					<td v-if="graphData == ''"><button type="button" class="saveGraphData" @click="saveGraphData">Save</button></td>
-					<td v-else><button type="button" class="saveGraphData" @click="updateGraphData">Update</button></td>
+					<td v-if="graphData == ''"><button type="button" class="gl_saveGraphData" @click="saveGraphData">Save</button></td>
+					<td v-else><button type="button" class="gl_saveGraphData" @click="updateGraphData">Update</button></td>
 				</tr>
 			</table>
 		</div>
-		<div class="graphDiv">
-			<iframe class="tutorialFrame" v-if="showTutorial" width="560" height="315" src="https://www.youtube.com/embed/Hwn4UKc5Bew?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+		<div class="gl_graphDiv">
+			<!-- <iframe class="gl_tutorialFrame" v-if="showTutorial" width="560" height="315" src="https://www.youtube.com/embed/Hwn4UKc5Bew?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe> -->
+			<div class="gl_dummyMessages" v-if="showTutorial">
+				<h2>Start typing to see live preview</h2>
+				<p>Live preview will appear here after you enter some data</p>
+			</div>
 			<div class="gl_graphChildDiv" v-show="!showTutorial">
 				<canvas id="pieChart"></canvas>
 			</div>
@@ -70,8 +76,10 @@
 
 <script type="text/javascript">
 	import { Chrome } from 'vue-color';
+	import { mixin as clickaway } from 'vue-clickaway2';
 
 	export default {
+		mixins: [ clickaway ],
 		props: ['graphData', 'graphIndex'],
 		data() {
 			return {
@@ -124,6 +132,9 @@
 				this.backgroundColorFieldFocused = true;
 			},
 			hideBackgroundColorPickerField() {
+				this.backgroundColorFieldFocused = false;
+			},
+			clickedAway() {
 				this.backgroundColorFieldFocused = false;
 			},
 			pickBackgroundColor() {
@@ -315,51 +326,10 @@
 	}
 </script>
 
-<style type="text/css">
-	.pieChart {
-		width: 100%;
-		height: 100%;
-		display: flex;
-		flex-direction: row;
-	}
-	.graphOptions {
-		width: 50%;
-		padding-top: 20px;
-	}
-	.pieChart .graphDiv {
-		width: 50%;
-	}
-	.pieChart .graphDiv .gl_graphChildDiv {
-		position: fixed;
+<style type="text/css" scoped="scoped">
+	.gl_graphChildDiv {
 		width: 40%;
 		height: 60%;
 		right: 5%;
-		top: 150px;
-	}
-	.saveGraphDataButton {
-		display: block;
-	}
-	.saveGraphData {
-		float: right;
-	}
-	input[type="text"] {
-		height: 35px;
-	}
-	.form-table th {
-		width: 25%;
-	}
-	.vc-chrome-toggle-btn {
-		display: none !important;
-	}
-	.gl_colorPickerButton {
-		background-color: #FFFFFF !important;
-		color: #969696 !important;
-		border: 1px solid #ddd !important;
-		margin-top: 2px;
-		display: block;
-	}
-	.vc-chrome {
-		float: left;
-		margin: 2px 3px 0px 2px;
 	}
 </style>

@@ -34,7 +34,7 @@
 	</div>
 </template>
 
-<script>
+<script type="text/javascript">
 	import { mapGetters } from 'vuex';
 
 	export default {
@@ -148,7 +148,7 @@
 	}
 </script>
 
-<style>
+<style type="text/css" scoped="scoped">
 	.gl_chart_dropdown_area {
 		margin-bottom: 10px;
 	}
