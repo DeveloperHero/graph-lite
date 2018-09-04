@@ -3,13 +3,11 @@
         <div class="gl_heading_area">
             <div class="gl_heading">
                 <p>{{currentPageName}}</p>
-                <div>
-                    <button type="button" @click="resetComponent" class="media-modal-close close_graph_modal">
-                        <span class="media-modal-icon">
-                            <span class="screen-reader-text">Close media panel</span>
-                        </span>
-                    </button>
-                </div>
+                <button type="button" @click="resetComponent" class="media-modal-close close_graph_modal">
+                    <span class="media-modal-icon">
+                        <span class="screen-reader-text">Close media panel</span>
+                    </span>
+                </button>
             </div>
         </div>
 

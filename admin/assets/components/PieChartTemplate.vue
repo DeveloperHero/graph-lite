@@ -22,7 +22,7 @@
 				</tr>
 				<tr>
 					<th scope="row"><label for="colors">Color*</label></th>
-					<td class="gl_colorPickerTD">
+					<td class="gl_colorPickerTd" v-on-clickaway="clickedAway">
 						<input class="regular-text" :class="{'gl_fieldRequired': ifBackgroundEmpty}" type="text" id="colors" placeholder="Color value for each label. Eg. red, green, blue" v-model="chartDatasetBgColorString" @keyup="addDatasetBgColor" @focus="showBackgroundColorPickerField">
 						<div class="gl_colorPickerDiv">
 							<chrome-picker v-model="setBackgroundColor" v-if="backgroundColorFieldFocused" />
@@ -62,7 +62,11 @@
 			</table>
 		</div>
 		<div class="gl_graphDiv">
-			<iframe class="gl_tutorialFrame" v-if="showTutorial" width="560" height="315" src="https://www.youtube.com/embed/Hwn4UKc5Bew?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+			<!-- <iframe class="gl_tutorialFrame" v-if="showTutorial" width="560" height="315" src="https://www.youtube.com/embed/Hwn4UKc5Bew?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe> -->
+			<div class="gl_dummyMessages" v-if="showTutorial">
+				<h2>Start typing to see live preview</h2>
+				<p>Live preview will appear here after you enter some data</p>
+			</div>
 			<div class="gl_graphChildDiv" v-show="!showTutorial">
 				<canvas id="pieChart"></canvas>
 			</div>
@@ -72,8 +76,10 @@
 
 <script type="text/javascript">
 	import { Chrome } from 'vue-color';
+	import { mixin as clickaway } from 'vue-clickaway2';
 
 	export default {
+		mixins: [ clickaway ],
 		props: ['graphData', 'graphIndex'],
 		data() {
 			return {
@@ -126,6 +132,9 @@
 				this.backgroundColorFieldFocused = true;
 			},
 			hideBackgroundColorPickerField() {
+				this.backgroundColorFieldFocused = false;
+			},
+			clickedAway() {
 				this.backgroundColorFieldFocused = false;
 			},
 			pickBackgroundColor() {

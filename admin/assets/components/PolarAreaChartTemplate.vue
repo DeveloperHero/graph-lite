@@ -15,7 +15,7 @@
 				</tr>
 				<tr>
 					<th scope="row"><label for="colors">Color*</label></th>
-					<td class="gl_colorPickerTD">
+					<td class="gl_colorPickerTd" v-on-clickaway="clickedAway">
 						<input class="regular-text" :class="{'gl_fieldRequired': ifBackgroundEmpty}"  type="text" id="colors" placeholder="Color value for each label. Eg. red, green, blue" v-model="chartDatasetBgColorString" @keyup="addDatasetBgColor" @focus="showBackgroundColorPickerField">
 						<div class="gl_colorPickerDiv">
 							<chrome-picker v-model="setBackgroundColor" v-if="backgroundColorFieldFocused" />
@@ -72,8 +72,10 @@
 
 <script type="text/javascript">
 	import { Chrome } from 'vue-color';
+	import { mixin as clickaway } from 'vue-clickaway2';
 
 	export default {
+		mixins: [ clickaway ],
 		props: ['graphData', 'graphIndex'],
 		data() {
 			return {
@@ -153,6 +155,9 @@
 				}
 				this.backgroundConcatCount = this.datasets[0].backgroundColor.length;
 				this.theChart.update();
+			},
+			clickedAway() {
+				this.backgroundColorFieldFocused = false;
 			},
 			addTitleText() {
 				this.titleText !== '' ? this.showTitle = true : this.showTitle = false;

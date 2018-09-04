@@ -19,10 +19,10 @@ div#gl-admin-meta-box {
     width: 96%;
     height: 91%;
     overflow: hidden;
-    z-index:  999999999;
+    z-index:  99999;
 }
 .gl-admin-meta-box-backdrop {
-    display: none;
+    display: block;
     position: fixed;
     top: 0;
     left: 0;
@@ -31,7 +31,7 @@ div#gl-admin-meta-box {
     min-height: 360px;
     background: #000;
     opacity: .7;
-    z-index: 159900;
+    /*z-index: 159900;*/
 }
 div#gl-admin-meta-box h2.hndle{
     border-bottom: 1px solid #ddd;
@@ -39,8 +39,10 @@ div#gl-admin-meta-box h2.hndle{
 }
 
 button.close_graph_modal {
-    padding-right: 15px;
+    padding-right: 0;
     box-shadow: none;
+    border: none;
+    top: 1px;
 }
 button.close_graph_modal:focus {
     box-shadow: none;
@@ -91,7 +93,7 @@ button.gl_saveGraphData {
     width: 23%;
     text-align:  center;
     border:  1px solid #F0F0F0;
-    margin: 5px 5px;
+    margin: 0 5px 20px 5px;
     overflow:  hidden;
 }
 
@@ -133,7 +135,7 @@ button.gl_saveGraphData {
     border-bottom:  1px solid #F0F0F0;
 }
 .gl_heading {
-    padding: 5px 0 5px 30px;
+    padding: 5px 0 6px 19px;
 }
 .gl_heading p {
     font-size:  18px;
@@ -141,7 +143,7 @@ button.gl_saveGraphData {
     margin:  10px 0;
 }
 .gl_graphComponentDiv {
-    padding: 20px 10px 0 20px;
+    padding: 20px 20px 0 15px;
     height: 87%;
     overflow-y: auto;
 }
@@ -163,11 +165,10 @@ div#gl-admin-meta-box .sweet-modal-buttons a.button {
  * Template
  */
 .gl_chart_template {
-    width: 98.5%;
+    width: 97.3%;
     height: 87%;
     display: flex;
     flex-direction: row;
-    padding-right: 0;
     overflow-y: auto;
 }
 .gl_chart_template button {
@@ -230,7 +231,7 @@ div#gl-admin-meta-box .sweet-modal-buttons a.button {
     width: 50%;
     float: left;
 }
-.gl_colorPickerDiv {
+.gl_colorPickerTd {
     width: 100%;
     position: relative;
 }
@@ -238,15 +239,17 @@ div#gl-admin-meta-box .sweet-modal-buttons a.button {
     display: none !important;
 }
 .vc-chrome {
-    position: absolute;
     margin: 2px 3px 0px 2px;
 }
-.gl_pickOrCloseColorPickerDiv {
+.gl_colorPickerDiv {
     position: absolute;
-    left: 1px;
+    margin-bottom: 10px;
+    z-index: 1;
+}
+.gl_pickOrCloseColorPickerDiv {
     width: 227px;
-    top: 246px;
     box-shadow: 0 2px 4px rgba(0,0,0,.3);
+    margin-left: 1px;
 }
 
 .gl_sc_point {
@@ -340,6 +343,7 @@ body::-webkit-scrollbar-track, body::-webkit-scrollbar-thumb, body::-webkit-scro
 }
 
 .gl_graphOptions {
+    padding-left: 5px;
     padding-right: 15px;
     width: 50%;
 }
@@ -411,4 +415,13 @@ body::-webkit-scrollbar-track, body::-webkit-scrollbar-thumb, body::-webkit-scro
 .gl_tutorialFrame {
     margin-left: 5px;
     margin-top: 73px !important;
+}
+.gl_dummyMessages {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20%;
+}
+.gl_dummyMessages p {
+    margin: 0;
 }

@@ -45,7 +45,7 @@
 					</tr>
 					<tr>
 						<th scope="row" style="padding-top: 15px; padding-bottom: 5px;"><label for="colors">Circle Background Color*</label></th>
-						<td>
+						<td class="gl_colorPickerTd" v-on-clickaway="() => clickedAwayFromBg(index)">
 							<input class="regular-text" :class="{'gl_fieldRequired': dataset.ifCircleBackgroundEmpty}" type="text" id="colors" v-model="dataset.backgroundColor" @keyup="addDatasetBgColor(index)" @focus="showBackgroundColorPickerField(index)">
 							<div class="gl_colorPickerDiv">
 								<chrome-picker v-model="setBackgroundColor" v-if="dataset.backgroundColorFieldFocused" />
@@ -60,7 +60,7 @@
 					</tr>
 					<tr>
 						<th scope="row" style="padding-top: 15px; padding-bottom: 5px;"><label for="line_color">Circle Border Color*</label></th>
-						<td>
+						<td class="gl_colorPickerTd" v-on-clickaway="() => clickedAwayFromBd(index)">
 							<input class="regular-text" :class="{'gl_fieldRequired': dataset.ifCicleBorderColorEmpty}" type="text" id="line_color" v-model="dataset.borderColor" @keyup="addDatasetborderColor(index)" @focus="showBorderColorPickerField(index)">
 							<div class="gl_colorPickerDiv">
 								<chrome-picker v-model="setBorderColor" v-if="dataset.borderColorFieldFocused" />
@@ -111,7 +111,11 @@
 			</table>
 		</div>
 		<div class="gl_graphDiv">
-			<iframe class="gl_tutorialFrame" v-if="showTutorial" width="560" height="315" src="https://www.youtube.com/embed/Hwn4UKc5Bew?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="margin-top: 67px !important"></iframe>
+			<!-- <iframe class="gl_tutorialFrame" v-if="showTutorial" width="560" height="315" src="https://www.youtube.com/embed/Hwn4UKc5Bew?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="margin-top: 67px !important"></iframe> -->
+			<div class="gl_dummyMessages" v-if="showTutorial">
+				<h2>Start typing to see live preview</h2>
+				<p>Live preview will appear here after you enter some data</p>
+			</div>
 			<div class="gl_graphChildDiv" v-show="!showTutorial">
 				<canvas id="bubbleChart"></canvas>
 			</div>
@@ -121,8 +125,10 @@
 
 <script type="text/javascript">
 	import { Chrome } from 'vue-color';
+	import { mixin as clickaway } from 'vue-clickaway2';
 
 	export default {
+		mixins: [ clickaway ],
 		props: ['graphData', 'graphIndex'],
 		data() {
 			return {
@@ -226,6 +232,9 @@
 			hideBackgroundColorPickerField(index) {
 				this.datasets[index].backgroundColorFieldFocused = false;
 			},
+			clickedAwayFromBg(index) {
+				this.datasets[index].backgroundColorFieldFocused = false;
+			},
 			pickBackgroundColor(index) {
 				if(this.datasets[index].ifCircleBackgroundEmpty) {
 					this.datasets[index].ifCircleBackgroundEmpty = false;
@@ -247,6 +256,9 @@
 				this.datasets[index].borderColorFieldFocused = true;
 			},
 			hideBorderColorPickerField(index) {
+				this.datasets[index].borderColorFieldFocused = false;
+			},
+			clickedAwayFromBd(index) {
 				this.datasets[index].borderColorFieldFocused = false;
 			},
 			pickBorderColor(index) {
