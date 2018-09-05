@@ -425,3 +425,9 @@ body::-webkit-scrollbar-track, body::-webkit-scrollbar-thumb, body::-webkit-scro
 .gl_dummyMessages p {
     margin: 0;
 }
+
+div#gl-admin-meta-box .inside {
+    background:  #fff;
+    z-index:  9999999999999999999999999999999999;
+    position:  relative;
+}
