@@ -34,6 +34,8 @@ jQuery(document).ready(function($) {
 		$('.gl_old_graph').fadeIn();
 	});
 
+	$('div#gl-admin-meta-box').append('<div class="media-modal-backdrop"></div>');
+
 	// Replace string to boolean
 	// var card_data = JSON.parse(gl.chart_data);
 	// function gl_findAndReplace(object, value, replacevalue){
