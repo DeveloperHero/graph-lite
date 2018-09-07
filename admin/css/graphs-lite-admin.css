@@ -338,8 +338,8 @@ div#gl-admin-meta-box h2.hndle.ui-sortable-handle {
     display:  none !important;
 }*/
 
-body::-webkit-scrollbar-track, body::-webkit-scrollbar-thumb, body::-webkit-scrollbar {
-    display: none;
+.gl_graph_open {
+    overflow: hidden;
 }
 
 .gl_graphOptions {

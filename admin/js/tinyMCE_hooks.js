@@ -8,6 +8,7 @@
 			type: 'button',
 			onclick: function() {
 				$('#gl-admin-meta-box').fadeIn();
+				$('body').addClass('gl_graph_open');
 			},
 		});
 	});

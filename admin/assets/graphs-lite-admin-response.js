@@ -11,6 +11,7 @@ jQuery(document).ready(function($) {
 
 	$('.close_graph_modal').on('click', function () {
 		$('#gl-admin-meta-box').fadeOut();
+		$('body').removeClass('gl_graph_open');
 	});
 
 	// Nav Menu
