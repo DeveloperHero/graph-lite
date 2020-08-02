@@ -1,5 +1,5 @@
 === WordPress Graphs & Charts - Easy Interactive HTML5 Charts Plugin ===
-Contributors: orchestra, mymizan, mishuk24
+Contributors: orchestra, mymizan, mishuk24, wpimtiaz
 Donate link: http://orchestra.ltd
 Tags: graph, chart, graphs, charts, graphing, charting, visualisation, visualization, data visualization, data visualisation, visualise data, visualize data, pie chart, doughnut chart, line chart, bar chart, polar chart, polar area, area chart, radar chart, scatter chart, bubble chart, interactive chart builder, chart maker, graph maker, interactive graph maker, embed graphs, embed charts, show charts, show graphs, chartjs, interactive charts, interactive graphs, easy graph builder, easy chart builder, html5 charts, html5 graphs, animated and customisable chart, animated and customizable chart, stunning transitions, simple charts, simple charting, beautiful charts, beautiful graphs, responsive chart, responsive graph, Diagramme, diagram, 图表, gráficos, графики, диаграммы
 Requires at least: 3.5
